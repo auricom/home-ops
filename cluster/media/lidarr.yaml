@@ -34,16 +34,30 @@ spec:
     additionalVolumeMounts:
     - name: nfs-music
       mountPath: "/mnt/storage/music"
+    - name: qbittorrent-downloads
+      mountPath: "/downloads"
     additionalVolumes:
     - name: nfs-music
       persistentVolumeClaim:
         claimName: nfs-music
+    - name: qbittorrent-downloads
+      persistentVolumeClaim:
+        claimName: qbittorrent-downloads
     resources:
       requests:
         memory: 500Mi
         cpu: 500m
       limits:
         memory: 1500Mi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - k3os-worker3
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-lidarr
