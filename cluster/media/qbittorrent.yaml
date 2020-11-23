@@ -1,0 +1,102 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: qbittorrent
+      version: 6.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    controllerType: deployment
+    image:
+      repository: k8sathome/qbittorrent
+      tag: v4.3.0.1
+      pullPolicy: IfNotPresent
+    env:
+      TZ: "Europe/Paris"
+    service:
+      additionalServices:
+      - enabled: true
+        nameSuffix: bittorrent
+        type: LoadBalancer
+        externalIPs:
+        - 192.168.9.206
+        port:
+          port: 50413
+          name: bittorrent
+          protocol: TCP
+          targetPort: 6881
+        externalTrafficPolicy: Local
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+    persistence:
+      config:
+        enabled: true
+        existingClaim: qbittorrent-config
+    additionalVolumeMounts:
+    - name: qbittorrent-downloads
+      mountPath: "/downloads"
+    - name: nfs-downloads
+      mountPath: "/mnt/storage/downloads"
+    additionalVolumes:
+    - name: qbittorrent-downloads
+      persistentVolumeClaim:
+        claimName: qbittorrent-downloads
+    - name: nfs-downloads
+      persistentVolumeClaim:
+        claimName: nfs-downloads
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 5Gi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - k3os-worker3
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-media-qbittorrent
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-config
+  namespace: media
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-downloads
+  namespace: media
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: longhorn-hdd
+  resources:
+    requests:
+      storage: 800Gi

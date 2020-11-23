@@ -42,3 +42,25 @@ metadata:
   name: nfs-video
 provisioner: nfs
 reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-downloads
+spec:
+  storageClassName: nfs-downloads
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage/downloads"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-downloads
+provisioner: nfs
+reclaimPolicy: Retain
