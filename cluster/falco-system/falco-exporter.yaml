@@ -15,6 +15,7 @@ spec:
         name: falco-security-charts
         namespace: flux-system
       interval: 5m
+      suspend: true
   values:
     serviceMonitor:
       enabled: true
