@@ -1,0 +1,101 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authelia
+  namespace: auth
+  labels:
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/name: authelia
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: authelia
+      app.kubernetes.io/name: authelia
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: authelia
+        app.kubernetes.io/name: authelia
+    spec:
+      initContainers:
+      - name: authelia-init
+        image: busybox
+        command: ['/bin/sh', '-c', 'cp /configyaml/*.y* /config']
+        volumeMounts:
+        - name: configyaml
+          mountPath: /configyaml
+        - name: config
+          mountPath: /config
+      containers:
+      - name: redis
+        image: k8s.gcr.io/redis:e2e
+        resources:
+          limits:
+            cpu: 100m
+            memory: 125Mi
+          requests:
+            cpu: 50m
+            memory: 125Mi
+        ports:
+        - containerPort: 6379
+      - name: authelia
+        image: authelia/authelia:4.23.3
+        ports:
+        - containerPort: 9091
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2000Mi
+          requests:
+            cpu: 100m
+            memory: 1500Mi
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: In
+                values:
+                - "true"    
+      volumes:
+      - name: config
+        emptyDir: {}
+      - name: configyaml
+        configMap:
+          name: authelia-config
+          items:
+          - key: configuration.yml
+            path: configuration.yml
+          - key: users.yaml
+            path: users.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authelia
+  namespace: auth
+  labels:
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/name: authelia
+spec:
+  selector:
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/name: authelia
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 9091
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  loadBalancerIP: 192.168.9.204
