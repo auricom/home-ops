@@ -17,8 +17,7 @@ spec:
       interval: 5m
   values:
     controller:
-      ingressClass: external
-      replicaCount: 3
+      replicaCount: 2
       service:
         type: LoadBalancer
         externalIPs:
