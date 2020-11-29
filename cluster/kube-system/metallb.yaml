@@ -1,0 +1,44 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: metallb
+  namespace: kube-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: metallb
+      version: 1.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    configInline:
+        address-pools:
+        - name: default
+          protocol: layer2
+          addresses:
+          - 192.168.9.200-192.168.9.254
+    controller:
+      image:
+        registry: docker.io
+        repository: bitnami/metallb-controller
+        tag: 0.9.5-debian-10-r5
+      tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+    speaker:
+      image:
+        registry: docker.io
+        repository: bitnami/metallb-speaker
+        tag: 0.9.5-debian-10-r4
+      tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
