@@ -19,7 +19,7 @@ spec:
     controllerType: deployment
     image:
       repository: k8sathome/radarr
-      tag: v3.0.0.4136
+      tag: v3.0.0.4204
       pullPolicy: IfNotPresent
     env:
       TZ: "Europe/Paris"
