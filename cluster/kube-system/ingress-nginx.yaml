@@ -1,0 +1,70 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ingress-nginx-external
+  namespace: kube-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: 3.12.0
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    controller:
+      ingressClass: external
+      replicaCount: 3
+      service:
+        type: LoadBalancer
+        externalIPs:
+        - 192.168.9.200
+        externalTrafficPolicy: Local
+      publishService:
+        enabled: true
+      config:
+        ssl-protocols: "TLSv1.3 TLSv1.2"
+        custom-http-errors: 400,403,404,422,500,503
+        enable-vts-status: "false"
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespace: kube-system
+          namespaceSelector:
+            any: true
+      extraArgs:
+        default-ssl-certificate: "kube-system/letsencrypt-k3s-wildcard"
+      resources:
+        requests:
+          memory: 250Mi
+          cpu: 25m
+        limits:
+          memory: 750Mi
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - ingress-nginx-external
+            topologyKey: "kubernetes.io/hostname"
+    defaultBackend:
+      enabled: true
+      image:
+        repository: registry.k3s.xpander.ovh/homelab/custom-error-pages
+        tag: 1.0.1
+      resources:
+        requests:
+          memory: 50Mi
+          cpu: 25m
+        limits:
+          memory: 100Mi
+    tcp:
+      8086: monitoring/influxdb:8086
