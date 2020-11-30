@@ -23,3 +23,6 @@ spec:
       tag: v3.0.0
     dashboard:
       replicaCount: 1
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-monitoring-goldilocks
