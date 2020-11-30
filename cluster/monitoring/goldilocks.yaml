@@ -17,7 +17,7 @@ spec:
       interval: 5m
   values:
     vpa:
-      enable: true
+      enabled: true
     image:
       repository: quay.io/fairwinds/goldilocks
       tag: v3.0.0
