@@ -1,0 +1,218 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 12.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community-charts
+        namespace: flux-system
+      interval: 5m
+  timeout: 20m
+  values:
+    server:
+      resources:
+        requests:
+          memory: 1500Mi
+          cpu: 200m
+        limits:
+          memory: 2000Mi
+    prometheusOperator:
+      createCustomResource: true
+    alertmanager:
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 10Gi
+      ingress:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+      config:
+        global:
+          resolve_timeout: 5m
+        receivers:
+        - name: "null"
+        route:
+          receiver: 'pushover'
+          routes:
+            - match:
+                alertname: Watchdog
+              receiver: 'null'
+            - receiver: 'pushover'
+        inhibit_rules:
+        - source_match:
+            severity: 'critical'
+          target_match:
+            severity: 'warning'
+          # Apply inhibition if the alertname is the same.
+          equal: ['alertname', 'namespace']
+    nodeExporter:
+      serviceMonitor:
+        relabelings:
+        - action: replace
+          regex: (.*)
+          replacement: $1
+          sourceLabels:
+          - __meta_kubernetes_pod_node_name
+          targetLabel: kubernetes_node
+    kubelet:
+      serviceMonitor:
+        metricRelabelings:
+        - action: replace
+          sourceLabels:
+          - node
+          targetLabel: instance
+    grafana:
+      dashboards:
+        default:
+          kubernetes-custom:
+            url: https://raw.githubusercontent.com/auricom/home-cluster/raw/branch/master/cluster/monitoring/grafana-dashboards/kubernetes-custom.json
+            datasource: Prometheus
+          pfsense-dashboard:
+            url: https://raw.githubusercontent.com/auricom/home-cluster/raw/branch/master/cluster/monitoring/grafana-dashboards/pfsense.json
+            datasource: influxdb-pfsense
+          truenas-dashboard:
+            url: https://raw.githubusercontent.com/auricom/home-cluster/raw/branch/master/cluster/monitoring/grafana-dashboards/truenas.json
+            datasource: influxdb-graphite
+      deploymentStrategy:
+        type: Recreate
+      persistence:
+        enabled: true
+        storageClassName: "longhorn"
+        size: 10Gi
+        accessModes:
+        - ReadWriteOnce
+      env:
+        GF_EXPLORE_ENABLED: true
+        GF_DISABLE_SANITIZE_HTML: true
+        GF_PANELS_DISABLE_SANITIZE_HTML: true
+      ingress:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+      plugins:
+      - natel-discrete-panel
+      - pr0ps-trackmap-panel
+      - grafana-piechart-panel
+      - vonage-status-panel
+      - https://github.com/panodata/grafana-map-panel/releases/download/0.9.0/grafana-map-panel-0.9.0.zip;grafana-worldmap-panel-ng
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+      sidecar:
+        datasources:
+          enabled: true
+          defaultDatasourceEnabled: false
+        dashboards:
+          enabled: true
+          searchNamespace: ALL
+      additionalDataSources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://thanos-query-http:10902/
+        isDefault: true
+      - name: loki
+        type: loki
+        access: proxy
+        url: http://loki.logging.svc.cluster.local:3100/
+      - name: influxdb-pfsense
+        type: influxdb
+        acces: server
+        url: http://influxdb:8086/
+        database: pfsense
+        user: pfsense
+      - name: influxdb-rpi-os
+        type: influxdb
+        acces: server
+        url: http://influxdb:8086/
+        database: rpi-os
+        user: rpi-os
+      - name: influxdb-graphite
+        type: influxdb
+        database: graphite
+        acces: server
+        url: http://influxdb:8086/
+      - name: influxdb-home_assistant
+        type: influxdb
+        acces: server
+        url: http://influxdb:8086/
+        database: home_assistant
+      grafana.ini:
+        paths:
+          data: /var/lib/grafana/data
+          logs: /var/log/grafana
+          plugins: /var/lib/grafana/plugins
+          provisioning: /etc/grafana/provisioning
+        analytics:
+          check_for_updates: true
+        log:
+          mode: console
+        grafana_net:
+          url: https://grafana.net
+        smtp:
+          enabled: false
+    kubeEtcd:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeProxy:
+      enabled: false
+    prometheus:
+      ingress:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+      prometheusSpec:
+        replicas: 2
+        replicaExternalLabelName: "replica"
+        ruleSelector: {}
+        ruleNamespaceSelector: {}
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelector: {}
+        serviceMonitorNamespaceSelector: {}
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelector: {}
+        podMonitorNamespaceSelector: {}
+        podMonitorSelectorNilUsesHelmValues: false
+        retention: 6h
+        enableAdminAPI: true
+        walCompression: true
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 10Gi
+        thanos:
+          image: quay.io/thanos/thanos:v0.15.0
+          version: v0.15.0
+          objectStorageConfig:
+            name: thanos
+            key: object-store.yaml
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-monitoring-prometheus-stack
