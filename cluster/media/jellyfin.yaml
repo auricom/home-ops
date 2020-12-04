@@ -1,0 +1,68 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: jellyfin
+      version: 3.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: linuxserver/jellyfin
+      pullPolicy: IfNotPresent
+      tag: version-10.6.4-1
+    strategy:
+      type: Recreate
+    service:
+      port:
+        port: 8096
+    persistence:
+      config:
+        enabled: true
+        existingClaim: jellyfin-config
+    additionalVolumeMounts:
+    - name: nfs-music
+      mountPath: "/mnt/storage/music"
+    - name: nfs-video
+      mountPath: "/mnt/storage/video"
+    - name: nfs-photo
+      mountPath: "/mnt/storage/photo"
+    additionalVolumes:
+    - name: nfs-music
+      persistentVolumeClaim:
+        claimName: nfs-music
+    - name: nfs-video
+      persistentVolumeClaim:
+        claimName: nfs-video
+    - name: nfs-photo
+      persistentVolumeClaim:
+        claimName: nfs-photo
+    resources:
+      requests:
+        memory: 4Gi
+        cpu: 1
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-media-jellyfin
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-config
+  namespace: media
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 20Gi

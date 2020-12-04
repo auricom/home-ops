@@ -64,3 +64,25 @@ metadata:
   name: nfs-downloads
 provisioner: nfs
 reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-photo
+spec:
+  storageClassName: nfs-photo
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage/photo"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-photo
+provisioner: nfs
+reclaimPolicy: Retain
