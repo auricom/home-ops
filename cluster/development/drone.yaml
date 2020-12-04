@@ -38,7 +38,7 @@ spec:
       prometheus.io/port: "80"
   valuesFrom:
   - kind: ConfigMap
-    name: "helmrelease-development-drone-charts"
+    name: "helmrelease-development-drone"
     optional: false
 ---
 apiVersion: v1
