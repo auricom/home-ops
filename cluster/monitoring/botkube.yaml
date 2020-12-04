@@ -176,6 +176,6 @@ spec:
         enabled: true
         notiftype: short
   valuesFrom:
-  - kind: Secret
+  - kind: ConfigMap
     name: "helmrelease-monitoring-botkube"
     optional: false
