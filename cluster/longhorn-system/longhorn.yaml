@@ -1,0 +1,77 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: longhorn
+      version: 1.0.2
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    defaultSettings:
+      backupTarget: s3://longhorn@us-east-1/
+      backupTargetCredentialSecret: minio-truenas-credentials
+      createDefaultDiskLabeledNodes: true
+      defaultDataPath: /var/lib/longhorn/
+      replicaSoftAntiAffinity: false
+      storageOverProvisioningPercentage: 300
+      storageMinimalAvailablePercentage: 25
+      upgradeChecker: true
+      defaultReplicaCount: 3
+      guaranteedEngineCPU: 0.25
+      defaultLonghornStaticStorageClass: longhorn-backups
+      backupstorePollInterval: 10800
+      autoSalvage: true
+      disableSchedulingOnCordonedNode: true
+      replicaZoneSoftAntiAffinity: true
+      volumeAttachmentRecoveryPolicy: wait
+      #mkfsExt4Parameters: 
+    csi:
+      kubeletRootDir: /var/lib/kubelet
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+      tls: true
+  valuesFrom:
+  - kind: ConfigMap
+    name: "helmrelease-longhorn-system-longhorn"
+    optional: false
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-hdd
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "2880"
+  fromBackup: ""
+  diskSelector: "hdd,slow"
+  nodeSelector: "storage,slow"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-backups
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"
+  fromBackup: ""
+  diskSelector: "ssd,fast"
+  nodeSelector: "storage,fast"
+  recurringJobs:
+    '[{"name":"backup", "task":"backup", "cron":"30 23 * * *", "retain":1,
+    "labels": {"interval":"daily"}}]'
