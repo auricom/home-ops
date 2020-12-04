@@ -177,5 +177,5 @@ spec:
         notiftype: short
   valuesFrom:
   - kind: Secret
-    name: "botkube-helm-values"
+    name: "helmrelease-monitoring-botkube"
     optional: false
