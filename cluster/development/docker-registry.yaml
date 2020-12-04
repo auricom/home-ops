@@ -1,0 +1,36 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: docker-registry
+  namespace: development
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: docker-registry
+      version: 1.10.0
+      sourceRef:
+        kind: HelmRepository
+        name: twuni-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    storage: s3
+    s3:
+      region: "us-east-1"
+      bucket: docker-registry
+      encrypt: false
+      secure: true
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "6000"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
+        nginx.ingress.kubernetes.io/enable-global-auth: "false"
+  valuesFrom:
+  - kind: ConfigMap
+    name: "helmrelease-development-docker-registry"
+    optional: false
