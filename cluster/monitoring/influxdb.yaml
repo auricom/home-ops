@@ -1,0 +1,58 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: influxdb
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: influxdb
+      version: 4.8.10
+      sourceRef:
+        kind: HelmRepository
+        name: influxdata-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    service:
+      type: LoadBalancer
+      loadBalancerIP: 192.168.9.205
+    persistence:
+      enabled: true
+      size: 30Gi
+      storageClass: "longhorn"
+    livenessProbe:
+      timeoutSeconds: 10
+    readinessProbe:
+      timeoutSeconds: 10
+    startupProbe:
+      enabled: true
+      failureThreshold: 6
+      periodSeconds: 5
+    config:
+      http:
+        flux-enabled: true
+      opentsdb:
+        enabled: true
+      graphite:
+        enabled: true
+        database: "graphite"
+        #retention-policy: ""
+        bind-address: ":2003"
+        protocol: "tcp"
+        consistency-level: "one"
+      tls: true
+    initScripts:
+      enabled: true
+      scripts:
+        init.iql: |-
+          CREATE DATABASE "pfsense" WITH DURATION 90d;
+          CREATE DATABASE "rpi-os" WITH DURATION 90d;
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 100m
+      limits:
+        memory: 4Gi
