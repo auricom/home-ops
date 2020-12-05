@@ -3,7 +3,7 @@ name: update-flux
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 0 * * *"
 
 jobs:
   components:
@@ -11,8 +11,10 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+
       - name: Setup Flux CLI
-        uses: fluxcd/flux2/action@main
+        uses: brew install fluxcd/tap/flux
+
       - name: Check for updates
         id: update
         run: |
