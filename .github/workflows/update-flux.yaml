@@ -23,7 +23,7 @@ jobs:
         run: |
           flux install \
             --network-policy=false
-            --export > ./clusters/flux-system/gotk-components.yaml
+            --export > ./cluster/flux-system/gotk-components.yaml
 
           VERSION="$(flux -v)"
           echo "::set-output name=flux_version::$VERSION"
