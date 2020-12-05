@@ -62,3 +62,7 @@ spec:
         for: 15m
         labels:
           severity: warning
+  valuesFrom:
+  - kind: ConfigMap
+    name: "helmrelease-monitoring-blackbox-exporter"
+    optional: false
