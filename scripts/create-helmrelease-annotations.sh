@@ -4,7 +4,7 @@ shopt -s globstar
 # shellcheck disable=SC2155
 REPO_ROOT=$(git rev-parse --show-toplevel)
 CLUSTER_ROOT="${REPO_ROOT}/cluster"
-HELM_REPOSITORIES="${CLUSTER_ROOT}/flux-system/helm-chart-repositories"
+HELM_REPOSITORIES="${CLUSTER_ROOT}/_helm-chart-repositories"
 
 # Ensure yq exist
 command -v yq >/dev/null 2>&1 || {
