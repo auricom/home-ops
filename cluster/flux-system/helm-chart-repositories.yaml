@@ -138,3 +138,13 @@ spec:
   interval: 10m
   url: https://grafana.github.io/loki/charts
   timeout: 3m
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: kubernetes-dashboard-charts
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: https://kubernetes.github.io/dashboard/
+  timeout: 3m
