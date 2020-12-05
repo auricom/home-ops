@@ -128,3 +128,13 @@ spec:
   interval: 10m
   url: https://charts.longhorn.io
   timeout: 3m
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: grafana-loki-charts
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: https://grafana.github.io/loki/charts
+  timeout: 3m
