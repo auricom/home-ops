@@ -40,6 +40,10 @@ spec:
         cpu: 100m
       limits:
         memory: 5Gi
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

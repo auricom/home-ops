@@ -38,6 +38,10 @@ spec:
     - name: nfs-video
       persistentVolumeClaim:
         claimName: nfs-video
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
     resources:
       requests:
         memory: 500Mi

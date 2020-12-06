@@ -36,6 +36,10 @@ spec:
           protocol: TCP
           targetPort: 6881
         externalTrafficPolicy: Local
+      service:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: tcp
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568

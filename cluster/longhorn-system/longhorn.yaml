@@ -36,10 +36,6 @@ spec:
       #mkfsExt4Parameters: 
     csi:
       kubeletRootDir: /var/lib/kubelet
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
       tls: true
   valuesFrom:
   - kind: ConfigMap

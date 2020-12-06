@@ -30,6 +30,10 @@ spec:
         nginx.ingress.kubernetes.io/proxy-read-timeout: "6000"
         nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
         nginx.ingress.kubernetes.io/enable-global-auth: "false"
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
   valuesFrom:
   - kind: ConfigMap
     name: "helmrelease-development-docker-registry"

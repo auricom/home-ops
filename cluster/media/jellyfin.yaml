@@ -46,6 +46,10 @@ spec:
     - name: nfs-photo
       persistentVolumeClaim:
         claimName: nfs-photo
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
     resources:
       requests:
         memory: 4Gi

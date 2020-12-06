@@ -19,23 +19,9 @@ spec:
     image:
       repository: drone/drone
       tag: 1.9.2
-    env:
-      DRONE_SERVER_PROTO: https
-      DRONE_GIT_ALWAYS_AUTH: true
-      DRONE_LOGS_TEXT: true
-      DRONE_LOGS_PRETTY: true
-      DRONE_LOGS_COLOR: true
     persistentVolume:
       enabled: true
       existingClaim: drone-config
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/enable-global-auth: "false"
-    podAnnotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "80"
   valuesFrom:
   - kind: ConfigMap
     name: "helmrelease-development-drone"
