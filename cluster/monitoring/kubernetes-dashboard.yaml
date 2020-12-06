@@ -8,6 +8,7 @@ spec:
   interval: 5m
   chart:
     spec:
+      # renovate: registryUrl=https://kubernetes.github.io/dashboard/
       chart: kubernetes-dashboard
       version: 3.0.0
       sourceRef:

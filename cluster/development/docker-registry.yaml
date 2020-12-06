@@ -8,6 +8,7 @@ spec:
   interval: 5m
   chart:
     spec:
+      # renovate: registryUrl=https://helm.twun.io
       chart: docker-registry
       version: 1.10.0
       sourceRef:
