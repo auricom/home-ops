@@ -223,6 +223,9 @@ spec:
               - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
                 action: keep
                 regex: true
+              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_protocol]
+                action: keep
+                regex: http
               - source_labels: [__address__]
                 target_label: __param_target
               - target_label: __address__
@@ -235,6 +238,32 @@ spec:
                 target_label: kubernetes_namespace
               - source_labels: [__meta_kubernetes_service_name]
                 target_label: kubernetes_name
+          - job_name: 'kubernetes-services-tcp'
+            metrics_path: /probe
+            params:
+              module: [tcp_connect]
+            kubernetes_sd_configs:
+              - role: service
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+                action: keep
+                regex: true
+              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_protocol]
+                action: keep
+                regex: tcp
+              - source_labels: [__address__]
+                target_label: __param_target
+              - target_label: __address__
+                replacement: blackbox-exporter-prometheus-blackbox-exporter:9115
+              - source_labels: [__param_target]
+                target_label: instance
+              - action: labelmap
+                regex: __meta_kubernetes_service_label_(.+)
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: kubernetes_namespace
+              - source_labels: [__meta_kubernetes_service_name]
+                target_label: kubernetes_name
+
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-monitoring-prometheus-stack
