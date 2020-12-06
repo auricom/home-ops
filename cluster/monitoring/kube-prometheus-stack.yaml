@@ -34,29 +34,6 @@ spec:
               resources:
                 requests:
                   storage: 10Gi
-      ingress:
-        enabled: true
-        annotations:
-          kubernetes.io/ingress.class: "nginx"
-      config:
-        global:
-          resolve_timeout: 5m
-        receivers:
-        - name: "null"
-        route:
-          receiver: 'pushover'
-          routes:
-            - match:
-                alertname: Watchdog
-              receiver: 'null'
-            - receiver: 'pushover'
-        inhibit_rules:
-        - source_match:
-            severity: 'critical'
-          target_match:
-            severity: 'warning'
-          # Apply inhibition if the alertname is the same.
-          equal: ['alertname', 'namespace']
     nodeExporter:
       serviceMonitor:
         relabelings:
@@ -97,10 +74,6 @@ spec:
         GF_EXPLORE_ENABLED: true
         GF_DISABLE_SANITIZE_HTML: true
         GF_PANELS_DISABLE_SANITIZE_HTML: true
-      ingress:
-        enabled: true
-        annotations:
-          kubernetes.io/ingress.class: "nginx"
       plugins:
       - natel-discrete-panel
       - pr0ps-trackmap-panel
@@ -181,10 +154,6 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
-      ingress:
-        enabled: true
-        annotations:
-          kubernetes.io/ingress.class: "nginx"
       prometheusSpec:
         replicas: 2
         replicaExternalLabelName: "replica"
