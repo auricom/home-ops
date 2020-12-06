@@ -35,6 +35,9 @@ spec:
             valid_http_versions: ["HTTP/2.0"]
             no_follow_redirects: false
             preferred_ip_protocol: "ip4"
+        tcp_connect:
+          prober: tcp
+          timeout: 30s
     serviceMonitor:
       enabled: true
       defaults:
