@@ -79,9 +79,9 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    prometheus.io/probe: "true"
-    prometheus.io/protocol: tcp
+  #annotations:
+  #  prometheus.io/probe: "true"
+  #  prometheus.io/protocol: tcp
   labels:
     app.kubernetes.io/instance: syslog-ng
     app.kubernetes.io/name: syslog-ng
