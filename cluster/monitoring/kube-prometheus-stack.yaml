@@ -55,13 +55,13 @@ spec:
       dashboards:
         default:
           kubernetes-custom:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/raw/branch/master/cluster/monitoring/grafana-dashboards/kubernetes-custom.json
+            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/monitoring/grafana-dashboards/kubernetes-custom.json
             datasource: Prometheus
           pfsense-dashboard:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/raw/branch/master/cluster/monitoring/grafana-dashboards/pfsense.json
+            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/monitoring/grafana-dashboards/pfsense.json
             datasource: influxdb-pfsense
           truenas-dashboard:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/raw/branch/master/cluster/monitoring/grafana-dashboards/truenas.json
+            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/monitoring/grafana-dashboards/truenas.json
             datasource: influxdb-graphite
       deploymentStrategy:
         type: Recreate
