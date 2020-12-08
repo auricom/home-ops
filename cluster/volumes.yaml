@@ -86,3 +86,25 @@ metadata:
   name: nfs-photo
 provisioner: nfs
 reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-gitea
+spec:
+  storageClassName: nfs-gitea
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/runtime/gitea"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-gitea
+provisioner: nfs
+reclaimPolicy: Retain
