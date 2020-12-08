@@ -24,7 +24,7 @@ spec:
       enabled: true
     config:
       settings:
-        clustername: k8s
+        clustername: k3s
       resources:
         - name: v1/pods                # Name of the resources e.g pod, deployment, ingress, etc. (Resource name must be in singular form)
           namespaces:
@@ -172,6 +172,7 @@ spec:
             - create
             - delete
             - error
+    recommendations: true
     communications:
       discord:
         enabled: true
