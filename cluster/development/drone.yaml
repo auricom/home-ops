@@ -17,6 +17,7 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    updateStrategy: Recreate
     image:
       repository: drone/drone
       tag: 1.9.2
