@@ -1,13 +1,27 @@
+---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+fail_fast: false
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
-    hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-    -   id: check-added-large-files
+- repo: https://github.com/adrienverge/yamllint.git
+  rev: v1.25.0
+  hooks:
+  - id: yamllint
+    args:
+    - -c
+    - ".github/yamllint.config.yaml"
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.3.0
+  hooks:
+  - id: trailing-whitespace
+  - id: check-added-large-files
+    args: [--maxkb=2048]
+  - id: check-merge-conflict
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.1.9
+  hooks:
+  - id: forbid-crlf
+  - id: forbid-tabs
 - repo: https://github.com/jumanjihouse/pre-commit-hooks
   rev: 2.1.4
   hooks:
