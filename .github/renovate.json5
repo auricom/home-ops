@@ -35,6 +35,8 @@
     },
     {
       "datasources": ["docker"],
+      "automerge": true,
+      "requiredStatusChecks": null,
       "updateTypes": ["patch"],
       "labels": ["renovate/image-release", "dependency/patch"]
     },
@@ -50,14 +52,10 @@
     },
     {
       "datasources": ["helm"],
+      "automerge": true,
+      "requiredStatusChecks": null,
       "updateTypes": ["patch"],
       "labels": ["renovate/helm-release", "dependency/patch"]
-    },
-    // interesting image tags
-    {
-      "datasources": ["docker"],
-      "versionScheme": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>.*)$",
-      "packageNames": ["blakeblackshear/frigate"]
     },
     // pin versions
     //{
@@ -76,11 +74,6 @@
     //     "k8sathome/bazarr"
     //   ]
     // },
-    {
-      "datasources": ["docker"],
-      "versioning": "loose",
-      "packageNames": ["plexinc/pms-docker"]
-    },
     // auto-updates
     {
       "datasources": ["docker"],
