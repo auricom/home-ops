@@ -4,6 +4,7 @@ ignore: |
   ansible/
   integrations/
   ignore/
+  secrets/
   *-crds.yaml
 extends: default
 rules:
