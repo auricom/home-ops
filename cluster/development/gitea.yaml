@@ -33,7 +33,7 @@ spec:
       ssh:
         annotations:
           prometheus.io/probe: "true"
-          prometheus.io/protocol: http
+          prometheus.io/protocol: tcp
         type: LoadBalancer
         port: 22
         externalTrafficPolicy: Local
