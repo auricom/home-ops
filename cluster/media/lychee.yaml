@@ -35,7 +35,7 @@ spec:
         kubernetes.io/ingress.class: "nginx"
     env:
       PHP_TZ: Europe/Paris
-      DB_CONNECTION: postgresql
+      DB_CONNECTION: postgres
     persistence:
       config:
         enabled: true
