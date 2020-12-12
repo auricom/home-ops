@@ -1,0 +1,84 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: unifi
+  namespace: data
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: unifi
+      version: 1.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    controllerType: deployment
+    strategy:
+      type: Recreate
+    image:
+      repository: jacobalberty/unifi
+      tag: 6.0.41
+      pullPolicy: IfNotPresent
+    persistence:
+      enabled: true
+      existingClaim: unifi-config
+    timezone: "Europe/Paris"
+    runAsRoot: false
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    guiService:
+      type: LoadBalancer
+      loadBalancerIP: 192.168.9.201
+      annotations:
+        metallb.universe.tf/allow-shared-ip: unifi
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
+    controllerService:
+      type: LoadBalancer
+      loadBalancerIP: 192.168.9.201
+      annotations:
+        metallb.universe.tf/allow-shared-ip: unifi
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: tcp
+    stunService:
+      type: LoadBalancer
+      loadBalancerIP: 192.168.9.201
+      annotations:
+        metallb.universe.tf/allow-shared-ip: unifi
+    discoveryService:
+      type: LoadBalancer
+      loadBalancerIP: 192.168.9.201
+      annotations:
+        metallb.universe.tf/allow-shared-ip: unifi
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 100m
+      #limits:
+      #  memory: 2Gi
+      #  cpu: 100m
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-data-unifi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: unifi-config
+  namespace: data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 10Gi
