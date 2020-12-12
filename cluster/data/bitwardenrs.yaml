@@ -1,0 +1,65 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: bitwardenrs
+  namespace: data
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: bitwardenrs
+      version: 1.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: bitwardenrs/server
+      tag: 1.17.0
+      pullPolicy: IfNotPresent
+    env:
+      SIGNUPS_ALLOWED: "false"
+    bitwardenrs:
+      domain: ""
+      signupsAllowed: false
+      websockets:
+        enabled: false
+      admin:
+        enabled: true
+        disableAdminToken: false
+        existingSecret:
+          enabled: false
+          name: ""
+          tokenKey: ""
+    service:
+      port: 80
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+    persistence:
+      enabled: true
+      existingClaim: bitwarden-config
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-data-bitwardenrs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bitwarden-config
+  namespace: data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 1Gi
