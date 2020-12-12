@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-home-claude
+  namespace: nfs-home-claude
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-home-claude
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-home-helene
+  namespace: nfs-home-helene
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-home-helene
+  resources:
+    requests:
+      storage: 1Mi

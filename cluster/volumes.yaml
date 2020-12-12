@@ -108,3 +108,47 @@ metadata:
   name: nfs-gitea
 provisioner: nfs
 reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-home-claude
+spec:
+  storageClassName: nfs-home-claude
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage/home/claude"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-home-claude
+provisioner: nfs
+reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-home-helene
+spec:
+  storageClassName: nfs-home-helene
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage/home/helene"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-home-helene
+provisioner: nfs
+reclaimPolicy: Retain
