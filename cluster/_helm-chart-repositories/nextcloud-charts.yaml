@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: longhorn-charts
+  name: nextcloud-charts
   namespace: flux-system
 spec:
   interval: 10m
