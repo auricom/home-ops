@@ -41,7 +41,7 @@ spec:
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
         prometheus.io/probe: "true"
-        prometheus.io/protocol: http
+        prometheus.io/protocol: tcp
     controllerService:
       type: LoadBalancer
       loadBalancerIP: 192.168.9.201
