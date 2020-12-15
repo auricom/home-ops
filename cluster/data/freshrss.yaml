@@ -40,7 +40,7 @@ spec:
     persistence:
       config:
         enabled: true
-        mountPath: /config
+        mountPath: /var/www/FreshRSS/data
         existingClaim: freshrss-config
     resources:
       requests:
