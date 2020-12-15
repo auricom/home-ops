@@ -1,64 +1,62 @@
 {
-  /***** General settings *****/
-
-  // Use recommended defaults
-  "extends": [
-    "config:base"
-  ],
-
-  // Run on a monthly schedule to keep interruptions to a minimum,
-  //  but always open vulnerability-fixing pull requests immediately
+  "enabled": true,
   "timezone": "Europe/Paris",
-  "vulnerabilityAlerts": {
-    "labels": ["security"],
-    "schedule": "at any time"
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dashboard",
+  "commitMessageSuffix": "[ci-skip]",
+  // do not notify on closed, unmerged PRs
+  "suppressNotifications": ["prIgnoreNotification"],
+  // do not rebase PRs
+  "rebaseWhen": "conflicted",
+  "assignees": ["@auricom"],
+  "helm-values": {
+    "fileMatch": ["cluster/.+\\.yaml$"]
   },
-
-  // Avoid updating to unstable versions
-  "ignoreUnstable": true,
-  "stabilityDays": 7,
-
-  /***** Docker settings *****/
-
-  // docker:enableMajor preset, this is disabled by default
+  "regexManagers": [
+    {
+      "fileMatch": ["cluster/.+\\.yaml$"],
+      "matchStrings": [
+        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
+      ],
+      "datasourceTemplate": "helm"
+    }
+  ],
   "packageRules": [
+    // labels
     {
       "datasources": ["docker"],
       "updateTypes": ["major"],
-      "labels": ["renovate/image-release", "major"],
-      "enabled": true
+      "labels": ["renovate/image-release", "dependency/major"]
     },
     {
       "datasources": ["docker"],
       "updateTypes": ["minor"],
-      "labels": ["renovate/image-release", "minor"],
-      "enabled": true
+      "labels": ["renovate/image-release", "dependency/minor"]
     },
     {
       "datasources": ["docker"],
+      "automerge": true,
+      "requiredStatusChecks": null,
       "updateTypes": ["patch"],
-      "labels": ["renovate/image-release", "patch"],
-      "enabled": true
+      "labels": ["renovate/image-release", "dependency/patch"]
     },
     {
       "datasources": ["helm"],
       "updateTypes": ["major"],
-      "labels": ["renovate/helm-release", "major"],
-      "enabled": true
+      "labels": ["renovate/helm-release", "dependency/major"]
     },
     {
       "datasources": ["helm"],
       "updateTypes": ["minor"],
-      "labels": ["renovate/helm-release", "minor"],
-      "enabled": true
+      "labels": ["renovate/helm-release", "dependency/minor"]
     },
     {
       "datasources": ["helm"],
+      "automerge": true,
+      "requiredStatusChecks": null,
       "updateTypes": ["patch"],
-      "labels": ["renovate/helm-release", "patch"],
-      "enabled": true
-    },
-    // auto-updates
+      "labels": ["renovate/helm-release", "dependency/patch"]
+    },    // auto-updates
     {
       "datasources": ["docker"],
       "automerge": true,
@@ -68,11 +66,5 @@
         "k8sathome/jackett"
       ]
     }
-
-  ],
-
-  // docker:pinDigests preset, this allows for reproducible builds
-  "docker": {
-    "pinDigests": true
-  }
+  ]
 }
