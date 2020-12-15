@@ -63,9 +63,9 @@ spec:
               operator: In
               values:
               - k3os-worker3
-  valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-radarr
+  #valuesFrom:
+  #- kind: ConfigMap
+  #  name: helmrelease-media-radarr
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
