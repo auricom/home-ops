@@ -50,4 +50,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-data-nextcloud
----

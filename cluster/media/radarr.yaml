@@ -63,19 +63,6 @@ spec:
               operator: In
               values:
               - k3os-worker3
-  #valuesFrom:
-  #- kind: ConfigMap
-  #  name: helmrelease-media-radarr
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: radarr-config
-  namespace: media
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 5Gi
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-media-radarr

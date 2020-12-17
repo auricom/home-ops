@@ -66,16 +66,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-sonarr
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: sonarr-config
-  namespace: media
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 5Gi

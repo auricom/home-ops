@@ -63,22 +63,6 @@ spec:
       requests:
         memory: 2Gi
         cpu: 100m
-      #limits:
-      #  memory: 2Gi
-      #  cpu: 100m
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-data-unifi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: unifi-config
-  namespace: data
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 10Gi

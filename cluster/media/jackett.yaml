@@ -45,16 +45,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-jackett
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: jackett-config
-  namespace: media
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 1Gi

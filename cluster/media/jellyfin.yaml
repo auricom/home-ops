@@ -24,6 +24,9 @@ spec:
     strategy:
       type: Recreate
     service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
       port:
         port: 8096
     persistence:
@@ -47,10 +50,6 @@ spec:
     - name: nfs-photo
       persistentVolumeClaim:
         claimName: nfs-photo
-    service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: http
     resources:
       requests:
         memory: 4Gi
@@ -58,16 +57,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-jellyfin
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: jellyfin-config
-  namespace: media
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 20Gi

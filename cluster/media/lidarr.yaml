@@ -66,16 +66,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-lidarr
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lidarr-config
-  namespace: media
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 5Gi

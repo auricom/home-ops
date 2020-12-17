@@ -51,16 +51,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-navidrome
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: navidrome-config
-  namespace: media
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 1Gi

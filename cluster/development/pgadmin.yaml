@@ -36,16 +36,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: "helmrelease-development-pgadmin"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pgadmin-config
-  namespace: development
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 5Gi

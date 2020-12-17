@@ -74,16 +74,3 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: helmrelease-development-gitea
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gitea-config
-  namespace: development
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 15Gi

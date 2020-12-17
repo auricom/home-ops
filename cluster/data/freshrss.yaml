@@ -49,16 +49,3 @@ spec:
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-data-freshrss
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: freshrss-config
-  namespace: data
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 1Gi
