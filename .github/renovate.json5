@@ -4,6 +4,7 @@
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
   "commitMessageSuffix": "[ci-skip]",
+  "commitBody": "Signed-off-by: Auricom <auricom@users.noreply.github.com>",
   // do not notify on closed, unmerged PRs
   "suppressNotifications": ["prIgnoreNotification"],
   // do not rebase PRs
@@ -35,8 +36,6 @@
     },
     {
       "datasources": ["docker"],
-      "automerge": true,
-      "requiredStatusChecks": null,
       "updateTypes": ["patch"],
       "labels": ["renovate/image-release", "dependency/patch"]
     },
@@ -52,11 +51,27 @@
     },
     {
       "datasources": ["helm"],
-      "automerge": true,
-      "requiredStatusChecks": null,
       "updateTypes": ["patch"],
       "labels": ["renovate/helm-release", "dependency/patch"]
-    },    // auto-updates
+    },
+    // pin versions
+    //{
+    //  "datasources": ["docker"],
+    //  "allowedVersions": "<4.3.0",
+    //  "packageNames": ["k8sathome/qbittorrent"]
+    //},
+    // versioning
+    // {
+    //   "datasources": ["docker"],
+    //   "versioning": "nuget",
+    //   "packageNames": [
+    //     "k8sathome/radarr",
+    //     "k8sathome/sonarr",
+    //     "k8sathome/lidarr",
+    //     "k8sathome/bazarr"
+    //   ]
+    // },
+    // auto-updates
     {
       "datasources": ["docker"],
       "automerge": true,
