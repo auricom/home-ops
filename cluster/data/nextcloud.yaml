@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: nextcloud
-      tag: 20.0.3
+      tag: 20.0.4
       pullPolicy: IfNotPresent
     ingress:
       enabled: true
