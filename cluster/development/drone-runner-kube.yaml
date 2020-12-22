@@ -23,10 +23,12 @@ spec:
     env:
       DRONE_RPC_PROTO: http
       DRONE_NAMESPACE_DEFAULT: development
+      DRONE_RPC_HOST: drone.development.svc.cluster.local
+      DRONE_SECRET_PLUGIN_ENDPOINT: http://drone-kubernetes-secrets:3000
     rbac:
       buildNamespaces:
         - development
   valuesFrom:
-  - kind: ConfigMap
-    name: "helmrelease-development-drone-runner-kube"
-    optional: false
+    - kind: ConfigMap
+      name: "helmrelease-development-drone-runner-kube"
+      optional: false
