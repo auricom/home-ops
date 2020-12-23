@@ -1,0 +1,58 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: democratic-csi
+  namespace: democratic-csi
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://democratic-csi.github.io/charts
+      chart: democratic-csi
+      version: 0.6.3
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    driver: freenas-iscsi
+    instance_id:
+    httpConnection:
+      protocol: https
+      port: 443
+      apiKey: 1-I8cD08SYr3hz0XphLURqeORqtRE2d8YqCGSNuAeCBWxOhfln01bOHgiAn0IxliTt
+      username: root
+      allowInsecure: true
+      apiVersion: 2
+    sshConnection:
+      port: 22
+      username: root
+    zfs:
+      datasetParentName: runtime/k3s/vols
+      detachedSnapshotsDatasetParentName: runtime/k3s/snaps
+      zvolCompression: inherit
+      zvolDedup: inherit
+      zvolEnableReservation: false
+      zvolBlocksize: 16k
+    iscsi:
+      targetPortals: []
+      interface:
+      namePrefix: csi-
+      nameSuffix: "-clustera"
+      targetGroups:
+        - targetGroupPortalGroup: 1
+          targetGroupInitiatorGroup: 1
+          targetGroupAuthType: None
+          targetGroupAuthGroup: 1
+
+      extentInsecureTpc: true
+      extentXenCompat: false
+      extentDisablePhysicalBlocksize: true
+      extentBlocksize: 512
+      extentRpm: "SSD"
+      extentAvailThreshold:
+  valuesFrom:
+    - kind: ConfigMap
+      name: helmrelease-democratic-csi-democratic-csi
