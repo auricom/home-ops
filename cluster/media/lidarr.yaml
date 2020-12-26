@@ -35,15 +35,15 @@ spec:
     additionalVolumeMounts:
     - name: nfs-music
       mountPath: "/mnt/storage/music"
-    - name: qbittorrent-downloads
+    - name: local-hdd
       mountPath: "/downloads"
     additionalVolumes:
     - name: nfs-music
       persistentVolumeClaim:
         claimName: nfs-music
-    - name: qbittorrent-downloads
+    - name: local-hdd
       persistentVolumeClaim:
-        claimName: qbittorrent-downloads
+        claimName: local-hdd
     resources:
       requests:
         memory: 500Mi

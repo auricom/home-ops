@@ -35,15 +35,15 @@ spec:
     additionalVolumeMounts:
     - name: nfs-video
       mountPath: "/mnt/storage/video"
-    - name: qbittorrent-downloads
+    - name: local-hdd
       mountPath: "/downloads"
     additionalVolumes:
     - name: nfs-video
       persistentVolumeClaim:
         claimName: nfs-video
-    - name: qbittorrent-downloads
+    - name: local-hdd
       persistentVolumeClaim:
-        claimName: qbittorrent-downloads
+        claimName: local-hdd
     resources:
       requests:
         memory: 500Mi

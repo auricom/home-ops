@@ -184,19 +184,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: qbittorrent-downloads
-  namespace: media
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: longhorn-hdd
-  resources:
-    requests:
-      storage: 800Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: radarr-config
   namespace: media
 spec:
@@ -219,3 +206,17 @@ spec:
   resources:
     requests:
       storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-hdd
+  namespace: media
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: local-hdd

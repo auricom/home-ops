@@ -152,3 +152,25 @@ metadata:
   name: nfs-home-helene
 provisioner: nfs
 reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-hdd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Ti
+  storageClassName: local-path
+  local:
+    path: /mnt/hdd
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k3os-worker3
+  persistentVolumeReclaimPolicy: Retain

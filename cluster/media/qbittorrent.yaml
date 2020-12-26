@@ -50,14 +50,14 @@ spec:
         enabled: true
         existingClaim: qbittorrent-config
     additionalVolumeMounts:
-    - name: qbittorrent-downloads
+    - name: local-hdd
       mountPath: "/downloads"
     - name: nfs-downloads
       mountPath: "/mnt/storage/downloads"
     additionalVolumes:
-    - name: qbittorrent-downloads
+    - name: local-hdd
       persistentVolumeClaim:
-        claimName: qbittorrent-downloads
+        claimName: local-hdd
     - name: nfs-downloads
       persistentVolumeClaim:
         claimName: nfs-downloads
@@ -67,15 +67,6 @@ spec:
         cpu: 500m
       limits:
         memory: 5Gi
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - k3os-worker3
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-qbittorrent
