@@ -1,0 +1,85 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: home-assistant
+  namespace: home
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: home-assistant
+      version: 5.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    controllerType: deployment
+    image:
+      repository: homeassistant/home-assistant
+      tag: 2020.12.1
+    env:
+      TZ: "Europe/Paris"
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
+      type: LoadBalancer
+      externalIPs:
+        - 192.168.9.203
+      externalTrafficPolicy: Local
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+    prometheus:
+      serviceMonitor:
+        enabled: false
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        existingClaim: hass-config
+    addons:
+      codeserver:
+        enabled: true
+        image:
+          repository: codercom/code-server
+          tag: 3.8.0
+        workingDir: "/config"
+        args:
+          - --auth
+          - "none"
+          - --user-data-dir
+          - "/config/.vscode"
+          - --extensions-dir
+          - "/config/.vscode"
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+        volumeMounts:
+          - name: config
+            mountPath: /config
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1000Mi
+      limits:
+        memory: 2500Mi
+    postgresql:
+      enabled: false
+  valuesFrom:
+    - kind: ConfigMap
+      name: helmrelease-home-hass
