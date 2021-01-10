@@ -38,6 +38,9 @@ spec:
         mountPath: /mnt/home/claude
       - name: home-helene
         mountPath: /mnt/home/helene
+    persistence:
+      enabled: true
+      existingClaim: nextcloud-config
     internalDatabase:
       enabled: false
     externalDatabase:
