@@ -63,3 +63,29 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: recipes-media
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: recipes-static
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 1Gi
