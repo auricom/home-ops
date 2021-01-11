@@ -6,38 +6,38 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  components:
+  flux-update:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
 
       - name: Setup Flux CLI
         uses: fluxcd/flux2/action@main
 
-      - name: Setup Kubernetes
-        uses: engineerd/setup-kind@v0.5.0
-        
-      - name: Check for updates
+      - name: Update Flux components
         id: update
         run: |
           UGLY_VERSION="$(flux -v)"
           VERSION="v${UGLY_VERSION#*flux version }"
-          flux install \
+          flux install --version="${VERSION}" \
             --network-policy=false \
             --export > ./cluster/flux-system/gotk-components.yaml
-
           echo "::set-output name=flux_version::$VERSION"
-      - name: Create Pull Request
+
+      - name: Create pull request for Flux update
         uses: peter-evans/create-pull-request@v3
         with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            branch: flux/update-${{ steps.update.outputs.flux_version }}
-            delete-branch: true
-            commit-message: Update Flux components to ${{ steps.update.outputs.flux_version }} [ci-skip]
-            title: Update Flux components to ${{ steps.update.outputs.flux_version }} [ci-skip]
-            signoff: true
-            assignees: "auricom"
-            body: |
-              Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.update.outputs.flux_version }}
-            labels: flux/update
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "flux/update-${{ steps.update.outputs.flux_version }}"
+          delete-branch: true
+          title: "chore(deps): update flux components to ${{ steps.update.outputs.flux_version }} [ci-skip]"
+          signoff: true
+          committer: "Auricom <auricom@users.noreply.github.com>"
+          author: "Auricom <auricom@users.noreply.github.com>"
+          assignees: "auricom"
+          commit-message: "chore(deps): update flux components to ${{ steps.update.outputs.flux_version }} [ci-skip]"
+          body: |
+            Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.update.outputs.flux_version }}
+          labels: flux/update
