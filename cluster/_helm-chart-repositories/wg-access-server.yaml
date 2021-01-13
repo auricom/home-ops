@@ -1,0 +1,10 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: wg-access-server
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: https://place1.github.io/wg-access-server
+  timeout: 3m
