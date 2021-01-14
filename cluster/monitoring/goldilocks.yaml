@@ -21,7 +21,7 @@ spec:
       enabled: true
     image:
       repository: quay.io/fairwinds/goldilocks
-      tag: v3.1.0
+      tag: v3.1.4
     dashboard:
       replicaCount: 1
   valuesFrom:
