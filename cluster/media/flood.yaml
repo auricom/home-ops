@@ -1,0 +1,53 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: flood
+  namespace: media
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: flood
+      version: 2.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    controllerType: deployment
+    image:
+      repository: jesec/flood
+      tag: 4.3.1
+      pullPolicy: Always
+    env:
+      FLOOD_OPTION_RUNDIR: /data
+      FLOOD_OPTION_AUTH: "none"
+      FLOOD_OPTION_QBURL: "http://qbittorrent.media.svc.cluster.local:8080"
+    podSecurityContext:
+      runAsUser: 1001
+      runAsGroup: 1001
+      fsGroup: 1001
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+    persistence:
+      data:
+        enabled: true
+        existingClaim: flood-config
+    resources:
+      requests:
+        memory: 250Mi
+        cpu: 500m
+      limits:
+        memory: 1500Mi
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
+  valuesFrom:
+    - kind: ConfigMap
+      name: helmrelease-media-flood
