@@ -26,6 +26,10 @@ spec:
       FLOOD_OPTION_RUNDIR: /data
       FLOOD_OPTION_AUTH: "none"
       FLOOD_OPTION_QBURL: "http://qbittorrent.media.svc.cluster.local:8080"
+    podSecurityContext:
+      runAsUser: 1001
+      runAsGroup: 1001
+      fsGroup: 1001
     ingress:
       enabled: true
       annotations:
