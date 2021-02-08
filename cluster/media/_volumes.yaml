@@ -220,3 +220,16 @@ spec:
     requests:
       storage: 1Ti
   volumeName: local-hdd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: flood-config
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 1Gi
