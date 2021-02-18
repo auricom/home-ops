@@ -20,7 +20,7 @@ spec:
     controllerType: deployment
     image:
       repository: ghcr.io/k8s-at-home/radarr
-      tag: v3.0.2.4369
+      tag: v3.0.2.4552
       pullPolicy: IfNotPresent
     env:
       TZ: "Europe/Paris"
