@@ -54,6 +54,8 @@ spec:
       requests:
         memory: 4Gi
         cpu: 1
+      limits:
+        gpu.intel.com/i915: 1
   valuesFrom:
   - kind: ConfigMap
     name: helmrelease-media-jellyfin
