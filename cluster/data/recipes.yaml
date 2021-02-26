@@ -22,7 +22,7 @@ spec:
       type: Recreate
     image:
       repository: vabene1111/recipes
-      tag: 0.14.4
+      tag: 0.14.5
       pullPolicy: IfNotPresent
     env:
       DEBUG: "0"
