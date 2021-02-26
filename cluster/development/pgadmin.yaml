@@ -21,7 +21,7 @@ spec:
       type: Recreate
     image:
       repository: dpage/pgadmin4
-      tag: 4.29
+      tag: 5.0
       pullPolicy: IfNotPresent
     service:
       annotations:
