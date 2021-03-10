@@ -20,7 +20,7 @@ spec:
     image:
       repository: linuxserver/jellyfin
       pullPolicy: IfNotPresent
-      tag: version-10.6.4-1
+      tag: amd64-version-10.7.0-1
     strategy:
       type: Recreate
     service:
