@@ -22,7 +22,7 @@ spec:
       type: Recreate
     image:
       repository: freshrss/freshrss
-      tag: 1.17.0
+      tag: 1.18.0
       pullPolicy: IfNotPresent
     env:
       TZ: Europe/Paris
