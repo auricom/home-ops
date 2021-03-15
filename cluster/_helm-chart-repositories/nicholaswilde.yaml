@@ -2,9 +2,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: influxdata-charts
+  name: nicholaswilde-charts
   namespace: flux-system
 spec:
   interval: 10m
-  url: https://helm.influxdata.com/
+  url: https://nicholaswilde.github.io/helm-charts
   timeout: 3m
