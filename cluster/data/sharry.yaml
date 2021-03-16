@@ -1,0 +1,77 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: sharry
+  namespace: data
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: sharry
+      version: 1.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+
+    image:
+      repository: eikek0/sharry
+      tag: 1.6.0
+      pullPolicy: IfNotPresent
+
+    controllerType: deployment
+
+    strategy:
+      type: Recreate
+
+    resources: {}
+
+    service:
+      port:
+        port: 9090
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
+
+    args:
+    - "/opt/sharry.conf"
+
+    sharry:
+      chunkSize: "512K"
+      maxSize: "1.5G"
+      maxValidity: "31 days"
+      signup: "closed"
+
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
+
+    podAnnotations: {}
+
+    additionalVolumes:
+    - name: sharry-config
+      configMap:
+        name: sharry-config
+    additionalVolumeMounts:
+    - name: sharry-config
+      mountPath: /opt/sharry.conf
+      subPath: sharry.conf
+
+    ingress:
+      enabled: true
+      annotations:
+        # -- Nginx client Body Buffer Size
+        nginx.ingress.kubernetes.io/client-body-buffer-size: "2048m"
+        # -- Nginx Proxy Body Size
+        nginx.ingress.kubernetes.io/proxy-body-size: "2048m"
+        nginx.ingress.kubernetes.io/proxy-buffering: "off"
+
+  valuesFrom:
+  - kind: ConfigMap
+    name: helmrelease-data-sharry
