@@ -90,6 +90,50 @@ reclaimPolicy: Retain
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  name: nfs-runtime
+spec:
+  storageClassName: nfs-runtime
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/runtime"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-storage
+provisioner: nfs
+reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-storage
+spec:
+  storageClassName: nfs-storage
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-home-claude
+provisioner: nfs
+reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
   name: nfs-home-claude
 spec:
   storageClassName: nfs-home-claude
@@ -105,7 +149,7 @@ spec:
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: nfs-home-claude
+  name: nfs-home-helene
 provisioner: nfs
 reclaimPolicy: Retain
 ---
@@ -123,120 +167,3 @@ spec:
   nfs:
     server: truenas
     path: "/mnt/storage/home/helene"
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: nfs-home-helene
-provisioner: nfs
-reclaimPolicy: Retain
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nfs-piracy
-spec:
-  storageClassName: nfs-piracy
-  capacity:
-    storage: 1Mi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: truenas
-    path: "/mnt/storage/piracy"
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: nfs-piracy
-provisioner: nfs
-reclaimPolicy: Retain
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nfs-shared-documents
-spec:
-  storageClassName: nfs-shared-documents
-  capacity:
-    storage: 1Mi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: truenas
-    path: "/mnt/storage/shared-documents"
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: nfs-exploit
-provisioner: nfs
-reclaimPolicy: Retain
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nfs-exploit
-spec:
-  storageClassName: nfs-exploit
-  capacity:
-    storage: 1Mi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: truenas
-    path: "/mnt/runtime/exploit"
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: nfs-iocage
-provisioner: nfs
-reclaimPolicy: Retain
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nfs-iocage
-spec:
-  storageClassName: nfs-iocage
-  capacity:
-    storage: 1Mi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: truenas
-    path: "/mnt/runtime/iocage"
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: nfs-shared-documents
-provisioner: nfs
-reclaimPolicy: Retain
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-hdd
-spec:
-  accessModes:
-    - ReadWriteOnce
-  capacity:
-    storage: 1Ti
-  storageClassName: local-path
-  local:
-    path: /mnt/hdd
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - k3os-worker3
-  persistentVolumeReclaimPolicy: Retain
