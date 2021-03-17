@@ -1,0 +1,34 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: travelstories-caddyfile
+  namespace: home
+data:
+  Caddyfile: |+
+    :80
+
+    file_server
+    root * /srv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/probe: "true"
+    prometheus.io/protocol: http
+  labels:
+    app.kubernetes.io/instance: travelstories
+    app.kubernetes.io/name: travelstories
+  name: travelstories
+  namespace: home
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/instance: travelstories
+    app.kubernetes.io/name: travelstories
+  type: ClusterIP
