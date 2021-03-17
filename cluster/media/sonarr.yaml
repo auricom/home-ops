@@ -32,18 +32,22 @@ spec:
       config:
         enabled: true
         existingClaim: sonarr-config
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
     additionalVolumeMounts:
-    - name: nfs-video
-      mountPath: "/mnt/storage/video"
-    - name: local-hdd
-      mountPath: "/downloads"
+      - name: nfs-video
+        mountPath: "/mnt/storage/video"
+      - name: local-hdd
+        mountPath: "/downloads"
     additionalVolumes:
-    - name: nfs-video
-      persistentVolumeClaim:
-        claimName: nfs-video
-    - name: local-hdd
-      persistentVolumeClaim:
-        claimName: local-hdd
+      - name: nfs-video
+        persistentVolumeClaim:
+          claimName: nfs-video
+      - name: local-hdd
+        persistentVolumeClaim:
+          claimName: local-hdd
     resources:
       requests:
         memory: 500Mi
@@ -55,5 +59,5 @@ spec:
         prometheus.io/probe: "true"
         prometheus.io/protocol: http
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-sonarr
+    - kind: ConfigMap
+      name: helmrelease-media-sonarr
