@@ -179,7 +179,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: local-storage
+  storageClassName: local
   local:
     path: /mnt/ssd1/qbittorrent
   nodeAffinity:
