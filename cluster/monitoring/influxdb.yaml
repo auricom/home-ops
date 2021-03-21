@@ -19,7 +19,9 @@ spec:
   values:
     service:
       type: LoadBalancer
-      loadBalancerIP: 192.168.169.107
+      externalIPs:
+        - 192.168.169.107
+      externalTrafficPolicy: Local
     persistence:
       enabled: true
       size: 30Gi

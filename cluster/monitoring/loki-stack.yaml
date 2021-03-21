@@ -143,7 +143,9 @@ spec:
         enabled: true
         type: LoadBalancer
         port: 1514
-        loadBalancerIP: 192.168.169.109
+        externalIPs:
+          - 192.168.169.109
+        externalTrafficPolicy: Local
   valuesFrom:
     - kind: ConfigMap
       name: loki-stack-helmrelease
