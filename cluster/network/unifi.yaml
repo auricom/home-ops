@@ -68,6 +68,3 @@ spec:
       requests:
         memory: 2Gi
         cpu: 100m
-  valuesFrom:
-    - kind: ConfigMap
-      name: unifi-helmrelease
