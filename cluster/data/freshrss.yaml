@@ -55,6 +55,3 @@ spec:
       requests:
         cpu: 50m
         memory: 256Mi
-  valuesFrom:
-    - kind: ConfigMap
-      name: freshrss-helmrelease
