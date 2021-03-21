@@ -19,7 +19,7 @@ spec:
   values:
     service:
       type: LoadBalancer
-      loadBalancerIP: 192.168.169.105
+      loadBalancerIP: 192.168.169.107
     persistence:
       enabled: true
       size: 30Gi

@@ -218,4 +218,4 @@ spec:
     app.kubernetes.io/instance: resilio-sync
     app.kubernetes.io/name: resilio-sync
   type: LoadBalancer
-  loadBalancerIP: 192.168.169.107
+  loadBalancerIP: 192.168.169.106

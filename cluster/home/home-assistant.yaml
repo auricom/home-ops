@@ -29,10 +29,6 @@ spec:
       annotations:
         prometheus.io/probe: "true"
         prometheus.io/protocol: http
-      type: LoadBalancer
-      externalIPs:
-        - 192.168.169.103
-      externalTrafficPolicy: Local
     ingress:
       enabled: true
       annotations:

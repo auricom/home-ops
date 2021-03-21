@@ -17,4 +17,4 @@ spec:
     app.kubernetes.io/instance: tdarr
     app.kubernetes.io/name: tdarr
   type: LoadBalancer
-  loadBalancerIP: 192.168.169.140
+  loadBalancerIP: 192.168.169.110

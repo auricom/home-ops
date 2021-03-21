@@ -1,0 +1,66 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: coredns
+  namespace: network
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://coredns.github.io/helm
+      chart: coredns
+      version: 1.15.0
+      sourceRef:
+        kind: HelmRepository
+        name: coredns-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    rbac:
+      create: true
+    replicaCount: 1
+    isClusterService: false
+    serviceType: LoadBalancer
+    service:
+      externalIPs:
+        - 192.168.169.100
+      externalTrafficPolicy: Local
+    servers:
+      - zones:
+          - zone: k3s.xpander.ovh.
+            scheme: dns://
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: kubernetes
+            parameters: cluster.local in-addr.arpa ip6.arpa
+            configBlock: |-
+              pods insecure
+              fallthrough in-addr.arpa ip6.arpa
+              ttl 30
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: . /etc/resolv.conf
+          - name: cache
+            parameters: 30
+          - name: loop
+          - name: reload
+          - name: loadbalance
+          - name: etcd
+            parameters: k3s.xpander.ovh
+            configBlock: |-
+              stubzones
+              path /skydns
+              endpoint https://coredns-etcd.k3s.xpander.ovh:2379
+              tls /etc/coredns/coredns-etcd-secret/cert.pem /etc/coredns/coredns-etcd-secret/key.pem /etc/coredns/coredns-etcd-secret/ca.crt
+    prometheus:
+      service:
+        enabled: true
+      monitor:
+        enabled: true
