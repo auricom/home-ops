@@ -33,6 +33,14 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: navidrome.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "navidrome.k3s.xpander.ovh"
     env:
       ND_SCANINTERVAL: 15m
       ND_LOGLEVEL: info
@@ -48,6 +56,3 @@ spec:
         enabled: true
         mountPath: /mnt/storage/music/
         existingClaim: nfs-music
-  valuesFrom:
-    - kind: ConfigMap
-      name: navidrome-helmrelease
