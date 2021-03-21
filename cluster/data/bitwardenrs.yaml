@@ -23,6 +23,7 @@ spec:
       pullPolicy: IfNotPresent
     env:
       SIGNUPS_ALLOWED: "false"
+      DOMAIN: "https://bitwarden.k3s.xpander.ovh/"
     bitwardenrs:
       domain: ""
       signupsAllowed: false
@@ -44,6 +45,13 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: bitwarden.k3s.xpander.ovh
+          paths:
+            - /
+      tls:
+        - hosts:
+            - "bitwarden.k3s.xpander.ovh"
     persistence:
       enabled: false
       existingClaim: bitwarden-config

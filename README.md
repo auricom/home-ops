@@ -41,23 +41,23 @@ sops --encrypt --pgp=<GPG_KEY_ID> --encrypted-regex '^(data|stringData)$' --in-p
 
 ```bash
 
-kubectl taint node k3os-server k3s-controlplane=true:NoSchedule
+kubectl taint node k3s-server k3s-controlplane=true:NoSchedule
 
-kubectl label node k3os-worker1 node-role.kubernetes.io/worker=true
-kubectl label node k3os-worker2 node-role.kubernetes.io/worker=true
-kubectl label node k3os-worker3 node-role.kubernetes.io/worker=true
+kubectl label node k3s-worker1 node-role.kubernetes.io/worker=true
+kubectl label node k3s-worker2 node-role.kubernetes.io/worker=true
+kubectl label node k3s-worker3 node-role.kubernetes.io/worker=true
 
-kubectl annotate node k3os-worker1 node.longhorn.io/default-node-tags='["storage","fast"]'
-kubectl annotate node k3os-worker2 node.longhorn.io/default-node-tags='["storage","fast"]'
-kubectl annotate node k3os-worker3 node.longhorn.io/default-node-tags='["storage","fast"]'
+kubectl annotate node k3s-worker1 node.longhorn.io/default-node-tags='["storage","fast"]'
+kubectl annotate node k3s-worker2 node.longhorn.io/default-node-tags='["storage","fast"]'
+kubectl annotate node k3s-worker3 node.longhorn.io/default-node-tags='["storage","fast"]'
 
-kubectl annotate node k3os-worker1 node.longhorn.io/create-default-disk='config'
-kubectl annotate node k3os-worker2 node.longhorn.io/create-default-disk='config'
-kubectl annotate node k3os-worker3 node.longhorn.io/create-default-disk='config'
+kubectl annotate node k3s-worker1 node.longhorn.io/create-default-disk='config'
+kubectl annotate node k3s-worker2 node.longhorn.io/create-default-disk='config'
+kubectl annotate node k3s-worker3 node.longhorn.io/create-default-disk='config'
 
-kubectl annotate node k3os-worker1 node.longhorn.io/default-disks-config=[ { "name":"fast-ssd-disk", "path":"/var/lib/longhorn", "allowScheduling":true, "storageReserved":304857600, "tags":[ "ssd", "fast" ] }]
-kubectl annotate node k3os-worker2 node.longhorn.io/default-disks-config=[ { "name":"fast-ssd-disk", "path":"/var/lib/longhorn", "allowScheduling":true, "storageReserved":304857600, "tags":[ "ssd", "fast" ] }]
-kubectl annotate node k3os-worker3 node.longhorn.io/default-disks-config=[ { "name":"fast-ssd-disk", "path":"/var/lib/longhorn", "allowScheduling":true, "storageReserved":304857600, "tags":[ "ssd", "fast" ] }]
+kubectl annotate node k3s-worker1 node.longhorn.io/default-disks-config=[ { "name":"fast-ssd-disk", "path":"/var/lib/longhorn", "allowScheduling":true, "storageReserved":304857600, "tags":[ "ssd", "fast" ] }]
+kubectl annotate node k3s-worker2 node.longhorn.io/default-disks-config=[ { "name":"fast-ssd-disk", "path":"/var/lib/longhorn", "allowScheduling":true, "storageReserved":304857600, "tags":[ "ssd", "fast" ] }]
+kubectl annotate node k3s-worker3 node.longhorn.io/default-disks-config=[ { "name":"fast-ssd-disk", "path":"/var/lib/longhorn", "allowScheduling":true, "storageReserved":304857600, "tags":[ "ssd", "fast" ] }]
 ```
 
-https://github.com/rancher/k3s/issues/1401 for k3os-system deployment
+https://github.com/rancher/k3s/issues/1401 for k3s-system deployment

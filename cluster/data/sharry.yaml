@@ -40,6 +40,7 @@ spec:
       - "/opt/sharry.conf"
 
     sharry:
+      baseUrl: "https://sharry.k3s.xpander.ovh"
       chunkSize: "512K"
       maxSize: "1.5G"
       maxValidity: "31 days"
@@ -70,6 +71,14 @@ spec:
         # -- Nginx Proxy Body Size
         nginx.ingress.kubernetes.io/proxy-body-size: "2048m"
         nginx.ingress.kubernetes.io/proxy-buffering: "off"
+      hosts:
+        - host: sharry.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "sharry.k3s.xpander.ovh"
 
   valuesFrom:
     - kind: ConfigMap

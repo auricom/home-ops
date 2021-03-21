@@ -218,4 +218,43 @@ spec:
     app.kubernetes.io/instance: resilio-sync
     app.kubernetes.io/name: resilio-sync
   type: LoadBalancer
-  loadBalancerIP: 192.168.169.106
+  externalIPs:
+    - 192.168.169.106
+  externalTrafficPolicy: Local
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app.kubernetes.io/instance: resilio-sync
+    app.kubernetes.io/name: resilio-sync
+  name: resilio-sync
+  namespace: data
+spec:
+  rules:
+    - host: resilio-sync-claude.k3s.xpander.ovh
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resilio-sync
+                port:
+                  number: 8888
+    - host: resilio-sync-helene.k3s.xpander.ovh
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resilio-sync
+                port:
+                  number: 8889
+  tls:
+    - hosts:
+        - resilio-sync-claude.k3s.xpander.ovh
+        - resilio-sync-helene.k3s.xpander.ovh
