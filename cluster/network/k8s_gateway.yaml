@@ -82,7 +82,7 @@ spec:
       protocol: UDP
   type: LoadBalancer
   externalIPs:
-    - 192.168.169.10
+    - 192.168.169.100
   externalTrafficPolicy: Local
 ---
 apiVersion: apps/v1
