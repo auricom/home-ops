@@ -33,17 +33,17 @@ spec:
         enabled: true
         existingClaim: lidarr-config
     additionalVolumeMounts:
-    - name: nfs-music
-      mountPath: "/mnt/storage/music"
-    - name: local-hdd
-      mountPath: "/downloads"
+      - name: nfs-music
+        mountPath: "/mnt/storage/music"
+      - name: local-hdd
+        mountPath: "/downloads"
     additionalVolumes:
-    - name: nfs-music
-      persistentVolumeClaim:
-        claimName: nfs-music
-    - name: local-hdd
-      persistentVolumeClaim:
-        claimName: local-hdd
+      - name: nfs-music
+        persistentVolumeClaim:
+          claimName: nfs-music
+      - name: local-hdd
+        persistentVolumeClaim:
+          claimName: local-hdd
     resources:
       requests:
         memory: 500Mi
@@ -58,11 +58,11 @@ spec:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - k3os-worker3
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - k3os-worker3
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-lidarr
+    - kind: ConfigMap
+      name: lidarr-helmrelease

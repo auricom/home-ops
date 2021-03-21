@@ -34,22 +34,22 @@ spec:
         enabled: true
         existingClaim: jellyfin-config
     additionalVolumeMounts:
-    - name: nfs-music
-      mountPath: "/mnt/storage/music"
-    - name: nfs-video
-      mountPath: "/mnt/storage/video"
-    - name: nfs-photo
-      mountPath: "/mnt/storage/photo"
+      - name: nfs-music
+        mountPath: "/mnt/storage/music"
+      - name: nfs-video
+        mountPath: "/mnt/storage/video"
+      - name: nfs-photo
+        mountPath: "/mnt/storage/photo"
     additionalVolumes:
-    - name: nfs-music
-      persistentVolumeClaim:
-        claimName: nfs-music
-    - name: nfs-video
-      persistentVolumeClaim:
-        claimName: nfs-video
-    - name: nfs-photo
-      persistentVolumeClaim:
-        claimName: nfs-photo
+      - name: nfs-music
+        persistentVolumeClaim:
+          claimName: nfs-music
+      - name: nfs-video
+        persistentVolumeClaim:
+          claimName: nfs-video
+      - name: nfs-photo
+        persistentVolumeClaim:
+          claimName: nfs-photo
     resources:
       requests:
         memory: 4Gi
@@ -57,5 +57,5 @@ spec:
       limits:
         gpu.intel.com/i915: 1
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-jellyfin
+    - kind: ConfigMap
+      name: jellyfin-helmrelease

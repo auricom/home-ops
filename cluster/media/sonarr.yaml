@@ -60,4 +60,4 @@ spec:
         prometheus.io/protocol: http
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-media-sonarr
+      name: sonarr-helmrelease

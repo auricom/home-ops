@@ -43,5 +43,5 @@ spec:
         prometheus.io/probe: "true"
         prometheus.io/protocol: http
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-jackett
+    - kind: ConfigMap
+      name: jackett-helmrelease

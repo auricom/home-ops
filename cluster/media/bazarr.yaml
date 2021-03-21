@@ -33,12 +33,12 @@ spec:
         enabled: true
         existingClaim: bazarr-config
     additionalVolumeMounts:
-    - name: nfs-video
-      mountPath: "/mnt/storage/video"
+      - name: nfs-video
+        mountPath: "/mnt/storage/video"
     additionalVolumes:
-    - name: nfs-video
-      persistentVolumeClaim:
-        claimName: nfs-video
+      - name: nfs-video
+        persistentVolumeClaim:
+          claimName: nfs-video
     service:
       annotations:
         prometheus.io/probe: "true"
@@ -50,5 +50,5 @@ spec:
       limits:
         memory: 1500Mi
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-bazarr
+    - kind: ConfigMap
+      name: bazarr-helmrelease

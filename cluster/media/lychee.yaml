@@ -54,5 +54,5 @@ spec:
         mountPath: /mnt/storage/photo
         existingClaim: nfs-photo
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-lychee
+    - kind: ConfigMap
+      name: lychee-helmrelease

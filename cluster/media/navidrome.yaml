@@ -49,5 +49,5 @@ spec:
         mountPath: /mnt/storage/music/
         existingClaim: nfs-music
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-navidrome
+    - kind: ConfigMap
+      name: navidrome-helmrelease

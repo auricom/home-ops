@@ -86,4 +86,4 @@ spec:
 
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-media-tdarr
+      name: tdarr-helmrelease

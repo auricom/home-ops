@@ -50,4 +50,4 @@ spec:
         prometheus.io/protocol: http
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-media-flood
+      name: flood-helmrelease
