@@ -45,8 +45,8 @@ spec:
       annotations:
         kubernetes.io/ingress.class: "nginx"
     persistence:
-      enabled: true
+      enabled: false
       existingClaim: bitwarden-config
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-data-bitwardenrs
+    - kind: ConfigMap
+      name: helmrelease-data-bitwardenrs
