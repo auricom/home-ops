@@ -81,7 +81,8 @@ spec:
       port: 53
       protocol: UDP
   type: LoadBalancer
-  loadBalancerIP: 192.168.169.100
+  externalIPs:
+    - 192.168.169.10
   externalTrafficPolicy: Local
 ---
 apiVersion: apps/v1
@@ -103,7 +104,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: "coredns"
-          image: "quay.io/oriedge/k8s_gateway"
+          image: "quay.io/oriedge/k8s_gateway:v0.1.4"
           imagePullPolicy: IfNotPresent
           args: ["-conf", "/etc/coredns/Corefile"]
           volumeMounts:
