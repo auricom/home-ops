@@ -37,26 +37,26 @@ spec:
         nginx.ingress.kubernetes.io/proxy-body-size: 10m
     guiService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      loadBalancerIP: 192.168.169.101
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
         prometheus.io/probe: "true"
         prometheus.io/protocol: tcp
     controllerService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      loadBalancerIP: 192.168.169.101
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
         prometheus.io/probe: "true"
         prometheus.io/protocol: tcp
     stunService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      loadBalancerIP: 192.168.169.101
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
     discoveryService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      loadBalancerIP: 192.168.169.101
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
     resources:

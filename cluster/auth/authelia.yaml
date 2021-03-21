@@ -92,4 +92,4 @@ spec:
       targetPort: 9091
   externalTrafficPolicy: Local
   type: LoadBalancer
-  loadBalancerIP: 192.168.9.204
+  loadBalancerIP: 192.168.169.104
