@@ -31,7 +31,7 @@ spec:
         prometheus.io/protocol: http
       type: LoadBalancer
       externalIPs:
-        - 192.168.9.203
+        - 192.168.169.103
       externalTrafficPolicy: Local
     ingress:
       enabled: true

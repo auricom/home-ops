@@ -38,7 +38,7 @@ spec:
         port: 22
         externalTrafficPolicy: Local
         externalIPs:
-          - 192.168.9.209
+          - 192.168.169.109
     gitea:
       config:
         APP_NAME: "Homelab Gitea"
