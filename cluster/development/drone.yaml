@@ -27,5 +27,5 @@ spec:
       existingClaim: drone-config
   valuesFrom:
     - kind: ConfigMap
-      name: development-drone-helmrelease
+      name: drone-helmrelease
       optional: false
