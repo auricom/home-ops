@@ -23,7 +23,7 @@ spec:
         - name: regcred
       containers:
         - name: travelstories
-          image: docker.registry.development.svc.cluster.local/homelab/travelstories:1.0.1
+          image: docker-registry.development.svc.cluster.local/homelab/travelstories:1.0.1
           imagePullPolicy: Always
           ports:
             - containerPort: 80
