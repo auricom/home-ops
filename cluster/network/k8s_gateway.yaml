@@ -77,7 +77,9 @@ spec:
   selector:
     k8s-app: "excoredns"
   ports:
-    - { port: 53, protocol: UDP, name: udp-53 }
+    - name: udp-53
+      port: 53
+      protocol: UDP
   type: LoadBalancer
   loadBalancerIP: 192.168.169.100
 ---

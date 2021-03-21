@@ -65,6 +65,15 @@ spec:
       requests:
         memory: 4Gi
         cpu: 500m
-  valuesFrom:
-    - kind: ConfigMap
-      name: qbittorrent-helmrelease
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: qbittorrent.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "qbittorrent.k3s.xpander.ovh"
