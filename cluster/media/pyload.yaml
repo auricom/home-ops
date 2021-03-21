@@ -29,12 +29,12 @@ spec:
         enabled: true
         existingClaim: pyload-config
     additionalVolumeMounts:
-    - name: nfs-downloads
-      mountPath: "/mnt/storage/downloads"
+      - name: nfs-downloads
+        mountPath: "/mnt/storage/downloads"
     additionalVolumes:
-    - name: nfs-downloads
-      persistentVolumeClaim:
-        claimName: nfs-downloads
+      - name: nfs-downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
     resources:
       requests:
         memory: 1Gi
@@ -45,15 +45,17 @@ spec:
       annotations:
         prometheus.io/probe: "true"
         prometheus.io/protocol: http
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - k3os-worker3
-  valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-pyload
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
+        nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
+      hosts:
+        - host: pyload.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "pyload.k3s.xpander.ovh"

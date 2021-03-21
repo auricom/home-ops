@@ -3,7 +3,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: unifi
-  namespace: data
+  namespace: network
 spec:
   interval: 5m
   chart:
@@ -35,34 +35,44 @@ spec:
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
         nginx.ingress.kubernetes.io/proxy-body-size: 10m
+      hosts:
+        - unifi.k3s.xpander.ovh
+      tls:
+        - hosts:
+            - unifi.k3s.xpander.ovh
     guiService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      externalIPs:
+        - 192.168.169.103
+      externalTrafficPolicy: Local
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
         prometheus.io/probe: "true"
         prometheus.io/protocol: tcp
     controllerService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      externalIPs:
+        - 192.168.169.103
+      externalTrafficPolicy: Local
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
         prometheus.io/probe: "true"
         prometheus.io/protocol: tcp
     stunService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      externalIPs:
+        - 192.168.169.103
+      externalTrafficPolicy: Local
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
     discoveryService:
       type: LoadBalancer
-      loadBalancerIP: 192.168.9.201
+      externalIPs:
+        - 192.168.169.103
+      externalTrafficPolicy: Local
       annotations:
         metallb.universe.tf/allow-shared-ip: unifi
     resources:
       requests:
         memory: 2Gi
         cpu: 100m
-  valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-data-unifi

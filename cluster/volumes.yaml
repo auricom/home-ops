@@ -167,3 +167,26 @@ spec:
   nfs:
     server: truenas
     path: "/mnt/storage/home/helene"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-cache
+spec:
+  capacity:
+    storage: 600Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local
+  local:
+    path: /mnt/ssd1/qbittorrent
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k3s-worker3

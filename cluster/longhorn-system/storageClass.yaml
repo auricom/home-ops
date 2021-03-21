@@ -2,19 +2,6 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: longhorn-hdd
-provisioner: driver.longhorn.io
-allowVolumeExpansion: true
-parameters:
-  numberOfReplicas: "1"
-  staleReplicaTimeout: "2880"
-  fromBackup: ""
-  diskSelector: "hdd,slow"
-  nodeSelector: "storage,slow"
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
   name: longhorn-backups
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true

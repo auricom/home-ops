@@ -80,3 +80,29 @@ spec:
     app.kubernetes.io/instance: tinyfilemanager
     app.kubernetes.io/name: tinyfilemanager
   type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app.kubernetes.io/instance: tinyfilemanager
+    app.kubernetes.io/name: tinyfilemanager
+  name: tinyfilemanager
+  namespace: data
+spec:
+  rules:
+    - host: tinyfilemanager.k3s.xpander.ovh
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tinyfilemanager
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - tinyfilemanager.k3s.xpander.ovh

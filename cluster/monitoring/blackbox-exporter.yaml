@@ -17,10 +17,6 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
     allowIcmp: true
     config:
       modules:
@@ -46,27 +42,62 @@ spec:
           release: prometheus
         interval: 2m
         scrapeTimeout: 30s
+      targets:
+        - name: truenas
+          url: truenas
+          module: icmp
+        - name: truenas-remote
+          url: truenas-remote
+          module: icmp
+        - name: borgbackup
+          url: 192.168.9.20
+          module: icmp
+        - name: postgresql
+          url: postgresql
+          module: icmp
+        - name: rpizw1
+          url: rpizw1
+          module: icmp
+        - name: k3os-server
+          url: k3os-server
+          module: icmp
+        - name: k3os-worker1
+          url: k3os-worker1
+          module: icmp
+        - name: k3os-worker2
+          url: k3os-worker2
+          module: icmp
+        - name: k3os-worker3
+          url: k3os-worker3
+          module: icmp
     prometheusRule:
       enabled: true
       additionalLabels:
         app: prometheus-operator
         release: prometheus
       rules:
-      - alert: HostDown
-        expr: probe_success == 0
-        for: 10m
-        labels:
-          severity: critical
-        annotations:
-          message: The host {{"{{ $labels.target }}"}} is currently unreachable
-      - alert: SlowResponseTime
-        annotations:
-          message: The response time for {{"{{ $labels.target }}"}} has been greater than 30 seconds for 5 minutes.
-        expr: probe_duration_seconds > 30
-        for: 15m
-        labels:
-          severity: warning
-  valuesFrom:
-  - kind: ConfigMap
-    name: "helmrelease-monitoring-blackbox-exporter"
-    optional: false
+        - alert: HostDown
+          expr: probe_success == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            message: The host {{"{{ $labels.target }}"}} is currently unreachable
+        - alert: SlowResponseTime
+          annotations:
+            message: The response time for {{"{{ $labels.target }}"}} has been greater than 30 seconds for 5 minutes.
+          expr: probe_duration_seconds > 30
+          for: 15m
+          labels:
+            severity: warning
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
+        nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
+      hosts:
+        - "blackbox.k3s.xpander.ovh"
+      tls:
+        - hosts:
+            - "blackbox.k3s.xpander.ovh"

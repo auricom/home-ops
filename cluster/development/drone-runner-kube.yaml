@@ -30,5 +30,5 @@ spec:
         - development
   valuesFrom:
     - kind: ConfigMap
-      name: "helmrelease-development-drone-runner-kube"
+      name: drone-runner-kube-helmrelease
       optional: false

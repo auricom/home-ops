@@ -33,17 +33,17 @@ spec:
         enabled: true
         existingClaim: lidarr-config
     additionalVolumeMounts:
-    - name: nfs-music
-      mountPath: "/mnt/storage/music"
-    - name: local-hdd
-      mountPath: "/downloads"
+      - name: nfs-music
+        mountPath: "/mnt/storage/music"
+      - name: qbittorrent-cache
+        mountPath: "/downloads"
     additionalVolumes:
-    - name: nfs-music
-      persistentVolumeClaim:
-        claimName: nfs-music
-    - name: local-hdd
-      persistentVolumeClaim:
-        claimName: local-hdd
+      - name: nfs-music
+        persistentVolumeClaim:
+          claimName: nfs-music
+      - name: qbittorrent-cache
+        persistentVolumeClaim:
+          claimName: qbittorrent-cache
     resources:
       requests:
         memory: 500Mi
@@ -54,15 +54,17 @@ spec:
       annotations:
         prometheus.io/probe: "true"
         prometheus.io/protocol: http
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - k3os-worker3
-  valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-lidarr
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
+        nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
+      hosts:
+        - host: lidarr.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "lidarr.k3s.xpander.ovh"

@@ -25,7 +25,26 @@ spec:
     persistentVolume:
       enabled: true
       existingClaim: drone-config
+    env:
+      DRONE_SERVER_PROTO: https
+      DRONE_GIT_ALWAYS_AUTH: true
+      DRONE_LOGS_TEXT: true
+      DRONE_LOGS_PRETTY: true
+      DRONE_LOGS_COLOR: true
+      DRONE_SERVER_HOST: drone.k3s.xpander.ovh
+      DRONE_GITEA_SERVER: https://gitea.k3s.xpander.ovh
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        prometheus.io/probe: "true"
+      hosts:
+        - host: drone.k3s.xpander.ovh
+          paths: ["/"]
+      tls:
+        - hosts:
+            - drone.k3s.xpander.ovh
   valuesFrom:
-  - kind: ConfigMap
-    name: "helmrelease-development-drone"
-    optional: false
+    - kind: ConfigMap
+      name: drone-helmrelease
+      optional: false

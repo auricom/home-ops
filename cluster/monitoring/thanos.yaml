@@ -18,6 +18,16 @@ spec:
       interval: 5m
   values:
     query:
+      http:
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
+            nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
+          hosts: ["thanos.k3s.xpander.ovh"]
+          tls:
+            - hosts: ["thanos.k3s.xpander.ovh"]
       replicaCount: 3
       replicaLabels:
         - replica
@@ -37,5 +47,5 @@ spec:
           enable: false
         part_size: 0
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-monitoring-thanos
+    - kind: ConfigMap
+      name: thanos-helmrelease

@@ -45,6 +45,3 @@ spec:
         nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
       host: longhorn.k3s.xpander.ovh
       tls: false
-  valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-longhorn-system-longhorn

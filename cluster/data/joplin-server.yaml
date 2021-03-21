@@ -37,6 +37,7 @@ spec:
         prometheus.io/protocol: tcp
 
     env:
+      APP_BASE_URL: https://joplin.k3s.xpander.ovh
       APP_PORT: 22300
       DB_CLIENT: pg
 
@@ -52,7 +53,15 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: joplin.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "joplin.k3s.xpander.ovh"
 
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-data-joplin-server
+      name: joplin-server-helmrelease

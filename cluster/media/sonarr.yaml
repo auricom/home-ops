@@ -36,18 +36,28 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
+        nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
+      hosts:
+        - host: sonarr.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "sonarr.k3s.xpander.ovh"
     additionalVolumeMounts:
       - name: nfs-video
         mountPath: "/mnt/storage/video"
-      - name: local-hdd
+      - name: qbittorrent-cache
         mountPath: "/downloads"
     additionalVolumes:
       - name: nfs-video
         persistentVolumeClaim:
           claimName: nfs-video
-      - name: local-hdd
+      - name: qbittorrent-cache
         persistentVolumeClaim:
-          claimName: local-hdd
+          claimName: qbittorrent-cache
     resources:
       requests:
         memory: 500Mi
@@ -58,6 +68,3 @@ spec:
       annotations:
         prometheus.io/probe: "true"
         prometheus.io/protocol: http
-  valuesFrom:
-    - kind: ConfigMap
-      name: helmrelease-media-sonarr

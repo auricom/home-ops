@@ -33,6 +33,14 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: lychee.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "lychee.k3s.xpander.ovh"
     env:
       PHP_TZ: Europe/Paris
       DB_CONNECTION: pgsql
@@ -54,5 +62,5 @@ spec:
         mountPath: /mnt/storage/photo
         existingClaim: nfs-photo
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-lychee
+    - kind: ConfigMap
+      name: lychee-helmrelease

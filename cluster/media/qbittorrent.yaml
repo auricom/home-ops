@@ -26,17 +26,17 @@ spec:
       TZ: "Europe/Paris"
     service:
       additionalServices:
-      - enabled: true
-        nameSuffix: bittorrent
-        type: LoadBalancer
-        externalIPs:
-        - 192.168.9.206
-        port:
-          port: 50413
-          name: bittorrent
-          protocol: TCP
-          targetPort: 6881
-        externalTrafficPolicy: Local
+        - enabled: true
+          nameSuffix: bittorrent
+          type: LoadBalancer
+          externalIPs:
+            - 192.168.169.105
+          port:
+            port: 50413
+            name: bittorrent
+            protocol: TCP
+            targetPort: 6881
+          externalTrafficPolicy: Local
       service:
         annotations:
           prometheus.io/probe: "true"
@@ -50,21 +50,30 @@ spec:
         enabled: true
         existingClaim: qbittorrent-config
     additionalVolumeMounts:
-    - name: local-hdd
-      mountPath: "/downloads"
-    - name: nfs-downloads
-      mountPath: "/mnt/storage/downloads"
+      - name: qbittorrent-cache
+        mountPath: "/downloads"
+      - name: nfs-downloads
+        mountPath: "/mnt/storage/downloads"
     additionalVolumes:
-    - name: local-hdd
-      persistentVolumeClaim:
-        claimName: local-hdd
-    - name: nfs-downloads
-      persistentVolumeClaim:
-        claimName: nfs-downloads
+      - name: qbittorrent-cache
+        persistentVolumeClaim:
+          claimName: qbittorrent-cache
+      - name: nfs-downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
     resources:
       requests:
         memory: 4Gi
         cpu: 500m
-  valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-qbittorrent
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: qbittorrent.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "qbittorrent.k3s.xpander.ovh"

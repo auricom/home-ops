@@ -33,12 +33,12 @@ spec:
         enabled: true
         existingClaim: bazarr-config
     additionalVolumeMounts:
-    - name: nfs-video
-      mountPath: "/mnt/storage/video"
+      - name: nfs-video
+        mountPath: "/mnt/storage/video"
     additionalVolumes:
-    - name: nfs-video
-      persistentVolumeClaim:
-        claimName: nfs-video
+      - name: nfs-video
+        persistentVolumeClaim:
+          claimName: nfs-video
     service:
       annotations:
         prometheus.io/probe: "true"
@@ -49,6 +49,17 @@ spec:
         cpu: 500m
       limits:
         memory: 1500Mi
-  valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-media-bazarr
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
+        nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
+      hosts:
+        - host: bazarr.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "bazarr.k3s.xpander.ovh"
