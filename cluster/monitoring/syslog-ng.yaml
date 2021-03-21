@@ -98,4 +98,6 @@ spec:
     app.kubernetes.io/instance: syslog-ng
     app.kubernetes.io/name: syslog-ng
   type: LoadBalancer
-  loadBalancerIP: 192.168.169.102
+  serviceExternalIPs:
+    - 192.168.169.102
+  externalTrafficPolicy: Local
