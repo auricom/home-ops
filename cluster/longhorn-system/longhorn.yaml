@@ -41,9 +41,6 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
-      host: longhorn.k3s.xpander.ovh
       tls: false
   valuesFrom:
     - kind: ConfigMap

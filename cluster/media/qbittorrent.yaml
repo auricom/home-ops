@@ -50,14 +50,14 @@ spec:
         enabled: true
         existingClaim: qbittorrent-config
     additionalVolumeMounts:
-      - name: local-hdd
+      - name: qbittorrent-cache
         mountPath: "/downloads"
       - name: nfs-downloads
         mountPath: "/mnt/storage/downloads"
     additionalVolumes:
-      - name: local-hdd
+      - name: qbittorrent-cache
         persistentVolumeClaim:
-          claimName: local-hdd
+          claimName: qbittorrent-cache
       - name: nfs-downloads
         persistentVolumeClaim:
           claimName: nfs-downloads

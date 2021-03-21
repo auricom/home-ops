@@ -210,20 +210,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: local-hdd
-  namespace: media
-spec:
-  storageClassName: local-path
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Ti
-  volumeName: local-hdd
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: flood-config
   namespace: media
 spec:
@@ -246,3 +232,17 @@ spec:
   resources:
     requests:
       storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-cache
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local
+  volumeName: qbittorrent-cache
+  resources:
+    requests:
+      storage: 600Gi
