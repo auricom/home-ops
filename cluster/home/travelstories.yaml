@@ -74,3 +74,29 @@ spec:
     app.kubernetes.io/instance: travelstories
     app.kubernetes.io/name: travelstories
   type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app.kubernetes.io/instance: travelstories
+    app.kubernetes.io/name: travelstories
+  name: travelstories
+  namespace: home
+spec:
+  rules:
+    - host: travelstories.k3s.xpander.ovh
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: travelstories
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - travelstories.k3s.xpander.ovh
