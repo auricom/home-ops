@@ -67,19 +67,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: unifi-config
-  namespace: data
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: longhorn-backups
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: recipes-media
   namespace: data
 spec:
