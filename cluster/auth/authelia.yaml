@@ -58,15 +58,6 @@ spec:
         options:
           - name: ndots
             value: "1"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: node-role.kubernetes.io/worker
-                    operator: In
-                    values:
-                      - "true"
       volumes:
         - name: config
           emptyDir: {}
