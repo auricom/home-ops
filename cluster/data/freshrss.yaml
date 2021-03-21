@@ -48,4 +48,4 @@ spec:
         memory: 256Mi
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-data-freshrss
+      name: freshrss-helmrelease

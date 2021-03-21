@@ -82,4 +82,4 @@ spec:
       enabled: false
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-home-hass
+      name: hass-helmrelease

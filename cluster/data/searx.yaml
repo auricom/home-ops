@@ -33,5 +33,5 @@ spec:
       annotations:
         kubernetes.io/ingress.class: "nginx"
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-data-searx
+    - kind: ConfigMap
+      name: searx-helmrelease

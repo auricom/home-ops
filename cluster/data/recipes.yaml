@@ -72,4 +72,4 @@ spec:
             readOnly: true
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-data-recipes
+      name: recipes-helmrelease

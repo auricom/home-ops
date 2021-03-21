@@ -36,5 +36,5 @@ spec:
       enabled: true
       existingClaim: pgadmin-config
   valuesFrom:
-  - kind: ConfigMap
-    name: "helmrelease-development-pgadmin"
+    - kind: ConfigMap
+      name: pgadmin-helmrelease

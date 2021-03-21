@@ -59,4 +59,4 @@ spec:
 
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-data-vikunja
+      name: vikunja-helmrelease

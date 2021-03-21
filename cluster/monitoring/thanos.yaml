@@ -37,5 +37,5 @@ spec:
           enable: false
         part_size: 0
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-monitoring-thanos
+    - kind: ConfigMap
+      name: thanos-helmrelease

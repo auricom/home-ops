@@ -39,19 +39,19 @@ spec:
     nodeExporter:
       serviceMonitor:
         relabelings:
-        - action: replace
-          regex: (.*)
-          replacement: $1
-          sourceLabels:
-          - __meta_kubernetes_pod_node_name
-          targetLabel: kubernetes_node
+          - action: replace
+            regex: (.*)
+            replacement: $1
+            sourceLabels:
+              - __meta_kubernetes_pod_node_name
+            targetLabel: kubernetes_node
     kubelet:
       serviceMonitor:
         metricRelabelings:
-        - action: replace
-          sourceLabels:
-          - node
-          targetLabel: instance
+          - action: replace
+            sourceLabels:
+              - node
+            targetLabel: instance
     grafana:
       dashboards:
         default:
@@ -76,23 +76,23 @@ spec:
         GF_DISABLE_SANITIZE_HTML: true
         GF_PANELS_DISABLE_SANITIZE_HTML: true
       plugins:
-      - natel-discrete-panel
-      - pr0ps-trackmap-panel
-      - grafana-piechart-panel
-      - vonage-status-panel
-      - https://github.com/panodata/grafana-map-panel/releases/download/0.9.0/grafana-map-panel-0.9.0.zip;grafana-worldmap-panel-ng
+        - natel-discrete-panel
+        - pr0ps-trackmap-panel
+        - grafana-piechart-panel
+        - vonage-status-panel
+        - https://github.com/panodata/grafana-map-panel/releases/download/0.9.0/grafana-map-panel-0.9.0.zip;grafana-worldmap-panel-ng
       dashboardProviders:
         dashboardproviders.yaml:
           apiVersion: 1
           providers:
-          - name: 'default'
-            orgId: 1
-            folder: ''
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/default
+            - name: "default"
+              orgId: 1
+              folder: ""
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
       sidecar:
         datasources:
           enabled: true
@@ -101,37 +101,37 @@ spec:
           enabled: true
           searchNamespace: ALL
       additionalDataSources:
-      - name: Prometheus
-        type: prometheus
-        access: proxy
-        url: http://thanos-query-http:10902/
-        isDefault: true
-      - name: loki
-        type: loki
-        access: proxy
-        url: http://loki.logging.svc.cluster.local:3100/
-      - name: influxdb-pfsense
-        type: influxdb
-        acces: server
-        url: http://influxdb:8086/
-        database: pfsense
-        user: pfsense
-      - name: influxdb-rpi-os
-        type: influxdb
-        acces: server
-        url: http://influxdb:8086/
-        database: rpi-os
-        user: rpi-os
-      - name: influxdb-graphite
-        type: influxdb
-        database: graphite
-        acces: server
-        url: http://influxdb:8086/
-      - name: influxdb-home_assistant
-        type: influxdb
-        acces: server
-        url: http://influxdb:8086/
-        database: home_assistant
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: http://thanos-query-http:10902/
+          isDefault: true
+        - name: loki
+          type: loki
+          access: proxy
+          url: http://loki.logging.svc.cluster.local:3100/
+        - name: influxdb-pfsense
+          type: influxdb
+          acces: server
+          url: http://influxdb:8086/
+          database: pfsense
+          user: pfsense
+        - name: influxdb-rpi-os
+          type: influxdb
+          acces: server
+          url: http://influxdb:8086/
+          database: rpi-os
+          user: rpi-os
+        - name: influxdb-graphite
+          type: influxdb
+          database: graphite
+          acces: server
+          url: http://influxdb:8086/
+        - name: influxdb-home_assistant
+          type: influxdb
+          acces: server
+          url: http://influxdb:8086/
+          database: home_assistant
       grafana.ini:
         paths:
           data: /var/lib/grafana/data
@@ -183,90 +183,100 @@ spec:
             name: thanos
             key: object-store.yaml
         additionalScrapeConfigs:
-        # Example scrape config for probing ingresses via the Blackbox Exporter.
-        #
-        # The relabeling allows the actual ingress scrape endpoint to be configured
-        # via the following annotations:
-        #
-        # * `prometheus.io/probe`: Only probe ingresses that have a value of `true`
-        - job_name: 'kubernetes-ingresses'
-          metrics_path: /probe
-          scrape_interval: 60s
-          params:
-            module: [http_2xx]
-          kubernetes_sd_configs:
-          - role: ingress
-          relabel_configs:
-          - source_labels: [__meta_kubernetes_ingress_annotation_prometheus_io_probe]
-            action: keep
-            regex: true
-          - source_labels: [__meta_kubernetes_ingress_scheme, __address__, __meta_kubernetes_ingress_path]
-            regex: (.+);(.+);(.+)
-            replacement: ${1}://${2}${3}
-            target_label: __param_target
-          - target_label: __address__
-            replacement: blackbox-exporter-prometheus-blackbox-exporter:9115
-          - source_labels: [__param_target]
-            target_label: instance
-          - action: labelmap
-            regex: __meta_kubernetes_ingress_label_(.+)
-          - source_labels: [__meta_kubernetes_namespace]
-            target_label: kubernetes_namespace
-          - source_labels: [__meta_kubernetes_ingress_name]
-            target_label: kubernetes_name
-        - job_name: 'kubernetes-services-http'
-          metrics_path: /probe
-          scrape_interval: 60s
-          params:
-            module: [http_2xx]
-          kubernetes_sd_configs:
-          - role: service
-          relabel_configs:
-          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
-            action: keep
-            regex: true
-          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_protocol]
-            action: keep
-            regex: http
-          - source_labels: [__address__]
-            target_label: __param_target
-          - target_label: __address__
-            replacement: blackbox-exporter-prometheus-blackbox-exporter:9115
-          - source_labels: [__param_target]
-            target_label: instance
-          - action: labelmap
-            regex: __meta_kubernetes_service_label_(.+)
-          - source_labels: [__meta_kubernetes_namespace]
-            target_label: kubernetes_namespace
-          - source_labels: [__meta_kubernetes_service_name]
-            target_label: kubernetes_name
-        - job_name: 'kubernetes-services-tcp'
-          metrics_path: /probe
-          scrape_interval: 60s
-          params:
-            module: [tcp_connect]
-          kubernetes_sd_configs:
-          - role: service
-          relabel_configs:
-          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
-            action: keep
-            regex: true
-          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_protocol]
-            action: keep
-            regex: tcp
-          - source_labels: [__address__]
-            target_label: __param_target
-          - target_label: __address__
-            replacement: blackbox-exporter-prometheus-blackbox-exporter:9115
-          - source_labels: [__param_target]
-            target_label: instance
-          - action: labelmap
-            regex: __meta_kubernetes_service_label_(.+)
-          - source_labels: [__meta_kubernetes_namespace]
-            target_label: kubernetes_namespace
-          - source_labels: [__meta_kubernetes_service_name]
-            target_label: kubernetes_name
+          # Example scrape config for probing ingresses via the Blackbox Exporter.
+          #
+          # The relabeling allows the actual ingress scrape endpoint to be configured
+          # via the following annotations:
+          #
+          # * `prometheus.io/probe`: Only probe ingresses that have a value of `true`
+          - job_name: "kubernetes-ingresses"
+            metrics_path: /probe
+            scrape_interval: 60s
+            params:
+              module: [http_2xx]
+            kubernetes_sd_configs:
+              - role: ingress
+            relabel_configs:
+              - source_labels:
+                  [__meta_kubernetes_ingress_annotation_prometheus_io_probe]
+                action: keep
+                regex: true
+              - source_labels:
+                  [
+                    __meta_kubernetes_ingress_scheme,
+                    __address__,
+                    __meta_kubernetes_ingress_path,
+                  ]
+                regex: (.+);(.+);(.+)
+                replacement: ${1}://${2}${3}
+                target_label: __param_target
+              - target_label: __address__
+                replacement: blackbox-exporter-prometheus-blackbox-exporter:9115
+              - source_labels: [__param_target]
+                target_label: instance
+              - action: labelmap
+                regex: __meta_kubernetes_ingress_label_(.+)
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: kubernetes_namespace
+              - source_labels: [__meta_kubernetes_ingress_name]
+                target_label: kubernetes_name
+          - job_name: "kubernetes-services-http"
+            metrics_path: /probe
+            scrape_interval: 60s
+            params:
+              module: [http_2xx]
+            kubernetes_sd_configs:
+              - role: service
+            relabel_configs:
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_probe]
+                action: keep
+                regex: true
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_protocol]
+                action: keep
+                regex: http
+              - source_labels: [__address__]
+                target_label: __param_target
+              - target_label: __address__
+                replacement: blackbox-exporter-prometheus-blackbox-exporter:9115
+              - source_labels: [__param_target]
+                target_label: instance
+              - action: labelmap
+                regex: __meta_kubernetes_service_label_(.+)
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: kubernetes_namespace
+              - source_labels: [__meta_kubernetes_service_name]
+                target_label: kubernetes_name
+          - job_name: "kubernetes-services-tcp"
+            metrics_path: /probe
+            scrape_interval: 60s
+            params:
+              module: [tcp_connect]
+            kubernetes_sd_configs:
+              - role: service
+            relabel_configs:
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_probe]
+                action: keep
+                regex: true
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_protocol]
+                action: keep
+                regex: tcp
+              - source_labels: [__address__]
+                target_label: __param_target
+              - target_label: __address__
+                replacement: blackbox-exporter-prometheus-blackbox-exporter:9115
+              - source_labels: [__param_target]
+                target_label: instance
+              - action: labelmap
+                regex: __meta_kubernetes_service_label_(.+)
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: kubernetes_namespace
+              - source_labels: [__meta_kubernetes_service_name]
+                target_label: kubernetes_name
 
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-monitoring-prometheus-stack
+    - kind: ConfigMap
+      name: prometheus-stack-helmrelease

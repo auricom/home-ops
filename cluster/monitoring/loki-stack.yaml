@@ -46,19 +46,19 @@ spec:
           # You can use a headless k8s service for all distributor,
           # ingester and querier components.
           join_members:
-          - loki-stack-headless:7946
+            - loki-stack-headless:7946
           # max_join_backoff: 1m
           # max_join_retries: 10
           # min_join_backoff: 1s
         schema_config:
           configs:
-          - from: 2020-05-15
-            store: boltdb-shipper
-            object_store: s3
-            schema: v11
-            index:
-              prefix: index_
-              period: 24h
+            - from: 2020-05-15
+              store: boltdb-shipper
+              object_store: s3
+              schema: v11
+              index:
+                prefix: index_
+                period: 24h
         storage_config:
           boltdb_shipper:
             active_index_directory: /data/loki/index
@@ -70,10 +70,10 @@ spec:
           reject_old_samples: true
           reject_old_samples_max_age: 168h
       extraPorts:
-      - port: 7956
-        protocol: TCP
-        name: loki-gossip-ring
-        targetPort: 7946
+        - port: 7956
+          protocol: TCP
+          name: loki-gossip-ring
+          targetPort: 7946
       serviceMonitor:
         enabled: true
       podAnnotations:
@@ -145,5 +145,5 @@ spec:
         port: 1514
         loadBalancerIP: 192.168.9.208
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-monitoring-loki-stack
+    - kind: ConfigMap
+      name: loki-stack-helmrelease

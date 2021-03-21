@@ -39,5 +39,5 @@ spec:
         mountPath: /config
         existingClaim: bookstack-config
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-data-bookstack
+    - kind: ConfigMap
+      name: bookstack-helmrelease

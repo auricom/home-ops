@@ -25,5 +25,5 @@ spec:
     dashboard:
       replicaCount: 1
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-monitoring-goldilocks
+    - kind: ConfigMap
+      name: goldilocks-helmrelease

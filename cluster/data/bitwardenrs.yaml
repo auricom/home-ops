@@ -49,4 +49,4 @@ spec:
       existingClaim: bitwarden-config
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-data-bitwardenrs
+      name: bitwardenrs-helmrelease

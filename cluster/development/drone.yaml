@@ -26,6 +26,6 @@ spec:
       enabled: true
       existingClaim: drone-config
   valuesFrom:
-  - kind: ConfigMap
-    name: "helmrelease-development-drone"
-    optional: false
+    - kind: ConfigMap
+      name: development-drone-helmrelease
+      optional: false

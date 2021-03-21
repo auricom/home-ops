@@ -73,4 +73,4 @@ spec:
         port: 11211
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-development-gitea
+      name: gitea-helmrelease

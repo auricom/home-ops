@@ -64,5 +64,5 @@ spec:
         memory: 2Gi
         cpu: 100m
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-data-unifi
+    - kind: ConfigMap
+      name: unifi-helmrelease

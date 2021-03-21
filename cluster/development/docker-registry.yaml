@@ -36,5 +36,5 @@ spec:
         prometheus.io/protocol: http
   valuesFrom:
     - kind: ConfigMap
-      name: "helmrelease-development-docker-registry"
+      name: docker-registry-helmrelease
       optional: false

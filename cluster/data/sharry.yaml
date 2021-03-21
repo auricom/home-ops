@@ -17,7 +17,6 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-
     image:
       repository: eikek0/sharry
       tag: 1.6.0
@@ -38,7 +37,7 @@ spec:
         prometheus.io/protocol: http
 
     args:
-    - "/opt/sharry.conf"
+      - "/opt/sharry.conf"
 
     sharry:
       chunkSize: "512K"
@@ -55,13 +54,13 @@ spec:
     podAnnotations: {}
 
     additionalVolumes:
-    - name: sharry-config
-      configMap:
-        name: sharry-config
+      - name: sharry-config
+        configMap:
+          name: sharry-config
     additionalVolumeMounts:
-    - name: sharry-config
-      mountPath: /opt/sharry.conf
-      subPath: sharry.conf
+      - name: sharry-config
+        mountPath: /opt/sharry.conf
+        subPath: sharry.conf
 
     ingress:
       enabled: true
@@ -73,5 +72,5 @@ spec:
         nginx.ingress.kubernetes.io/proxy-buffering: "off"
 
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-data-sharry
+    - kind: ConfigMap
+      name: sharry-helmrelease

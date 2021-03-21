@@ -52,21 +52,21 @@ spec:
         app: prometheus-operator
         release: prometheus
       rules:
-      - alert: HostDown
-        expr: probe_success == 0
-        for: 10m
-        labels:
-          severity: critical
-        annotations:
-          message: The host {{"{{ $labels.target }}"}} is currently unreachable
-      - alert: SlowResponseTime
-        annotations:
-          message: The response time for {{"{{ $labels.target }}"}} has been greater than 30 seconds for 5 minutes.
-        expr: probe_duration_seconds > 30
-        for: 15m
-        labels:
-          severity: warning
+        - alert: HostDown
+          expr: probe_success == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            message: The host {{"{{ $labels.target }}"}} is currently unreachable
+        - alert: SlowResponseTime
+          annotations:
+            message: The response time for {{"{{ $labels.target }}"}} has been greater than 30 seconds for 5 minutes.
+          expr: probe_duration_seconds > 30
+          for: 15m
+          labels:
+            severity: warning
   valuesFrom:
-  - kind: ConfigMap
-    name: "helmrelease-monitoring-blackbox-exporter"
-    optional: false
+    - kind: ConfigMap
+      name: blackbox-exporter-helmrelease
+      optional: false

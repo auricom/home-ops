@@ -22,6 +22,6 @@ spec:
       annotations:
         kubernetes.io/ingress.class: "nginx"
   valuesFrom:
-  - kind: ConfigMap
-    name: "helmrelease-monitoring-kubernetes-dashboard"
-    optional: false
+    - kind: ConfigMap
+      name: kubernetes-dashboard-helmrelease
+      optional: false

@@ -46,5 +46,5 @@ spec:
       host: longhorn.k3s.xpander.ovh
       tls: false
   valuesFrom:
-  - kind: ConfigMap
-    name: helmrelease-longhorn-system-longhorn
+    - kind: ConfigMap
+      name: longhorn-helmrelease

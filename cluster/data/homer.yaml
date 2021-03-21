@@ -317,4 +317,4 @@ spec:
           name: homer-taskcafe.png
   valuesFrom:
     - kind: ConfigMap
-      name: helmrelease-data-homer
+      name: homer-helmrelease
