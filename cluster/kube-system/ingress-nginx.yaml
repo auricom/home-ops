@@ -22,7 +22,7 @@ spec:
       service:
         type: LoadBalancer
         externalIPs:
-        - 192.168.9.200
+          - 192.168.69.100
         externalTrafficPolicy: Local
       publishService:
         enabled: true
@@ -48,13 +48,13 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: In
-                values:
-                - ingress-nginx-external
-            topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - ingress-nginx-external
+              topologyKey: "kubernetes.io/hostname"
     #defaultBackend:
     #  enabled: true
     #  image:
