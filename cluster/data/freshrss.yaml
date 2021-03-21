@@ -39,7 +39,7 @@ spec:
         kubernetes.io/ingress.class: "nginx"
     persistence:
       config:
-        enabled: false
+        enabled: true
         mountPath: /var/www/FreshRSS/data
         existingClaim: freshrss-config
     resources:
