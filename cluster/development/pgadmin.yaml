@@ -32,6 +32,13 @@ spec:
       annotations:
         kubernetes.io/ingress.class: "nginx"
         prometheus.io/probe: "true"
+      hosts:
+        - host: pgadmin.k3s.xpander.ovh
+          paths:
+            - /
+      tls:
+        - hosts:
+            - pgadmin.k3s.xpander.ovh
     persistentVolume:
       enabled: true
       existingClaim: pgadmin-config

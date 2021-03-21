@@ -27,6 +27,11 @@ spec:
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/proxy-body-size: 128m
         prometheus.io/probe: "true"
+      hosts:
+        - "gitea.k3s.xpander.ovh"
+      tls:
+        - hosts:
+            - "gitea.k3s.xpander.ovh"
     service:
       http:
         port: 3000
