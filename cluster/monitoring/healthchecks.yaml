@@ -58,6 +58,14 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: healthchecks.k3s.xpander.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "healthchecks.k3s.xpander.ovh"
 
   valuesFrom:
     - kind: ConfigMap

@@ -17,10 +17,6 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
     allowIcmp: true
     config:
       modules:
@@ -46,6 +42,34 @@ spec:
           release: prometheus
         interval: 2m
         scrapeTimeout: 30s
+      targets:
+        - name: truenas
+          url: truenas
+          module: icmp
+        - name: truenas-remote
+          url: truenas-remote
+          module: icmp
+        - name: borgbackup
+          url: 192.168.9.20
+          module: icmp
+        - name: postgresql
+          url: postgresql
+          module: icmp
+        - name: rpizw1
+          url: rpizw1
+          module: icmp
+        - name: k3os-server
+          url: k3os-server
+          module: icmp
+        - name: k3os-worker1
+          url: k3os-worker1
+          module: icmp
+        - name: k3os-worker2
+          url: k3os-worker2
+          module: icmp
+        - name: k3os-worker3
+          url: k3os-worker3
+          module: icmp
     prometheusRule:
       enabled: true
       additionalLabels:
@@ -66,7 +90,14 @@ spec:
           for: 15m
           labels:
             severity: warning
-  valuesFrom:
-    - kind: ConfigMap
-      name: blackbox-exporter-helmrelease
-      optional: false
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
+        nginx.ingress.kubernetes.io/auth-signin: "https://login.k3s.xpander.ovh/"
+      hosts:
+        - "blackbox.k3s.xpander.ovh"
+      tls:
+        - hosts:
+            - "blackbox.k3s.xpander.ovh"

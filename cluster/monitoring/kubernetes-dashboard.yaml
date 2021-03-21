@@ -21,7 +21,8 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
-  valuesFrom:
-    - kind: ConfigMap
-      name: kubernetes-dashboard-helmrelease
-      optional: false
+      hosts: ["kubernetes-dashboard.k3s.xpander.ovh"]
+      paths: ["/"]
+      tls:
+        - hosts:
+            - "kubernetes-dashboard.k3s.xpander.ovh"
