@@ -18,7 +18,7 @@ data:
         errors
         log
         ready
-        k8s_gateway k.marx.katowice.pl
+        k8s_gateway k3s.xpander.ovh
         {
           resources Ingress Service
           ttl 10
