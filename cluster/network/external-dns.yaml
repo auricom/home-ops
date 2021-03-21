@@ -1,0 +1,54 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: external-dns
+  namespace: network
+spec:
+  interval: 5m
+  releaseName: external-dns
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami
+      chart: external-dns
+      version: 4.9.1
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: bitnami/external-dns
+      tag: 0.7.6-debian-10-r11
+    provider: coredns
+    coredns:
+      etcdEndpoints: https://coredns-etcd.k3s.xpander.ovh.net:2379
+      etcdTLS:
+        enabled: false
+    policy: sync
+    sources:
+      - service
+      - ingress
+      - crd
+      # - istio-gateway
+      # - istio-virtualservice
+    domainFilters:
+      - k3s.xpander.ovh
+    createSecret: true
+    crd:
+      # disabled --pulled from source repo https://raw.githubusercontent.com/kubernetes-sigs/external-dns/master/docs/contributing/crd-source/crd-manifest.yaml
+      create: false
+      apiversion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    logLevel: debug
+    resources:
+      requests:
+        memory: 250Mi
+        cpu: 25m
+      limits:
+        memory: 250Mi
