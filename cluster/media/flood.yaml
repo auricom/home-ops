@@ -25,7 +25,7 @@ spec:
     env:
       FLOOD_OPTION_RUNDIR: /data
       FLOOD_OPTION_AUTH: "none"
-      FLOOD_OPTION_QBURL: "http://qbittorrent.media.svc.cluster.local:8080"
+      FLOOD_OPTION_QBURL: "http://qbittorrent:8080"
     podSecurityContext:
       runAsUser: 1001
       runAsGroup: 1001
