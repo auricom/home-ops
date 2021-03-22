@@ -22,7 +22,7 @@ spec:
       type: Recreate
     image:
       repository: b4bz/homer
-      tag: 20.12.19
+      tag: 21.03.2
       pullPolicy: IfNotPresent
     env:
       TZ: Europe/Paris

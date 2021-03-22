@@ -41,7 +41,7 @@ spec:
           ports:
             - containerPort: 6379
         - name: authelia
-          image: authelia/authelia:4.26.2
+          image: authelia/authelia:4.27.2
           ports:
             - containerPort: 9091
           volumeMounts:
