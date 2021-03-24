@@ -55,6 +55,9 @@ spec:
         - name: postgresql
           url: postgresql
           module: icmp
+        - name: mariadb
+          url: mariadb
+          module: icmp
         - name: rpizw1
           url: rpizw1
           module: icmp
