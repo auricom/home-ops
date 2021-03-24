@@ -55,17 +55,20 @@ spec:
         - name: postgresql
           url: postgresql
           module: icmp
+        - name: mariadb
+          url: mariadb
+          module: icmp
         - name: rpizw1
           url: rpizw1
           module: icmp
-        - name: k3os-server
-          url: k3os-server
+        - name: k3s-server
+          url: k3s-server
           module: icmp
-        - name: k3os-worker1
-          url: k3os-worker1
+        - name: k3s-worker1
+          url: k3o-worker1
           module: icmp
-        - name: k3os-worker2
-          url: k3os-worker2
+        - name: k3s-worker2
+          url: k3s-worker2
           module: icmp
         - name: k3os-worker3
           url: k3os-worker3
