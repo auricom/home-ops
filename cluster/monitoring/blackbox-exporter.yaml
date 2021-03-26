@@ -65,13 +65,13 @@ spec:
           url: k3s-server
           module: icmp
         - name: k3s-worker1
-          url: k3o-worker1
+          url: k3s-worker1
           module: icmp
         - name: k3s-worker2
           url: k3s-worker2
           module: icmp
-        - name: k3os-worker3
-          url: k3os-worker3
+        - name: k3s-worker3
+          url: k3s-worker3
           module: icmp
     prometheusRule:
       enabled: true
