@@ -46,11 +46,11 @@ spec:
         - name: truenas
           url: truenas
           module: icmp
-        - name: truenas-remote
-          url: truenas-remote
-          module: icmp
+        #        - name: truenas-remote
+        #          url: truenas-remote
+        #          module: icmp
         - name: borgbackup
-          url: 192.168.9.20
+          url: borgbackup
           module: icmp
         - name: postgresql
           url: postgresql
