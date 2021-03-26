@@ -52,7 +52,7 @@ spec:
 
     additionalContainers:
       - name: node
-        image: haveagitgat/tdarr_node:2.00.07
+        image: haveagitgat/tdarr_node:2.00.08
         env:
           - name: TZ
             value: "Europe/Paris"
