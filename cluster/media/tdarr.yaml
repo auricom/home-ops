@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: haveagitgat/tdarr
-      tag: 2.00.07
+      tag: 2.00.08
       pullPolicy: IfNotPresent
 
     controllerType: deployment
