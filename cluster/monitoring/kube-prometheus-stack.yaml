@@ -137,12 +137,12 @@ spec:
           type: loki
           access: proxy
           url: http://loki:3100/
-        - name: influxdb-pfsense
+        - name: influxdb-opnsense
           type: influxdb
           acces: server
           url: http://influxdb:8086/
-          database: pfsense
-          user: pfsense
+          database: opnsense
+          user: opnsense
         - name: influxdb-rpi-os
           type: influxdb
           acces: server

@@ -51,8 +51,10 @@ spec:
       enabled: true
       scripts:
         init.iql: |-
-          CREATE DATABASE "pfsense" WITH DURATION 90d;
+          CREATE DATABASE "opnsense" WITH DURATION 90d;
           CREATE DATABASE "rpi-os" WITH DURATION 90d;
+          CREATE DATABASE "graphite" WITH DURATION 90d;
+          CREATE DATABASE "home_assistant" WITH DURATION 90d;
     resources:
       requests:
         memory: 2Gi
