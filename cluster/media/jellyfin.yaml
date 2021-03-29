@@ -18,9 +18,9 @@ spec:
       interval: 5m
   values:
     image:
-      repository: linuxserver/jellyfin
+      repository: jellyfin/jellyfin
       pullPolicy: IfNotPresent
-      tag: bionic-10.7.1-1-ls16
+      tag: 10.7.1
     strategy:
       type: Recreate
     service:
