@@ -5,34 +5,44 @@ metadata:
   name: pgbackups
   namespace: data
   labels:
+    app.kubernetes.io/instance: pgbackups
+    app.kubernetes.io/name: pgbackups
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: pgbackups
+      app.kubernetes.io/name: pgbackups
   replicas: 1
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: pgbackups
+        app.kubernetes.io/name: pgbackups
     spec:
       containers:
         - name: pgbackups
           image: prodrigestivill/postgres-backup-local:12
-          environment:
+          env:
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
                   name: pgbackups-config
-                  key: postgres-host
+                  key: POSTGRES_HOST
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: pgbackups-config
-                  key: postgres-db
+                  key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: pgbackups-config
-                  key: postgres-user
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: pgbackups-config
-                  key: postgres-password
+                  key: POSTGRES_PASSWORD
             - name: POSTGRES_EXTRA_OPTS
               value: "-Z9 --schema=public --blobs"
             - name: SCHEDULE
@@ -51,6 +61,14 @@ spec:
               memory: 256Mi
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: nfs-storage
+              mountPath: /backups
+              subPath: backups/postgresql
+      volumes:
+        - name: nfs-storage
+          persistentVolumeClaim:
+            claimName: nfs-storage
       dnsConfig:
         options:
           - name: ndots
