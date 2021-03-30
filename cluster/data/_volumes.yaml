@@ -41,12 +41,12 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-storage
+  name: nfs-backups
   namespace: data
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-storage
+  storageClassName: nfs-backups
   resources:
     requests:
       storage: 1Mi
