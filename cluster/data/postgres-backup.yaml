@@ -64,7 +64,7 @@ spec:
           volumeMounts:
             - name: nfs-backups
               mountPath: /backups
-              subPath: backups
+              subPath: postgresql
       volumes:
         - name: nfs-backups
           persistentVolumeClaim:
