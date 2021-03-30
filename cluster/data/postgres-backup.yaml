@@ -62,11 +62,11 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - name: nfs-storage
+            - name: storage
               mountPath: /backups
-              subPath: backups/postgresql
+              subPath: backups
       volumes:
-        - name: nfs-storage
+        - name: storage
           persistentVolumeClaim:
             claimName: nfs-storage
       dnsConfig:
