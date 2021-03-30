@@ -90,9 +90,9 @@ reclaimPolicy: Retain
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-runtime
+  name: nfs-shared-documents
 spec:
-  storageClassName: nfs-runtime
+  storageClassName: nfs-shared-documents
   capacity:
     storage: 1Mi
   accessModes:
@@ -100,7 +100,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: truenas
-    path: "/mnt/runtime"
+    path: "/mnt/storage/shared-documents"
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
