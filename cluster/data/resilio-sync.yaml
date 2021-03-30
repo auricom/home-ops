@@ -81,12 +81,6 @@ spec:
               mountPath: /sync/home
             - name: nfs-backups
               mountPath: /sync/backup
-            - name: nfs-music
-              mountPath: /sync/music
-            - name: nfs-video
-              mountPath: /sync/video
-            - name: nfs-shared-documents
-              mountPath: /sync/shared-documents
       volumes:
         - name: sync-conf-claude
           configMap:
