@@ -28,12 +28,12 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-runtime
+  name: nfs-photo
   namespace: data
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-runtime
+  storageClassName: nfs-photo
   resources:
     requests:
       storage: 1Mi

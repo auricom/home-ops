@@ -46,12 +46,10 @@ spec:
               subPath: sync.conf
             - name: home-claude
               mountPath: /sync/home/claude
-            - name: storage
+            - name: nfs-photo
               mountPath: /sync/photo
-              subPath: photo
-            - name: storage
+            - name: nfs-backups
               mountPath: /sync/backup
-              subPath: backups
             - name: storage
               mountPath: /sync/music
               subPath: music
@@ -83,9 +81,8 @@ spec:
               subPath: sync.conf
             - name: home-helene
               mountPath: /sync/home
-            - name: storage
+            - name: nfs-backups
               mountPath: /sync/backup
-              subPath: backups
       volumes:
         - name: sync-conf-claude
           configMap:
@@ -105,9 +102,12 @@ spec:
         - name: home-helene
           persistentVolumeClaim:
             claimName: nfs-home-helene
-        - name: storage
+        - name: nfs-backups
           persistentVolumeClaim:
-            claimName: nfs-storage
+            claimName: nfs-backups
+        - name: nfs-photo
+          persistentVolumeClaim:
+            claimName: nfs-photo
       dnsConfig:
         options:
           - name: ndots
