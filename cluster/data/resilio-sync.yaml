@@ -118,6 +118,9 @@ spec:
         - name: nfs-video
           persistentVolumeClaim:
             claimName: nfs-video-data
+        - name: nfs-shared-documents
+          persistentVolumeClaim:
+            claimName: nfs-shared-documents
       dnsConfig:
         options:
           - name: ndots
