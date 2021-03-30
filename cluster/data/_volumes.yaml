@@ -108,21 +108,6 @@ spec:
       storage: 1Mi
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nfs-video-data
-spec:
-  storageClassName: nfs-video-data
-  capacity:
-    storage: 1Mi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: truenas
-    path: "/mnt/storage/video"
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-shared-documents
