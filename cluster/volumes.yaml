@@ -39,7 +39,7 @@ spec:
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: nfs-video
+  name: nfs-video-data
 provisioner: nfs
 reclaimPolicy: Retain
 ---
