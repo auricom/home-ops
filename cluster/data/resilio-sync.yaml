@@ -50,15 +50,13 @@ spec:
               mountPath: /sync/photo
             - name: nfs-backups
               mountPath: /sync/backup
-            - name: storage
+            - name: nfs-music
               mountPath: /sync/music
-              subPath: music
-            - name: storage
+            - name: nfs-video
               mountPath: /sync/video
               subPath: video
-            - name: storage
+            - name: nfs-shared-documents
               mountPath: /sync/shared-documents
-              subPath: shared-documents
         - image: linuxserver/resilio-sync:amd64-2.7.2.1375-ls82
           name: resilio-sync-helene
           env:
@@ -83,6 +81,12 @@ spec:
               mountPath: /sync/home
             - name: nfs-backups
               mountPath: /sync/backup
+            - name: nfs-music
+              mountPath: /sync/music
+            - name: nfs-video
+              mountPath: /sync/video
+            - name: nfs-shared-documents
+              mountPath: /sync/shared-documents
       volumes:
         - name: sync-conf-claude
           configMap:

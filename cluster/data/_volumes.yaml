@@ -54,6 +54,45 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: nfs-music
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-music
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-video
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-video
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-shared-documents
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-shared-documents
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
   name: freshrss-config
   namespace: data
 spec:
