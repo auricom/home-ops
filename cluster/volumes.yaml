@@ -48,7 +48,7 @@ kind: PersistentVolume
 metadata:
   name: nfs-video-data
 spec:
-  storageClassName: nfs-video-data
+  storageClassName: nfs-video
   capacity:
     storage: 1Mi
   accessModes:
