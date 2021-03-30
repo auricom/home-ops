@@ -46,21 +46,17 @@ spec:
               subPath: sync.conf
             - name: home-claude
               mountPath: /sync/home/claude
-            - name: storage
+            - name: nfs-photo
               mountPath: /sync/photo
-              subPath: photo
-            - name: storage
+            - name: nfs-backups
               mountPath: /sync/backup
-              subPath: backups
-            - name: storage
+            - name: nfs-music
               mountPath: /sync/music
-              subPath: music
-            - name: storage
+            - name: nfs-video
               mountPath: /sync/video
               subPath: video
-            - name: storage
+            - name: nfs-shared-documents
               mountPath: /sync/shared-documents
-              subPath: shared-documents
         - image: linuxserver/resilio-sync:amd64-2.7.2.1375-ls82
           name: resilio-sync-helene
           env:
@@ -83,9 +79,8 @@ spec:
               subPath: sync.conf
             - name: home-helene
               mountPath: /sync/home
-            - name: storage
+            - name: nfs-backups
               mountPath: /sync/backup
-              subPath: backups
       volumes:
         - name: sync-conf-claude
           configMap:
@@ -105,9 +100,21 @@ spec:
         - name: home-helene
           persistentVolumeClaim:
             claimName: nfs-home-helene
-        - name: storage
+        - name: nfs-backups
           persistentVolumeClaim:
-            claimName: nfs-storage
+            claimName: nfs-backups
+        - name: nfs-photo
+          persistentVolumeClaim:
+            claimName: nfs-photo-data
+        - name: nfs-music
+          persistentVolumeClaim:
+            claimName: nfs-music-data
+        - name: nfs-video
+          persistentVolumeClaim:
+            claimName: nfs-video-data
+        - name: nfs-shared-documents
+          persistentVolumeClaim:
+            claimName: nfs-shared-documents
       dnsConfig:
         options:
           - name: ndots

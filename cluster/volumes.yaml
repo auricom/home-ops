@@ -46,6 +46,28 @@ reclaimPolicy: Retain
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  name: nfs-video-data
+spec:
+  storageClassName: nfs-video
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage/video"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-video-data
+provisioner: nfs
+reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
   name: nfs-downloads
 spec:
   storageClassName: nfs-downloads
@@ -90,9 +112,9 @@ reclaimPolicy: Retain
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-runtime
+  name: nfs-shared-documents
 spec:
-  storageClassName: nfs-runtime
+  storageClassName: nfs-shared-documents
   capacity:
     storage: 1Mi
   accessModes:
@@ -100,21 +122,28 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: truenas
-    path: "/mnt/runtime"
+    path: "/mnt/storage/shared-documents"
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: nfs-storage
+  name: nfs-shared-documents
+provisioner: nfs
+reclaimPolicy: Retain
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-backups
 provisioner: nfs
 reclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-storage
+  name: nfs-backups
 spec:
-  storageClassName: nfs-storage
+  storageClassName: nfs-backups
   capacity:
     storage: 1Mi
   accessModes:
@@ -122,7 +151,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: truenas
-    path: "/mnt/storage"
+    path: "/mnt/storage/backups"
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1

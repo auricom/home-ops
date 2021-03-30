@@ -26,14 +26,29 @@ spec:
       storage: 1Mi
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-photo-data
+spec:
+  storageClassName: nfs-photo
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage/photo"
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-runtime
+  name: nfs-photo-data
   namespace: data
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-runtime
+  storageClassName: nfs-photo
   resources:
     requests:
       storage: 1Mi
@@ -41,12 +56,66 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-storage
+  name: nfs-backups
   namespace: data
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-storage
+  storageClassName: nfs-backups
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-music-data
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-music
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-music-data
+spec:
+  storageClassName: nfs-music
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas
+    path: "/mnt/storage/music"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-video-data
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-video
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-shared-documents
+  namespace: data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-shared-documents
   resources:
     requests:
       storage: 1Mi
