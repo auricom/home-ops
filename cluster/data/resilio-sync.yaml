@@ -81,9 +81,9 @@ spec:
               mountPath: /sync/home
             - name: nfs-backups
               mountPath: /sync/backup
-            - name: nfs-music-data
+            - name: nfs-music
               mountPath: /sync/music
-            - name: nfs-video-data
+            - name: nfs-video
               mountPath: /sync/video
             - name: nfs-shared-documents
               mountPath: /sync/shared-documents
@@ -112,6 +112,12 @@ spec:
         - name: nfs-photo
           persistentVolumeClaim:
             claimName: nfs-photo-data
+        - name: nfs-music
+          persistentVolumeClaim:
+            claimName: nfs-music-data
+        - name: nfs-video
+          persistentVolumeClaim:
+            claimName: nfs-video-data
       dnsConfig:
         options:
           - name: ndots
