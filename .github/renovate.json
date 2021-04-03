@@ -33,7 +33,8 @@
     {
       "datasources": ["docker"],
       "updateTypes": ["major"],
-      "labels": ["renovate/image-release", "dependency/major"]
+      "labels": ["renovate/image-release", "dependency/major"],
+      "enabled": true
     },
     {
       "datasources": ["docker"],
@@ -66,9 +67,7 @@
       "automerge": true,
       "requiredStatusChecks": null,
       "updateTypes": ["minor", "patch"],
-      "packageNames": [
-        "ghcr.io/k8s-at-home/jackett"
-      ]
+      "packageNames": ["ghcr.io/k8s-at-home/jackett"]
     }
   ]
 }
