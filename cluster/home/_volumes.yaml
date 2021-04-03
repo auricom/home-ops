@@ -24,3 +24,16 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zwave2mqtt-config
+  namespace: home
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-backups
+  resources:
+    requests:
+      storage: 10Gi
