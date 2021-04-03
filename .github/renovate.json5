@@ -1,74 +1,73 @@
 {
-  "enabled": true,
-  "timezone": "Europe/Paris",
-  "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Renovate Dashboard",
-  "commitMessageSuffix": "[ci-skip]",
-  "commitBody": "Signed-off-by: Auricom <auricom@users.noreply.github.com>",
+  enabled: true,
+  timezone: "Europe/Paris",
+  dependencyDashboard: true,
+  dependencyDashboardTitle: "Renovate Dashboard",
+  commitMessageSuffix: "[ci-skip]",
+  commitBody: "Signed-off-by: Auricom <auricom@users.noreply.github.com>",
   // Do not notify on closed unmerged PRs
-  "suppressNotifications": ["prIgnoreNotification"],
+  suppressNotifications: ["prIgnoreNotification"],
   // Do not rebase PRs
-  "rebaseWhen": "conflicted",
-  "assignees": ["@auricom"],
+  rebaseWhen: "conflicted",
+  assignees: ["@auricom"],
   "helm-values": {
-    "fileMatch": ["cluster/.+\\.yaml$"]
+    fileMatch: ["cluster/.+\\.yaml$"],
   },
-  "regexManagers": [
+  regexManagers: [
     {
-      "fileMatch": ["cluster/.+\\.yaml$"],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
+      fileMatch: ["cluster/.+\\.yaml$"],
+      matchStrings: [
+        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n",
       ],
-      "datasourceTemplate": "helm"
-    }
+      datasourceTemplate: "helm",
+    },
   ],
-  "packageRules": [
+  packageRules: [
     // Setup datasources
     {
-      "datasources": ["helm"],
-      "commitMessageTopic": "Helm chart {{depName}}",
-      "separateMinorPatch": true
+      datasources: ["helm"],
+      commitMessageTopic: "Helm chart {{depName}}",
+      separateMinorPatch: true,
     },
     // Add labels according to package and update types
     {
-      "datasources": ["docker"],
-      "updateTypes": ["major"],
-      "labels": ["renovate/image-release", "dependency/major"]
+      datasources: ["docker"],
+      updateTypes: ["major"],
+      labels: ["renovate/image-release", "dependency/major"],
+      enabled: true,
     },
     {
-      "datasources": ["docker"],
-      "updateTypes": ["minor"],
-      "labels": ["renovate/image-release", "dependency/minor"]
+      datasources: ["docker"],
+      updateTypes: ["minor"],
+      labels: ["renovate/image-release", "dependency/minor"],
     },
     {
-      "datasources": ["docker"],
-      "updateTypes": ["patch"],
-      "labels": ["renovate/image-release", "dependency/patch"]
+      datasources: ["docker"],
+      updateTypes: ["patch"],
+      labels: ["renovate/image-release", "dependency/patch"],
     },
     {
-      "datasources": ["helm"],
-      "updateTypes": ["major"],
-      "labels": ["renovate/helm-release", "dependency/major"]
+      datasources: ["helm"],
+      updateTypes: ["major"],
+      labels: ["renovate/helm-release", "dependency/major"],
     },
     {
-      "datasources": ["helm"],
-      "updateTypes": ["minor"],
-      "labels": ["renovate/helm-release", "dependency/minor"]
+      datasources: ["helm"],
+      updateTypes: ["minor"],
+      labels: ["renovate/helm-release", "dependency/minor"],
     },
     {
-      "datasources": ["helm"],
-      "updateTypes": ["patch"],
-      "labels": ["renovate/helm-release", "dependency/patch"]
+      datasources: ["helm"],
+      updateTypes: ["patch"],
+      labels: ["renovate/helm-release", "dependency/patch"],
     },
     // Enable auto-merge
     {
-      "datasources": ["docker"],
-      "automerge": true,
-      "requiredStatusChecks": null,
-      "updateTypes": ["minor", "patch"],
-      "packageNames": [
-        "ghcr.io/k8s-at-home/jackett"
-      ]
-    }
-  ]
+      datasources: ["docker"],
+      automerge: true,
+      requiredStatusChecks: null,
+      updateTypes: ["minor", "patch"],
+      packageNames: ["ghcr.io/k8s-at-home/jackett"],
+    },
+  ],
 }
