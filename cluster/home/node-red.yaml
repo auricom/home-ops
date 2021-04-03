@@ -25,11 +25,15 @@ spec:
       TZ: "Europe/Paris"
       NODE_RED_ENABLE_PROJECTS: "true"
       NODE_RED_ENABLE_SAFE_MODE: "false"
-#    persistence:
-#      data:
-#        enabled: true
-#        mountPath: /data
-#        existingClaim: node-red-config
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    persistence:
+      data:
+        enabled: true
+        mountPath: /data
+        existingClaim: node-red-config
     ingress:
       enabled: true
       annotations:
