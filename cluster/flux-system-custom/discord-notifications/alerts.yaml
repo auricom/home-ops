@@ -2,7 +2,7 @@
 apiVersion: notification.toolkit.fluxcd.io/v1beta1
 kind: Alert
 metadata:
-  name: k8s-gitops
+  name: k3s-gitops
   namespace: flux-system
 spec:
   providerRef:
@@ -48,6 +48,7 @@ spec:
       name: "*"
     - kind: HelmRelease
       namespace: "media"
+      name: "*"
     - kind: HelmRelease
       namespace: "monitoring"
       name: "*"
