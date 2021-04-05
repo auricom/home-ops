@@ -22,6 +22,10 @@ spec:
         operator: In
         values:
           - "amd64"
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
   serviceAccountName: system-upgrade
   tolerations:
     - key: "node-role.kubernetes.io/master"
