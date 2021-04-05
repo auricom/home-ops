@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: haveagitgat/tdarr
-      tag: 2.00.08
+      tag: 2.00.09
       pullPolicy: IfNotPresent
 
     controllerType: deployment
@@ -52,7 +52,7 @@ spec:
 
     additionalContainers:
       - name: node
-        image: haveagitgat/tdarr_node:2.00.08
+        image: haveagitgat/tdarr_node:2.00.09
         env:
           - name: TZ
             value: "Europe/Paris"
