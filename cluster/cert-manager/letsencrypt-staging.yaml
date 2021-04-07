@@ -1,0 +1,23 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: "webmaster@xpander.ovh"
+    privateKeySecretRef:
+      name: letsencrypt-production
+    solvers:
+      - dns01:
+          webhook:
+            groupName: "xpander.ovh"
+            solverName: ovh
+            config:
+              endpoint: ovh-eu
+              applicationKey: "uzxdE4oiGPNFytxJ"
+              applicationSecretRef:
+                key: applicationSecret
+                name: ovh-credentials
+              consumerKey: "YOCz0SF2miVVyzzCnrTbZ7ZK9rycXK3p"

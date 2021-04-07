@@ -28,8 +28,9 @@ spec:
         enabled: true
       config:
         ssl-protocols: "TLSv1.3 TLSv1.2"
-        #custom-http-errors: 400,403,404,422,500,503
+        custom-http-errors: 404,401,403,500,503
         enable-vts-status: "false"
+        hsts-max-age: "31449600"
       metrics:
         enabled: true
         serviceMonitor:
@@ -38,7 +39,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: "kube-system/letsencrypt-k3s-wildcard"
+        default-ssl-certificate: "kube-system/letsencrypt-default-cert"
       resources:
         requests:
           memory: 250Mi
@@ -55,16 +56,16 @@ spec:
                     values:
                       - ingress-nginx-external
               topologyKey: "kubernetes.io/hostname"
-    #defaultBackend:
-    #  enabled: true
-    #  image:
-    #    repository: registry.k3s.xpander.ovh/homelab/custom-error-pages
-    #    tag: 1.0.1
-    #  resources:
-    #    requests:
-    #      memory: 50Mi
-    #      cpu: 25m
-    #    limits:
-    #      memory: 100Mi
-    tcp:
-      8086: monitoring/influxdb:8086
+    defaultBackend:
+      enabled: true
+      image:
+        repository: billimek/custom-error-pages
+        tag: 0.4.4
+      resources:
+        requests:
+          memory: 250Mi
+          cpu: 25m
+        limits:
+          memory: 350Mi
+    #tcp:
+    #  8086: monitoring/influxdb:8086
