@@ -58,9 +58,6 @@ spec:
         - name: mariadb
           url: mariadb
           module: icmp
-        - name: rpizw1
-          url: rpizw1
-          module: icmp
         - name: k3s-server
           url: k3s-server
           module: icmp
