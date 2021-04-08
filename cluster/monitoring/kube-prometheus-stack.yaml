@@ -135,22 +135,6 @@ spec:
           access: proxy
           url: http://thanos-query-http:10902/
           isDefault: true
-        - name: influxdb-opnsense
-          type: influxdb
-          acces: proxy
-          url: http://influxdb:8086/
-          database: opnsense
-          user: opnsense
-        - name: influxdb-graphite
-          type: influxdb
-          database: graphite
-          acces: proxy
-          url: http://influxdb:8086/
-        - name: influxdb-home_assistant
-          type: influxdb
-          acces: proxy
-          url: http://influxdb:8086/
-          database: home_assistant
       grafana.ini:
         server:
           root_url: https://grafana.k3s.xpander.ovh
