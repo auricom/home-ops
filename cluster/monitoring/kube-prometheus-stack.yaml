@@ -141,12 +141,6 @@ spec:
           url: http://influxdb:8086/
           database: opnsense
           user: opnsense
-        - name: influxdb-rpi-os
-          type: influxdb
-          acces: proxy
-          url: http://influxdb:8086/
-          database: rpi-os
-          user: rpi-os
         - name: influxdb-graphite
           type: influxdb
           database: graphite
