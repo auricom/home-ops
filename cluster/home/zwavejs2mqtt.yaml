@@ -5,13 +5,13 @@ metadata:
   name: zwave2mqtt
   namespace: home
 spec:
-  releaseName: zwave2mqtt
+  releaseName: zwavejs2mqtt
   interval: 5m
   chart:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: zwave2mqtt
-      version: 8.2.0
+      chart: zwavejs2mqtt
+      version: 3.3.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -19,11 +19,10 @@ spec:
       interval: 5m
   values:
     image:
-      repository: robertslando/zwave2mqtt
-      tag: 4.1.1
+      repository: zwavejs/zwavejs2mqtt
+      tag: 3.2.0
     env:
       TZ: "Europe/Paris"
-      OZW_AUTO_UPDATE_CONFIG: true
     securityContext:
       privileged: true
     ingress:
