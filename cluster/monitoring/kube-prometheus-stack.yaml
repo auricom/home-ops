@@ -208,6 +208,9 @@ spec:
             name: thanos
             key: object-store.yaml
         additionalScrapeConfigs:
+          - job_name: "opnsense"
+            static_configs:
+              - targets: ["opnsense.xpander.ovh:9273/metrics"]
           # Example scrape config for probing ingresses via the Blackbox Exporter.
           #
           # The relabeling allows the actual ingress scrape endpoint to be configured
