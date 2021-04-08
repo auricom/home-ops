@@ -1,0 +1,40 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: forecastle
+  namespace: kube-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://stakater.github.io/stakater-charts
+      chart: forecastle
+      version: v1.0.63
+      sourceRef:
+        kind: HelmRepository
+        name: stakater-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    forecastle:
+      config:
+        title: "Xpander Homelab"
+        namespaceSelector:
+          matchNames:
+            - data
+            - media
+            - home
+            - development
+            - network
+      ingress:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+        hosts:
+          - host: forecastle.k3s.xpander.ovh
+            paths:
+              - /
+        tls:
+          - hosts:
+              - forecastle.k3s.xpander.ovh
