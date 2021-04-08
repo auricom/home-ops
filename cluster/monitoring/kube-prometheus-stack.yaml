@@ -88,12 +88,6 @@ spec:
           longhorn:
             url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/monitoring/grafana-dashboards/longhorn.json
             datasource: Prometheus
-          pfsense-dashboard:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/monitoring/grafana-dashboards/pfsense.json
-            datasource: influxdb-pfsense
-          truenas-dashboard:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/monitoring/grafana-dashboards/truenas.json
-            datasource: influxdb-graphite
       deploymentStrategy:
         type: Recreate
       persistence:
