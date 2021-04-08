@@ -209,8 +209,12 @@ spec:
             key: object-store.yaml
         additionalScrapeConfigs:
           - job_name: "opnsense"
+            scrape_interval: 60s
+            metrics_path: "/metrics"
             static_configs:
-              - targets: ["opnsense.xpander.ovh:9273/metrics"]
+              - targets: ["opnsense.xpander.ovh:9273"]
+                labels:
+                  app: "opnsense"
           # Example scrape config for probing ingresses via the Blackbox Exporter.
           #
           # The relabeling allows the actual ingress scrape endpoint to be configured
