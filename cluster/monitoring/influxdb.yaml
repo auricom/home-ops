@@ -46,7 +46,7 @@ spec:
         retention-policy: ""
         bind-address: ":2003"
         protocol: tcp
-        consistency-lvel: one
+        consistency-level: one
         templates:
           - "*.app env.service.resource.measurement"
           - "servers.* .host.resource.measurement.field*"
