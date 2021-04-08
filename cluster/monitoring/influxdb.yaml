@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: "influxdb"
-      tag: "2.0.4"
+      tag: "1.8.4"
     service:
       type: LoadBalancer
       externalIPs:
@@ -50,6 +50,13 @@ spec:
         templates:
           - "*.app env.service.resource.measurement"
           - "servers.* .host.resource.measurement.field*"
+    initScripts:
+      enabled: true
+      scripts:
+        init.iql: |+
+          CREATE DATABASE "graphite" WITH DURATION 90d REPLICATION 1 NAME "rp_90d"
+          CREATE DATABASE "opnsense" WITH DURATION 90d REPLICATION 1 NAME "rp_90d"
+          CREATE DATABASE "home_assistant" WITH DURATION 90d REPLICATION 1 NAME "rp_90d"
     resources:
       requests:
         memory: 2Gi

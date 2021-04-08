@@ -61,6 +61,13 @@
       "updateTypes": ["patch"],
       "labels": ["renovate/helm-release", "dependency/patch"]
     },
+    {
+      "matchDatasources": ["docker"],
+      "allowedVersions": "<2",
+      "matchPackageNames": [
+        "influxdb",
+      ]
+    },
     // Enable auto-merge
     {
       "datasources": ["docker"],
