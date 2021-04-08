@@ -28,7 +28,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: zwave2mqtt-config
+  name: zwavejs2mqtt-config
   namespace: home
 spec:
   accessModes:
