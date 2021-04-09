@@ -1,0 +1,19 @@
+---
+- name: disks | create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0644"
+  when: disks is defined
+  loop:
+    - /mnt/ssd1
+    - /mnt/ssd1/qbittorrent
+
+- name: disks | mount disks
+  ansible.posix.mount:
+    path: "/mnt/ssd1"
+    src: "UUID=558ddf99-61e8-4ac1-9819-adff7c8cc560"
+    fstype: ext4
+    opts: defaults
+    state: present
+  when: disks is defined

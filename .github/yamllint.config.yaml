@@ -1,8 +1,7 @@
 ignore: |
   .yamllint.yml
   .github/
-  ansible/
-  integrations/
+  server/ansible
   ignore/
   secrets/
   *-crds.yaml
