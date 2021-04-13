@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: pgbackups
-          image: prodrigestivill/postgres-backup-local:12
+          image: prodrigestivill/postgres-backup-local:13
           env:
             - name: POSTGRES_HOST
               valueFrom:
