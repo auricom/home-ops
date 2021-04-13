@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - bitwardenrs
+  - bookstack
+  - forecastle
+  - freshrss
+  - jobs
+  - joplin-server
+  - pgadmin
+  - pgbackups
+  - recipes
+  - resilio-sync
+  - searx
+  - sharry
+  - vikunja
+  - volumes

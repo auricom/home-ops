@@ -1,0 +1,241 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: resilio-sync
+  namespace: data
+  labels:
+    app.kubernetes.io/instance: resilio-sync
+    app.kubernetes.io/name: resilio-sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: resilio-sync
+      app.kubernetes.io/name: resilio-sync
+  updateStrategy:
+    type: RollingUpdate
+  serviceName: resilio-sync
+  strategy:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: resilio-sync
+        app.kubernetes.io/name: resilio-sync
+    spec:
+      containers:
+        - image: linuxserver/resilio-sync:amd64-2.7.2.1375-ls86
+          name: resilio-sync-claude
+          env:
+            - name: TZ
+              value: "Europe/Paris"
+            - name: PUID
+              value: "1026"
+            - name: PGID
+              value: "1000"
+          ports:
+            - containerPort: 8888
+              name: http-claude
+            - containerPort: 55555
+              name: com-claude
+          volumeMounts:
+            - name: config-claude
+              mountPath: /config
+            - name: sync-conf-claude
+              mountPath: /config/sync.conf
+              subPath: sync.conf
+            - name: home-claude-data
+              mountPath: /sync/home/claude
+            - name: nfs-photo-data
+              mountPath: /sync/photo
+            - name: nfs-backups-data
+              mountPath: /sync/backup
+            - name: nfs-music-data
+              mountPath: /sync/music
+            - name: nfs-video-data
+              mountPath: /sync/video
+              subPath: video
+            - name: nfs-shared-documents-data
+              mountPath: /sync/shared-documents
+        - image: linuxserver/resilio-sync:amd64-2.7.2.1375-ls86
+          name: resilio-sync-helene
+          env:
+            - name: TZ
+              value: "Europe/Paris"
+            - name: PUID
+              value: "1027"
+            - name: PGID
+              value: "1000"
+          ports:
+            - containerPort: 8889
+              name: http-helene
+            - containerPort: 55556
+              name: com-helene
+          volumeMounts:
+            - name: config-helene
+              mountPath: /config
+            - name: sync-conf-helene
+              mountPath: /config/sync.conf
+              subPath: sync.conf
+            - name: home-helene-data
+              mountPath: /sync/home
+            - name: nfs-backups-data
+              mountPath: /sync/backup
+      volumes:
+        - name: sync-conf-claude
+          configMap:
+            name: resilio-sync-claude-conf
+        - name: sync-conf-helene
+          configMap:
+            name: resilio-sync-helene-conf
+        - name: config-claude
+          persistentVolumeClaim:
+            claimName: resilio-sync-config-claude
+        - name: config-helene
+          persistentVolumeClaim:
+            claimName: resilio-sync-config-helene
+        - name: home-claude-data
+          persistentVolumeClaim:
+            claimName: nfs-home-claude-data
+        - name: home-helene-data
+          persistentVolumeClaim:
+            claimName: nfs-home-helene-data
+        - name: nfs-backups-data
+          persistentVolumeClaim:
+            claimName: nfs-backups-data
+        - name: nfs-photo-data
+          persistentVolumeClaim:
+            claimName: nfs-photo-data
+        - name: nfs-music-data
+          persistentVolumeClaim:
+            claimName: nfs-music-data
+        - name: nfs-video-data
+          persistentVolumeClaim:
+            claimName: nfs-video-data
+        - name: nfs-shared-documents-data
+          persistentVolumeClaim:
+            claimName: nfs-shared-documents-data
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: resilio-sync-claude-conf
+  namespace: data
+data:
+  sync.conf: |
+    {
+        "listening_port" : 55555,
+        "storage_path" : "/config",
+        "vendor" : "docker",
+        "display_new_version": false,
+
+        "directory_root_policy" : "belowroot",
+        "directory_root" : "/sync/",
+        "webui" :
+        {
+      "listen" : "0.0.0.0:8888",
+      "allow_empty_password" : false,
+            "dir_whitelist" : [ "/sync", "/sync/folders", "/sync/mounted_folders" ]
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: resilio-sync-helene-conf
+  namespace: data
+data:
+  sync.conf: |
+    {
+        "listening_port" : 55556,
+        "storage_path" : "/config",
+        "vendor" : "docker",
+        "display_new_version": false,
+
+        "directory_root_policy" : "belowroot",
+        "directory_root" : "/sync/",
+        "webui" :
+        {
+      "listen" : "0.0.0.0:8889",
+      "allow_empty_password" : false,
+            "dir_whitelist" : [ "/sync", "/sync/folders", "/sync/mounted_folders" ]
+        }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/probe: "true"
+    prometheus.io/protocol: tcp
+  labels:
+    app.kubernetes.io/instance: resilio-sync
+    app.kubernetes.io/name: resilio-sync
+  name: resilio-sync
+  namespace: data
+spec:
+  ports:
+    - name: http-claude
+      port: 8888
+      protocol: TCP
+      targetPort: 8888
+    - name: http-helene
+      port: 8889
+      protocol: TCP
+      targetPort: 8889
+    - name: com-claude
+      port: 55555
+      protocol: TCP
+      targetPort: 55555
+    - name: com-helene
+      port: 55556
+      protocol: TCP
+      targetPort: 55556
+  selector:
+    app.kubernetes.io/instance: resilio-sync
+    app.kubernetes.io/name: resilio-sync
+  type: LoadBalancer
+  externalIPs:
+    - ${CLUSTER_LB_RESILIOSYNC}
+  externalTrafficPolicy: Local
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app.kubernetes.io/instance: resilio-sync
+    app.kubernetes.io/name: resilio-sync
+  name: resilio-sync
+  namespace: data
+spec:
+  rules:
+    - host: resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resilio-sync
+                port:
+                  number: 8888
+    - host: resilio-sync-helene.${SECRET_CLUSTER_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resilio-sync
+                port:
+                  number: 8889
+  tls:
+    - hosts:
+        - resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}
+        - resilio-sync-helene.${SECRET_CLUSTER_DOMAIN}

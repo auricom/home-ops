@@ -1,0 +1,23 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: vikunja-restart
+  namespace: data
+spec:
+  schedule: "@weekly"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: vikunja-restart
+        spec:
+          serviceAccountName: jobs
+          containers:
+            - name: tester
+              image: bitnami/kubectl:1.20.5
+              command:
+                - "bin/bash"
+                - "-c"
+                - "bash <(curl -s https://raw.githubusercontent.com/auricom/home-cluster/main/scripts/jobs-vikunja-restart.bash)"
+          restartPolicy: Never

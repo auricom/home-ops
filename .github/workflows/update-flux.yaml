@@ -3,11 +3,11 @@ name: update-flux
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 12 * * *"
 
 jobs:
   flux-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,11 +19,11 @@ jobs:
       - name: Update Flux components
         id: update
         run: |
-          UGLY_VERSION="$(flux -v)"
-          VERSION="v${UGLY_VERSION#*flux version }"
+          CLI_VERSION="$(flux -v)"
+          VERSION="v${CLI_VERSION#*flux version }"
           flux install --version="${VERSION}" \
             --network-policy=false \
-            --export > ./cluster/flux-system/gotk-components.yaml
+            --export > ./cluster/base/flux-system/gotk-components.yaml
           echo "::set-output name=flux_version::$VERSION"
 
       - name: Create pull request for Flux update

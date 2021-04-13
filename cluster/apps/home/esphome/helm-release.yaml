@@ -1,0 +1,50 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: esphome
+  namespace: home
+spec:
+  releaseName: esphome
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: esphome
+      version: 6.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: esphome/esphome
+      tag: 1.16.2
+    env:
+      TZ: "Europe/Paris"
+      ESPHOME_DASHBOARD_USE_PING: true
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+      hosts:
+        - host: esphome.${SECRET_CLUSTER_DOMAIN}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "esphome.${SECRET_CLUSTER_DOMAIN}"
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
+    persistence:
+      config:
+        enabled: true
+        existingClaim: esphome-config

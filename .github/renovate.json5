@@ -1,65 +1,109 @@
 {
   "enabled": true,
   "timezone": "Europe/Paris",
+    "semanticCommits": "enabled",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
-  "commitMessageSuffix": "[ci-skip]",
   "commitBody": "Signed-off-by: Auricom <auricom@users.noreply.github.com>",
   // Do not notify on closed unmerged PRs
   "suppressNotifications": ["prIgnoreNotification"],
   // Do not rebase PRs
   "rebaseWhen": "conflicted",
   "assignees": ["@auricom"],
+  "kubernetes": {
+    "fileMatch": ["cluster/.+\\.yaml$"],
+    "ignorePaths": [
+      "cluster/base/"
+    ]
+  },
   "helm-values": {
-    "fileMatch": ["cluster/.+\\.yaml$"]
+    "fileMatch": ["cluster/.+helm-release\\.yaml$"]
   },
   "regexManagers": [
+    // regexManager to read and process HelmReleases and CRDs
     {
-      "fileMatch": ["cluster/.+\\.yaml$"],
+      "fileMatch": [
+        "cluster/.+helm-release\\.yaml$",
+        "cluster/core/crds/.+\\.yaml$"
+      ],
       "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
+        // helm releases
+        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n",
+        // kube-prometheus-stack crd
+        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-zA-Z-]+)-(?<currentValue>.*)\n",
+        // rook-ceph crd
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*)\n",
+        // cert-manager crd
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*\\/(?<currentValue>.*?)\\/"
       ],
       "datasourceTemplate": "helm"
-    }
+    },
   ],
+
   "packageRules": [
     // Setup datasources
     {
-      "datasources": ["helm"],
-      "commitMessageTopic": "Helm chart {{depName}}",
+      "matchDatasources": ["helm"],
       "separateMinorPatch": true
     },
-    // Add labels according to package and update types
+    // global docker datasource settings
     {
-      "datasources": ["docker"],
-      "updateTypes": ["major"],
-      "labels": ["renovate/image-release", "dependency/major"],
-      "enabled": true
+      "matchDatasources": ["docker"],
+      "enabled": true,
+      "commitMessageTopic": "container image {{depName}}",
+      "commitMessageExtra": "to {{#if isSingleVersion}}v{{{newVersion}}}{{else}}{{{newValue}}}{{/if}}",
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "separateMinorPatch": true
+    },
+    // add labels according to package and update types
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["renovate/image", "dep/major"]
     },
     {
-      "datasources": ["docker"],
-      "updateTypes": ["minor"],
-      "labels": ["renovate/image-release", "dependency/minor"]
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor"],
+      "labels": ["renovate/image", "dep/minor"]
     },
     {
-      "datasources": ["docker"],
-      "updateTypes": ["patch"],
-      "labels": ["renovate/image-release", "dependency/patch"]
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["patch"],
+      "labels": ["renovate/image", "dep/patch"]
     },
     {
-      "datasources": ["helm"],
-      "updateTypes": ["major"],
-      "labels": ["renovate/helm-release", "dependency/major"]
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["renovate/helm", "dep/major"]
     },
     {
-      "datasources": ["helm"],
-      "updateTypes": ["minor"],
-      "labels": ["renovate/helm-release", "dependency/minor"]
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor"],
+      "labels": ["renovate/helm", "dep/minor"]
     },
     {
-      "datasources": ["helm"],
-      "updateTypes": ["patch"],
-      "labels": ["renovate/helm-release", "dependency/patch"]
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["patch"],
+      "labels": ["renovate/helm", "dep/patch"]
+    },
+    // custom version schemes
+    {
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>.*)$",
+      "matchPackageNames": ["blakeblackshear/frigate"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$",
+      "matchPackageNames": ["minio/minio"]
+    },
+    // pin package versions
+    {
+      "matchDatasources": ["docker"],
+      "allowedVersions": "<13",
+      "matchPackageNames": [
+        "prodrigestivill/postgres-backup-local"
+      ]
     },
     {
       "matchDatasources": ["docker"],
@@ -68,13 +112,18 @@
         "influxdb",
       ]
     },
-    // Enable auto-merge
+    // enable auto-merge
     {
-      "datasources": ["docker"],
+      "matchDatasources": ["docker"],
       "automerge": true,
+      "automergeType": "branch",
       "requiredStatusChecks": null,
-      "updateTypes": ["minor", "patch"],
-      "packageNames": ["ghcr.io/k8s-at-home/jackett"]
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": [
+        "flaresolverr/flaresolverr",
+        "ghcr.io/k8s-at-home/jackett",
+        "ghcr.io/k8s-at-home/prowlarr"
+     ]
     }
   ]
 }

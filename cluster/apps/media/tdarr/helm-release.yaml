@@ -1,0 +1,93 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: tdarr
+  namespace: media
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: tdarr
+      version: 2.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: haveagitgat/tdarr
+      tag: 2.00.08
+      pullPolicy: IfNotPresent
+
+    controllerType: deployment
+
+    strategy:
+      type: Recreate
+
+    resources: {}
+
+    service:
+      port:
+        port: 8265
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: http
+
+    env:
+      TZ: Europe/Paris
+      webUIPort: 8265
+      serverIP: 0.0.0.0
+      serverPort: 8266
+
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
+
+    podAnnotations: {}
+
+    additionalContainers:
+      - name: node
+        image: haveagitgat/tdarr_node:2.00.08
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: nodeID
+            value: healthchecks
+          - name: serverIP
+            value: "localhost"
+          - name: serverPort
+            value: "8266"
+        volumeMounts:
+          - name: nfs-video-media
+            mountPath: /mnt/storage/video
+
+    additionalVolumeMounts:
+      - name: tdarr-data
+        mountPath: /app/server
+      - name: nfs-video-media
+        mountPath: /mnt/storage/video
+    additionalVolumes:
+      - name: tdarr-data
+        persistentVolumeClaim:
+          claimName: tdarr-data
+      - name: nfs-video-media
+        persistentVolumeClaim:
+          claimName: nfs-video-media
+
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: tdarr.${SECRET_CLUSTER_DOMAIN}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - "tdarr.${SECRET_CLUSTER_DOMAIN}"

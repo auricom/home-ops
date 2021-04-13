@@ -1,0 +1,23 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: qbittorrent-upgrade-p2pblocklist
+  namespace: media
+spec:
+  schedule: "@daily"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: upgrade-p2pblocklist
+        spec:
+          serviceAccountName: jobs
+          containers:
+            - name: tester
+              image: bitnami/kubectl:1.20.5
+              command:
+                - "bin/bash"
+                - "-c"
+                - "bash <(curl -s https://raw.githubusercontent.com/auricom/home-cluster/main/scripts/jobs-qbittorrent-p2pblocklist.bash)"
+          restartPolicy: Never

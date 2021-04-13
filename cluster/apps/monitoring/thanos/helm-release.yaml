@@ -1,0 +1,53 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: thanos
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://kubernetes-charts.banzaicloud.com
+      chart: thanos
+      version: 0.4.2
+      sourceRef:
+        kind: HelmRepository
+        name: banzaicloud-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    query:
+      http:
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+            nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          hosts: ["thanos.${SECRET_CLUSTER_DOMAIN}"]
+          tls:
+            - hosts: ["thanos.${SECRET_CLUSTER_DOMAIN}"]
+      replicaCount: 3
+      replicaLabels:
+        - replica
+    compact:
+      retentionResolution1h: 5y
+    objstore:
+      type: S3
+      config:
+        bucket: "thanos"
+        region: "us-east-1"
+        endpoint: ${SECRET_MINIO_ENDPOINT}
+        access_key: ${SECRET_MINIO_ACCESS_KEY}
+        secret_key: ${SECRET_MINIO_SECRET_KEY}
+        insecure: false
+        signature_version2: false
+        put_user_metadata: {}
+        http_config:
+          idle_conn_timeout: 0s
+          response_header_timeout: 0s
+          insecure_skip_verify: false
+        trace:
+          enable: false
+        part_size: 0

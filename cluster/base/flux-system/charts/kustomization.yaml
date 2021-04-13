@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - banzaicloud-charts.yaml
+  - bitnami-charts.yaml
+  - coredns-charts.yaml
+  - drone-charts.yaml
+  - fairwinds-charts.yaml
+  - falco-security-charts.yaml
+  - gitea-charts.yaml
+  - grafana-loki-charts.yaml
+  - influxdata-charts.yaml
+  - infracloudio-charts.yaml
+  - ingress-nginx-charts.yaml
+  - jetstack-charts.yaml
+  - k8s-at-home.yaml
+  - kasten-charts.yaml
+  - kubernetes-dashboard-charts.yaml
+  - kubernetes-sigs-descheduler-charts.yaml
+  - longhorn-charts.yaml
+  - nicholaswilde.yaml
+  - node-feature-discovery.yaml
+  - prometheus-community-charts.yaml
+  - runix-charts.yaml
+  - stakater-charts.yaml
+  - twuni-charts.yaml
+  - vernemq-charts.yaml

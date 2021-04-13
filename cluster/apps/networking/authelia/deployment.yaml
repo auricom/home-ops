@@ -1,0 +1,649 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authelia
+  namespace: networking
+  labels:
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/name: authelia
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: authelia
+      app.kubernetes.io/name: authelia
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: authelia
+        app.kubernetes.io/name: authelia
+    spec:
+      initContainers:
+        - name: authelia-init
+          image: busybox
+          command: ["/bin/sh", "-c", "cp /configyaml/*.y* /config"]
+          volumeMounts:
+            - name: configyaml
+              mountPath: /configyaml
+            - name: config
+              mountPath: /config
+      containers:
+        - name: redis
+          image: k8s.gcr.io/redis:e2e
+          resources:
+            requests:
+              cpu: 50m
+              memory: 125Mi
+          ports:
+            - containerPort: 6379
+        - name: authelia
+          image: authelia/authelia:4.28.0
+          ports:
+            - containerPort: 9091
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1500Mi
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      volumes:
+        - name: config
+          emptyDir: {}
+        - name: configyaml
+          configMap:
+            name: authelia-config
+            items:
+              - key: configuration.yml
+                path: configuration.yml
+              - key: users.yaml
+                path: users.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authelia
+  namespace: networking
+  annotations:
+    prometheus.io/probe: "true"
+    prometheus.io/protocol: http
+  labels:
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/name: authelia
+spec:
+  selector:
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/name: authelia
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 9091
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/name: authelia
+  name: authelia
+  namespace: networking
+spec:
+  tls:
+    - hosts:
+        - login.${SECRET_CLUSTER_DOMAIN}
+  rules:
+    - host: login.${SECRET_CLUSTER_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: authelia
+                port:
+                  number: 80
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: authelia-config
+  namespace: networking
+data:
+  configuration.yml: >
+    ###############################################################
+
+    #                   Authelia configuration                    #
+
+    ###############################################################
+
+
+    # The host and port to listen on
+
+    host: 0.0.0.0
+
+    port: 9091
+
+
+    # Level of verbosity for logs: info, debug, trace
+
+    log_level: debug
+
+    ## File path where the logs will be written. If not set logs are written to stdout.
+
+    # log_file_path: /var/log/authelia
+
+
+    # The secret used to generate JWT tokens when validating user identity by
+
+    # email confirmation.
+
+    # This secret can also be set using the env variables AUTHELIA_JWT_SECRET
+
+    jwt_secret: ${SECRET_AUTHELIA_JWT_SECRET}
+
+
+    # Default redirection URL
+
+    #
+
+    # If user tries to authenticate without any referer, Authelia
+
+    # does not know where to redirect the user to at the end of the
+
+    # authentication process.
+
+    # This parameter allows you to specify the default redirection
+
+    # URL Authelia will use in such a case.
+
+    #
+
+    # Note: this parameter is optional. If not provided, user won't
+
+    # be redirected upon successful authentication.
+
+    default_redirection_url: https://home.${SECRET_CLUSTER_DOMAIN}/
+
+
+    # Google Analytics Tracking ID to track the usage of the portal
+
+    # using a Google Analytics dashboard.
+
+    #
+
+    ## google_analytics: UA-00000-01
+
+
+    # TOTP Settings
+
+    #
+
+    # Parameters used for TOTP generation
+
+    totp:
+      # The issuer name displayed in the Authenticator application of your choice
+      # See: https://github.com/google/google-authenticator/wiki/Key-Uri-Format for more info on issuer names
+      issuer: Authelia
+      # The period in seconds a one-time password is current for. Changing this will require all users to register
+      # their TOTP applications again.
+      # Warning: before changing period read the docs link below.
+      period: 30
+      # The skew controls number of one-time passwords either side of the current one that are valid.
+      # Warning: before changing skew read the docs link below.
+      skew: 1
+      #  See: https://docs.authelia.com/configuration/one-time-password.html#period-and-skew to read the documentation.
+
+    # Duo Push API
+
+    #
+
+    # Parameters used to contact the Duo API. Those are generated when you protect an application
+
+    # of type "Partner Auth API" in the management panel.
+
+    # duo_api:
+
+    #   hostname: api-123456789.example.com
+
+    #   integration_key: ABCDEF
+
+    #   # This secret can also be set using the env variables AUTHELIA_DUO_API_SECRET_KEY
+
+    #    secret_key: 1234567890abcdefghifjkl
+
+
+    # The authentication backend to use for verifying user passwords
+
+    # and retrieve information such as email address and groups
+
+    # users belong to.
+
+    #
+
+    # There are two supported backends: 'ldap' and 'file'.
+
+    authentication_backend:
+      # Disable both the HTML element and the API for reset password functionality
+      disable_reset_password: true
+      file:
+        path: /config/users.yaml
+      # # LDAP backend configuration.
+      # #
+      # # This backend allows Authelia to be scaled to more
+      # # than one instance and therefore is recommended for
+      # # production.
+      # ldap:
+      #   # The url to the ldap server. Scheme can be ldap:// or ldaps://
+      #   url: ldap://127.0.0.1
+
+      #   # Skip verifying the server certificate (to allow self-signed certificate).
+      #   skip_verify: false
+
+      #   # The base dn for every entries
+      #   base_dn: dc=example,dc=com
+
+      #   # The attribute holding the username of the user. This attribute is used to populate
+      #   # the username in the session information. It was introduced due to #561 to handle case
+      #   # insensitive search queries.
+      #   # For you information, Microsoft Active Directory usually uses 'sAMAccountName' and OpenLDAP
+      #   # usually uses 'uid'
+      #   username_attribute: uid
+
+      #   # An additional dn to define the scope to all users
+      #   additional_users_dn: ou=users
+
+      #   # The users filter used in search queries to find the user profile based on input filled in login form.
+      #   # Various placeholders are available to represent the user input and back reference other options of the configuration:
+      #   # - {input} is a placeholder replaced by what the user inputs in the login form.
+      #   # - {username_attribute} is a placeholder replaced by what is configured in `username_attribute`.
+      #   # - {mail_attribute} is a placeholder replaced by what is configured in `mail_attribute`.
+      #   # - DON'T USE - {0} is an alias for {input} supported for backward compatibility but it will be deprecated in later versions, so please don't use it.
+      #   #
+      #   # Recommended settings are as follows:
+      #   # - Microsoft Active Directory: (&({username_attribute}={input})(objectCategory=person)(objectClass=user))
+      #   # - OpenLDAP: (&({username_attribute}={input})(objectClass=person))' or '(&({username_attribute}={input})(objectClass=inetOrgPerson))
+      #   #
+      #   # To allow sign in both with username and email, one can use a filter like
+      #   # (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
+      #   users_filter: (&({username_attribute}={input})(objectClass=person))
+
+      #   # An additional dn to define the scope of groups
+      #   additional_groups_dn: ou=groups
+
+      #   # The groups filter used in search queries to find the groups of the user.
+      #   # - {input} is a placeholder replaced by what the user inputs in the login form.
+      #   # - {username} is a placeholder replace by the username stored in LDAP (based on `username_attribute`).
+      #   # - {dn} is a matcher replaced by the user distinguished name, aka, user DN.
+      #   # - {username_attribute} is a placeholder replaced by what is configured in `username_attribute`.
+      #   # - {mail_attribute} is a placeholder replaced by what is configured in `mail_attribute`.
+      #   # - DON'T USE - {0} is an alias for {input} supported for backward compatibility but it will be deprecated in later versions, so please don't use it.
+      #   # - DON'T USE - {1} is an alias for {username} supported for backward compatibility but it will be deprecated in later version, so please don't use it.
+      #   groups_filter: (&(member={dn})(objectclass=groupOfNames))
+
+      #   # The attribute holding the name of the group
+      #   group_name_attribute: cn
+
+      #   # The attribute holding the mail address of the user
+      #   mail_attribute: mail
+
+      #   # The username and password of the admin user.
+      #   user: cn=admin,dc=example,dc=com
+      #   # This secret can also be set using the env variables AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD
+      #   password: password
+
+      # File backend configuration.
+      #
+      # With this backend, the users database is stored in a file
+      # which is updated when users reset their passwords.
+      # Therefore, this backend is meant to be used in a dev environment
+      # and not in production since it prevents Authelia to be scaled to
+      # more than one instance. The options under 'password' have sane
+      # defaults, and as it has security implications it is highly recommended
+      # you leave the default values. Before considering changing these settings
+      # please read the docs page below:
+      # https://docs.authelia.com/configuration/authentication/file.html#password-hash-algorithm-tuning
+      #
+
+      ## file:
+      ##   path: ./users_database.yml
+      ##   password:
+      ##     algorithm: argon2id
+      ##     iterations: 1
+      ##     key_length: 32
+      ##     salt_length: 16
+      ##     memory: 1024
+      ##     parallelism: 8
+    server:
+      read_buffer_size: 8192
+      write_buffer_size: 8192
+    # Access Control
+
+    #
+
+    # Access control is a list of rules defining the authorizations applied for one
+
+    # resource to users or group of users.
+
+    #
+
+    # If 'access_control' is not defined, ACL rules are disabled and the 'bypass'
+
+    # rule is applied, i.e., access is allowed to anyone. Otherwise restrictions follow
+
+    # the rules defined.
+
+    #
+
+    # Note: One can use the wildcard * to match any subdomain.
+
+    # It must stand at the beginning of the pattern. (example: *.mydomain.com)
+
+    #
+
+    # Note: You must put patterns containing wildcards between simple quotes for the YAML
+
+    # to be syntactically correct.
+
+    #
+
+    # Definition: A 'rule' is an object with the following keys: 'domain', 'subject',
+
+    # 'policy' and 'resources'.
+
+    #
+
+    # - 'domain' defines which domain or set of domains the rule applies to.
+
+    #
+
+    # - 'subject' defines the subject to apply authorizations to. This parameter is
+
+    #    optional and matching any user if not provided. If provided, the parameter
+
+    #    represents either a user or a group. It should be of the form 'user:<username>'
+
+    #    or 'group:<groupname>'.
+
+    #
+
+    # - 'policy' is the policy to apply to resources. It must be either 'bypass',
+
+    #   'one_factor', 'two_factor' or 'deny'.
+
+    #
+
+    # - 'resources' is a list of regular expressions that matches a set of resources to
+
+    #    apply the policy to. This parameter is optional and matches any resource if not
+
+    #    provided.
+
+    #
+
+    # Note: the order of the rules is important. The first policy matching
+
+    # (domain, resource, subject) applies.
+
+    access_control:
+      # Default policy can either be 'bypass', 'one_factor', 'two_factor' or 'deny'.
+      # It is the policy applied to any resource if there is no policy to be applied
+      # to the user.
+      default_policy: deny
+
+      rules:
+        # Rules applied to everyone
+        # - domain: public.example.com
+        #   policy: bypass
+
+        # bypass WAN + LAN
+        - domain:
+          - login.${SECRET_CLUSTER_DOMAIN}
+          policy: bypass
+
+        # Deny admin services to users
+        - domain:
+          - longhorn.${SECRET_CLUSTER_DOMAIN}
+          - goldilocks.${SECRET_CLUSTER_DOMAIN}
+          - alert-manager.${SECRET_CLUSTER_DOMAIN}
+          - prometheus.${SECRET_CLUSTER_DOMAIN}
+          - thanos.${SECRET_CLUSTER_DOMAIN}
+          subject: ["group:users"]
+          policy: deny
+
+        # Fix Bazarr
+        - domain:
+          - bazarr.${SECRET_CLUSTER_DOMAIN}
+          resources:
+          - '^/api/.*$'
+          policy: bypass
+
+        # Allow list to 'visitor' group
+        #- domain:
+        #  - lychee.${SECRET_CLUSTER_DOMAIN}
+        #  subject: "user:visitor"
+        #  policy: one_factor
+
+        # One factor auth for LAN
+        - domain:
+          - "*.${SECRET_CLUSTER_DOMAIN}"
+          policy: one_factor
+          subject: ["group:admins", "group:users"]
+          networks:
+            - ${LOCAL_LAN}
+
+        # Two factors auth for WAN
+        - domain:
+          - "*.${SECRET_CLUSTER_DOMAIN}"
+          subject: ["group:admins", "group:users"]
+          policy: two_factor
+
+        # # Rules applied to 'admins' group
+        # - domain: "mx2.mail.example.com"
+        #   subject: "group:admins"
+        #   policy: deny
+        # - domain: "*.example.com"
+        #   subject: "group:admins"
+        #   policy: two_factor
+
+        # # Rules applied to 'dev' group
+        # - domain: dev.example.com
+        #   resources:
+        #     - "^/groups/dev/.*$"
+        #   subject: "group:dev"
+        #   policy: two_factor
+
+        # # Rules applied to user 'john'
+        # - domain: dev.example.com
+        #   resources:
+        #     - "^/users/john/.*$"
+        #   subject: "user:john"
+        #   policy: two_factor
+
+        # # Rules applied to user 'harry'
+        # - domain: dev.example.com
+        #   resources:
+        #     - "^/users/harry/.*$"
+        #   subject: "user:harry"
+        #   policy: two_factor
+
+        # # Rules applied to user 'bob'
+        # - domain: "*.mail.example.com"
+        #   subject: "user:bob"
+        #   policy: two_factor
+        # - domain: "dev.example.com"
+        #   resources:
+        #     - "^/users/bob/.*$"
+        #   subject: "user:bob"
+        #   policy: two_factor
+
+    # Configuration of session cookies
+
+    #
+
+    # The session cookies identify the user once logged in.
+
+    session:
+      # The name of the session cookie. (default: authelia_session).
+      name: authelia_session
+
+      # The secret to encrypt the session data. This is only used with Redis.
+      # This secret can also be set using the env variables AUTHELIA_SESSION_SECRET
+      secret: ${SECRET_AUTHELIA_SESSION_SECRET}
+
+      # The time in seconds before the cookie expires and session is reset.
+      expiration: 2h
+
+      # The inactivity time in seconds before the session is reset.
+      inactivity: 5m
+
+      # The remember me duration.
+      # Value of 0 disables remember me.
+      # Value is in seconds, or duration notation. See: https://docs.authelia.com/configuration/index.html#duration-notation-format
+      # Longer periods are considered less secure because a stolen cookie will last longer giving attackers more time to spy
+      # or attack. Currently the default is 1M or 1 month.
+      remember_me_duration: 1M
+
+      # The domain to protect.
+      # Note: the authenticator must also be in that domain. If empty, the cookie
+      # is restricted to the subdomain of the issuer.
+      domain: "${SECRET_CLUSTER_DOMAIN}"
+
+      # The redis connection details
+      redis:
+        host: localhost
+        port: 6379
+        # This secret can also be set using the env variables AUTHELIA_SESSION_REDIS_PASSWORD
+        # password: password
+        # This is the Redis DB Index https://redis.io/commands/select (sometimes referred to as database number, DB, etc).
+        database_index: 0
+
+    # Configuration of the authentication regulation mechanism.
+
+    #
+
+    # This mechanism prevents attackers from brute forcing the first factor.
+
+    # It bans the user if too many attempts are done in a short period of
+
+    # time.
+
+    regulation:
+      # The number of failed login attempts before user is banned.
+      # Set it to 0 to disable regulation.
+      max_retries: 3
+
+      # The time range during which the user can attempt login before being banned.
+      # The user is banned if the authentication failed 'max_retries' times in a 'find_time' seconds window.
+      # Find Time accepts duration notation. See: https://docs.authelia.com/configuration/index.html#duration-notation-format
+      find_time: 2m
+
+      # The length of time before a banned user can login again.
+      # Ban Time accepts duration notation. See: https://docs.authelia.com/configuration/index.html#duration-notation-format
+      ban_time: 5m
+
+    # Configuration of the storage backend used to store data and secrets.
+
+    #
+
+    # You must use only an available configuration: local, mysql, postgres
+
+    storage:
+      # The directory where the DB files will be saved
+      #local:
+      #  path: /var/lib/authelia/db.sqlite3
+
+      # Settings to connect to MySQL server
+      # mysql:
+      #  host: mariadb
+      #  port: 3306
+      #  database: authelia
+      #  username: authelia
+      #  # This secret can also be set using the env variables AUTHELIA_STORAGE_MYSQL_PASSWORD
+      #  password:
+
+      # Settings to connect to PostgreSQL server
+      postgres:
+        host: postgresql
+        port: 5432
+        database: authelia
+        username: authelia
+        # This secret can also be set using the env variables AUTHELIA_STORAGE_POSTGRES_PASSWORD
+        password: ${SECRET_AUTHELIA_POSTGRES_PASSWORD}
+
+    # Configuration of the notification system.
+
+    #
+
+    # Notifications are sent to users when they require a password reset, a u2f
+
+    # registration or a TOTP registration.
+
+    # Use only an available configuration: filesystem, gmail
+
+    notifier:
+      # For testing purpose, notifications can be sent in a file
+      ## filesystem:
+      ##   filename: /tmp/authelia/notification.txt
+
+      # Use a SMTP server for sending notifications. Authelia uses PLAIN or LOGIN method to authenticate.
+      # [Security] By default Authelia will:
+      #   - force all SMTP connections over TLS including unauthenticated connections
+      #      - use the disable_require_tls boolean value to disable this requirement (only works for unauthenticated connections)
+      #   - validate the SMTP server x509 certificate during the TLS handshake against the hosts trusted certificates
+      #     - trusted_cert option:
+      #       - this is a string value, that may specify the path of a PEM format cert, it is completely optional
+      #       - if it is not set, a blank string, or an invalid path; will still trust the host machine/containers cert store
+      #     - defaults to the host machine (or docker container's) trusted certificate chain for validation
+      #     - use the trusted_cert string value to specify the path of a PEM format public cert to trust in addition to the hosts trusted certificates
+      #     - use the disable_verify_cert boolean value to disable the validation (prefer the trusted_cert option as it's more secure)
+      smtp:
+        username: ${SECRET_AUTHELIA_SMTP_EMAIL}
+        # This secret can also be set using the env variables AUTHELIA_NOTIFIER_SMTP_PASSWORD
+        password: ${SECRET_AUTHELIA_SMTP_PASSWORD}
+        host: smtp.fastmail.com
+        port: 465
+        sender: ${SECRET_AUTHELIA_SMTP_EMAIL}
+        # Subject configuration of the emails sent.
+        # {title} is replaced by the text from the notifier
+        subject: "[Authelia] {title}"
+        ## disable_require_tls: false
+        ## disable_verify_cert: false
+        ## trusted_cert: ""
+
+      # Sending an email using a Gmail account is as simple as the next section.
+      # You need to create an app password by following: https://support.google.com/accounts/answer/185833?hl=en
+      ## smtp:
+      ##   username: myaccount@gmail.com
+      ##   # This secret can also be set using the env variables AUTHELIA_NOTIFIER_SMTP_PASSWORD
+      ##   password: yourapppassword
+      ##   sender: admin@example.com
+      ##   host: smtp.gmail.com
+      ##   port: 587
+  users.yaml: |
+    users:
+      Claude:
+        displayname: "Claude"
+        password: "${SECRET_AUTHELIA_USER_CLAUDE_PASSWORD}"
+        email: ${SECRET_AUTHELIA_USER_CLAUDE_EMAIL}
+        groups:
+          - admins
+      Helene:
+        displayname: "Helene"
+        password: "${SECRET_AUTHELIA_USER_HELENE_PASSWORD}"
+        email: ${SECRET_AUTHELIA_USER_HELENE_EMAIL}
+        groups:
+          - users
+      visitor:
+        displayname: "visitor"
+        password: "${SECRET_AUTHELIA_USER_VISITOR_PASSWORD}"
+        email: ${SECRET_AUTHELIA_USER_VISITOR_EMAIL}
+        groups:
+          - users

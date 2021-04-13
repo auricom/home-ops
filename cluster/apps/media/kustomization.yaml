@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - bazarr
+  - flood
+  - jackett
+  - jellyfin
+  - jobs
+  - lidarr
+  - lychee
+  - navidrome
+  - prowlarr
+  - pyload
+  - qbittorrent
+  - radarr
+  - sonarr
+  - tdarr
+  - travelstories
+  - volumes

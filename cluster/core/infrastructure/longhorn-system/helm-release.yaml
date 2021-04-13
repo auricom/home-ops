@@ -1,0 +1,41 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.longhorn.io
+      chart: longhorn
+      version: 1.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    defaultSettings:
+      backupTarget: s3://longhorn@us-east-1/
+      backupTargetCredentialSecret: minio-truenas-credentials
+      createDefaultDiskLabeledNodes: true
+      defaultDataPath: /var/lib/longhorn/
+      replicaSoftAntiAffinity: false
+      storageOverProvisioningPercentage: 300
+      storageMinimalAvailablePercentage: 25
+      upgradeChecker: true
+      defaultReplicaCount: 3
+      guaranteedEngineCPU: 0.25
+      defaultLonghornStaticStorageClass: longhorn-backups
+      backupstorePollInterval: 10800
+      autoSalvage: true
+      disableSchedulingOnCordonedNode: true
+      replicaZoneSoftAntiAffinity: true
+      volumeAttachmentRecoveryPolicy: wait
+    csi:
+      kubeletRootDir: /var/lib/kubelet
+      tls: true
+    ingress:
+      enabled: false
