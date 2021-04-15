@@ -23,20 +23,21 @@ spec:
       repository: drone/drone
       tag: 1.10.1
     persistentVolume:
-      enabled: true
+      enabled: false
       existingClaim: drone-config
     env:
+      DRONE_DATABASE_DRIVER: postgres
+      DRONE_DATABASE_DATASOURCE: ${SECRET_DRONE_DATABASE_DATASOURCE}
       DRONE_DATABASE_SECRET: ${SECRET_DRONE_DATABASE_SECRET}
+      DRONE_RPC_SECRET: ${SECRET_DRONE_RPC_SECRET}
       DRONE_GITEA_CLIENT_ID: ${SECRET_DRONE_GITEA_CLIENT_ID}
       DRONE_GITEA_CLIENT_SECRET: ${SECRET_DRONE_GITEA_CLIENT_SECRET}
-      DRONE_RPC_SECRET: ${SECRET_DRONE_RPC_SECRET}
-      DRONE_SERVER_PROTO: https
-      DRONE_GIT_ALWAYS_AUTH: true
+      DRONE_GITEA_SERVER: https://gitea.${SECRET_CLUSTER_DOMAIN}
       DRONE_LOGS_TEXT: true
       DRONE_LOGS_PRETTY: true
       DRONE_LOGS_COLOR: true
+      DRONE_SERVER_PROTO: https
       DRONE_SERVER_HOST: drone.${SECRET_CLUSTER_DOMAIN}
-      DRONE_GITEA_SERVER: https://gitea.${SECRET_CLUSTER_DOMAIN}
     ingress:
       enabled: true
       annotations:
