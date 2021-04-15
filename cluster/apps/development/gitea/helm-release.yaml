@@ -61,6 +61,7 @@ spec:
         server:
           SSH_PORT: 22
           SSH_LISTEN_PORT: 22
+          SSH_DOMAIN: gitea.${SECRET_CLUSTER_DOMAIN_ROOT}
         respository:
           DEFAULT_PRIVATE: true
         admin:
