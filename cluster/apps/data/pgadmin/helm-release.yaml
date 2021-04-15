@@ -26,10 +26,6 @@ spec:
     env:
       email: ${SECRET_PGADMIN_EMAIL}
       password: ${SECRET_PGADMIN_PASSWORD}
-    service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: http
     ingress:
       enabled: true
       annotations:
