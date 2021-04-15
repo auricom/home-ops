@@ -17,7 +17,17 @@ spec:
             - name: tester
               image: bitnami/kubectl:1.20.5
               command:
-                - "bin/bash"
-                - "-c"
-                - "bash <(curl -s https://raw.githubusercontent.com/auricom/home-cluster/main/scripts/jobs-vikunja-restart.bash)"
+                - "bin/sh"
+                - "-ec"
+                - |
+                  #!/bin/sh
+
+                  set -o nounset
+                  set -o errexit
+
+                  result=$(kubectl get pod --selector app.kubernetes.io/name=vikunja --output custom-columns=:metadata.name --namespace data)
+                  VIKUNJA_POD=$(echo $result | awk '{ print $NF }')
+                  echo $VIKUNJA_POD | grep vikunja
+                  test $? -eq 0 && kubectl delete pod $VIKUNJA_POD --namespace data
+                  curl -m 10 --retry 5 https://healthchecks.monitoring.svc.cluster.local/ping/a1a67035-7576-4020-816b-e4ec2817a719
           restartPolicy: Never

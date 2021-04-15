@@ -17,7 +17,19 @@ spec:
             - name: tester
               image: bitnami/kubectl:1.20.5
               command:
-                - "bin/bash"
-                - "-c"
-                - "bash <(curl -s https://raw.githubusercontent.com/auricom/home-cluster/main/scripts/jobs-qbittorrent-p2pblocklist.bash)"
+                - "bin/xsh"
+                - "-ec"
+                - |
+                  #!/bin/sh
+
+                  set -o nounset
+                  set -o errexit
+
+                  curl --location https://github.com/DavidMoore/ipfilter/releases/download/lists/ipfilter.dat.gz --output /tmp/ipfilter.dat.gz
+                  gunzip /tmp/ipfilter.dat.gz
+                  result=$(kubectl get pod --selector app.kubernetes.io/name=qbittorrent --output custom-columns=:metadata.name --namespace media)
+                  QBITTORRENT_POD=$(echo $result | awk '{ print $NF }')
+                  echo $QBITTORRENT_POD | grep qbittorrent
+                  test $? -eq 0 && kubectl cp /tmp/ipfilter.dat media/$QBITTORRENT_POD:/config/ipfilter.dat
+                  curl -m 10 --retry 5 https://healthchecks.monitoring.svc.cluster.local/ping/b4651e4f-5058-436b-a237-0df660e9de9e
           restartPolicy: Never
