@@ -17,7 +17,7 @@ spec:
             - name: tester
               image: bitnami/kubectl:1.20.5
               command:
-                - "bin/xsh"
+                - "bin/sh"
                 - "-ec"
                 - |
                   #!/bin/sh
@@ -31,5 +31,5 @@ spec:
                   QBITTORRENT_POD=$(echo $result | awk '{ print $NF }')
                   echo $QBITTORRENT_POD | grep qbittorrent
                   test $? -eq 0 && kubectl cp /tmp/ipfilter.dat media/$QBITTORRENT_POD:/config/ipfilter.dat
-                  curl -m 10 --retry 5 https://healthchecks.monitoring.svc.cluster.local/ping/b4651e4f-5058-436b-a237-0df660e9de9e
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local:8000/ping/b4651e4f-5058-436b-a237-0df660e9de9e
           restartPolicy: Never

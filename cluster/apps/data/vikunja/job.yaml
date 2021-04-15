@@ -29,5 +29,5 @@ spec:
                   VIKUNJA_POD=$(echo $result | awk '{ print $NF }')
                   echo $VIKUNJA_POD | grep vikunja
                   test $? -eq 0 && kubectl delete pod $VIKUNJA_POD --namespace data
-                  curl -m 10 --retry 5 https://healthchecks.monitoring.svc.cluster.local/ping/a1a67035-7576-4020-816b-e4ec2817a719
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local:8000/ping/a1a67035-7576-4020-816b-e4ec2817a719
           restartPolicy: Never
