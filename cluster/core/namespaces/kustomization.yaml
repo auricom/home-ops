@@ -12,4 +12,4 @@ resources:
   - media.yaml
   - monitoring.yaml
   - networking.yaml
-  - system-upgrade.yaml
+  #- system-upgrade.yaml
