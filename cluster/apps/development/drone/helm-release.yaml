@@ -35,8 +35,8 @@ spec:
       DRONE_LOGS_TEXT: true
       DRONE_LOGS_PRETTY: true
       DRONE_LOGS_COLOR: true
-      DRONE_SERVER_PROTO: https
-      DRONE_SERVER_HOST: drone.${SECRET_CLUSTER_DOMAIN}
+      DRONE_SERVER_PROTO: http
+      DRONE_SERVER_HOST: drone
     ingress:
       enabled: true
       annotations:
