@@ -24,7 +24,6 @@ spec:
       tag: 1.10.1
     persistentVolume:
       enabled: false
-      existingClaim: drone-config
     env:
       DRONE_DATABASE_DRIVER: postgres
       DRONE_DATABASE_DATASOURCE: ${SECRET_DRONE_DATABASE_DATASOURCE}
