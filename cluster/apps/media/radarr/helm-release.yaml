@@ -62,6 +62,10 @@ spec:
           proxy_set_header Accept-Encoding "";
           sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/radarr/space-gray.css"></head>';
           sub_filter_once on;
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Radarr"
+        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/Radarr/Radarr/develop/Logo/256.png"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: radarr.${SECRET_CLUSTER_DOMAIN}
           paths:

@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: travelstories
-  namespace: home
+  namespace: media
   labels:
     app.kubernetes.io/instance: travelstories
     app.kubernetes.io/name: travelstories
@@ -45,7 +45,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: travelstories-caddyfile
-  namespace: home
+  namespace: media
 data:
   Caddyfile: |+
     :80
@@ -63,7 +63,7 @@ metadata:
     app.kubernetes.io/instance: travelstories
     app.kubernetes.io/name: travelstories
   name: travelstories
-  namespace: home
+  namespace: media
 spec:
   ports:
     - name: http
@@ -80,11 +80,16 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+    nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+    forecastle.stakater.com/expose: "true"
+    forecastle.stakater.com/appName: "Travelstories"
+    forecastle.stakater.com/icon: "https://image.flaticon.com/icons/png/512/120/120653.png"
   labels:
     app.kubernetes.io/instance: travelstories
     app.kubernetes.io/name: travelstories
   name: travelstories
-  namespace: home
+  namespace: media
 spec:
   rules:
     - host: travelstories.${SECRET_CLUSTER_DOMAIN}

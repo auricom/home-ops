@@ -69,6 +69,10 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "qBittorrent"
+        forecastle.stakater.com/icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/New_qBittorrent_Logo.svg/600px-New_qBittorrent_Logo.svg.png"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: qbittorrent.${SECRET_CLUSTER_DOMAIN}
           paths:

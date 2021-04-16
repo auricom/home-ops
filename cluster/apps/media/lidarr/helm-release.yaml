@@ -64,6 +64,10 @@ spec:
           proxy_set_header Accept-Encoding "";
           sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/lidarr/space-gray.css"></head>';
           sub_filter_once on;
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Lidarr"
+        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/lidarr/Lidarr/14c3d31c2bf64893e9e7c137a04bfc096e6d36fe/frontend/src/Content/Images/Icons/android-chrome-192x192.png"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: lidarr.${SECRET_CLUSTER_DOMAIN}
           paths:

@@ -38,6 +38,10 @@ spec:
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
         nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Flood"
+        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/jesec/flood/master/flood.svg"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: flood.${SECRET_CLUSTER_DOMAIN}
           paths:

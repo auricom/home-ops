@@ -42,6 +42,10 @@ spec:
           proxy_set_header Accept-Encoding "";
           sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/sonarr/space-gray.css"></head>';
           sub_filter_once on;
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Sonarr"
+        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/Sonarr/Sonarr/develop/Logo/256.png"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: sonarr.${SECRET_CLUSTER_DOMAIN}
           paths:
