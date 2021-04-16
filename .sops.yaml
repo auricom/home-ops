@@ -1,6 +1,5 @@
 ---
 creation_rules:
-  - encrypted_regex: "((?i)(pass|secret($|[^N])|key|token|^data$|^stringData))"
+  - encrypted_regex: "^(data|stringData)$"
     pgp: >-
-      $FLUX_KEY_FP,
-      $PERSONAL_KEY_FP
+      C8F8A49D04A1AB639F8EA21CDBA4B1DCB1FA5BDD
