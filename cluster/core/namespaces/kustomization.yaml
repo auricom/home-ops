@@ -7,6 +7,7 @@ resources:
   - development.yaml
   - flux-system.yaml
   - home.yaml
+  - kasten-io.yaml
   - kube-system.yaml
   - longhorn-system.yaml
   - media.yaml
