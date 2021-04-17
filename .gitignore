@@ -1,3 +1,2 @@
-# Secrets
-*.clear
-bin/
+### SOPS ###
+.decrypted~*.yaml
