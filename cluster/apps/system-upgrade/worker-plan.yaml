@@ -1,62 +1,27 @@
 ---
 #
-# Server plan
+# Worker plan
 #
 apiVersion: upgrade.cattle.io/v1
 kind: Plan
 metadata:
-  name: k3s-server
-  namespace: system-upgrade
-spec:
-  concurrency: 1
-  cordon: true
-  nodeSelector:
-    matchExpressions:
-      - key: node-role.kubernetes.io/master
-        operator: In
-        values:
-          - "true"
-      - key: k3os.io/mode
-        operator: DoesNotExist
-      - key: kubernetes.io/arch
-        operator: In
-        values:
-          - "amd64"
-      - effect: NoExecute
-        operator: Exists
-      - effect: NoSchedule
-        operator: Exists
-  serviceAccountName: system-upgrade
-  tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Exists"
-  upgrade:
-    image: rancher/k3s-upgrade
-  channel: https://update.k3s.io/v1-release/channels/v1.20
----
-#
-# Agent plan
-#
-apiVersion: upgrade.cattle.io/v1
-kind: Plan
-metadata:
-  name: k3s-agent
+  name: k3s-worker
   namespace: system-upgrade
   labels:
-    k3s-upgrade: agent
+    k3s-upgrade: worker
 spec:
   concurrency: 1
   channel: https://update.k3s.io/v1-release/channels/v1.20
   nodeSelector:
     matchExpressions:
-      - key: k3s-upgrade
-        operator: Exists
+      #- key: k3s-upgrade
+      #  operator: Exists
       - key: k3s-upgrade
         operator: NotIn
         values:
           - "disabled"
           - "false"
-      - key: k3s.io/hostname
+      - key: kubernetes.io/hostname
         operator: Exists
       - key: k3os.io/mode
         operator: DoesNotExist
@@ -78,6 +43,8 @@ spec:
       effect: NoSchedule
       operator: Equal
       value: arm
+    - key: arm
+      operator: Exists
   prepare:
     image: rancher/k3s-upgrade
     args:
