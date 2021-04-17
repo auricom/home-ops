@@ -9,7 +9,7 @@ spec:
   dependsOn:
     - name: secrets
   path: ./cluster/core
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
