@@ -4,7 +4,7 @@ These Ansible Playbooks and Roles are for preparing an Ubuntu 20.10.x OS to play
 
 ## Commands
 
-Commands to run can be found in my Ansible Taskfile located [here](https://github.com/onedr0p/home-cluster/blob/main/.taskfiles/ansible.yml)
+Commands to run can be found in my Ansible Taskfile located [here](https://github.com/auricom/home-cluster/blob/main/.taskfiles/ansible.yml)
 
 e.g.
 

@@ -9,5 +9,5 @@ k3s_control_node: false
 k3s_agent:
   node-ip: "{{ ansible_host }}"
   node-label:
-    - "node-role.kubernetes.io/worker=true"
+    #- "kubernetes.io/role=worker"
     - "k3s-upgrade=true"
