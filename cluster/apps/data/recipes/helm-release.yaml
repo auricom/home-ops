@@ -58,17 +58,22 @@ spec:
       tls:
         - hosts:
             - "recipes.${SECRET_CLUSTER_DOMAIN}"
-    persistence:
-      config:
-        enabled: false
-      media:
-        enabled: true
+
+    additionalVolumes:
+      - name: files
+        persistentVolumeClaim:
+          claimName: recipes-files
+      - name: recipes-config
+        configMap:
+          name: recipes-config
+    additionalVolumeMounts:
+      - name: files
         mountPath: /opt/recipes/mediafiles
-        existingClaim: recipes-media
-      static:
-        enabled: true
+        subPath: media
+      - name: files
         mountPath: /opt/recipes/staticfiles
-        existingClaim: recipes-static
+        subPath: static
+
     additionalContainers:
       - name: nginx
         image: nginx:1.19.10
@@ -76,10 +81,12 @@ spec:
           - containerPort: 80
             name: http
         volumeMounts:
-          - name: media
+          - name: files
             mountPath: "/media"
-          - name: static
+            subPath: media
+          - name: files
             mountPath: "/static"
+            subPath: static
           - name: recipes-config
             mountPath: /etc/nginx/nginx.conf
             subPath: nginx-config

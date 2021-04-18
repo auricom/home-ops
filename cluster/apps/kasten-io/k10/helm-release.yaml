@@ -24,7 +24,7 @@ spec:
       email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
     global:
       persistence:
-        storageClass: longhorn
+        storageClass: rook-ceph-block
     auth:
       tokenAuth:
         enabled: true

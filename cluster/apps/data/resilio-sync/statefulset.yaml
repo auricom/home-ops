@@ -39,8 +39,9 @@ spec:
             - containerPort: 55555
               name: com-claude
           volumeMounts:
-            - name: config-claude
+            - name: config
               mountPath: /config
+              subPath: claude
             - name: sync-conf-claude
               mountPath: /config/sync.conf
               subPath: sync.conf
@@ -72,8 +73,9 @@ spec:
             - containerPort: 55556
               name: com-helene
           volumeMounts:
-            - name: config-helene
+            - name: config
               mountPath: /config
+              subPath: helene
             - name: sync-conf-helene
               mountPath: /config/sync.conf
               subPath: sync.conf
@@ -82,18 +84,15 @@ spec:
             - name: nfs-backups-data
               mountPath: /sync/backup
       volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: resilio-sync-config
         - name: sync-conf-claude
           configMap:
             name: resilio-sync-claude-conf
         - name: sync-conf-helene
           configMap:
             name: resilio-sync-helene-conf
-        - name: config-claude
-          persistentVolumeClaim:
-            claimName: resilio-sync-config-claude
-        - name: config-helene
-          persistentVolumeClaim:
-            claimName: resilio-sync-config-helene
         - name: home-claude-data
           persistentVolumeClaim:
             claimName: nfs-home-claude-data

@@ -46,6 +46,11 @@ spec:
         forecastle.stakater.com/appName: "Sonarr"
         forecastle.stakater.com/icon: "https://raw.githubusercontent.com/Sonarr/Sonarr/develop/Logo/256.png"
         forecastle.stakater.com/network-restricted: "true"
+        # -- Nginx client Body Buffer Size
+        nginx.ingress.kubernetes.io/client-body-buffer-size: "20m"
+        # -- Nginx Proxy Body Size
+        nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+        nginx.ingress.kubernetes.io/proxy-buffering: "off"
       hosts:
         - host: sonarr.${SECRET_CLUSTER_DOMAIN}
           paths:

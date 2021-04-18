@@ -27,7 +27,7 @@ spec:
       homeassistant: true
       device_options:
         retain: true
-      permit_join: false
+      permit_join: true
       mqtt:
         base_topic: zigbee2mqtt
         server: "mqtt://vernemq"

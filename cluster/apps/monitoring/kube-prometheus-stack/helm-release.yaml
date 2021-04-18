@@ -65,7 +65,7 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: rook-ceph-block
               resources:
                 requests:
                   storage: 10Gi
@@ -91,9 +91,6 @@ spec:
         default:
           kubernetes-custom:
             url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/kubernetes-custom.json
-            datasource: Prometheus
-          longhorn:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/longhorn.json
             datasource: Prometheus
       deploymentStrategy:
         type: Recreate
@@ -198,7 +195,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: rook-ceph-block
               resources:
                 requests:
                   storage: 10Gi

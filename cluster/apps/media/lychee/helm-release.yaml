@@ -21,14 +21,17 @@ spec:
       repository: lycheeorg/lychee-laravel
       pullPolicy: IfNotPresent
       tag: v4.2.2
+
     strategy:
       type: Recreate
+
     service:
       port:
         port: 80
       annotations:
         prometheus.io/probe: "true"
         prometheus.io/protocol: http
+
     ingress:
       enabled: true
       annotations:
@@ -44,6 +47,7 @@ spec:
       tls:
         - hosts:
             - "lychee.${SECRET_CLUSTER_DOMAIN}"
+
     env:
       PHP_TZ: Europe/Paris
       DB_CONNECTION: pgsql
@@ -52,20 +56,22 @@ spec:
       DB_DATABASE: lychee
       DB_USERNAME: lychee
       DB_PASSWORD: ${SECRET_LYCHEE_DB_PASSWORD}
+
     persistence:
-      config:
-        enabled: true
-        mountPath: /conf
-        existingClaim: lychee-config
-      uploads:
-        enabled: true
-        mountPath: /uploads
-        existingClaim: lychee-uploads
-      sym:
-        enabled: true
-        mountPath: /sym
-        existingClaim: lychee-sym
       photo:
         enabled: true
         mountPath: /mnt/storage/photo
         existingClaim: nfs-photo-media
+        readOnly: true
+
+    additionalVolumes:
+      - name: files
+        persistentVolumeClaim:
+          claimName: lychee-files
+    additionalVolumeMounts:
+      - name: files
+        mountPath: /uploads
+        subPath: uploads
+      - name: files
+        mountPath: /sym
+        subPath: sym
