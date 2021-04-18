@@ -39,7 +39,7 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   storageClassName: local
   local:
-    path: /mnt/ssd1/qbittorrent
+    path: /local-path/qbittorrent
   nodeAffinity:
     required:
       nodeSelectorTerms:
