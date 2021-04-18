@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m0s
   dependsOn:
-    - name: secrets
+    - name: base-custom
   path: ./cluster/core
   prune: false
   sourceRef:

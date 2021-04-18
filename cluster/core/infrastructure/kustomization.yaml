@@ -3,10 +3,8 @@ kind: Kustomization
 resources:
   - cert-manager
   - descheduler
-  - external-snapshotter
   - flux
   - intel-gpu-plugin
-  - kube-prometheus-stack
   - longhorn-system
   - node-feature-discovery
   - system-upgrade

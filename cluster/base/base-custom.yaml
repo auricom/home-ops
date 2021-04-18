@@ -2,16 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
-  name: secrets
+  name: base-custom
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./cluster/secrets
-  prune: true
+  path: ./cluster/base-custom
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
-  validation: client
   decryption:
     provider: sops
     secretRef:

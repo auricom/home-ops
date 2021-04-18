@@ -8,7 +8,6 @@ spec:
   interval: 10m0s
   dependsOn:
     - name: core
-    - name: secrets
   path: ./cluster/apps
   prune: true
   sourceRef:
