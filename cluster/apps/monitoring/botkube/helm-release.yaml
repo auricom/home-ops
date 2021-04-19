@@ -177,6 +177,6 @@ spec:
       discord:
         enabled: true
         notiftype: short
-        channel: ${SECRET_BOTKUBE_DISCORD_CHANNEL}
+        channel: "778626068637679707"
         botid: ${SECRET_BOTKUBE_DISCORD_BOTID}
         token: ${SECRET_BOTKUBE_DISCORD_TOKEN}
