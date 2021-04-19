@@ -410,8 +410,6 @@ data:
 
         # Deny admin services to users
         - domain:
-          - longhorn.${SECRET_CLUSTER_DOMAIN}
-          - goldilocks.${SECRET_CLUSTER_DOMAIN}
           - alert-manager.${SECRET_CLUSTER_DOMAIN}
           - prometheus.${SECRET_CLUSTER_DOMAIN}
           - thanos.${SECRET_CLUSTER_DOMAIN}

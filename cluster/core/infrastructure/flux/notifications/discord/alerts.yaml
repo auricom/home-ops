@@ -26,7 +26,7 @@ spec:
   eventSeverity: error
   eventSources:
     - kind: HelmRelease
-      namespace: "auth"
+      namespace: "cert-manager"
       name: "*"
     - kind: HelmRelease
       namespace: "data"
@@ -35,16 +35,13 @@ spec:
       namespace: "development"
       name: "*"
     - kind: HelmRelease
-      namespace: "flux-system"
-      name: "*"
-    - kind: HelmRelease
       namespace: "home"
       name: "*"
     - kind: HelmRelease
-      namespace: "kube-system"
+      namespace: "kasten-io"
       name: "*"
     - kind: HelmRelease
-      namespace: "longhorn-system"
+      namespace: "kube-system"
       name: "*"
     - kind: HelmRelease
       namespace: "media"
@@ -53,6 +50,9 @@ spec:
       namespace: "monitoring"
       name: "*"
     - kind: HelmRelease
-      namespace: "network"
+      namespace: "networking"
+      name: "*"
+    - kind: HelmRelease
+      namespace: "rook-ceph"
       name: "*"
   suspend: false

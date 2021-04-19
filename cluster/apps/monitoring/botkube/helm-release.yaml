@@ -31,7 +31,7 @@ spec:
             include:
               - all
             ignore: # List of namespaces to be ignored (omitempty), used only with include: all
-              - longhorn-system # example : include [all], ignore [x,y,z]
+              - kasten-io # example : include [all], ignore [x,y,z]
               - kube-system
           events: # List of lifecycle events you want to receive, e.g create, update, delete, error OR all
             - create

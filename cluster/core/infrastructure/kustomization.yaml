@@ -5,7 +5,6 @@ resources:
   - descheduler
   - flux
   - intel-gpu-plugin
-  - longhorn-system
   - node-feature-discovery
   - rook-ceph
   - system-upgrade

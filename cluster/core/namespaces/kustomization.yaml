@@ -9,7 +9,6 @@ resources:
   - home.yaml
   - kasten-io.yaml
   - kube-system.yaml
-  - longhorn-system.yaml
   - media.yaml
   - monitoring.yaml
   - networking.yaml
