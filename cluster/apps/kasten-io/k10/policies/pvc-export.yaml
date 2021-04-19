@@ -1,0 +1,48 @@
+---
+apiVersion: config.kio.kasten.io/v1alpha1
+kind: Policy
+metadata:
+  name: pvc-export
+  namespace: kasten-io
+spec:
+  frequency: "@daily"
+  actions:
+    - action: backup
+      backupParameters:
+        filters:
+          includeResources:
+            - resource: persistentvolumeclaims
+              matchExpressions:
+                - key: kasten-io/snapshots
+                  operator: In
+                  values:
+                    - enable
+        profile:
+          namespace: kasten-io
+          name: minio
+    - action: export
+      exportParameters:
+        frequency: "@daily"
+        migrationToken:
+          name: pvc-export-migration-token-fzvgp
+          namespace: kasten-io
+        profile:
+          name: minio
+          namespace: kasten-io
+        exportData:
+          enabled: true
+      retention: {}
+  retention:
+    daily: 7
+    weekly: 2
+    monthly: 2
+  selector:
+    matchExpressions:
+      - key: k10.kasten.io/appNamespace
+        operator: In
+        values:
+          - networking
+          - media
+          - home
+          - development
+          - data

@@ -4,3 +4,5 @@ resources:
   - helm-release.yaml
   - prometheus-rule.yaml
   - service-monitor.yaml
+  - profiles
+  - policies
