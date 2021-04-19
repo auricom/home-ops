@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: gitea-config
   namespace: development
+  labels:
+    kasten-io/snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

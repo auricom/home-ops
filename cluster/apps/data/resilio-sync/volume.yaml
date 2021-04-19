@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: resilio-sync-config
   namespace: data
+  labels:
+    kasten-io/snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

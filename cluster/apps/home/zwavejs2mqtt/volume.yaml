@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: zwavejs2mqtt-config
   namespace: home
+  labels:
+    kasten-io/snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

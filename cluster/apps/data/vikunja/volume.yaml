@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: vikunja-files
   namespace: data
+  labels:
+    kasten-io/snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: lychee-files
   namespace: media
+  labels:
+    kasten-io/snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: navidrome-config
   namespace: media
+  labels:
+    kasten-io/snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce
