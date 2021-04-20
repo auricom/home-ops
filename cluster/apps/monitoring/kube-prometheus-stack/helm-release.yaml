@@ -92,6 +92,36 @@ spec:
           kubernetes-custom:
             url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temparatures.json
             datasource: Prometheus
+            # Ref: https://grafana.com/grafana/dashboards/12175
+          calico-felix:
+            gnetId: 12175
+            revision: 5
+            datasource: Prometheus
+          # Ref: https://grafana.com/grafana/dashboards/2842
+          ceph-cluster:
+            gnetId: 2842
+            revision: 14
+            datasource: Prometheus
+          # Ref: https://grafana.com/grafana/dashboards/5336
+          ceph-osd:
+            gnetId: 5336
+            revision: 5
+            datasource: Prometheus
+          # Ref: https://grafana.com/grafana/dashboards/5342
+          ceph-pools:
+            gnetId: 5342
+            revision: 5
+            datasource: Prometheus
+          # Ref: https://grafana.com/grafana/dashboards/11315
+          flux-cluster:
+            url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/cluster.json
+            datasource: Prometheus
+          flux-control-plane:
+            url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/control-plane.json
+            datasource: Prometheus
+          vernemq:
+            url: https://raw.githubusercontent.com/vernemq/vernemq/master/metrics_scripts/grafana/VerneMQ%20Node%20Metrics.json
+            datasource: Prometheus
       deploymentStrategy:
         type: Recreate
       persistence:
