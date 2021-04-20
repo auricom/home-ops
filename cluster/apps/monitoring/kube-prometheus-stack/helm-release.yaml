@@ -90,7 +90,7 @@ spec:
       dashboards:
         default:
           kubernetes-custom:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/kubernetes-custom.json
+            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temparatures.json
             datasource: Prometheus
       deploymentStrategy:
         type: Recreate
