@@ -31,7 +31,7 @@ spec:
       hosts:
         - host: pgadmin.${SECRET_CLUSTER_DOMAIN}
           paths:
-            - /
+            - path: /
       tls:
         - hosts:
             - pgadmin.${SECRET_CLUSTER_DOMAIN}
