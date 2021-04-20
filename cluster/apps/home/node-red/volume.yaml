@@ -5,7 +5,7 @@ metadata:
   name: node-red-config
   namespace: home
   labels:
-    kasten-io/snapshots: "enable"
+    kasten-io-snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

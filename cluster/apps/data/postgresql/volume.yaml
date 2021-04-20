@@ -5,7 +5,7 @@ metadata:
   name: postgresql
   namespace: data
   labels:
-    kasten-io/snapshots: "enable"
+    kasten-io-snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

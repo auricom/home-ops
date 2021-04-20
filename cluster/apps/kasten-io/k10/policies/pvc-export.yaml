@@ -13,7 +13,7 @@ spec:
           includeResources:
             - resource: persistentvolumeclaims
               matchExpressions:
-                - key: kasten-io/snapshots
+                - key: kasten-io-snapshots
                   operator: In
                   values:
                     - enable

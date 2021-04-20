@@ -5,7 +5,7 @@ metadata:
   name: unifi-config
   namespace: networking
   labels:
-    kasten-io/snapshots: "enable"
+    kasten-io-snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce

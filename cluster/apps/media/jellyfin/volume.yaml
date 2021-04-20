@@ -5,7 +5,7 @@ metadata:
   name: jellyfin-config
   namespace: media
   labels:
-    kasten-io/snapshots: "enable"
+    kasten-io-snapshots: "enable"
 spec:
   accessModes:
     - ReadWriteOnce
