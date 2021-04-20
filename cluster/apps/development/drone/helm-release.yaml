@@ -40,9 +40,6 @@ spec:
       DRONE_SERVER_HOST: drone.${SECRET_CLUSTER_DOMAIN}
     ingress:
       enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        prometheus.io/probe: "true"
       hosts:
         - host: drone.${SECRET_CLUSTER_DOMAIN}
           paths: ["/"]
