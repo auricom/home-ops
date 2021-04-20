@@ -1,0 +1,36 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: postgresql-ha
+  namespace: data
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami/
+      chart: postgresql
+      version: 10.3.18
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      registry: docker.io
+      repository: bitnami/postgresql
+      tag: 13.2.0
+      pullPolicy: IfNotPresent
+    postgresql:
+      ## PostgreSQL configuration parameters
+      ##
+      username: postgres
+      password: ${SECRET_POSTGRESQL_POSTGRES_PASSWORD}
+      # database:
+
+    ## Persistence parameters
+    ##
+    persistence:
+      enabled: true
+      existingClaim: postgresql
