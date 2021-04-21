@@ -7,6 +7,7 @@ resources:
   - freshrss
   - jobs
   - joplin-server
+  - mariadb-kube
   - pgadmin
   - pgbackups
   - postgresql-kube
