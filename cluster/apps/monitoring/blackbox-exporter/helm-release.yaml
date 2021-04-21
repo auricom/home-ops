@@ -52,12 +52,6 @@ spec:
         - name: borgbackup
           url: borgbackup
           module: icmp
-        - name: postgresql
-          url: postgresql
-          module: icmp
-        - name: mariadb
-          url: mariadb
-          module: icmp
         - name: k3s-server
           url: k3s-server
           module: icmp
