@@ -22,6 +22,7 @@ spec:
       repository: bitnami/mariadb
     auth:
       rootPassword: "${SECRET_MARIADB_ROOT_PASSWORD}"
-    persistence:
-      enabled: true
-      existingClaim: mariadb-kube
+    primary:
+      persistence:
+        enabled: true
+        existingClaim: mariadb-kube
