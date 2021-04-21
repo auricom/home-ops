@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgresql
+  name: postgresql-kube
   namespace: data
   labels:
     kasten-io-snapshots: "enable"

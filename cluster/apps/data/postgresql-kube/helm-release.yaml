@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: postgresql-ha
+  name: postgresql-kube
   namespace: data
 spec:
   interval: 5m
@@ -22,15 +22,8 @@ spec:
       repository: bitnami/postgresql
       tag: 13.2.0
       pullPolicy: IfNotPresent
-    postgresql:
-      ## PostgreSQL configuration parameters
-      ##
-      username: postgres
-      password: ${SECRET_POSTGRESQL_POSTGRES_PASSWORD}
-      # database:
-
-    ## Persistence parameters
-    ##
+    postgresqlUsername: postgres
+    postgresqlPassword: ${SECRET_POSTGRESQL_KUBE_POSTGRES_PASSWORD}
     persistence:
       enabled: true
-      existingClaim: postgresql
+      existingClaim: postgresql-kube

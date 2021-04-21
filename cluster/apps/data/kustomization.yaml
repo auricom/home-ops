@@ -9,7 +9,7 @@ resources:
   - joplin-server
   - pgadmin
   - pgbackups
-  - postgresql
+  - postgresql-kube
   - recipes
   - resilio-sync
   - searx
