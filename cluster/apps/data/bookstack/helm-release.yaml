@@ -24,7 +24,7 @@ spec:
       tag: "version-v21.04"
     env:
       APP_URL: https://bookstack.${SECRET_CLUSTER_DOMAIN}/
-      DB_HOST: mariadb
+      DB_HOST: mariadb-kube.data.svc.cluster.local.
       DB_DATABASE: bookstack
       DB_USERNAME: bookstack
       DB_PASSWORD: ${SECRET_BOOKSTACK_DB_PASSWORD}
