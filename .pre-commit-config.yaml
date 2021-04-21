@@ -18,7 +18,7 @@ repos:
         args: [--maxkb=2048]
       - id: check-merge-conflict
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.9
+    rev: v1.1.10
     hooks:
       - id: forbid-crlf
       - id: forbid-tabs
