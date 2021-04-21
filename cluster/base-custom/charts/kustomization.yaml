@@ -4,6 +4,7 @@ resources:
   - banzaicloud-charts.yaml
   - bitnami-charts.yaml
   - cert-manager-webhook-ovh.yaml
+  - cetic-charts.yaml
   - coredns-charts.yaml
   - drone-charts.yaml
   - fairwinds-charts.yaml
