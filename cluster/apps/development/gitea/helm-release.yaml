@@ -53,7 +53,7 @@ spec:
         APP_NAME: "Homelab Gitea"
         database:
           DB_TYPE: postgres
-          HOST: postgresql:5432
+          HOST: postgresql-kube.data.svc.cluster.local.:5432
           NAME: gitea
           USER: gitea
           PASSWD: ${SECRET_GITEA_DB_PASSWORD}

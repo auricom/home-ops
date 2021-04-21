@@ -25,15 +25,15 @@ spec:
       tag: 0.15.2
       pullPolicy: IfNotPresent
     env:
-      SECRET_KEY: ${SECRET_POSTGRESQL_RECIPES_SECRET_KEY}
+      SECRET_KEY: ${SECRET_RECIPES_SECRET_KEY}
       DEBUG: "0"
       ALLOWED_HOSTS: "*"
       DB_ENGINE: django.db.backends.postgresql
-      POSTGRES_HOST: postgresql
+      POSTGRES_HOST: postgresql-kube.data.svc.cluster.local.
       POSTGRES_PORT: 5432
       POSTGRES_DB: recipes
       POSTGRES_USER: recipes
-      POSTGRES_PASSWORD: ${SECRET_POSTGRESQL_RECIPES_DB_PASSWORD}
+      POSTGRES_PASSWORD: ${SECRET_RECIPES_DB_PASSWORD}
       GUNICORN_MEDIA: "0"
       TIMEZONE: Europe/Paris
       FRACTION_PREF_DEFAULT: "0"
