@@ -27,6 +27,7 @@ spec:
           memory: 2000Mi
     prometheusOperator:
       createCustomResource: true
+      configReloaderCpu: 200m
     alertmanager:
       ingress:
         enabled: true
