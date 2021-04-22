@@ -61,6 +61,10 @@ spec:
         new_api: true
     securityContext:
       privileged: true
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: "http"
     ingress:
       enabled: true
       annotations:

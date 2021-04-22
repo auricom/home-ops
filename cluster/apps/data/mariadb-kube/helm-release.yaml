@@ -26,3 +26,6 @@ spec:
       persistence:
         enabled: true
         existingClaim: mariadb-kube
+    commonAnnotations:
+      prometheus.io/probe: "true"
+      prometheus.io/protocol: "tcp"

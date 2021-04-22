@@ -34,6 +34,10 @@ spec:
         enabled: true
         mountPath: /data
         existingClaim: node-red-config
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: "http"
     ingress:
       enabled: true
       annotations:
