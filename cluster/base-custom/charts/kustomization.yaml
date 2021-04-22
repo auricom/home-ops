@@ -19,7 +19,6 @@ resources:
   - kasten-charts.yaml
   - kubernetes-dashboard-charts.yaml
   - kubernetes-sigs-descheduler-charts.yaml
-  - nicholaswilde.yaml
   - node-feature-discovery.yaml
   - prometheus-community-charts.yaml
   - rook-ceph-charts.yaml
