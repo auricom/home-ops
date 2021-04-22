@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://nicholaswilde.github.io/helm-charts/
       chart: bookstack
-      version: 0.1.16
+      version: 0.1.17
       sourceRef:
         kind: HelmRepository
         name: nicholaswilde-charts
