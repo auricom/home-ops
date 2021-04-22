@@ -26,13 +26,15 @@ spec:
       annotations:
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/proxy-body-size: 128m
-        prometheus.io/probe: "true"
       hosts:
         - "gitea.${SECRET_CLUSTER_DOMAIN}"
       tls:
         - hosts:
             - "gitea.${SECRET_CLUSTER_DOMAIN}"
     service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: "tcp"
       http:
         port: 3000
       ssh:
