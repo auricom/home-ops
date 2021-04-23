@@ -31,6 +31,7 @@ spec:
     alertmanager:
       ingress:
         enabled: true
+        pathType: Prefix
         annotations:
           kubernetes.io/ingress.class: "nginx"
           nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
@@ -181,6 +182,7 @@ spec:
           enabled: false
       ingress:
         enabled: true
+        pathType: Prefix
         annotations:
           kubernetes.io/ingress.class: "nginx"
         hosts: ["grafana.${SECRET_CLUSTER_DOMAIN}"]
@@ -198,6 +200,7 @@ spec:
     prometheus:
       ingress:
         enabled: true
+        pathType: Prefix
         annotations:
           kubernetes.io/ingress.class: "nginx"
           nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
