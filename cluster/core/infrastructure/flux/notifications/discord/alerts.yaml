@@ -25,34 +25,10 @@ spec:
     name: discord
   eventSeverity: error
   eventSources:
+    - kind: GitRepository
+      name: '*'
+    - kind: Kustomization
+      name: '*'
     - kind: HelmRelease
-      namespace: "cert-manager"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "data"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "development"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "home"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "kasten-io"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "kube-system"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "media"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "monitoring"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "networking"
-      name: "*"
-    - kind: HelmRelease
-      namespace: "rook-ceph"
-      name: "*"
+      name: '*'
   suspend: false
