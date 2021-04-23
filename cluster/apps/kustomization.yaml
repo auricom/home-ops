@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - data
   - development
+  - falco-system
   - home
   - kasten-io
   - media

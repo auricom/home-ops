@@ -5,6 +5,7 @@ resources:
   - data.yaml
   - default.yaml
   - development.yaml
+  - falco-system.yaml
   - flux-system.yaml
   - home.yaml
   - kasten-io.yaml
