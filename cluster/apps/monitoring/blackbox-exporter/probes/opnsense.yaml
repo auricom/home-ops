@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: opnsense
+  namespace: monitoring
+spec:
+  jobName: opnsense-probe
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+  targets:
+    staticConfig:
+      static:
+      - http://opnsense.xpander.ovh.:9273/metrics
