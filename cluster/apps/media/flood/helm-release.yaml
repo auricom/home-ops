@@ -20,7 +20,7 @@ spec:
     controllerType: deployment
     image:
       repository: jesec/flood
-      tag: 4.5.3
+      tag: 4.5.4
       pullPolicy: Always
     env:
       FLOOD_OPTION_RUNDIR: /data
