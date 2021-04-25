@@ -124,6 +124,9 @@ spec:
           vernemq:
             url: https://raw.githubusercontent.com/vernemq/vernemq/master/metrics_scripts/grafana/VerneMQ%20Node%20Metrics.json
             datasource: Prometheus
+          home-assistant:
+            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/home-assistant.json
+            datasource: Prometheus
       deploymentStrategy:
         type: Recreate
       persistence:
