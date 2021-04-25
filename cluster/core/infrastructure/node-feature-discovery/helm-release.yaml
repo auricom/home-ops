@@ -65,6 +65,12 @@ spec:
                   class: ["ff"]
                   vendor: ["1a86"]
                   device: ["7523"]
+            - name: "rflink"
+              matchOn:
+              - usbId:
+                  class: ["02"]
+                  vendor: ["2341"]
+                  device: ["0042"]
             - name: "intel-gpu"
               matchOn:
                 - pciId:
