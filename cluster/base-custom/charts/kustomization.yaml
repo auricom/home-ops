@@ -6,7 +6,6 @@ resources:
   - cert-manager-webhook-ovh.yaml
   - coredns-charts.yaml
   - drone-charts.yaml
-  - fairwinds-charts.yaml
   - falco-security-charts.yaml
   - gitea-charts.yaml
   - grafana-loki-charts.yaml
@@ -25,3 +24,4 @@ resources:
   - stakater-charts.yaml
   - twuni-charts.yaml
   - vernemq-charts.yaml
+  - weaveworks-kured-charts.yaml
