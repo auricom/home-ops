@@ -57,8 +57,8 @@ spec:
     defaultBackend:
       enabled: true
       image:
-        repository: billimek/custom-error-pages
-        tag: 0.4.4
+        repository: ghcr.io/181192/custom-error-pages
+        tag: latest
       resources:
         requests:
           memory: 250Mi
