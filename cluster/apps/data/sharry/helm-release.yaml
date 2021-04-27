@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: sharry
-      version: 2.3.1
+      version: 3.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -39,33 +39,6 @@ spec:
     args:
       - "/opt/sharry.conf"
 
-    sharry:
-      baseUrl: "https://sharry.${SECRET_CLUSTER_DOMAIN}"
-      jdbcUrl: ${SECRET_SHARRY_JDBC_URL}
-      jdbcUser: sharry
-      jdbcPassword: ${SECRET_SHARRY_DB_PASSWORD}
-      chunkSize: "512K"
-      maxSize: "1.5G"
-      maxValidity: "31 days"
-      signup: "closed"
-
-    nodeSelector: {}
-
-    tolerations: []
-
-    affinity: {}
-
-    podAnnotations: {}
-
-    additionalVolumes:
-      - name: sharry-config
-        configMap:
-          name: sharry-config
-    additionalVolumeMounts:
-      - name: sharry-config
-        mountPath: /opt/sharry.conf
-        subPath: sharry.conf
-
     ingress:
       enabled: true
       annotations:
@@ -82,3 +55,79 @@ spec:
       tls:
         - hosts:
             - "sharry.${SECRET_CLUSTER_DOMAIN}"
+
+    config: |
+      sharry.restserver {
+        base-url = "https://sharry.${SECRET_CLUSTER_DOMAIN}"
+
+        bind {
+          address = "0.0.0.0"
+          port =9090
+        }
+
+        backend {
+          auth {
+            fixed.enabled = false
+          }
+
+          jdbc {
+            url = "${SECRET_SHARRY_JDBC_URL}"
+            user = "sharry"
+            password = "${SECRET_SHARRY_DB_PASSWORD}"
+          }
+
+          webapp {
+            # This is shown in the top right corner of the web application
+            app-name = "Sharry"
+
+            # The icon next to the app-name. Needs to be an URL to a image.
+            app-icon = ""
+
+            # The login and register page displays a logo image, by default
+            # the Sharry logo. This can be changed here. It needs to be an URL
+            # to an image.
+            app-logo = ""
+
+            # This is markdown that is inserted as the footer on each page in
+            # the ui. If left empty, a link to the project is rendered.
+            app-footer = ""
+
+            # Whether to display the footer on each page in the ui. Set it to
+            # false to hide it.
+            app-footer-visible = true
+
+            # Chunk size used for one request. The server will re-chunk the
+            # stream into smaller chunks. But the client can transfer more in
+            # one requests, resulting in faster uploads.
+            #
+            # You might need to adjust this value depending on your setup. A
+            # higher value usually means faster uploads.
+            chunk-size = "100M"
+
+            # Number of milliseconds the client should wait before doing a new
+            # upload attempt after something failed. The length of the array
+            # denotes the number of retries.
+            retry-delays = [0, 3000, 6000, 12000, 24000, 48000]
+
+            # The login page can display a welcome message that is readable by
+            # everyone. The text is processed as markdown.
+            welcome-message = ""
+          }
+
+          share {
+            # When storing binary data use chunks of this size.
+            chunk-size = "512K"
+
+            # Maximum size of a share.
+            max-size = "1.5G"
+
+            # Maximum validity for uploads
+            max-validity =31 days
+          }
+          signup {
+            mode = "closed"
+            invite-time = "3 days"
+            invite-password = "generate-invite"
+          }
+        }
+      }
