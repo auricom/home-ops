@@ -416,9 +416,12 @@ data:
           subject: ["group:users"]
           policy: deny
 
-        # Fix Bazarr
+        # Bypass *zarr APIs
         - domain:
           - bazarr.${SECRET_CLUSTER_DOMAIN}
+          - lidarr.${SECRET_CLUSTER_DOMAIN}
+          - radarr.${SECRET_CLUSTER_DOMAIN}
+          - sonarr.${SECRET_CLUSTER_DOMAIN}
           resources:
           - '^/api/.*$'
           policy: bypass
