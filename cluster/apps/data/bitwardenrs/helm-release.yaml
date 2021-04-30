@@ -18,8 +18,8 @@ spec:
       interval: 5m
   values:
     image:
-      repository: bitwardenrs/server
-      tag: 1.20.0
+      repository: vaultwarden/server
+      tag: 1.21.0
       pullPolicy: IfNotPresent
     env:
       SIGNUPS_ALLOWED: "false"
