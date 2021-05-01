@@ -1,0 +1,64 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: wallabag
+  namespace: data
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: wallabag
+      version: 2.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+  values:
+    image:
+      repository: wallabag/wallabag
+      # Upgrading the wallabag version generally requires a migration.
+      # see https://doc.wallabag.org/en/admin/upgrade.html
+      tag: 2.4.2
+    env:
+      SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
+      SYMFONY__ENV__DATABASE_HOST: postgresql-kube.data.svc.cluster.local.
+      SYMFONY__ENV__DATABASE_PORT: 5432
+      SYMFONY__ENV__DATABASE_NAME: wallabag
+      SYMFONY__ENV__DATABASE_USER: wallabag
+      SYMFONY__ENV__DATABASE_PASSWORD: ${SECRET_WALLABAG_DB_PASSWORD}
+      SYMFONY__ENV__REDIS_HOST: wallabag-redis-master
+      SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_CLUSTER_DOMAIN}
+      SYMFONY__ENV__SERVER_NAME: Wallabag
+      SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
+      SYMFONY__ENV__FOSUSER_CONFIRMATION: "false"
+    service:
+      port:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+      hosts:
+        - host: wallabag.${SECRET_CLUSTER_DOMAIN}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - wallabag.${SECRET_CLUSTER_DOMAIN}
+    persistence:
+      images:
+        enabled: true
+        existingClaim: wallabag-images
+    redis:
+      enabled: true
+      clusterDomain: ${CLUSTER_DOMAIN}
+      architecture: standalone
+      replica:
+        replicaCount: 0
+      persistence:
+        enabled: false
