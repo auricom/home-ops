@@ -19,9 +19,12 @@ spec:
         app.kubernetes.io/instance: pgbackups
         app.kubernetes.io/name: pgbackups
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
         - name: pgbackups
-          image: prodrigestivill/postgres-backup-local:13
+          #image: prodrigestivill/postgres-backup-local:13
+          image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/postgres-backup-local:1.0.0
           env:
             - name: POSTGRES_HOST
               value: postgresql
@@ -43,6 +46,8 @@ spec:
               value: "3"
             - name: HEALTHCHECK_PORT
               value: "8080"
+            - name: POST_BACKUP_HOOK
+              value: "curl -m 10 --retry 5 https://healthchecks.k3s.xpander.ovh/ping/c88641a5-12f2-4f32-ab9c-5a7d122a229e"
           resources:
             requests:
               cpu: 150m
