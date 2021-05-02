@@ -33,6 +33,9 @@ spec:
       SYMFONY__ENV__SERVER_NAME: Wallabag
       SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
       SYMFONY__ENV__FOSUSER_CONFIRMATION: "false"
+      POPULATE_DATABASE: "false"
+    securityContext:
+      runAsUser: 0
     service:
       port:
         annotations:
