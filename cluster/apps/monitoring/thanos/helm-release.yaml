@@ -31,16 +31,6 @@ spec:
       replicaCount: 2
       replicaLabels:
         - replica
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app.kubernetes.io/name
-                    operator: In
-                    values:
-                      - thanos
-              topologyKey: "kubernetes.io/hostname"
     compact:
       retentionResolution1h: 5y
     objstore:
