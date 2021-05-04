@@ -52,7 +52,7 @@ spec:
                   - key: app.kubernetes.io/name
                     operator: In
                     values:
-                      - ingress-nginx-external
+                      - ingress-nginx
               topologyKey: "kubernetes.io/hostname"
     defaultBackend:
       enabled: true
