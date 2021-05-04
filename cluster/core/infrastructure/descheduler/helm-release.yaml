@@ -23,13 +23,13 @@ spec:
     deschedulerPolicy:
       strategies:
         RemoveDuplicates:
-          enabled: false
+          enabled: true
         RemovePodsViolatingNodeAffinity:
           enabled: true
           params:
             nodeAffinityType:
               - requiredDuringSchedulingIgnoredDuringExecution
         RemovePodsViolatingInterPodAntiAffinity:
-          enabled: false
+          enabled: true
         LowNodeUtilization:
           enabled: false
