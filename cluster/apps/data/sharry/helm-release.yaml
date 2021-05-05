@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: eikek0/sharry
-      tag: 1.6.0
+      tag: 1.7.0
       pullPolicy: IfNotPresent
 
     controllerType: deployment
