@@ -20,7 +20,7 @@ spec:
     image:
       repository: deluan/navidrome
       pullPolicy: IfNotPresent
-      tag: 0.42.0
+      tag: 0.42.1
     strategy:
       type: Recreate
     service:
