@@ -20,7 +20,7 @@ spec:
     controllerType: deployment
     image:
       repository: ghcr.io/home-assistant/home-assistant
-      tag: 2021.5.0
+      tag: 2021.5.1
     env:
       TZ: "Europe/Paris"
       HASS_SECRET_URL: https://hass.${SECRET_CLUSTER_DOMAIN}
