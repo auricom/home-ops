@@ -37,14 +37,13 @@
         "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*\\/(?<currentValue>.*?)\\/"
       ],
       "datasourceTemplate": "helm"
-    },
+    }
   ],
 
   "packageRules": [
     // Setup datasources
     {
-      "matchDatasources": ["helm"],
-      "separateMinorPatch": true
+      "matchDatasources": ["helm"]
     },
     // global docker datasource settings
     {
@@ -52,8 +51,7 @@
       "enabled": true,
       "commitMessageTopic": "container image {{depName}}",
       "commitMessageExtra": "to {{#if isSingleVersion}}v{{{newVersion}}}{{else}}{{{newValue}}}{{/if}}",
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "separateMinorPatch": true
+      "matchUpdateTypes": ["major", "minor", "patch"]
     },
     // add labels according to package and update types
     {
@@ -109,7 +107,7 @@
       "matchDatasources": ["docker"],
       "allowedVersions": "<2",
       "matchPackageNames": [
-        "influxdb",
+        "influxdb"
       ]
     },
     // enable auto-merge
