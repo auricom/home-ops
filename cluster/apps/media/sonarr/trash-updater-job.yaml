@@ -15,7 +15,7 @@ spec:
           serviceAccountName: jobs
           containers:
             - name: tester
-              image: alpine:3
+              image: alpine:20210212
               command:
                 - "bin/sh"
                 - "-ec"
