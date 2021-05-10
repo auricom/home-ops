@@ -1,0 +1,42 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: radarr-trash-updater
+  namespace: media
+spec:
+  schedule: "@weekly"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: radarr-trash-updater
+        spec:
+          serviceAccountName: jobs
+          containers:
+            - name: tester
+              image: alpine:3
+              command:
+                - "bin/sh"
+                - "-ec"
+                - |
+                  #!/bin/sh
+
+                  set -o nounset
+                  set -o errexit
+
+                  wget -O /tmp/trash.zip https://github.com/rcdailey/trash-updater/releases/latest/download/trash-linux-x64.zip
+                  unzip -o /tmp/trash.zip
+                  rm /tmp/trash.zip
+                  chmod u+rx /tmp/trash
+
+                  /tmp/trash --config /opt/trash.yaml
+              volumeMounts:
+                - name: config
+                  mountPath: /opt/trash.yaml
+                  subPath: trash.yaml
+          volumes:
+            - name: config
+              configMap:
+                name: radarr-trash-updater-config
+          restartPolicy: Never
