@@ -24,10 +24,14 @@ spec:
       tag: "version-v21.04.2"
     mariadb:
       enabled: true
+      image:
+        repository: bitnami/mariadb
+        tag: "10.5.10"
       auth:
         database: bookstack
         username: bookstack
         password: ${SECRET_BOOKSTACK_DB_PASSWORD}
+        rootPassword: ${SECRET_BOOKSTACK_DB_ROOT_PASSWORD}
       primary:
         persistence:
           enabled: true
