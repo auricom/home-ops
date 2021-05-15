@@ -17,7 +17,7 @@ repos:
           - -c
           - ".github/yamllint.config.yaml"
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.0.0
     hooks:
       - id: trailing-whitespace
       - id: check-added-large-files
