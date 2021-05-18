@@ -13,7 +13,7 @@ spec:
           serviceAccountName: sa-secret-reflector
           containers:
             - name: secret-reflector
-              image: bitnami/kubectl:1.21.0
+              image: bitnami/kubectl:1.21.1
               command:
                 - "/bin/sh"
                 - "-ec"
