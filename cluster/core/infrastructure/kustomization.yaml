@@ -5,6 +5,7 @@ resources:
   - descheduler
   - flux
   - intel-gpu-plugin
+  - kubernetes-replicator
   - kured
   - node-feature-discovery
   - rook-ceph

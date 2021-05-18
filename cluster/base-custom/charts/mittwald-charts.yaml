@@ -1,0 +1,10 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: mittwald-charts
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: https://helm.mittwald.de/
+  timeout: 3m
