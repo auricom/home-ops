@@ -22,7 +22,7 @@ spec:
       type: Recreate
     image:
       repository: jacobalberty/unifi
-      tag: 6.2.23
+      tag: 6.2.25
       pullPolicy: IfNotPresent
     persistence:
       enabled: true
