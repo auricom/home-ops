@@ -15,8 +15,8 @@ spec:
           annotations:
             description: Jobs failure
             summary: |-
-              "{{ $labels.app }} jobs amount of errors for the last 10 mins {{ $value }} for {{ $labels.policy }} policy"
-          expr: increase(catalog_actions_count{status="failed"}[10m]) > 0
-          for: 1m
+              "{{ $labels.app }} jobs amount of errors for the last 30 mins {{ $value }} for {{ $labels.policy }} policy"
+          expr: increase(catalog_actions_count{status="failed"}[30m]) > 0
+          for: 10m
           labels:
             severity: critical
