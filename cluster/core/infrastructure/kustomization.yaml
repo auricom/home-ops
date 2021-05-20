@@ -8,5 +8,6 @@ resources:
   - kubernetes-replicator
   - kured
   - node-feature-discovery
+  - reloader
   - rook-ceph
   - system-upgrade

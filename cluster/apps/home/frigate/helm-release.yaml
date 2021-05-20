@@ -64,7 +64,8 @@ spec:
         - /dev/dri/renderD128
         - -hwaccel_output_format
         - yuv420p
-
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: "frigate"
     ingress:
       enabled: true
       annotations:
