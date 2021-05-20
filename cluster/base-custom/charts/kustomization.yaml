@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - banzaicloud-charts.yaml
   - bitnami-charts.yaml
+  - blakeshome-charts.yaml
   - cert-manager-webhook-ovh.yaml
   - coredns-charts.yaml
   - drone-charts.yaml

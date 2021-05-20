@@ -71,3 +71,14 @@ spec:
       tls:
         - hosts:
             - "jellyfin.${SECRET_CLUSTER_DOMAIN}"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: feature.node.kubernetes.io/custom-coral-tpu
+                      operator: In
+                      values:
+                        - "true"

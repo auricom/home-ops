@@ -65,12 +65,10 @@ spec:
                   class: ["ff"]
                   vendor: ["1a86"]
                   device: ["7523"]
-            - name: "rflink"
+            - name: "coral-tpu"
               matchOn:
               - usbId:
-                  class: ["02"]
-                  vendor: ["2341"]
-                  device: ["0042"]
+                  vendor: ["1a6e", "18d1"]
             - name: "intel-gpu"
               matchOn:
                 - pciId:
