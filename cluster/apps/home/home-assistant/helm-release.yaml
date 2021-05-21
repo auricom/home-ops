@@ -70,6 +70,14 @@ spec:
       config:
         enabled: true
         existingClaim: hass-config
+    additionalVolumeMounts:
+      - name: usb
+        mountPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
+    additionalVolumes:
+      - name: usb
+        hostPath:
+          path: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
+          type: CharDevice
     addons:
       codeserver:
         enabled: true
@@ -107,3 +115,13 @@ spec:
         memory: 1000Mi
     postgresql:
       enabled: false
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - {
+                    key: "feature.node.kubernetes.io/custom-rflink",
+                    operator: In,
+                    values: ["true"],
+                  }
