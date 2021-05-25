@@ -52,6 +52,10 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Bookstack"
+        forecastle.stakater.com/icon: "https://yunohost.org/user/images/logo-bookstack.png?height=80?height=80"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: bookstack.${SECRET_CLUSTER_DOMAIN}
           paths:

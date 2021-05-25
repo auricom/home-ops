@@ -50,6 +50,10 @@ spec:
       annotations:
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/client-body-buffer-size: "10m"
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Recipes"
+        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/vabene1111/recipes/develop/docs/logo_color.svg"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: recipes.${SECRET_CLUSTER_DOMAIN}
           paths:

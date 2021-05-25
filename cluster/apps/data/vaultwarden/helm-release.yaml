@@ -44,6 +44,10 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Vaultwarden"
+        forecastle.stakater.com/icon: "https://image.winudf.com/v2/image1/Y29tLng4Yml0LmJpdHdhcmRlbl9pY29uXzE1OTM0NTk3NDNfMDA2/icon.png?fakeurl=1&h=120"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: vaultwarden.${SECRET_CLUSTER_DOMAIN}
           paths:

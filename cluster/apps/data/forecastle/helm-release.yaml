@@ -35,6 +35,10 @@ spec:
           - host: home.${SECRET_CLUSTER_DOMAIN}
             paths:
               - /
+          - host: services.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - /
         tls:
           - hosts:
               - home.${SECRET_CLUSTER_DOMAIN}
+              - services.${SECRET_CLUSTER_DOMAIN}

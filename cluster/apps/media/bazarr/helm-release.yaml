@@ -61,7 +61,7 @@ spec:
           sub_filter_once on;
         forecastle.stakater.com/expose: "true"
         forecastle.stakater.com/appName: "Bazarr"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/morpheus65535/bazarr/master/static/logo128.png"
+        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/morpheus65535/bazarr/4ba88228177dcfac93dc74e375cfa49eda29ad21/static/logo128.png"
         forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: bazarr.${SECRET_CLUSTER_DOMAIN}

@@ -80,6 +80,10 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Vikunja"
+        forecastle.stakater.com/icon: "https://vikunja.io/docs/images/vikunja-logo-white.svg"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: vikunja.${SECRET_CLUSTER_DOMAIN}
           paths:

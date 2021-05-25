@@ -207,6 +207,10 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    forecastle.stakater.com/expose: "true"
+    forecastle.stakater.com/appName: "Resilio Sync"
+    forecastle.stakater.com/icon: "https://avatars.githubusercontent.com/u/12284211?s=200&v=4"
+    forecastle.stakater.com/network-restricted: "true"
   labels:
     app.kubernetes.io/instance: resilio-sync
     app.kubernetes.io/name: resilio-sync

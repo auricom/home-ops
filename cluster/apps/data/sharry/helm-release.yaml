@@ -47,6 +47,10 @@ spec:
         # -- Nginx Proxy Body Size
         nginx.ingress.kubernetes.io/proxy-body-size: "2048m"
         nginx.ingress.kubernetes.io/proxy-buffering: "off"
+        forecastle.stakater.com/expose: "true"
+        forecastle.stakater.com/appName: "Sharry"
+        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/eikek/sharry/master/artwork/icon.png"
+        forecastle.stakater.com/network-restricted: "true"
       hosts:
         - host: sharry.${SECRET_CLUSTER_DOMAIN}
           paths:
