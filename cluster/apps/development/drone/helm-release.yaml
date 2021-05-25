@@ -21,7 +21,7 @@ spec:
       type: Recreate
     image:
       repository: drone/drone
-      tag: 2.0.0
+      tag: 2.0.1
     persistentVolume:
       enabled: false
     env:
