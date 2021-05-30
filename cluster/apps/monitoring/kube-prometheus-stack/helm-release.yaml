@@ -255,6 +255,20 @@ spec:
               - targets: ["home-assistant.home.svc.cluster.local:8123"]
                 labels:
                   app: "hass"
+          - job_name: "truenas"
+            scrape_interval: 60s
+            metrics_path: "/metrics"
+            static_configs:
+              - targets: ["truenas.${SECRET_CLUSTER_DOMAIN_ROOT}:9273"]
+                labels:
+                  app: "truenas"
+          - job_name: "truenas-remote"
+            scrape_interval: 60s
+            metrics_path: "/metrics"
+            static_configs:
+              - targets: ["truenas-remote.${SECRET_CLUSTER_DOMAIN_ROOT}:9273"]
+                labels:
+                  app: "truenas-remote"
           # Example scrape config for probing ingresses via the Blackbox Exporter.
           #
           # The relabeling allows the actual ingress scrape endpoint to be configured
@@ -269,10 +283,16 @@ spec:
             kubernetes_sd_configs:
               - role: ingress
             relabel_configs:
-              - source_labels: [__meta_kubernetes_ingress_annotation_prometheus_io_probe]
+              - source_labels:
+                  [__meta_kubernetes_ingress_annotation_prometheus_io_probe]
                 action: keep
                 regex: true
-              - source_labels: [__meta_kubernetes_ingress_scheme, __address__, __meta_kubernetes_ingress_path]
+              - source_labels:
+                  [
+                    __meta_kubernetes_ingress_scheme,
+                    __address__,
+                    __meta_kubernetes_ingress_path,
+                  ]
                 regex: (.+);(.+);(.+)
                 replacement: ${1}://${2}${3}
                 target_label: __param_target
@@ -294,10 +314,12 @@ spec:
             kubernetes_sd_configs:
               - role: service
             relabel_configs:
-              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_probe]
                 action: keep
                 regex: true
-              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_protocol]
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_protocol]
                 action: keep
                 regex: http
               - source_labels: [__address__]
@@ -320,10 +342,12 @@ spec:
             kubernetes_sd_configs:
               - role: service
             relabel_configs:
-              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_probe]
                 action: keep
                 regex: true
-              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_protocol]
+              - source_labels:
+                  [__meta_kubernetes_service_annotation_prometheus_io_protocol]
                 action: keep
                 regex: tcp
               - source_labels: [__address__]
