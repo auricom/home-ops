@@ -18,10 +18,7 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    image:
-      repository: vernemq/vernemq
-      tag: 1.11.0-alpine
-    replicaCount: 3
+    replicaCount: 1
     serviceMonitor:
       create: true
     service:
@@ -33,10 +30,8 @@ spec:
         - ${CLUSTER_LB_VERNEMQ}
       ws:
         enabled: true
-        nodePort: 32080
       mqtt:
         enabled: true
-        nodePort: 31883
     additionalEnv:
       - name: DOCKER_VERNEMQ_ACCEPT_EULA
         value: "yes"
