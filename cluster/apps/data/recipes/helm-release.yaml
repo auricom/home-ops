@@ -22,7 +22,7 @@ spec:
       type: Recreate
     image:
       repository: vabene1111/recipes
-      tag: 0.15.2
+      tag: 0.16.0
       pullPolicy: IfNotPresent
     env:
       SECRET_KEY: ${SECRET_RECIPES_SECRET_KEY}
