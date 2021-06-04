@@ -20,6 +20,9 @@ spec:
     image:
       repository: quay.io/thanos/thanos
       tag: v0.21.0
+    sidecar:
+      enabled: true
+      selector: { app.kubernetes.io/name: prometheus }
     query:
       http:
         ingress:
