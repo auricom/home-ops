@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://helm.twun.io
       chart: docker-registry
-      version: 1.10.1
+      version: 1.11.0
       sourceRef:
         kind: HelmRepository
         name: twuni-charts
