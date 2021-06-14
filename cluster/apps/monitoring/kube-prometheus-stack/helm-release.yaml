@@ -237,11 +237,6 @@ spec:
               resources:
                 requests:
                   storage: 10Gi
-        thanos:
-          image: quay.io/thanos/thanos:v0.21.1
-          objectStorageConfig:
-            name: thanos
-            key: object-store.yaml
         additionalScrapeConfigs:
           - job_name: "opnsense"
             scrape_interval: 60s
@@ -375,3 +370,10 @@ spec:
                       values:
                         - prometheus
                 topologyKey: "kubernetes.io/hostname"
+        thanos:
+          image: quay.io/thanos/thanos:v0.21.1
+          objectStorageConfig:
+            name: thanos-objstore-secret
+            key: objstore.yml
+      thanosService:
+        enabled: true
