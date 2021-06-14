@@ -10,50 +10,48 @@ spec:
     spec:
       # renovate: registryUrl=https://kubernetes-charts.banzaicloud.com
       chart: thanos
-      version: 0.4.3
+      version: 3.17.8
       sourceRef:
         kind: HelmRepository
-        name: banzaicloud-charts
+        name: bitnami-charts
         namespace: flux-system
       interval: 5m
   values:
-    image:
-      repository: quay.io/thanos/thanos
-      tag: v0.21.1
-    sidecar:
-      enabled: true
-      selector: { app.kubernetes.io/name: prometheus }
     query:
-      http:
-        ingress:
-          enabled: true
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-            nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-          hosts: ["thanos.${SECRET_CLUSTER_DOMAIN}"]
-          tls:
-            - hosts: ["thanos.${SECRET_CLUSTER_DOMAIN}"]
+      enabled: true
       replicaCount: 2
       replicaLabels:
         - replica
-    compact:
-      retentionResolution1h: 5y
-    objstore:
-      type: S3
+      dnsDiscovery:
+        sidecarsService: kube-prometheus-stack-thanos-discovery
+        sidecarsNamespace: monitoring
+      ingress:
+        enabled: true
+        hostname: "thanos.${SECRET_CLUSTER_DOMAIN}"
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+        tls: true
+    queryFrontend:
+      enabled: false
+    bucketweb:
+      enabled: true
+    compactor:
+      enabled: true
+    storegateway:
+      enabled: true
+    ruler:
+      enabled: false
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    objstoreConfig: |-
+      type: s3
       config:
-        bucket: "thanos"
-        region: "us-east-1"
+        bucket: thanos
         endpoint: ${SECRET_MINIO_ENDPOINT}
-        access_key: ${SECRET_MINIO_ACCESS_KEY}
-        secret_key: ${SECRET_MINIO_SECRET_KEY}
+        access_key: "${SECRET_MINIO_ACCESS_KEY}"
+        secret_key: "${SECRET_MINIO_SECRET_KEY}"
         insecure: false
-        signature_version2: false
-        put_user_metadata: {}
-        http_config:
-          idle_conn_timeout: 0s
-          response_header_timeout: 0s
-          insecure_skip_verify: false
-        trace:
-          enable: false
-        part_size: 0
