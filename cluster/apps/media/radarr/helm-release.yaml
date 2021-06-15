@@ -49,7 +49,7 @@ spec:
           nginx.ingress.kubernetes.io/proxy-body-size: "20m"
           nginx.ingress.kubernetes.io/proxy-buffering: "off"
         hosts:
-          - host: sonarr.${SECRET_CLUSTER_DOMAIN}
+          - host: radarr.${SECRET_CLUSTER_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
