@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: vaultwarden
-      version: 1.0.1
+      version: 2.1.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -37,31 +37,33 @@ spec:
       SMTP_USERNAME: ${SECRET_SMTP_USERNAME}
       SMTP_PASSWORD: ${SECRET_VAULTWARDEN_SMTP_PASSWORD}
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: tcp
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: tcp
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "Vaultwarden"
-        forecastle.stakater.com/icon: "https://image.winudf.com/v2/image1/Y29tLng4Yml0LmJpdHdhcmRlbl9pY29uXzE1OTM0NTk3NDNfMDA2/icon.png?fakeurl=1&h=120"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: vaultwarden.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-            - path: /notifications/hub/negotiate
-              pathType: Prefix
-            - path: /notifications/hub
-              pathType: Prefix
-              servicePort: 3012
-        - host: bitwarden.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "Vaultwarden"
+          forecastle.stakater.com/icon: "https://image.winudf.com/v2/image1/Y29tLng4Yml0LmJpdHdhcmRlbl9pY29uXzE1OTM0NTk3NDNfMDA2/icon.png?fakeurl=1&h=120"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: vaultwarden.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+              - path: /notifications/hub/negotiate
+                pathType: Prefix
+              - path: /notifications/hub
+                pathType: Prefix
+                servicePort: 3012
+          - host: bitwarden.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
       tls:
         - hosts:
             - "vaultwarden.${SECRET_CLUSTER_DOMAIN}"
