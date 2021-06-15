@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: flood
-      version: 4.4.0
+      version: 5.1.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -33,23 +33,24 @@ spec:
       runAsGroup: 1001
       fsGroup: 1001
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "Flood"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/jesec/flood/master/flood.svg"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: flood.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "flood.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "Flood"
+          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/jesec/flood/master/flood.svg"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: flood.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "flood.${SECRET_CLUSTER_DOMAIN}"
     persistence:
       data:
         enabled: true
@@ -61,6 +62,7 @@ spec:
       limits:
         memory: 1500Mi
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: http
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
