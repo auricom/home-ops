@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: prowlarr
-      version: 2.4.0
+      version: 3.1.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -33,23 +33,24 @@ spec:
         enabled: true
         existingClaim: prowlarr-config
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "Prowlarr"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/Prowlarr/Prowlarr/develop/Logo/256.png"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: prowlarr.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "prowlarr.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "Prowlarr"
+          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/Prowlarr/Prowlarr/develop/Logo/256.png"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: prowlarr.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "prowlarr.${SECRET_CLUSTER_DOMAIN}"
     resources:
       requests:
         memory: 100Mi
@@ -57,6 +58,7 @@ spec:
       limits:
         memory: 1000Mi
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: http
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
