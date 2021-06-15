@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: freshrss
-      version: 4.4.0
+      version: 5.1.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -29,27 +29,27 @@ spec:
       CRON_MIN: "18,48"
       DOMAIN: "https://freshrss.${SECRET_CLUSTER_DOMAIN}/"
     service:
-      port:
-        port: 80
+      main:
         annotations:
           prometheus.io/probe: "true"
           prometheus.io/protocol: http
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "FreshRSS"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/FreshRSS/FreshRSS/edge/docs/img/FreshRSS-logo.png"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: freshrss.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "freshrss.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "FreshRSS"
+          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/FreshRSS/FreshRSS/edge/docs/img/FreshRSS-logo.png"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: freshrss.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "freshrss.${SECRET_CLUSTER_DOMAIN}"
     persistence:
       config:
         enabled: true
