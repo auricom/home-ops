@@ -8,9 +8,9 @@ spec:
   interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://grafana.github.io/loki/charts
+      # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: loki-stack
-      version: 2.1.2
+      version: 2.4.1
       sourceRef:
         kind: HelmRepository
         name: grafana-loki-charts

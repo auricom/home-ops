@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: zigbee2mqtt
-      version: 7.4.0
+      version: 8.1.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -62,36 +62,34 @@ spec:
     securityContext:
       privileged: true
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: "http"
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: "http"
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-      hosts:
-        - host: "zigbee.${SECRET_CLUSTER_DOMAIN}"
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "zigbee.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+        hosts:
+          - host: "zigbee.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "zigbee.${SECRET_CLUSTER_DOMAIN}"
     persistence:
       config:
         enabled: true
         existingClaim: zigbee2mqtt-config
         mountPath: "/data"
-    additionalVolumeMounts:
-      - name: usb
+      usb:
+        enabled: true
         mountPath: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
-    additionalVolumes:
-      - name: usb
-        hostPath:
-          path: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
-          type: CharDevice
+        hostPath: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
