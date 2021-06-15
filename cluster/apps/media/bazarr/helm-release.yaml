@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: bazarr
-      version: 8.1.0
+      version: 9.1.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -40,9 +40,10 @@ spec:
         persistentVolumeClaim:
           claimName: nfs-video-media
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: http
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
     resources:
       requests:
         memory: 500Mi
@@ -50,24 +51,25 @@ spec:
       limits:
         memory: 1500Mi
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-        nginx.ingress.kubernetes.io/configuration-snippet: |
-          proxy_set_header Accept-Encoding "";
-          sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/bazarr/space-gray.css"></head>';
-          sub_filter_once on;
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "Bazarr"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/morpheus65535/bazarr/4ba88228177dcfac93dc74e375cfa49eda29ad21/static/logo128.png"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: bazarr.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "bazarr.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/bazarr/space-gray.css"></head>';
+            sub_filter_once on;
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "Bazarr"
+          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/morpheus65535/bazarr/4ba88228177dcfac93dc74e375cfa49eda29ad21/static/logo128.png"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: bazarr.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "bazarr.${SECRET_CLUSTER_DOMAIN}"
