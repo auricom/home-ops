@@ -30,6 +30,10 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
+        # -- Nginx client Body Buffer Size
+        nginx.ingress.kubernetes.io/client-body-buffer-size: "50m"
+        # -- Nginx Proxy Body Size
+        nginx.ingress.kubernetes.io/proxy-body-size: "50m"
         forecastle.stakater.com/expose: "true"
         forecastle.stakater.com/appName: "pgAdmin"
         forecastle.stakater.com/icon: "https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-110x117.png"
