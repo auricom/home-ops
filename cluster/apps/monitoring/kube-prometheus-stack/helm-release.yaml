@@ -129,7 +129,16 @@ spec:
             datasource: Prometheus
           truenas:
             url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/truenas.json
-            datasource:
+            datasource: Prometheus
+          lidarr:
+            url: https://raw.githubusercontent.com/k8s-at-home/grafana-dashboards/main/lidarr.json
+            datasource: Prometheus
+          radarr:
+            url: https://raw.githubusercontent.com/k8s-at-home/grafana-dashboards/main/radarr.json
+            datasource: Prometheus
+          sonarr:
+            url: https://raw.githubusercontent.com/k8s-at-home/grafana-dashboards/main/sonarr.json
+            datasource: Prometheus
       deploymentStrategy:
         type: Recreate
       persistence:
