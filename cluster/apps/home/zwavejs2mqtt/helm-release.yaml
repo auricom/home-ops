@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: ghcr.io/zwave-js/zwavejs2mqtt
-      tag: 5.0.3
+      tag: 5.0.4
     env:
       TZ: "Europe/Paris"
     securityContext:
