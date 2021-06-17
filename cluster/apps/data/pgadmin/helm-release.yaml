@@ -21,7 +21,7 @@ spec:
       type: Recreate
     image:
       repository: dpage/pgadmin4
-      tag: 5.3
+      tag: 5.4
       pullPolicy: IfNotPresent
     env:
       email: ${SECRET_PGADMIN_EMAIL}
