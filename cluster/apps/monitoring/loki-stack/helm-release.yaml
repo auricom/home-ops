@@ -18,6 +18,10 @@ spec:
       interval: 5m
   values:
     loki:
+      image:
+        repository: grafana/loki
+        tag: 2.2.1
+        pullPolicy: IfNotPresent
       replicas: 3
       persistence:
         enabled: false
@@ -83,6 +87,11 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "http-metrics"
     promtail:
+      image:
+        registry: docker.io
+        repository: grafana/promtail
+        tag: latest
+        pullPolicy: Always
       serviceMonitor:
         enabled: true
       extraScrapeConfigs:
