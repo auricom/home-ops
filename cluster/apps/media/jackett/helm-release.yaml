@@ -20,7 +20,7 @@ spec:
     controllerType: deployment
     image:
       repository: ghcr.io/k8s-at-home/jackett
-      tag: v0.18.359
+      tag: v0.18.364
       pullPolicy: IfNotPresent
     env:
       TZ: "Europe/Paris"
