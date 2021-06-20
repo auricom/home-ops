@@ -50,13 +50,13 @@ spec:
           # You can use a headless k8s service for all distributor,
           # ingester and querier components.
           join_members:
-            - loki-stack-headless:7946
+            - loki-headless.monitoring.svc.cluster.local:7946
           # max_join_backoff: 1m
           # max_join_retries: 10
           # min_join_backoff: 1s
         schema_config:
           configs:
-            - from: 2020-05-15
+            - from: "2020-10-24"
               store: boltdb-shipper
               object_store: s3
               schema: v11
@@ -65,6 +65,7 @@ spec:
                 period: 24h
         storage_config:
           aws:
+            insecure: false
             s3: https://${SECRET_MINIO_ACCESS_KEY}:${SECRET_MINIO_SECRET_KEY}@${SECRET_MINIO_ENDPOINT}/loki
             s3forcepathstyle: true
           boltdb_shipper:
