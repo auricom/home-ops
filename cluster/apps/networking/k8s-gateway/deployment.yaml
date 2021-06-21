@@ -104,7 +104,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: "coredns"
-          image: "quay.io/oriedge/k8s_gateway:v0.1.5"
+          image: "quay.io/oriedge/k8s_gateway:v0.1.6"
           imagePullPolicy: IfNotPresent
           args: ["-conf", "/etc/coredns/Corefile"]
           volumeMounts:
