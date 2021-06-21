@@ -32,13 +32,10 @@ spec:
       config:
         enabled: true
         existingClaim: bazarr-config
-    additionalVolumeMounts:
-      - name: nfs-video-media
+      nfs-video-media:
+        enabled: true
+        existingClaim: nfs-video-media
         mountPath: "/mnt/storage/video"
-    additionalVolumes:
-      - name: nfs-video-media
-        persistentVolumeClaim:
-          claimName: nfs-video-media
     service:
       main:
         annotations:
