@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: lychee
-      version: 4.4.0
+      version: 5.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -63,15 +63,13 @@ spec:
         mountPath: /mnt/storage/photo
         existingClaim: nfs-photo-media
         readOnly: true
-
-    additionalVolumes:
-      - name: files
-        persistentVolumeClaim:
-          claimName: lychee-files
-    additionalVolumeMounts:
-      - name: files
+      files:
+        enabled: true
         mountPath: /uploads
+        existingClaim: lychee-files
         subPath: uploads
-      - name: files
+      sym:
+        enabled: true
         mountPath: /sym
+        existingClaim: lychee-files
         subPath: sym
