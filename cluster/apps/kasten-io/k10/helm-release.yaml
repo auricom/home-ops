@@ -39,7 +39,6 @@ spec:
       class: "nginx"
       host: "k10.${SECRET_CLUSTER_DOMAIN}"
       annotations:
-        kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/app-root: /k10
       urlPath: k10
       hosts:
