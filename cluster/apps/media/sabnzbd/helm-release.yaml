@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: sabnzbd
-      version: 7.1.0
+      version: 8.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -23,54 +23,52 @@ spec:
     env:
       TZ: "Europe/Paris"
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-        nginx.ingress.kubernetes.io/configuration-snippet: |
-          proxy_set_header Accept-Encoding "";
-          sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/sabnzbd/space-gray.css"></head>';
-          sub_filter_once on;
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "SABnzbd"
-        forecastle.stakater.com/icon: "https://avatars.githubusercontent.com/u/16778130?v=4"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
-      additionalIngresses:
-        - enabled: true
-          nameSuffix: "api"
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-          hosts:
-            - host: "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
-              paths:
-                - path: /api
-                  pathType: Prefix
-          tls:
-            - hosts:
-                - "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/sabnzbd/space-gray.css"></head>';
+            sub_filter_once on;
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "SABnzbd"
+          forecastle.stakater.com/icon: "https://avatars.githubusercontent.com/u/16778130?v=4"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
+      api:
+        enabled: true
+        nameSuffix: "api"
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+        hosts:
+          - host: "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /api
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "sabnzbd.${SECRET_CLUSTER_DOMAIN}"
     persistence:
       config:
         enabled: true
         existingClaim: sabnzbd-config
+      nfs-video-media:
+        enabled: true
+        existingClaim: nfs-video-media
+        mountPath: /mnt/storage/video
     podSecurityContext:
       supplementalGroups:
         - 100
-    additionalVolumeMounts:
-      - name: nfs-video-media
-        mountPath: /mnt/storage/video
-    additionalVolumes:
-      - name: nfs-video-media
-        persistentVolumeClaim:
-          claimName: nfs-video-media
     resources:
       requests:
         memory: 250Mi
