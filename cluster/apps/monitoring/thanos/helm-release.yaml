@@ -39,6 +39,8 @@ spec:
       enabled: true
     compactor:
       enabled: true
+      persistence:
+        size: 50Gi
     storegateway:
       enabled: true
     ruler:
