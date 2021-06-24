@@ -22,11 +22,12 @@ spec:
       tag: v3.3.1
     env:
       TZ: "Europe/Paris"
-    service:
-      main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http
+    # disable service monitoring because of ip blacklist
+    # service:
+    # main:
+    #   annotations:
+    #     prometheus.io/probe: "true"
+    #     prometheus.io/protocol: http
     ingress:
       main:
         enabled: true
