@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://helm.mittwald.de/
       chart: kubernetes-replicator
-      version: 2.6.2
+      version: 2.6.3
       sourceRef:
         kind: HelmRepository
         name: mittwald-charts
