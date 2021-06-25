@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: qbittorrent
-      version: 10.1.0
+      version: 11.2.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -25,21 +25,20 @@ spec:
     env:
       TZ: "Europe/Paris"
     service:
-      additionalServices:
-        - enabled: true
-          annotations:
-            prometheus.io/probe: "true"
-            prometheus.io/protocol: tcp
-          nameSuffix: bittorrent
-          type: LoadBalancer
-          externalIPs:
-            - ${CLUSTER_LB_QBITTORRENT}
-          port:
-            port: 50413
-            name: bittorrent
-            protocol: TCP
-            targetPort: 6881
-          externalTrafficPolicy: Local
+      bittorrent:
+        enabled: true
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: tcp
+        type: LoadBalancer
+        externalIPs:
+          - ${CLUSTER_LB_QBITTORRENT}
+        ports:
+          port: 50413
+          name: bittorrent
+          protocol: TCP
+          targetPort: 6881
+        externalTrafficPolicy: Local
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
@@ -48,35 +47,32 @@ spec:
       config:
         enabled: true
         existingClaim: qbittorrent-config
-    additionalVolumeMounts:
-      - name: qbittorrent-cache
+      qbittorrent-cache:
+        enabled: true
+        existingClaim: qbittorrent-cache
         mountPath: "/downloads"
-      - name: nfs-downloads-media
+      nfs-downloads-media:
+        enabled: true
+        existingClaim: nfs-downloads-media
         mountPath: "/mnt/storage/downloads"
-    additionalVolumes:
-      - name: qbittorrent-cache
-        persistentVolumeClaim:
-          claimName: qbittorrent-cache
-      - name: nfs-downloads-media
-        persistentVolumeClaim:
-          claimName: nfs-downloads-media
     resources:
       requests:
         memory: 4Gi
         cpu: 500m
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "qBittorrent"
-        forecastle.stakater.com/icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/New_qBittorrent_Logo.svg/600px-New_qBittorrent_Logo.svg.png"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: qbittorrent.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "qbittorrent.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "qBittorrent"
+          forecastle.stakater.com/icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/New_qBittorrent_Logo.svg/600px-New_qBittorrent_Logo.svg.png"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: qbittorrent.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "qbittorrent.${SECRET_CLUSTER_DOMAIN}"
