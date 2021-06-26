@@ -46,8 +46,7 @@ spec:
 
     additionalContainers:
       - name: api
-        image: vikunja/api:latest
-        imagePullPolicy: Always
+        image: vikunja/api:0.17.1
         env:
           - name: VIKUNJA_DATABASE_TYPE
             value: "postgres"
@@ -65,8 +64,7 @@ spec:
           - name: files
             mountPath: /app/vikunja/files
       - name: frontend
-        image: vikunja/frontend:latest
-        imagePullPolicy: Always
+        image: vikunja/frontend:0.17.0
 
     additionalVolumes:
       - name: vikunja-config
