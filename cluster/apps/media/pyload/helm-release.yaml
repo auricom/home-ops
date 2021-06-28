@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: pyload
-      version: 4.4.1
+      version: 5.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -28,13 +28,10 @@ spec:
       config:
         enabled: true
         existingClaim: pyload-config
-    additionalVolumeMounts:
-      - name: nfs-downloads-media
+      nfs-downloads-media:
+        enabled: true
+        existingClaim: nfs-downloads-media
         mountPath: "/mnt/storage/downloads"
-    additionalVolumes:
-      - name: nfs-downloads-media
-        persistentVolumeClaim:
-          claimName: nfs-downloads-media
     resources:
       requests:
         memory: 1Gi
@@ -42,24 +39,26 @@ spec:
       limits:
         memory: 5Gi
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: http
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "pyLoad"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/pyload/pyload/main/media/logo.png"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: pyload.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "pyload.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "pyLoad"
+          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/pyload/pyload/main/media/logo.png"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: pyload.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "pyload.${SECRET_CLUSTER_DOMAIN}"
