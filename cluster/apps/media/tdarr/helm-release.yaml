@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: tdarr
-      version: 2.4.0
+      version: 3.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -22,19 +22,18 @@ spec:
       tag: 2.00.10
       pullPolicy: IfNotPresent
 
-    controllerType: deployment
-
-    strategy:
-      type: Recreate
-
-    resources: {}
-
     service:
-      port:
-        port: 8265
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: http
+      main:
+        ports:
+          http:
+            port: 8265
+          annotations:
+            prometheus.io/probe: "true"
+            prometheus.io/protocol: http
+          server:
+            enabled: true
+            protocol: TCP
+            port: 8266
 
     env:
       TZ: Europe/Paris
@@ -42,58 +41,40 @@ spec:
       serverIP: 0.0.0.0
       serverPort: 8266
 
-    nodeSelector: {}
+    node:
+      enabled: true
+      id: node
+      image:
+        repository: haveagitgat/tdarr_node
+        tag: 2.00.10
+        pullPolicy: IfNotPresent
 
-    tolerations: []
-
-    affinity: {}
-
-    podAnnotations: {}
-
-    additionalContainers:
-      - name: node
-        image: haveagitgat/tdarr_node:2.00.10
-        env:
-          - name: TZ
-            value: "Europe/Paris"
-          - name: nodeID
-            value: healthchecks
-          - name: serverIP
-            value: "localhost"
-          - name: serverPort
-            value: "8266"
-        volumeMounts:
-          - name: nfs-video-media
-            mountPath: /mnt/storage/video
-
-    additionalVolumeMounts:
-      - name: tdarr-data
+    persistence:
+      config:
+        data: true
         mountPath: /app/server
-      - name: nfs-video-media
-        mountPath: /mnt/storage/video
-    additionalVolumes:
-      - name: tdarr-data
-        persistentVolumeClaim:
-          claimName: tdarr-data
-      - name: nfs-video-media
-        persistentVolumeClaim:
-          claimName: nfs-video-media
+        existingClaim: tdarr-data
+      media:
+        enabled: true
+        mountPath: /media
+        existingClaim: nfs-video-media
 
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "Tdarr"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/HaveAGitGat/Tdarr/master/public/images/icon_dark.png"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: tdarr.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "tdarr.${SECRET_CLUSTER_DOMAIN}"
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "Tdarr"
+          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/HaveAGitGat/Tdarr/master/public/images/icon_dark.png"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: tdarr.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "tdarr.${SECRET_CLUSTER_DOMAIN}"
