@@ -50,8 +50,8 @@ spec:
         pullPolicy: IfNotPresent
 
     persistence:
-      config:
-        data: true
+      data:
+        enabled: true
         mountPath: /app/server
         existingClaim: tdarr-data
       media:
