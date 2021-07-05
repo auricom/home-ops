@@ -72,10 +72,14 @@ spec:
       config:
         enabled: true
         existingClaim: lidarr-config
-      nfs-video-media:
+      nfs-music-media:
         enabled: true
         existingClaim: nfs-music-media
         mountPath: "/mnt/storage/music"
+      nfs-video-media:
+        enabled: true
+        existingClaim: nfs-video-media
+        mountPath: "/mnt/storage/video"
       qbittorrent-cache:
         enabled: true
         existingClaim: qbittorrent-cache
