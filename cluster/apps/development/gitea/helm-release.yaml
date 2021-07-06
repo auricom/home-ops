@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: gitea/gitea
-      tag: 1.14.3
+      tag: 1.14.4
     persistence:
       enabled: true
       size: 10Gi
