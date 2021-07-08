@@ -40,6 +40,8 @@ spec:
     compactor:
       enabled: true
       strategyType: Recreate
+      persistence:
+        size: 30Gi
     storegateway:
       enabled: true
     ruler:
