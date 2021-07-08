@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: wallabag
-      version: 2.6.1
+      version: 3.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -37,26 +37,28 @@ spec:
     securityContext:
       runAsUser: 0
     service:
-      port:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http
+      main:
+        ports:
+          annotations:
+            prometheus.io/probe: "true"
+            prometheus.io/protocol: http
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "Wallabag"
-        forecastle.stakater.com/icon: "https://cdnx.nextinpact.com/compress/850-412/data-next/images/bd/wide-linked-media/545.jpg"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: wallabag.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - wallabag.${SECRET_CLUSTER_DOMAIN}
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "Wallabag"
+          forecastle.stakater.com/icon: "https://cdnx.nextinpact.com/compress/850-412/data-next/images/bd/wide-linked-media/545.jpg"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: wallabag.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - wallabag.${SECRET_CLUSTER_DOMAIN}
     persistence:
       images:
         enabled: true
