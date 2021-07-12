@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: recipes
-      version: 4.4.0
+      version: 5.1.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -40,58 +40,41 @@ spec:
       COMMENT_PREF_DEFAULT: "1"
       SHOPPING_MIN_AUTOSYNC_INTERVAL: "5"
     service:
-      port:
-        port: 80
+      main:
         annotations:
           prometheus.io/probe: "true"
           prometheus.io/protocol: http
+    sidecar:
+      image:
+        repository: nginx
+        tag: 1.19.6
+        pullPolicy: IfNotPresent
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/client-body-buffer-size: "10m"
-        forecastle.stakater.com/expose: "true"
-        forecastle.stakater.com/appName: "Recipes"
-        forecastle.stakater.com/icon: "https://raw.githubusercontent.com/vabene1111/recipes/develop/docs/logo_color.svg"
-        forecastle.stakater.com/network-restricted: "true"
-      hosts:
-        - host: recipes.${SECRET_CLUSTER_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "recipes.${SECRET_CLUSTER_DOMAIN}"
-
-    additionalVolumes:
-      - name: files
-        persistentVolumeClaim:
-          claimName: recipes-files
-      - name: recipes-config
-        configMap:
-          name: recipes-config
-    additionalVolumeMounts:
-      - name: files
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: "10m"
+          forecastle.stakater.com/expose: "true"
+          forecastle.stakater.com/appName: "Recipes"
+          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/vabene1111/recipes/develop/docs/logo_color.svg"
+          forecastle.stakater.com/network-restricted: "true"
+        hosts:
+          - host: recipes.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "recipes.${SECRET_CLUSTER_DOMAIN}"
+    persistence:
+      files:
+        enabled: true
+        existingClaim: recipes-files
         mountPath: /opt/recipes/mediafiles
-        subPath: media
-      - name: files
-        mountPath: /opt/recipes/staticfiles
-        subPath: static
-
-    additionalContainers:
-      - name: nginx
-        image: nginx:1.21.1
-        ports:
-          - containerPort: 80
-            name: http
-        volumeMounts:
-          - name: files
-            mountPath: "/media"
-            subPath: media
-          - name: files
-            mountPath: "/static"
-            subPath: static
-          - name: recipes-config
-            mountPath: /etc/nginx/nginx.conf
-            subPath: nginx-config
-            readOnly: true
+      media:
+        enabled: true
+        type: emptyDir
+      static:
+        enabled: true
+        type: emptyDir
