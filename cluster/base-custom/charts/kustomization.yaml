@@ -6,6 +6,7 @@ resources:
   - cert-manager-webhook-ovh.yaml
   - coredns-charts.yaml
   - drone-charts.yaml
+  - emxq-charts.yaml
   - gitea-charts.yaml
   - grafana-loki-charts.yaml
   - influxdata-charts.yaml

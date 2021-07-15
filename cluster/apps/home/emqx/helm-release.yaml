@@ -1,0 +1,97 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: emqx
+  namespace: home
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://repos.emqx.io/charts
+      chart: emqx
+      version: 4.3.5
+      sourceRef:
+        kind: HelmRepository
+        name: emqx-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    replicaCount: 3
+    recreatePods: true
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: tcp
+      type: LoadBalancer
+      loadBalancerIP: ${CLUSTER_LB_EMQX}
+      externalTrafficPolicy: Local
+    ingress:
+      dashboard:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+        path: /
+        hosts:
+          - emqx.${SECRET_CLUSTER_DOMAIN}
+        tls:
+          - hosts:
+              - emqx.${SECRET_CLUSTER_DOMAIN}
+    emqxConfig:
+      EMQX_ALLOW_ANONYMOUS: "false"
+      EMQX_ADMIN_PASSWORD: "${SECRET_EMQX_ADMIN_PASSWORD}"
+      EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
+      EMQX_AUTH__USER__1__USERNAME: "${SECRET_MQTT_USERNAME}"
+      EMQX_AUTH__USER__1__PASSWORD: "${SECRET_MQTT_PASSWORD}"
+    emqxAclConfig: >
+      {allow, {user, "dashboard"}, subscribe, ["$SYS/#"]}.
+      {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}.
+      {allow, all, subscribe, ["$SYS/#", {eq, "#"}]}.
+      {allow, all}.
+    emqxLoadedPlugins: >
+      {emqx_management, true}.
+      {emqx_recon, true}.
+      {emqx_retainer, true}.
+      {emqx_dashboard, true}.
+      {emqx_telemetry, false}.
+      {emqx_rule_engine, true}.
+      {emqx_bridge_mqtt, false}.
+      {emqx_auth_mnesia, true}.
+      {emqx_prometheus, true}.
+    emqxLoadedModules: >
+      {emqx_mod_presence, true}.
+      {emqx_mod_delayed, false}.
+      {emqx_mod_rewrite, false}.
+      {emqx_mod_subscription, false}.
+      {emqx_mod_topic_metrics, true}.
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - emqx
+              topologyKey: kubernetes.io/hostname
+    resources:
+      requests:
+        cpu: 100m
+        memory: 150Mi
+      limits:
+        memory: 512Mi
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Service
+              name: emqx
+            patch:
+              - op: remove
+                path: /spec/loadBalancerIP
+              - op: add
+                path: /spec/externalIPs
+                value:
+                  - "${CLUSTER_LB_EMQX}"
