@@ -6,6 +6,5 @@ resources:
   - frigate
   - home-assistant
   - node-red
-  - vernemq
   - zigbee2mqtt
   - zwavejs2mqtt
