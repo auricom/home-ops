@@ -7,3 +7,4 @@ resources:
   - kube-prometheus-stack
   - loki-stack
   - thanos
+  - uptime-kuma
