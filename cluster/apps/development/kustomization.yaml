@@ -5,3 +5,4 @@ resources:
   - drone
   - drone-runner-kube
   - gitea
+  - jobs
