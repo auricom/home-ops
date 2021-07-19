@@ -1,5 +1,5 @@
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: sonarr-trash-updater
@@ -17,7 +17,8 @@ spec:
             - name: regcred
           containers:
             - name: trash-updater
-              image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/home-cluster-jobs:1.0.0
+              image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/home-cluster-jobs:1.1.0
+              imagePullPolicy: IfNotPresent
               env:
                 - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
                   value: "1"
@@ -36,6 +37,8 @@ spec:
                   chmod 755 trash
 
                   ./trash sonarr --config /opt/trash.yaml
+
+                  curl -m 10 --retry 5 https://healthchecks.k3s.xpander.ovh/ping/f4c120e6-e12d-44b2-9ff9-e5433c0b7df4
               volumeMounts:
                 - name: config
                   mountPath: /opt/trash.yaml
