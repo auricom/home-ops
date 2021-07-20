@@ -15,7 +15,7 @@ spec:
           serviceAccountName: jobs
           containers:
             - name: qbittorrent-upgrade-p2pblocklist
-              image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/home-cluster-jobs:1.1.0
+              image: bitnami/kubectl:1.21.3
               imagePullPolicy: IfNotPresent
               command:
                 - "bin/sh"
