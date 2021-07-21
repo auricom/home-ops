@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: prometheus-blackbox-exporter
-      version: 4.15.0
+      version: 5.0.3
       sourceRef:
         kind: HelmRepository
         name: prometheus-community-charts
@@ -91,7 +91,11 @@ spec:
         nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
         nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
       hosts:
-        - "blackbox.${SECRET_CLUSTER_DOMAIN}"
+        - host: "blackbox.${SECRET_CLUSTER_DOMAIN}"
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+
       tls:
         - hosts:
             - "blackbox.${SECRET_CLUSTER_DOMAIN}"
