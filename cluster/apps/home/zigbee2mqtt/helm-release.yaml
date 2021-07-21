@@ -88,8 +88,9 @@ spec:
         mountPath: "/data"
       usb:
         enabled: true
-        mountPath: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        type: hostPath
         hostPath: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        hostPathType: CharDevice
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
