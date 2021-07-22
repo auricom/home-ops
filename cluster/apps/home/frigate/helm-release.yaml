@@ -8,26 +8,61 @@ spec:
   interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://blakeblackshear.github.io/blakeshome-charts/
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: frigate
-      version: 6.0.0
+      version: 5.0.0
       sourceRef:
         kind: HelmRepository
-        name: blakeshome-charts
+        name: k8s-at-home-charts
         namespace: flux-system
       interval: 5m
   values:
     image:
       repository: blakeblackshear/frigate
       tag: 0.8.4-amd64
-    coral:
-      enabled: true
-    shmSize: 2Gi
-    timezone: "Europe/Paris"
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+        hosts:
+          - host: "frigate.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "frigate.${SECRET_CLUSTER_DOMAIN}"
+    service:
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
+    securityContext:
+      privileged: true
+    persistence:
+      data:
+        enabled: true
+        existingClaim: frigate-config
+        mountPath: /data
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/bus/usb
+      cache:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 2Gi
+        mountPath: /dev/shm
     config: |
       mqtt:
         host: emqx
         topic_prefix: frigate
+        user: ${SECRET_MQTT_USERNAME}
+        password: ${SECRET_MQTT_PASSWORD}
 
       database:
         path: /data/frigate.db
@@ -64,31 +99,9 @@ spec:
         - /dev/dri/renderD128
         - -hwaccel_output_format
         - yuv420p
+
     podAnnotations:
       configmap.reloader.stakater.com/reload: "frigate"
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-      hosts:
-        - "frigate.${SECRET_CLUSTER_DOMAIN}"
-      tls:
-        - hosts:
-            - "frigate.${SECRET_CLUSTER_DOMAIN}"
-    persistence:
-      data:
-        enabled: true
-        existingClaim: frigate-config
-        mountPath: /data
-    extraVolumes:
-      - name: cache
-        emptyDir:
-          medium: Memory
-    extraVolumeMounts:
-      - name: cache
-        mountPath: /tmp/cache
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
