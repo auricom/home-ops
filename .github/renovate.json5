@@ -4,7 +4,7 @@
     "semanticCommits": "enabled",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
-  "commitBody": "Signed-off-by: Auricom <auricom@users.noreply.github.com>",
+  "commitBody": "Signed-off-by: auricom <27022259+auricom@users.noreply.github.com>",
   // Do not notify on closed unmerged PRs
   "suppressNotifications": ["prIgnoreNotification"],
   // Do not rebase PRs
