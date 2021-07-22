@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - data
   - development
-  - home
+  - home-automation
   - kasten-io
   - media
   - monitoring
