@@ -46,13 +46,3 @@ spec:
       tls:
         enabled: true
         secretName: "${SECRET_CLUSTER_DOMAIN_CERT}-tls"
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              kind: Ingress
-              name: k10-ingress
-            patch:
-              - op: replace
-                path: /spec/rules/0/http/paths/0/path
-                value: /
