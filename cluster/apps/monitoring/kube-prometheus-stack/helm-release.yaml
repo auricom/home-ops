@@ -34,7 +34,7 @@ spec:
         pathType: Prefix
         annotations:
           kubernetes.io/ingress.class: "nginx"
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
         hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
         tls:
@@ -215,7 +215,7 @@ spec:
         pathType: Prefix
         annotations:
           kubernetes.io/ingress.class: "nginx"
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
         hosts: ["prometheus.${SECRET_CLUSTER_DOMAIN}"]
         tls:
@@ -256,7 +256,8 @@ spec:
             metrics_path: "/api/prometheus"
             bearer_token: "${SECRET_HASS_TOKEN}"
             static_configs:
-              - targets: ["home-assistant.home.svc.cluster.local:8123"]
+              - targets:
+                  ["home-assistant.home-automation.svc.cluster.local.:8123"]
                 labels:
                   app: "hass"
           - job_name: "truenas"
