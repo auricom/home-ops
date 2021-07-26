@@ -88,6 +88,6 @@ spec:
     memcached:
       image:
         repository: bitnami/memcached
-        tag: 1.6.9
+        tag: 1.6.10
       service:
         port: 11211
