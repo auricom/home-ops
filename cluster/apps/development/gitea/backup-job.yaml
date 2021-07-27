@@ -23,27 +23,55 @@ spec:
                 - "bin/sh"
                 - "-ec"
                 - |
-                  #!/bin/sh
+                  #!/bin/bash
 
                   set -o nounset
                   set -o errexit
 
-                  kubectl exec gitea-0 --container gitea --namespace development -- bash -c "\
-                    cd /data/git/gitea-repositories && \
-                    tar cvf /tmp/gitea-repositories-$(date +%Y%m%d).tar ./"
-
-                  kubectl cp gitea-0:/tmp/gitea-repositories-$(date +%Y%m%d).tar /tmp/gitea-repositories-$(date +%Y%m%d).tar --container gitea --namespace development
-
-                  zstd --rm /tmp/gitea-repositories-$(date +%Y%m%d).tar
-
                   mkdir -p ~/.ssh
                   cp /opt/id_rsa ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
-                  scp -o StrictHostKeyChecking=no /tmp/gitea-repositories-$(date +%Y%m%d).tar.zst homelab@truenas:/mnt/storage/backups/gitea/
 
-                  rm /tmp/gitea-repositories-$(date +%Y%m%d).tar.zst
-                  kubectl exec gitea-0 --container gitea --namespace development -- bash -c "rm /tmp/gitea-repositories-$(date +%Y%m%d).tar"
-                  ssh -o StrictHostKeyChecking=no homelab@truenas -C "find /mnt/storage/backups/gitea/*.tar.zst -mtime +5 -type f -delete"
+                  ssh -o StrictHostKeyChecking=no homelab@truenas << 'EOF'
+
+                    WORK_DIR="/mnt/storage/backups/gitea"
+
+                    ORGANISATIONS=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/orgs" --header "Authorization: Bearer ${SECRET_GITEA_API_TOKEN}" | jq --raw-output .[].username)
+                    ORGANISATIONS+=" auricom"
+
+                    for org in $ORGANISATIONS
+                    do
+                        mkdir -p $WORK_DIR/$org
+                        if [ $org == "auricom" ]; then
+                            keyword="users"
+                        else
+                            keyword="orgs"
+                        fi
+                        REPOSITORIES=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/$keyword/$org/repos?limit=1000" --header "Authorization: Bearer ${SECRET_GITEA_API_TOKEN}" | jq --raw-output .[].name)
+                        for repo in $REPOSITORIES
+                        do
+                            if [ -d "$WORK_DIR/$org/$rep" ]; then
+                                echo "INFO: pull $org/$repo..."
+                                cd $WORK_DIR/$org/$repo
+                                git reset --hard HEAD
+                                git pull
+                                test $? -ne 0 && exit 1
+                                echo "INFO: clean $org/$repo..."
+                                git fetch --prune
+                                for branch in $(git branch -vv | grep ': gone]' | awk '{print $1}')
+                                do 
+                                  git branch -D $branch
+                                done
+                            else
+                                echo "INFO: clone $org/$repo..."
+                                cd $WORK_DIR/$org
+                                git clone git@gitea.${SECRET_CLUSTER_DOMAIN_ROOT}:$org/$repo.git
+                                test $? -ne 0 && exit 1
+                            fi
+                        done
+                    done
+                    echo "INFO: Backup done"
+                  EOF
 
                   curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/f7ff2516-e3b5-41ae-b77f-a9dc09005422
               volumeMounts:
