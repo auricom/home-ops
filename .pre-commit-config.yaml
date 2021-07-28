@@ -3,36 +3,29 @@
 # See https://pre-commit.com/hooks.html for more hooks
 fail_fast: false
 repos:
-  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v5.0.0
-    hooks:
-      - id: commitlint
-        stages: [commit-msg]
-        additional_dependencies: ['@commitlint/config-angular']
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.26.1
     hooks:
       - id: yamllint
         args:
-          - -c
-          - ".github/yamllint.config.yaml"
+          - --config-file
+          - .github/lint/.yamllint.yaml
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1
     hooks:
       - id: trailing-whitespace
-      - id: check-added-large-files
-        args: [--maxkb=2048]
-      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.10
     hooks:
       - id: forbid-crlf
       - id: forbid-tabs
-  - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: 2.1.5
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.10
     hooks:
-      - id: shellcheck
-        args: [--severity=error]
+      - id: remove-crlf
+      - id: remove-tabs
   - repo: https://github.com/sirosen/fix-smartquotes
     rev: 0.2.0
     hooks:
@@ -41,3 +34,10 @@ repos:
     rev: v2.0.3
     hooks:
       - id: forbid-secrets
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.28.1
+    hooks:
+      - id: markdownlint
+        args:
+          - --config
+          - ".github/lint/.markdownlint.yaml"
