@@ -1,14 +1,15 @@
+---
 ignore: |
-  .yamllint.yml
-  .github/
-  server/ansible
-  ignore/
-  secrets/
-  *-crds.yaml
+  .private/
+  .vscode/
+  ansible/
+  *.enc.yaml
+  *.sops.yml
+  gotk-components.yaml
 extends: default
 rules:
   truthy:
-    allowed-values: ['true', 'false', 'on', 'yes']
+    allowed-values: ["true", "false", "on"]
   comments:
     min-spaces-from-content: 1
   line-length: disable
@@ -18,6 +19,4 @@ rules:
   brackets:
     min-spaces-inside: 0
     max-spaces-inside: 0
-  indentation:
-    spaces: 2
-    indent-sequences: consistent
+  indentation: enable

@@ -1,12 +1,13 @@
-name: renovate-annotations
+---
+name: Schedule - Renovate Helm Releases
 
-on:
+on: # yamllint disable-line rule:truthy
   workflow_dispatch:
   schedule:
-    - cron: "15 * * * *"
+    - cron: "0 */12 * * *"
 
 jobs:
-  renovate-helmrelease:
+  renovate-helm-releases:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -19,7 +20,7 @@ jobs:
         with:
           cluster-path: "./cluster"
 
-      - name: Create pull request for HelmRelease annotations
+      - name: Create pull request for renovatebot helm-release annotations
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -27,8 +28,8 @@ jobs:
           delete-branch: true
           title: "chore(deps): update renovate annotations"
           signoff: true
-          committer: "Auricom <auricom@users.noreply.github.com>"
-          author: "Auricom <auricom@users.noreply.github.com>"
+          committer: "auricom <27022259+auricom@users.noreply.github.com>"
+          author: "auricom <27022259+auricom@users.noreply.github.com>"
           assignees: "auricom"
           commit-message: "chore(deps): update renovate annotations"
           body: |
