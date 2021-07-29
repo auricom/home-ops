@@ -24,7 +24,7 @@ spec:
         app.kubernetes.io/name: resilio-sync
     spec:
       containers:
-        - image: linuxserver/resilio-sync:amd64-2.7.2.1375-ls92
+        - image: ghcr.io/linuxserver/resilio-sync:version-2.7.2.1375
           name: resilio-sync-claude
           env:
             - name: TZ
@@ -58,7 +58,7 @@ spec:
               subPath: video
             - name: nfs-shared-documents-data
               mountPath: /sync/shared-documents
-        - image: linuxserver/resilio-sync:amd64-2.7.2.1375-ls92
+        - image: ghcr.io/linuxserver/resilio-sync:version-2.7.2.1375
           name: resilio-sync-helene
           env:
             - name: TZ
