@@ -17,7 +17,7 @@ k3s_server:
     - metrics-server
     - local-storage
   node-taint:
-    - "k3s-controlplane=true:NoSchedule"
+    - "node-role.kubernetes.io/control-plane=true:NoSchedule"
   disable-network-policy: true
   disable-cloud-controller: true
   write-kubeconfig-mode: "644"
