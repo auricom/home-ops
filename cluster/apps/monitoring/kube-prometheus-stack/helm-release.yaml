@@ -264,14 +264,14 @@ spec:
             scrape_interval: 60s
             metrics_path: "/metrics"
             static_configs:
-              - targets: ["truenas.${SECRET_CLUSTER_DOMAIN_ROOT}:9273"]
+              - targets: ["truenas.${SECRET_CLUSTER_DOMAIN_ROOT}.:9273"]
                 labels:
                   app: "truenas"
           - job_name: "truenas-remote"
             scrape_interval: 60s
             metrics_path: "/metrics"
             static_configs:
-              - targets: ["truenas-remote.${SECRET_CLUSTER_DOMAIN_ROOT}:9273"]
+              - targets: ["truenas-remote.${SECRET_CLUSTER_DOMAIN_ROOT}.:9273"]
                 labels:
                   app: "truenas-remote"
           # Example scrape config for probing ingresses via the Blackbox Exporter.

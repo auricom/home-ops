@@ -38,7 +38,7 @@ spec:
 
                   ./trash sonarr --config /opt/trash.yaml
 
-                  curl -m 10 --retry 5 https://healthchecks.k3s.xpander.ovh/ping/f4c120e6-e12d-44b2-9ff9-e5433c0b7df4
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/f4c120e6-e12d-44b2-9ff9-e5433c0b7df4
               volumeMounts:
                 - name: config
                   mountPath: /opt/trash.yaml

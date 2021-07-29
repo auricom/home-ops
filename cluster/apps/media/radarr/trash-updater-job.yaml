@@ -38,7 +38,7 @@ spec:
 
                   ./trash radarr --config /opt/trash.yaml
 
-                  curl -m 10 --retry 5 https://healthchecks.k3s.xpander.ovh/ping/4776417a-8410-4c33-91ca-20e4284254f0
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/4776417a-8410-4c33-91ca-20e4284254f0
               volumeMounts:
                 - name: config
                   mountPath: /opt/trash.yaml

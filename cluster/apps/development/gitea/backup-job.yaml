@@ -32,7 +32,7 @@ spec:
                   cp /opt/id_rsa ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
 
-                  ssh -o StrictHostKeyChecking=no homelab@truenas << 'EOF'
+                  ssh -o StrictHostKeyChecking=no homelab@truenas.${SECRET_CLUSTER_DOMAIN_ROOT}. << 'EOF'
 
                     WORK_DIR="/mnt/storage/backups/gitea"
 

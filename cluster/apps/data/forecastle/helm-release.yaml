@@ -19,7 +19,7 @@ spec:
   values:
     forecastle:
       config:
-        title: "Xpander Homelab"
+        title: "Healthchecks"
         namespaceSelector:
           matchNames:
             - data

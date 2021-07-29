@@ -20,7 +20,7 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: truenas
+    server: truenas.${SECRET_CLUSTER_DOMAIN_ROOT}.
     path: "/mnt/storage/backups"
 ---
 apiVersion: v1
