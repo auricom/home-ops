@@ -101,7 +101,7 @@ spec:
         - yuv420p
 
     podAnnotations:
-      configmap.reloader.stakater.com/reload: "frigate"
+      configmap.reloader.stakater.com/reload: "frigate-config"
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
