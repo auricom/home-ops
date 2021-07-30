@@ -53,7 +53,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: "node-role.kubernetes.io/master"
+                  - key: "node-role.kubernetes.io/control-plane"
                     operator: In
                     values:
                       - "true"
@@ -61,13 +61,9 @@ spec:
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
-        - key: "node-role.kubernetes.io/master"
+        - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
           effect: "NoSchedule"
-        - effect: NoExecute
-          operator: Exists
-        - effect: NoSchedule
-          operator: Exists
       containers:
         - name: system-upgrade-controller
           image: rancher/system-upgrade-controller:v0.7.3

@@ -248,7 +248,7 @@ spec:
             scrape_interval: 60s
             metrics_path: "/metrics"
             static_configs:
-              - targets: ["opnsense.${SECRET_CLUSTER_DOMAIN_ROOT}:9273"]
+              - targets: ["opnsense.${SECRET_CLUSTER_DOMAIN_ROOT}.:9273"]
                 labels:
                   app: "opnsense"
           - job_name: "hass"

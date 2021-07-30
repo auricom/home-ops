@@ -25,7 +25,7 @@ spec:
         operator: Exists
       - key: k3os.io/mode
         operator: DoesNotExist
-      - key: node-role.kubernetes.io/master
+      - key: node-role.kubernetes.io/control-plane
         operator: NotIn
         values:
           - "true"

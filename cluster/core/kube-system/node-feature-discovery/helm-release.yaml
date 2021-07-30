@@ -19,10 +19,9 @@ spec:
   values:
     master:
       tolerations:
-        - effect: NoExecute
-          operator: Exists
-        - effect: NoSchedule
-          operator: Exists
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -83,7 +82,6 @@ spec:
       annotations:
         configmap.reloader.stakater.com/reload: "nfd-worker-conf"
       tolerations:
-        - effect: "NoExecute"
+        - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
-        - effect: "NoSchedule"
-          operator: "Exists"
+          effect: "NoSchedule"

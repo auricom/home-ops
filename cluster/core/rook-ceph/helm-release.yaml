@@ -21,12 +21,9 @@ spec:
     csi:
       kubeletDirPath: /var/lib/kubelet
       pluginTolerations:
-        - key: "node-role.kubernetes.io/master"
+        - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
-        - effect: NoExecute
-          operator: Exists
-        - effect: NoSchedule
-          operator: Exists
+          effect: "NoSchedule"
     resources:
       requests:
         cpu: 100m
