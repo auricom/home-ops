@@ -56,6 +56,9 @@ spec:
         password: ${SECRET_GITEA_ADMIN_PASSWORD}
       config:
         APP_NAME: "Homelab Gitea"
+        cron.resync_all_sshkeys:
+          ENABLED: true
+          RUN_AT_START: true
         database:
           DB_TYPE: postgres
           HOST: postgresql-kube.data.svc.cluster.local.:5432
