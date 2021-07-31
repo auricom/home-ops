@@ -53,7 +53,7 @@ spec:
                             if [ -d "$WORK_DIR/$org/$repo" ]; then
                                 echo "INFO: pull $org/$repo..."
                                 cd $WORK_DIR/$org/$repo
-                                git reset --hard FETCH_HEAD
+                                git reset --hard
                                 git pull
                                 test $? -ne 0 && exit 1
                                 echo "INFO: clean $org/$repo..."
