@@ -2,5 +2,3 @@
 roles:
 - src: xanmanning.k3s
   version: v2.10.4
-collections:
-- name: community.general
