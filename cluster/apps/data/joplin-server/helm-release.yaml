@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: joplin/server
-      tag: 2.1.2
+      tag: 2.2.10
       pullPolicy: IfNotPresent
 
     controllerType: deployment
