@@ -124,6 +124,9 @@ spec:
           home-assistant:
             url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/home-assistant.json
             datasource: Prometheus
+          homelab-temperatures:
+            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temperatures.json
+            datasource: Prometheus
           truenas:
             url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/truenas.json
             datasource: Prometheus

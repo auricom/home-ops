@@ -80,7 +80,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "line+area"
+              "mode": "off"
             }
           },
           "decimals": 0,
@@ -89,12 +89,12 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "transparent",
+                "color": "green",
                 "value": null
               },
               {
                 "color": "red",
-                "value": 40
+                "value": 80
               }
             ]
           },
@@ -108,7 +108,7 @@
         "x": 0,
         "y": 0
       },
-      "id": 6,
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [
@@ -127,31 +127,15 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "hass_temperature_c{entity=~\"sensor.temperature_living_room_temperature\"}",
+          "expr": "avg by (app) (node_cpu_temperature_celsius{app=\"opnsense\"})",
           "interval": "",
-          "legendFormat": "Salon",
+          "legendFormat": "{{app}}",
           "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "hass_temperature_c{entity=~\"sensor.temperature_bedroom_temperature\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Chambre 1",
-          "refId": "B"
-        },
-        {
-          "exemplar": true,
-          "expr": "hass_temperature_c{entity=~\"sensor.temperature_office_temperature\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Bureau",
-          "refId": "C"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Home",
+      "title": "OPNsense - CPU",
       "type": "timeseries"
     },
     {
@@ -187,25 +171,30 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "line+area"
             }
           },
           "decimals": 0,
+          "links": [],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "transparent",
                 "value": null
               },
               {
-                "color": "red",
+                "color": "orange",
                 "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
               }
             ]
           },
-          "unit": "watt"
+          "unit": "celsius"
         },
         "overrides": []
       },
@@ -215,12 +204,13 @@
         "x": 0,
         "y": 9
       },
-      "id": 7,
+      "id": 2,
       "options": {
         "legend": {
           "calcs": [
             "mean",
-            "max"
+            "max",
+            "min"
           ],
           "displayMode": "table",
           "placement": "right"
@@ -232,24 +222,18 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "exemplar": true,
-          "expr": "hass_power_w{entity=\"sensor.servers_plug_switch_electricity_power\"}",
+          "expr": "avg by (kubernetes_node) (\r\n  node_hwmon_temp_celsius{chip=\"platform_coretemp_0\"}\r\n )",
+          "format": "time_series",
           "interval": "",
-          "legendFormat": "Servers",
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_node}}",
           "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "hass_power_w{entity=\"sensor.bureau_plug_switch_electricity_power\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "claude-fixe",
-          "refId": "B"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Computers",
+      "title": "k3s Nodes - CPU",
+      "transformations": [],
       "type": "timeseries"
     },
     {
@@ -284,7 +268,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "line+area"
             }
           },
           "decimals": 0,
@@ -293,16 +277,16 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "transparent",
                 "value": null
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 40
               }
             ]
           },
-          "unit": "watt"
+          "unit": "celsius"
         },
         "overrides": []
       },
@@ -312,14 +296,15 @@
         "x": 0,
         "y": 18
       },
-      "id": 8,
+      "id": 6,
       "options": {
         "legend": {
           "calcs": [
             "mean",
-            "max"
+            "max",
+            "min"
           ],
-          "displayMode": "table",
+          "displayMode": "hidden",
           "placement": "right"
         },
         "tooltip": {
@@ -330,38 +315,22 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "hass_power_w{entity=~\"sensor.power_plug_avr_power\"}",
+          "expr": "hass_temperature_c{entity=~\"sensor.temperature_servers_temperature\"}",
           "interval": "",
-          "legendFormat": "Ampli",
+          "legendFormat": "datacenter",
           "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "hass_power_w{entity=~\"sensor.power_plug_projector_power\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Vidéoprojecteur",
-          "refId": "B"
-        },
-        {
-          "exemplar": true,
-          "expr": "hass_power_w{entity=~\"sensor.power_plug_subwoofer_power\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Caisson de basses",
-          "refId": "C"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Home Cinema",
+      "title": "Datacenter",
       "type": "timeseries"
     }
   ],
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
-    "home-assistant"
+    "homelab"
   ],
   "templating": {
     "list": []
@@ -384,7 +353,7 @@
     ]
   },
   "timezone": "",
-  "title": "Home-Assistant",
-  "uid": "sn-bOoWMk",
+  "title": "Homelab / Temperatures",
+  "uid": "aEY0BVGnz",
   "version": 1
 }
