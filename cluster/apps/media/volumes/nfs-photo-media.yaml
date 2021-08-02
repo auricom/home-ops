@@ -18,7 +18,7 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: truenas.${SECRET_CLUSTER_DOMAIN_ROOT}.
+    server: "${LOCAL_LAN_TRUENAS}"
     path: "/mnt/storage/photo"
 ---
 apiVersion: v1

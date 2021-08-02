@@ -44,25 +44,25 @@ spec:
         scrapeTimeout: 30s
       targets:
         - name: truenas
-          url: truenas.${SECRET_CLUSTER_DOMAIN_ROOT}.
+          url: "${LOCAL_LAN_TRUENAS}"
           module: icmp
         - name: truenas-remote
-          url: truenas-remote.${SECRET_CLUSTER_DOMAIN_ROOT}.
+          url: "${LOCAL_LAN_TRUENAS_REMOTE}"
           module: icmp
         - name: borgbackup
-          url: borgbackup.${SECRET_CLUSTER_DOMAIN_ROOT}.
+          url: "${LOCAL_LAN_BORGBACKUP}"
           module: icmp
         - name: k3s-server
-          url: k3s-server.${SECRET_CLUSTER_DOMAIN_ROOT}.
+          url: "${LOCAL_LAN_K3SSERVER}"
           module: icmp
         - name: k3s-worker1
-          url: k3s-worker1.${SECRET_CLUSTER_DOMAIN_ROOT}.
+          url: "${LOCAL_LAN_K3SWORKER1}"
           module: icmp
         - name: k3s-worker2
-          url: k3s-worker2.${SECRET_CLUSTER_DOMAIN_ROOT}.
+          url: "${LOCAL_LAN_K3SWORKER2}"
           module: icmp
         - name: k3s-worker3
-          url: k3s-worker3.${SECRET_CLUSTER_DOMAIN_ROOT}.
+          url: "${LOCAL_LAN_K3SWORKER3}"
           module: icmp
     prometheusRule:
       enabled: true
