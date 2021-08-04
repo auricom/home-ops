@@ -21,7 +21,7 @@ spec:
       repository: ghcr.io/linuxserver/bookstack
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "version-v21.05.3"
+      tag: "version-v21.05.4"
     mariadb:
       enabled: true
       image:
