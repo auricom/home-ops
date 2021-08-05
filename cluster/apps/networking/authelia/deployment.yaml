@@ -40,7 +40,7 @@ spec:
           ports:
             - containerPort: 6379
         - name: authelia
-          image: authelia/authelia:4.29.4
+          image: authelia/authelia:4.30.1
           ports:
             - containerPort: 9091
           volumeMounts:
@@ -129,18 +129,21 @@ data:
 
     # The host and port to listen on
 
-    host: 0.0.0.0
+    server:
 
-    port: 9091
+      host: 0.0.0.0
 
+      port: 9091
+
+    log:
 
     # Level of verbosity for logs: info, debug, trace
 
-    log_level: debug
+      level: debug
 
     ## File path where the logs will be written. If not set logs are written to stdout.
 
-    # log_file_path: /var/log/authelia
+      # file_path: /var/log/authelia
 
 
     # The secret used to generate JWT tokens when validating user identity by
