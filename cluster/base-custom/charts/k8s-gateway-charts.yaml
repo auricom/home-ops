@@ -1,16 +1,10 @@
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: GitRepository
+kind: HelmRepository
 metadata:
   name: k8s-gateway-charts
   namespace: flux-system
 spec:
-  interval: 1440m
-  url: https://github.com/ori-edge/k8s_gateway
-  ref:
-    branch: master
-  ignore: |
-    # exclude all
-    /*
-    # include charts directory
-    !/charts/
+  interval: 10m
+  url: https://ori-edge.github.io/k8s_gateway/
+  timeout: 3m

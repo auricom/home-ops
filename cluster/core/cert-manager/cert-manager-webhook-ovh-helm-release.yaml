@@ -8,6 +8,7 @@ spec:
   interval: 5m
   chart:
     spec:
+      # renovate: registryUrl=https://github.com/baarde/cert-manager-webhook-ovh
       chart: ./deploy/cert-manager-webhook-ovh
       version: 0.2.0
       sourceRef:

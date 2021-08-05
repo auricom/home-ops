@@ -8,18 +8,32 @@ spec:
   interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://github.com/ori-edge/k8s_gateway
-      chart: ./charts/k8s-gateway
-      version: 1.0.3
+      # renovate: registryUrl=https://ori-edge.github.io/k8s_gateway/
+      chart: k8s-gateway
+      version: 1.0.4
       sourceRef:
-        kind: GitRepository
+        kind: HelmRepository
         name: k8s-gateway-charts
         namespace: flux-system
       interval: 5m
   values:
+    image:
+      registry: quay.io
+      repository: oriedge/k8s_gateway
+      tag: v0.1.6
+      pullPolicy: IfNotPresent
     domain: "${SECRET_CLUSTER_DOMAIN}"
     service:
       type: LoadBalancer
-      externalIPs:
-        - ${CLUSTER_LB_K8SGATEWAY}
       externalTrafficPolicy: Local
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Service
+              name: k8s-gateway
+            patch:
+              - op: add
+                path: /spec/externalIPs
+                value:
+                  - "${CLUSTER_LB_K8SGATEWAY}"
