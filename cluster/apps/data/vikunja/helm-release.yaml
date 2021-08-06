@@ -78,3 +78,6 @@ spec:
         enabled: true
         existingClaim: vikunja-files
         mountpath: /app/vikunja/files
+
+    postgresql:
+      enabled: false
