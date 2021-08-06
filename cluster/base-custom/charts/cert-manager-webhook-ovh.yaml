@@ -5,7 +5,7 @@ metadata:
   name: cert-manager-webhook-ovh
   namespace: flux-system
 spec:
-  interval: 1440m
+  interval: 12h
   url: https://github.com/baarde/cert-manager-webhook-ovh
   ref:
     branch: master
