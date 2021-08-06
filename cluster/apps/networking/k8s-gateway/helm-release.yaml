@@ -37,3 +37,11 @@ spec:
                 path: /spec/externalIPs
                 value:
                   - "${CLUSTER_LB_K8SGATEWAY}"
+              - op: add
+                path: /metadata/annotations/prometheus.io/probe
+                value:
+                  - "true"
+              - op: add
+                path: /metadata/annotations/prometheus.io/protocol
+                value:
+                  - "tcp"
