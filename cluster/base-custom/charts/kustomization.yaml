@@ -11,7 +11,6 @@ resources:
   - grafana-loki-charts.yaml
   - influxdata-charts.yaml
   - infracloudio-charts.yaml
-  - ingress-nginx-charts.yaml
   - jetstack-charts.yaml
   - k8s-at-home.yaml
   - k8s-gateway-charts.yaml
