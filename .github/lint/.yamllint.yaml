@@ -2,9 +2,8 @@
 ignore: |
   .private/
   .vscode/
-  ansible/
-  *.enc.yaml
-  *.sops.yml
+  *.sops.*
+  ansible/roles/xanmanning.k3s/
   gotk-components.yaml
 extends: default
 rules:
