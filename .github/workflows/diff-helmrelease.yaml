@@ -1,5 +1,5 @@
 ---
-name: Create diff on updated Helm Releases
+name: Diff Helm Releases on Pull Requests
 
 on: # yamllint disable-line rule:truthy
   pull_request:
@@ -29,7 +29,7 @@ jobs:
           filters: |
             changed:
               - '**'
-      - name: Keep HelmReleases only
+      - name: Filter Helm Releases
         id: extract
         run: |
           filtered=$(grep -zl "kind: HelmRelease.*registryUrl=" ${{ steps.filter.outputs.changed_files }} \
@@ -37,9 +37,9 @@ jobs:
           echo ::set-output name=files::${filtered}
 
   helm:
-    name: Template HelmReleases
+    name: Template Helm Releases
     runs-on: ubuntu-20.04
-    if: ${{ needs.changes.outputs.files != '[]' }}
+    if: ${{ needs.changes.outputs.files != '' }}
     needs:
       - changes
     strategy:
@@ -117,7 +117,7 @@ jobs:
           fi
           echo "::set-output name=message::$(echo "$message" | jq --raw-input --slurp)"
 
-      - name: Create comment
+      - name: Add Pull Request comment
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
