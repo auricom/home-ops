@@ -20,7 +20,7 @@ spec:
   values:
     eula:
       accept: true
-      company: "${SECRET_CLUSTER_DOMAIN_CERT}"
+      company: "${SECRET_CLUSTER_DOMAIN/./-}"
       email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
     global:
       persistence:
@@ -45,4 +45,4 @@ spec:
         - "k10.${SECRET_CLUSTER_DOMAIN}"
       tls:
         enabled: true
-        secretName: "${SECRET_CLUSTER_DOMAIN_CERT}-tls"
+        secretName: "${SECRET_CLUSTER_DOMAIN/./-}-tls"

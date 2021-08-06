@@ -26,7 +26,7 @@ spec:
             - development
             - home
             - media
-            - network
+            - networking
       ingress:
         enabled: true
         annotations:

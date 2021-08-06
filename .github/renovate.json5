@@ -1,188 +1,176 @@
 {
-  "enabled": true,
-  "timezone": "Europe/Paris",
-    "semanticCommits": "enabled",
-  "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Renovate Dashboard",
-  "commitBody": "Signed-off-by: auricom <27022259+auricom@users.noreply.github.com>",
+  enabled: true,
+  timezone: "Europe/Paris",
+  semanticCommits: "enabled",
+  dependencyDashboard: true,
+  dependencyDashboardTitle: "Renovate Dashboard",
+  commitBody: "Signed-off-by: auricom <27022259+auricom@users.noreply.github.com>",
   // Do not notify on closed unmerged PRs
-  "suppressNotifications": ["prIgnoreNotification"],
+  suppressNotifications: ["prIgnoreNotification"],
   // Do not rebase PRs
-  "rebaseWhen": "conflicted",
-  "assignees": ["@auricom"],
+  rebaseWhen: "conflicted",
+  assignees: ["@auricom"],
   "helm-values": {
-    "fileMatch": [
-      "cluster/.+/helm-release\\.yaml$"
-    ]
+    fileMatch: ["cluster/.+/helm-release\\.yaml$"],
   },
-  "kubernetes": {
-    "fileMatch": [
-      "cluster/.+\\.yaml$"
-    ],
-    "ignorePaths": [
-      "cluster/base/"
-    ]
+  kubernetes: {
+    fileMatch: ["cluster/.+\\.yaml$"],
+    ignorePaths: ["cluster/base/"],
   },
-  "regexManagers": [
+  regexManagers: [
     // regexManager to read and process HelmRelease files
     {
-      "fileMatch": [
-        "cluster/.+\\.yaml$"
-      ],
-      "matchStrings": [
+      fileMatch: ["cluster/.+\\.yaml$"],
+      matchStrings: [
         // helm releases
-        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
+        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n",
       ],
-      "datasourceTemplate": "helm"
+      datasourceTemplate: "helm",
     },
     // regexManager to read and process cert-manager CRD's
     {
-      "fileMatch": [
-        "cluster/base-custom/crds/cert-manager/.+\\.yaml$"
+      fileMatch: ["cluster/base-custom/crds/cert-manager/.+\\.yaml$"],
+      matchStrings: [
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*\\/(?<currentValue>.*?)\\/",
       ],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*\\/(?<currentValue>.*?)\\/"
-      ],
-      "datasourceTemplate": "helm"
+      datasourceTemplate: "helm",
     },
     // regexManager to read and process kube-prometheus-stack CRD's
     {
-      "fileMatch": [
-        "cluster/base-custom/crds/kube-prometheus-stack/.+\\.yaml$"
+      fileMatch: ["cluster/base-custom/crds/kube-prometheus-stack/.+\\.yaml$"],
+      matchStrings: [
+        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-zA-Z-]+)-(?<currentValue>.*)\n",
       ],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-zA-Z-]+)-(?<currentValue>.*)\n"
+      datasourceTemplate: "helm",
+    },
+    // regexManager to read and process Traefik CRD's
+    {
+      fileMatch: ["cluster/crds/traefik/.+\\.yaml$"],
+      matchStrings: [
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: v(?<currentValue>.*)\n",
       ],
-      "datasourceTemplate": "helm"
+      datasourceTemplate: "helm",
     },
     // regexManager to read and process Rook-Ceph CRD's
     {
-      "fileMatch": [
-        "cluster/base-custom/crds/rook-ceph/.+\\.yaml$"
+      fileMatch: ["cluster/base-custom/crds/rook-ceph/.+\\.yaml$"],
+      matchStrings: [
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*)\n",
       ],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*)\n"
-      ],
-      "datasourceTemplate": "helm"
-    }
+      datasourceTemplate: "helm",
+    },
   ],
-  "packageRules": [
+  packageRules: [
     // Setup datasources
     {
-      "matchDatasources": ["helm"],
-      "semanticCommitScope": "charts",
-      "commitMessageTopic": "{{depName}}",
-      "commitMessageExtra": "to {{{newValue}}}",
-      "separateMinorPatch": true,
-      "ignoreDeprecated": true
+      matchDatasources: ["helm"],
+      semanticCommitScope: "charts",
+      commitMessageTopic: "{{depName}}",
+      commitMessageExtra: "to {{{newValue}}}",
+      separateMinorPatch: true,
+      ignoreDeprecated: true,
     },
     {
-      "matchDatasources": ["docker"],
-      "enabled": true,
-      "matchUpdateTypes": ["major", "minor", "patch"]
+      matchDatasources: ["docker"],
+      enabled: true,
+      matchUpdateTypes: ["major", "minor", "patch"],
     },
     {
-      "matchDatasources": ["docker"],
-      "semanticCommitScope": "images",
-      "commitMessageTopic": "{{depName}}",
-      "commitMessageExtra": "to {{{newValue}}}",
-      "separateMinorPatch": true
+      matchDatasources: ["docker"],
+      semanticCommitScope: "images",
+      commitMessageTopic: "{{depName}}",
+      commitMessageExtra: "to {{{newValue}}}",
+      separateMinorPatch: true,
     },
     // Add labels according to package and update types
     {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(images)!: ",
-      "labels": ["renovate/image", "dep/major"]
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["major"],
+      commitMessagePrefix: "feat(images)!: ",
+      labels: ["renovate/image", "dep/major"],
     },
     {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat",
-      "labels": ["renovate/image", "dep/minor"]
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["minor"],
+      semanticCommitType: "feat",
+      labels: ["renovate/image", "dep/minor"],
     },
     {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitType": "fix",
-      "labels": ["renovate/image", "dep/patch"]
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["patch"],
+      semanticCommitType: "fix",
+      labels: ["renovate/image", "dep/patch"],
     },
     {
-      "matchDatasources": ["helm"],
-      "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(charts)!: ",
-      "labels": ["renovate/helm", "dep/major"]
+      matchDatasources: ["helm"],
+      matchUpdateTypes: ["major"],
+      commitMessagePrefix: "feat(charts)!: ",
+      labels: ["renovate/helm", "dep/major"],
     },
     {
-      "matchDatasources": ["helm"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat",
-      "labels": ["renovate/helm", "dep/minor"]
+      matchDatasources: ["helm"],
+      matchUpdateTypes: ["minor"],
+      semanticCommitType: "feat",
+      labels: ["renovate/helm", "dep/minor"],
     },
     {
-      "matchDatasources": ["helm"],
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitType": "fix",
-      "labels": ["renovate/helm", "dep/patch"]
-    },
-    // custom version schemes
-    {
-      "matchDatasources": ["docker"],
-      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-*-(?<compatibility>.*)$",
-      "matchPackageNames": ["blakeblackshear/frigate"]
+      matchDatasources: ["helm"],
+      matchUpdateTypes: ["patch"],
+      semanticCommitType: "fix",
+      labels: ["renovate/helm", "dep/patch"],
     },
     // custom version schemes
     {
-      "matchDatasources": ["docker"],
-      "versioning": "regex:^version-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      "matchPackageNames": ["ghcr.io/linuxserver/bookstack", "ghcr.io/linuxserver/healthchecks"]
+      matchDatasources: ["docker"],
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-*-(?<compatibility>.*)$",
+      matchPackageNames: ["blakeblackshear/frigate"],
     },
     // custom version schemes
     {
-      "matchDatasources": ["docker"],
-      "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      "matchPackageNames": ["ghcr.io/linuxserver/resilio-sync"]
+      matchDatasources: ["docker"],
+      versioning: "regex:^version-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      matchPackageNames: [
+        "ghcr.io/linuxserver/bookstack",
+        "ghcr.io/linuxserver/healthchecks",
+      ],
+    },
+    // custom version schemes
+    {
+      matchDatasources: ["docker"],
+      versioning: "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      matchPackageNames: ["ghcr.io/linuxserver/resilio-sync"],
     },
     // pin package versions
     {
-      "matchDatasources": ["docker"],
-      "allowedVersions": "<13",
-      "matchPackageNames": [
-        "postgres",
-        "prodrigestivill/postgres-backup-local"
-      ]
+      matchDatasources: ["docker"],
+      allowedVersions: "<13",
+      matchPackageNames: ["postgres", "prodrigestivill/postgres-backup-local"],
     },
     {
-      "matchDatasources": ["docker"],
-      "versioning": "loose",
-      "matchPackageNames": [
-        "ghcr.io/k8s-at-home/qbittorrent"
-      ]
+      matchDatasources: ["docker"],
+      versioning: "loose",
+      matchPackageNames: ["ghcr.io/k8s-at-home/qbittorrent"],
     },
     // enable auto-merge
     {
-      "matchDatasources": ["docker"],
-      "automerge": true,
-      "automergeType": "branch",
-      "requiredStatusChecks": null,
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchPackageNames": [
-        "ghcr.io/k8s-at-home/prowlarr"
-     ]
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "branch",
+      requiredStatusChecks: null,
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: ["ghcr.io/k8s-at-home/prowlarr"],
     },
     {
-      "matchDatasources": ["helm", "docker"],
-      "matchPackagePatterns": ["^rook.ceph"],
-      "groupName": "rook-ceph-suite",
-      "additionalBranchPrefix": ""
+      matchDatasources: ["helm", "docker"],
+      matchPackagePatterns: ["^rook.ceph"],
+      groupName: "rook-ceph-suite",
+      additionalBranchPrefix: "",
     },
     {
-      "matchPackageNames": [
-        "rancher/system-upgrade-controller"
-      ],
-      "groupName": "rancher/system-upgrade-controller",
-      "additionalBranchPrefix": "",
-      "separateMinorPatch": true
-    }
-  ]
+      matchPackageNames: ["rancher/system-upgrade-controller"],
+      groupName: "rancher/system-upgrade-controller",
+      additionalBranchPrefix: "",
+      separateMinorPatch: true,
+    },
+  ],
 }
