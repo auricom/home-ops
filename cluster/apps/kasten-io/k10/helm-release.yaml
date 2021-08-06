@@ -36,13 +36,10 @@ spec:
     clusterName: k3s
     ingress:
       create: true
-      class: "nginx"
+      class: "traefik"
       host: "k10.${SECRET_CLUSTER_DOMAIN}"
       annotations:
-        nginx.ingress.kubernetes.io/app-root: /k10
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       urlPath: k10
       hosts:
         - "k10.${SECRET_CLUSTER_DOMAIN}"
-      tls:
-        enabled: true
-        secretName: "${SECRET_CLUSTER_DOMAIN/./-}-tls"

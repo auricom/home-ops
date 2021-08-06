@@ -32,14 +32,11 @@ spec:
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-        nginx.ingress.kubernetes.io/proxy-body-size: 10m
+        kubernetes.io/ingress.class: "traefik"
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-medium@kubernetescrd
       hosts:
         - unifi.${SECRET_CLUSTER_DOMAIN}
-      tls:
-        - hosts:
-            - unifi.${SECRET_CLUSTER_DOMAIN}
     guiService:
       type: LoadBalancer
       externalIPs:

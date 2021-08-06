@@ -33,13 +33,10 @@ spec:
         enabled: true
         pathType: Prefix
         annotations:
-          kubernetes.io/ingress.class: "nginx"
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          kubernetes.io/ingress.class: "traefik"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
-        tls:
-          - hosts:
-              - alert-manager.${SECRET_CLUSTER_DOMAIN}
       config:
         global:
           resolve_timeout: 5m
@@ -199,11 +196,9 @@ spec:
         enabled: true
         pathType: Prefix
         annotations:
-          kubernetes.io/ingress.class: "nginx"
+          kubernetes.io/ingress.class: "traefik"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts: ["grafana.${SECRET_CLUSTER_DOMAIN}"]
-        tls:
-          - hosts:
-              - grafana.${SECRET_CLUSTER_DOMAIN}
     kubeEtcd:
       enabled: false
     kubeControllerManager:
@@ -217,13 +212,10 @@ spec:
         enabled: true
         pathType: Prefix
         annotations:
-          kubernetes.io/ingress.class: "nginx"
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          kubernetes.io/ingress.class: "traefik"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts: ["prometheus.${SECRET_CLUSTER_DOMAIN}"]
-        tls:
-          - hosts:
-              - prometheus.${SECRET_CLUSTER_DOMAIN}
       prometheusSpec:
         replicas: 2
         replicaExternalLabelName: "replica"

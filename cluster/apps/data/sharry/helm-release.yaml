@@ -43,12 +43,10 @@ spec:
     ingress:
       main:
         enabled: true
+        ingressClassName: "traefik"
         annotations:
-          # -- Nginx client Body Buffer Size
-          nginx.ingress.kubernetes.io/client-body-buffer-size: "2048m"
-          # -- Nginx Proxy Body Size
-          nginx.ingress.kubernetes.io/proxy-body-size: "2048m"
-          nginx.ingress.kubernetes.io/proxy-buffering: "off"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-large@kubernetescrd
           forecastle.stakater.com/expose: "true"
           forecastle.stakater.com/appName: "Sharry"
           forecastle.stakater.com/icon: "https://raw.githubusercontent.com/eikek/sharry/master/artwork/icon.png"
@@ -58,9 +56,6 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
-        tls:
-          - hosts:
-              - "sharry.${SECRET_CLUSTER_DOMAIN}"
 
     config: |
       sharry.restserver {

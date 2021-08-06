@@ -53,14 +53,6 @@ spec:
           prometheus.io/probe: "true"
           prometheus.io/protocol: http
 
-    nodeSelector: {}
-
-    tolerations: []
-
-    affinity: {}
-
-    podAnnotations: {}
-
     persistence:
       config:
         enabled: false
@@ -76,6 +68,3 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
-        tls:
-          - hosts:
-              - "healthchecks.${SECRET_CLUSTER_DOMAIN}"

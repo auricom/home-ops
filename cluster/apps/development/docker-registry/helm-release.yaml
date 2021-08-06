@@ -32,15 +32,11 @@ spec:
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-        nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+        kubernetes.io/ingress.class: "traefik"
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-large@kubernetescrd
       hosts:
         - registry.${SECRET_CLUSTER_DOMAIN}
-      tls:
-        - hosts:
-            - registry.${SECRET_CLUSTER_DOMAIN}
     service:
       annotations:
         prometheus.io/probe: "true"

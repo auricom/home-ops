@@ -91,16 +91,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
   labels:
     app.kubernetes.io/instance: authelia
     app.kubernetes.io/name: authelia
   name: authelia
   namespace: networking
 spec:
-  tls:
-    - hosts:
-        - login.${SECRET_CLUSTER_DOMAIN}
   rules:
     - host: login.${SECRET_CLUSTER_DOMAIN}
       http:

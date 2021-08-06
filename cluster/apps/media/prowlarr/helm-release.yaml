@@ -35,10 +35,10 @@ spec:
     ingress:
       main:
         enabled: true
+        ingressClassName: "traefik"
         annotations:
-          kubernetes.io/ingress.class: "nginx"
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd, networking-buffering-small@kubernetescrd
           forecastle.stakater.com/expose: "true"
           forecastle.stakater.com/appName: "Prowlarr"
           forecastle.stakater.com/icon: "https://raw.githubusercontent.com/Prowlarr/Prowlarr/develop/Logo/256.png"
@@ -48,9 +48,6 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
-        tls:
-          - hosts:
-              - "prowlarr.${SECRET_CLUSTER_DOMAIN}"
     resources:
       requests:
         memory: 100Mi

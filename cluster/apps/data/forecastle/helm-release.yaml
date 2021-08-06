@@ -30,7 +30,9 @@ spec:
       ingress:
         enabled: true
         annotations:
-          kubernetes.io/ingress.class: "nginx"
+          kubernetes.io/ingress.class: "traefik"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts:
           - host: home.${SECRET_CLUSTER_DOMAIN}
             paths:
@@ -38,7 +40,3 @@ spec:
           - host: services.${SECRET_CLUSTER_DOMAIN}
             paths:
               - /
-        tls:
-          - hosts:
-              - home.${SECRET_CLUSTER_DOMAIN}
-              - services.${SECRET_CLUSTER_DOMAIN}

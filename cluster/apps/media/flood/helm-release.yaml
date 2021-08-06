@@ -36,9 +36,9 @@ spec:
       main:
         enabled: true
         annotations:
-          kubernetes.io/ingress.class: "nginx"
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
+          kubernetes.io/ingress.class: "traefik"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
           forecastle.stakater.com/expose: "true"
           forecastle.stakater.com/appName: "Flood"
           forecastle.stakater.com/icon: "https://raw.githubusercontent.com/jesec/flood/master/flood.svg"
@@ -48,9 +48,6 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
-        tls:
-          - hosts:
-              - "flood.${SECRET_CLUSTER_DOMAIN}"
     persistence:
       data:
         enabled: true

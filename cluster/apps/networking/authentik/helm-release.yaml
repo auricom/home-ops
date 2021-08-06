@@ -23,14 +23,13 @@ spec:
 
     ingress:
       enabled: true
-      ingressClassName: "nginx"
+      ingressClassName: "traefik"
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       hosts:
         - host: id.${SECRET_CLUSTER_DOMAIN}
           paths:
             - path: /
-      tls:
-        - hosts:
-            - id.${SECRET_CLUSTER_DOMAIN}
 
     geoip:
       enabled: false

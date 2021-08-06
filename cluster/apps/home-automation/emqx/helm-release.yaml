@@ -30,13 +30,11 @@ spec:
       dashboard:
         enabled: true
         annotations:
-          kubernetes.io/ingress.class: "nginx"
+          kubernetes.io/ingress.class: "traefik"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         path: /
         hosts:
           - emqx.${SECRET_CLUSTER_DOMAIN}
-        tls:
-          - hosts:
-              - emqx.${SECRET_CLUSTER_DOMAIN}
     emqxConfig:
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_ADMIN_PASSWORD: "${SECRET_EMQX_ADMIN_PASSWORD}"

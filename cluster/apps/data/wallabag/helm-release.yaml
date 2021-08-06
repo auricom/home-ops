@@ -45,8 +45,9 @@ spec:
     ingress:
       main:
         enabled: true
+        ingressClassName: "traefik"
         annotations:
-          kubernetes.io/ingress.class: "nginx"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           forecastle.stakater.com/expose: "true"
           forecastle.stakater.com/appName: "Wallabag"
           forecastle.stakater.com/icon: "https://cdnx.nextinpact.com/compress/850-412/data-next/images/bd/wide-linked-media/545.jpg"
@@ -56,9 +57,6 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
-        tls:
-          - hosts:
-              - wallabag.${SECRET_CLUSTER_DOMAIN}
     persistence:
       images:
         enabled: true
