@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: ghcr.io/linuxserver/healthchecks
-      tag: version-v1.21.0
+      tag: version-v1.22.0
       pullPolicy: IfNotPresent
 
     controllerType: deployment
