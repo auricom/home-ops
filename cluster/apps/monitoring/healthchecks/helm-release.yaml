@@ -46,6 +46,7 @@ spec:
       DISCORD_CLIENT_SECRET: ${SECRET_HEALTHCHECKS_DISCORD_CLIENT_SECRET}
       SITE_ROOT: "https://healthchecks.${SECRET_CLUSTER_DOMAIN}"
       SITE_NAME: "Homelab HealthChecks"
+      SITE_LOGO_URL: "https://image.flaticon.com/icons/svg/1219/1219758.svg"
 
     service:
       main:
