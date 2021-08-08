@@ -206,7 +206,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: "traefik"
     traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
     forecastle.stakater.com/expose: "true"
     forecastle.stakater.com/appName: "Resilio Sync"
@@ -218,6 +217,7 @@ metadata:
   name: resilio-sync
   namespace: data
 spec:
+  ingressClassName: "nginx"
   rules:
     - host: resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}
       http:

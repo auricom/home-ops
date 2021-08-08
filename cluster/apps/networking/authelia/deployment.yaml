@@ -91,7 +91,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: "traefik"
+    kubernetes.io/ingress.class: "nginx"
     traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
   labels:
     app.kubernetes.io/instance: authelia

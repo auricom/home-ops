@@ -28,8 +28,10 @@ spec:
       password: ${SECRET_PGADMIN_PASSWORD}
     ingress:
       enabled: true
+      ingressClassName: "nginx"
       annotations:
-        kubernetes.io/ingress.class: "traefik"
+        nginx.ingress.kubernetes.io/client-body-buffer-size: "50m"
+        nginx.ingress.kubernetes.io/proxy-body-size: "50m"
         traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-medium@kubernetescrd
         forecastle.stakater.com/expose: "true"

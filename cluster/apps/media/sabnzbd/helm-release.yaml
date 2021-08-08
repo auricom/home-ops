@@ -31,7 +31,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "traefik"
+        ingressClassName: "nginx"
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd, networking-buffering-small@kubernetescrd
@@ -46,7 +46,7 @@ spec:
                 pathType: Prefix
       api:
         enabled: true
-        ingressClassName: "traefik"
+        ingressClassName: "nginx"
         nameSuffix: "api"
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: "websecure"

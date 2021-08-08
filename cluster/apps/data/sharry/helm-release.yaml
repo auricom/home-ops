@@ -43,8 +43,11 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "traefik"
+        ingressClassName: "nginx"
         annotations:
+          nginx.ingress.kubernetes.io/client-body-buffer-size: "2048m"
+          nginx.ingress.kubernetes.io/proxy-body-size: "2048m"
+          nginx.ingress.kubernetes.io/proxy-buffering: "off"
           traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-large@kubernetescrd
           forecastle.stakater.com/expose: "true"
