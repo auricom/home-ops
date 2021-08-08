@@ -17,51 +17,53 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    controllerType: deployment
     image:
       repository: jesec/flood
       tag: 4.6.1
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
+
     env:
       FLOOD_OPTION_RUNDIR: /data
       FLOOD_OPTION_AUTH: "none"
       FLOOD_OPTION_QBURL: "http://qbittorrent:8080"
       FLOOD_OPTION_QBUSER: admin
       FLOOD_OPTION_QBPASS: ${SECRET_QBITTORRENT_PASSWORD}
+
     podSecurityContext:
       runAsUser: 1001
       runAsGroup: 1001
       fsGroup: 1001
+
+    persistence:
+      data:
+        enabled: true
+        existingClaim: flood-config
+
+    service:
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
+
     ingress:
       main:
         enabled: true
+        ingressClassName: "traefik"
         annotations:
-          kubernetes.io/ingress.class: "nginx"
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
           traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
-          forecastle.stakater.com/expose: "true"
-          forecastle.stakater.com/appName: "Flood"
-          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/jesec/flood/master/flood.svg"
-          forecastle.stakater.com/network-restricted: "true"
         hosts:
           - host: flood.${SECRET_CLUSTER_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
-    persistence:
-      data:
-        enabled: true
-        existingClaim: flood-config
+        tls:
+          - hosts:
+              - "flood.${SECRET_CLUSTER_DOMAIN}"
+
     resources:
       requests:
         memory: 250Mi
         cpu: 500m
       limits:
         memory: 1500Mi
-    service:
-      main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http

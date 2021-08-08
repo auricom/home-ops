@@ -19,28 +19,14 @@ spec:
   values:
     replicaCount: 3
     recreatePods: true
-    service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: tcp
-      type: LoadBalancer
-      loadBalancerIP: ${CLUSTER_LB_EMQX}
-      externalTrafficPolicy: Local
-    ingress:
-      dashboard:
-        enabled: true
-        annotations:
-          kubernetes.io/ingress.class: "nginx"
-          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-        path: /
-        hosts:
-          - emqx.${SECRET_CLUSTER_DOMAIN}
+
     emqxConfig:
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_ADMIN_PASSWORD: "${SECRET_EMQX_ADMIN_PASSWORD}"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
       EMQX_AUTH__USER__1__USERNAME: "${SECRET_MQTT_USERNAME}"
       EMQX_AUTH__USER__1__PASSWORD: "${SECRET_MQTT_PASSWORD}"
+
     emqxAclConfig: >
       {allow, {user, "dashboard"}, subscribe, ["$SYS/#"]}.
       {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}.
@@ -62,6 +48,28 @@ spec:
       {emqx_mod_rewrite, false}.
       {emqx_mod_subscription, false}.
       {emqx_mod_topic_metrics, true}.
+
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: tcp
+      type: LoadBalancer
+      loadBalancerIP: ${CLUSTER_LB_EMQX}
+      externalTrafficPolicy: Local
+
+    ingress:
+      dashboard:
+        enabled: true
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        path: /
+        hosts:
+          - emqx.${SECRET_CLUSTER_DOMAIN}
+        tls:
+          - hosts:
+              - "emqx.${SECRET_CLUSTER_DOMAIN}"
+            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+
     affinity:
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
@@ -74,6 +82,7 @@ spec:
                     values:
                       - emqx
               topologyKey: kubernetes.io/hostname
+
     resources:
       requests:
         cpu: 100m
@@ -93,3 +102,10 @@ spec:
                 path: /spec/externalIPs
                 value:
                   - "${CLUSTER_LB_EMQX}"
+          - target:
+              kind: Ingress
+              name: emqx-dashboard
+            patch:
+              - op: add
+                path: /spec/ingressClassName
+                value: traefik

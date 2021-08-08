@@ -39,7 +39,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: "networking/${SECRET_CLUSTER_DOMAIN/./-}-tls"
+        default-ssl-certificate: "networking/${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
       resources:
         requests:
           memory: 250Mi

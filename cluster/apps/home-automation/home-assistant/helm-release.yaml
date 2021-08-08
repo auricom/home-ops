@@ -17,10 +17,10 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    controllerType: deployment
     image:
       repository: ghcr.io/home-assistant/home-assistant
       tag: 2021.8.4
+
     env:
       TZ: "Europe/Paris"
       HASS_SECRET_URL: https://home-assistant.${SECRET_CLUSTER_DOMAIN}
@@ -30,8 +30,10 @@ spec:
       HASS_SECRET_MQTT_USERNAME: ${SECRET_MQTT_USERNAME}
       HASS_SECRET_MQTT_PASSWORD: ${SECRET_MQTT_PASSWORD}
       HASS_SECRET_DB_URL: ${SECRET_HASS_DB_URL}
+
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
+
     service:
       main:
         annotations:
@@ -41,24 +43,32 @@ spec:
         externalIPs:
           - ${CLUSTER_LB_HASS}
         externalTrafficPolicy: Local
+
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        ingressClassName: "traefik"
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts:
-          - host: hass.${SECRET_CLUSTER_DOMAIN}
+          - host: "hass.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
-          - host: home-assistant.${SECRET_CLUSTER_DOMAIN}
+          - host: "home-assistant.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
+        tls:
+          - hosts:
+              - "hass.${SECRET_CLUSTER_DOMAIN}"
+              - "home-assistant.${SECRET_CLUSTER_DOMAIN}"
+            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+
     prometheus:
       serviceMonitor:
         enabled: false
+
     probes:
       liveness:
         enabled: false
@@ -66,10 +76,15 @@ spec:
         enabled: false
       startup:
         enabled: false
+
+    postgresql:
+      enabled: false
+
     persistence:
       config:
         enabled: true
         existingClaim: hass-config
+
     addons:
       codeserver:
         enabled: true
@@ -86,20 +101,24 @@ spec:
           - "/config/.vscode"
         ingress:
           enabled: true
-          ingressClassName: "nginx"
+          ingressClassName: "traefik"
           annotations:
             traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+            traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
           hosts:
-            - host: hass-config.${SECRET_CLUSTER_DOMAIN}
+            - host: "hass-config.${SECRET_CLUSTER_DOMAIN}"
               paths:
                 - path: /
                   pathType: Prefix
+              tls:
+                - hosts:
+                    - "hass-config.${SECRET_CLUSTER_DOMAIN}"
+              secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
         volumeMounts:
           - name: config
             mountPath: /config
+
     resources:
       requests:
         cpu: 500m
         memory: 1000Mi
-    postgresql:
-      enabled: false

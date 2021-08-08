@@ -17,17 +17,19 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    controllerType: deployment
     image:
       repository: ghcr.io/k8s-at-home/bazarr
       tag: v0.9.6
       pullPolicy: IfNotPresent
+
     env:
       TZ: "Europe/Paris"
+
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
       fsGroup: 568
+
     persistence:
       config:
         enabled: true
@@ -36,28 +38,32 @@ spec:
         enabled: true
         existingClaim: nfs-video-media
         mountPath: "/mnt/storage/video"
+
     service:
       main:
         annotations:
           prometheus.io/probe: "true"
           prometheus.io/protocol: http
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "traefik"
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd, networking-buffering-small@kubernetescrd
+        hosts:
+          - host: "bazarr.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "bazarr.${SECRET_CLUSTER_DOMAIN}"
+
     resources:
       requests:
         memory: 500Mi
         cpu: 500m
       limits:
         memory: 1500Mi
-    ingress:
-      main:
-        enabled: true
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
-          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd, networking-buffering-small@kubernetescrd
-        hosts:
-          - host: bazarr.${SECRET_CLUSTER_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix

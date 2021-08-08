@@ -18,6 +18,7 @@ spec:
       interval: 5m
   values:
     allowIcmp: true
+
     config:
       modules:
         icmp:
@@ -35,6 +36,7 @@ spec:
         tcp_connect:
           prober: tcp
           timeout: 30s
+
     serviceMonitor:
       enabled: true
       defaults:
@@ -64,6 +66,7 @@ spec:
         - name: k3s-worker3
           url: "${LOCAL_LAN_K3SWORKER3}"
           module: icmp
+
     prometheusRule:
       enabled: true
       additionalLabels:
@@ -84,12 +87,10 @@ spec:
           for: 15m
           labels:
             severity: warning
+
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-        nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
         traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
       hosts:
@@ -97,3 +98,18 @@ spec:
           paths:
             - path: /
               pathType: Prefix
+      tls:
+        - hosts:
+            - "blackbox.${SECRET_CLUSTER_DOMAIN}"
+          secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Ingress
+              name: blackbox-exporter-prometheus-blackbox-exporter
+            patch:
+              - op: add
+                path: /spec/ingressClassName
+                value: traefik

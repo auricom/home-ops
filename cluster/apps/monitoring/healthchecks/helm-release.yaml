@@ -22,13 +22,6 @@ spec:
       tag: v1.22.0-ls95
       pullPolicy: IfNotPresent
 
-    controllerType: deployment
-
-    strategy:
-      type: Recreate
-
-    resources: {}
-
     env:
       SECRET_KEY: ${SECRET_HEALTHECKS_SECRET_KEY}
       REGENERATE_SETTINGS: "True"
@@ -48,24 +41,28 @@ spec:
       SITE_NAME: "Homelab HealthChecks"
       SITE_LOGO_URL: "https://image.flaticon.com/icons/svg/1219/1219758.svg"
 
+    persistence:
+      config:
+        enabled: false
+
     service:
       main:
         annotations:
           prometheus.io/probe: "true"
           prometheus.io/protocol: http
 
-    persistence:
-      config:
-        enabled: false
-
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        ingressClassName: "traefik"
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts:
-          - host: healthchecks.${SECRET_CLUSTER_DOMAIN}
+          - host: "healthchecks.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
+        tls:
+          - hosts:
+              - "healthchecks.${SECRET_CLUSTER_DOMAIN}"
+            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"

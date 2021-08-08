@@ -207,19 +207,20 @@ kind: Ingress
 metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-    forecastle.stakater.com/expose: "true"
-    forecastle.stakater.com/appName: "Resilio Sync"
-    forecastle.stakater.com/icon: "https://avatars.githubusercontent.com/u/12284211?s=200&v=4"
-    forecastle.stakater.com/network-restricted: "true"
   labels:
     app.kubernetes.io/instance: resilio-sync
     app.kubernetes.io/name: resilio-sync
   name: resilio-sync
   namespace: data
 spec:
-  ingressClassName: "nginx"
+  ingressClassName: "traefik"
+  tls:
+    - hosts:
+        - "resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}"
+        - "resilio-sync-helene.${SECRET_CLUSTER_DOMAIN}"
+      secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
   rules:
-    - host: resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}
+    - host: "resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}"
       http:
         paths:
           - path: /
@@ -229,7 +230,7 @@ spec:
                 name: resilio-sync
                 port:
                   number: 8888
-    - host: resilio-sync-helene.${SECRET_CLUSTER_DOMAIN}
+    - host: "resilio-sync-helene.${SECRET_CLUSTER_DOMAIN}"
       http:
         paths:
           - path: /
