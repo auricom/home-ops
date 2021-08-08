@@ -21,3 +21,25 @@
   when:
     - sysctl_network.changed
     - bridge_nf_call_iptables_result.stat.exists
+
+- name: network | systemd-resolved | disable
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+
+- name: network | resolv.conf | check symlink
+  ansible.builtin.stat:
+    path: "/etc/resolv.conf"
+  register: resolv
+
+- name: network | resolv.conf | remove symlink
+  ansible.builtin.file:
+    path: "/etc/resolv.conf"
+    state: absent
+  when: resolv.stat.islnk is defined and resolv.stat.islnk
+
+- name: network | resolv.conf | static files
+  ansible.builtin.template:
+    src: resolv.conf
+    dest: /etc/resolv.conf
