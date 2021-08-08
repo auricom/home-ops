@@ -6,5 +6,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://helm.runix.net
+  url: https://helm.runix.net.
   timeout: 3m

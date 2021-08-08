@@ -6,5 +6,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://helm.mittwald.de/
+  url: https://helm.mittwald.de./
   timeout: 3m

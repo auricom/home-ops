@@ -5,7 +5,7 @@ metadata:
   name: rook-ceph-source
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 1h
   url: https://github.com/rook/rook.git
   ref:
     # renovate: registryUrl=https://charts.rook.io/release chart=rook-ceph

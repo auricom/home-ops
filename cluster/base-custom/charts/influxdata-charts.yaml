@@ -6,5 +6,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://helm.influxdata.com/
+  url: https://helm.influxdata.com./
   timeout: 3m
