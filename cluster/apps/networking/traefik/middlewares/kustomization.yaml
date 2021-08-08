@@ -6,6 +6,7 @@ resources:
   - buffering-large.yaml
   - buffering-medium.yaml
   - buffering-small.yaml
+  - ratelimit.yaml
   - rfc1918.yaml
   - redirect-path.yaml
   - forward-auth.yaml

@@ -17,47 +17,44 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    controllerType: deployment
     image:
       repository: ghcr.io/k8s-at-home/prowlarr
       tag: v0.1.0.768
       pullPolicy: IfNotPresent
+
     env:
       TZ: "Europe/Paris"
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
+
     persistence:
       config:
         enabled: true
         existingClaim: prowlarr-config
+
+    service:
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
+
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        ingressClassName: "traefik"
         annotations:
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local./api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}/"
           traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd, networking-buffering-small@kubernetescrd
-          forecastle.stakater.com/expose: "true"
-          forecastle.stakater.com/appName: "Prowlarr"
-          forecastle.stakater.com/icon: "https://raw.githubusercontent.com/Prowlarr/Prowlarr/develop/Logo/256.png"
-          forecastle.stakater.com/network-restricted: "true"
         hosts:
-          - host: prowlarr.${SECRET_CLUSTER_DOMAIN}
+          - host: "prowlarr.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
+        tls:
+          - hosts:
+              - "prowlarr.${SECRET_CLUSTER_DOMAIN}"
+
     resources:
       requests:
         memory: 100Mi
         cpu: 100m
       limits:
         memory: 1000Mi
-    service:
-      main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http
