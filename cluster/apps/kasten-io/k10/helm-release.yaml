@@ -28,18 +28,22 @@ spec:
     auth:
       tokenAuth:
         enabled: true
-    prometheus:
-      enabled: true
-      server:
-        persistentVolume:
-          enabled: false
     clusterName: k3s
     ingress:
       create: true
-      class: "traefik"
       host: "k10.${SECRET_CLUSTER_DOMAIN}"
       annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       urlPath: k10
       hosts:
         - "k10.${SECRET_CLUSTER_DOMAIN}"
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Ingress
+              name: k10-ingress
+            patch:
+              - op: add
+                path: /spec/ingressClassName
+                value: traefik
