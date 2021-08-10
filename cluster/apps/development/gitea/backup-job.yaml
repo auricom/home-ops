@@ -53,8 +53,12 @@ spec:
                             if [ -d "$WORK_DIR/$org/$repo" ]; then
                                 echo "INFO: pull $org/$repo..."
                                 cd $WORK_DIR/$org/$repo
-                                git reset --hard
-                                git pull
+                                git remote show origin -n | grep -c main &> /dev/null && MAIN_BRANCH="main" || MAIN_BRANCH="master"
+                                git fetch --all
+                                test $? -ne 0 && exit 1
+                                git reset --hard origin/$MAIN_BRANCH
+                                test $? -ne 0 && exit 1
+                                git pull origin $MAIN_BRANCH
                                 test $? -ne 0 && exit 1
                                 echo "INFO: clean $org/$repo..."
                                 git fetch --prune
