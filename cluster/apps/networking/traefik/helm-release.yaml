@@ -22,7 +22,7 @@ spec:
 
     deployment:
       kind: Deployment
-      replicas: 1
+      replicas: 3
 
     service:
       enabled: true

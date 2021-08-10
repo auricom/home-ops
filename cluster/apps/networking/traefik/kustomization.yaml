@@ -4,7 +4,8 @@ kind: Kustomization
 resources:
   - helm-release.yaml
   - ingressclass.yaml
-  # - service-monitor.yaml
+  - service-monitor.yaml
   - tls-store
   - dashboard
   - middlewares
+  - prometheus-rules.yaml
