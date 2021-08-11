@@ -6,5 +6,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://weaveworks.github.io./kured
+  url: https://weaveworks.github.io/kured
   timeout: 3m

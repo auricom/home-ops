@@ -6,5 +6,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://charts.rook.io./release
+  url: https://charts.rook.io/release
   timeout: 3m
