@@ -21,8 +21,7 @@ spec:
       tag: 2.5.0-rc3
 
     deployment:
-      kind: Deployment
-      replicas: 3
+      kind: DaemonSet
 
     service:
       enabled: true
