@@ -12,6 +12,7 @@ resources:
   - pgbackups
   - postgresql-kube
   - recipes
+  - redis
   - resilio-sync
   - sharry
   - vaultwarden
