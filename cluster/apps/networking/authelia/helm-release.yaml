@@ -1,0 +1,160 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: authelia
+  namespace: networking
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.authelia.com
+      chart: authelia
+      version: 0.4.11
+      sourceRef:
+        kind: HelmRepository
+        name: authelia-charts
+        namespace: flux-system
+      interval: 5m
+
+  values:
+    domain: ${SECRET_CLUSTER_DOMAIN}
+
+    service:
+      annotations:
+        prometheus.io/probe: "true"
+        prometheus.io/protocol: "http"
+
+    ingress:
+      enabled: true
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+      subdomain: login
+
+      tls:
+        enabled: true
+        secret: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+
+    pod:
+      # Must be Deployment, DaemonSet, or StatefulSet.
+      kind: DaemonSet
+
+      env:
+        - name: TZ
+          value: Europe/Paris
+
+      extraVolumeMounts:
+        - name: config-custom
+          mountPath: /config
+      extraVolumes:
+        - name: config-custom
+          configMap:
+            name: authelia-config-custom
+            items:
+              - key: users_database.yml
+                path: users_database.yml
+
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1500Mi
+        limits: {}
+
+    ##
+    ## Authelia Config Map Generator
+    ##
+    configMap:
+      enabled: true
+      server:
+        read_buffer_size: 8192
+        write_buffer_size: 8192
+      theme: light
+      authentication_backend:
+        disable_reset_password: true
+        ldap:
+          enabled: false
+        file:
+          enabled: true
+          password:
+            algorithm: argon2id
+
+      access_control:
+        ## Default policy can either be 'bypass', 'one_factor', 'two_factor' or 'deny'. It is the policy applied to any
+        ## resource if there is no policy to be applied to the user.
+        default_policy: deny
+
+        networks:
+          - name: private
+            networks:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+          - name: vpn
+            networks:
+              - 10.10.0.0/16
+
+        rules:
+          # bypass Authelia WAN + LAN
+          - domain:
+              - login.${SECRET_CLUSTER_DOMAIN}
+            policy: bypass
+
+          # Deny admin services to users
+          - domain:
+              - alert-manager.${SECRET_CLUSTER_DOMAIN}
+              - prometheus.${SECRET_CLUSTER_DOMAIN}
+              - thanos.${SECRET_CLUSTER_DOMAIN}
+            subject: ["group:users"]
+            policy: deny
+
+          # One factor auth for LAN
+          - domain:
+              - "*.${SECRET_CLUSTER_DOMAIN}"
+            policy: one_factor
+            subject: ["group:admins", "group:users"]
+            networks:
+              - private
+
+          # Two factors auth for WAN
+          - domain:
+              - "*.${SECRET_CLUSTER_DOMAIN}"
+            subject: ["group:admins", "group:users"]
+            policy: two_factor
+
+      session:
+        redis:
+          enabled: true
+          enabledSecret: true
+          host: redis-master.data.svc.cluster.local
+
+      storage:
+        postgres:
+          enabled: true
+          host: postgresql-kube.data.svc.cluster.local
+
+      notifier:
+        smtp:
+          enabled: true
+          host: smtp.fastmail.com
+          port: 587
+          username: ${SECRET_AUTHELIA_SMTP_EMAIL}
+          sender: ${SECRET_AUTHELIA_SMTP_EMAIL}
+          identifier: ${SECRET_CLUSTER_DOMAIN}
+
+    secret:
+      storage:
+        key: STORAGE_PASSWORD
+        value: "${SECRET_AUTHELIA_POSTGRES_PASSWORD}"
+        filename: STORAGE_PASSWORD
+      jwt:
+        key: JWT_TOKEN
+        value: "${SECRET_AUTHELIA_JWT_SECRET}"
+        filename: JWT_TOKEN
+      redis:
+        key: REDIS_PASSWORD
+        value: "${SECRET_REDIS_PASSWORD}"
+        filename: REDIS_PASSWORD
+      smtp:
+        key: SMTP_PASSWORD
+        value: "${SECRET_AUTHELIA_SMTP_PASSWORD}"
+        filename: SMTP_PASSWORD
