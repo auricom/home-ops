@@ -15,7 +15,7 @@ spec:
           serviceAccountName: jobs
           containers:
             - name: qbittorrent-upgrade-p2pblocklist
-              image: bitnami/kubectl:1.21.3
+              image: bitnami/kubectl:1.21.4
               imagePullPolicy: IfNotPresent
               command:
                 - "bin/sh"
