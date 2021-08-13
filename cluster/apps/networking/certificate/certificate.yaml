@@ -2,7 +2,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "${SECRET_CLUSTER_DOMAIN/./-}"
+  name: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
   namespace: networking
 spec:
   secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
