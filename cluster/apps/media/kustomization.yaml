@@ -13,6 +13,7 @@ resources:
   - pyload
   - qbittorrent
   - radarr
+  - readarr
   - sabnzbd
   - sonarr
   - tdarr
