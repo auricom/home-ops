@@ -50,9 +50,14 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+          - host: "services.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
         tls:
           - hosts:
               - "homer.${SECRET_CLUSTER_DOMAIN}"
+              - "services.${SECRET_CLUSTER_DOMAIN}"
             secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
 
     addons:
