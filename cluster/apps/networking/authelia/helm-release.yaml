@@ -28,7 +28,8 @@ spec:
     ingress:
       enabled: true
       annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        kubernetes.io/ingress.class: "nginx"
+        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       subdomain: login
 
       tls:

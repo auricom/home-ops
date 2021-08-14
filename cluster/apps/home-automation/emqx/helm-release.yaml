@@ -61,7 +61,8 @@ spec:
       dashboard:
         enabled: true
         annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          kubernetes.io/ingress.class: "nginx"
+          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         path: /
         hosts:
           - emqx.${SECRET_CLUSTER_DOMAIN}
@@ -102,10 +103,10 @@ spec:
                 path: /spec/externalIPs
                 value:
                   - "${CLUSTER_LB_EMQX}"
-          - target:
-              kind: Ingress
-              name: emqx-dashboard
-            patch:
-              - op: add
-                path: /spec/ingressClassName
-                value: traefik
+          # - target:
+          #     kind: Ingress
+          #     name: emqx-dashboard
+          #   patch:
+          #     - op: add
+          #       path: /spec/ingressClassName
+          #       value: traefik

@@ -38,10 +38,11 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "traefik"
+        # ingressClassName: "traefik"
         annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-medium@kubernetescrd
+          kubernetes.io/ingress.class: "nginx"
+          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-medium@kubernetescrd
         hosts:
           - host: "unifi.${SECRET_CLUSTER_DOMAIN}"
             paths:

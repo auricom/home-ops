@@ -51,8 +51,9 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
-        # annotations:
+        # ingressClassName: "traefik"
+        annotations:
+          kubernetes.io/ingress.class: "nginx"
         #   traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts:
           - host: "lychee.${SECRET_CLUSTER_DOMAIN}"
