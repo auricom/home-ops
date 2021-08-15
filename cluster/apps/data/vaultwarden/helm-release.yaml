@@ -23,7 +23,7 @@ spec:
       pullPolicy: IfNotPresent
 
     env:
-      DOMAIN: "https://vaultwarden.${SECRET_CLUSTER_DOMAIN}/"
+      DOMAIN: "https://vaultwarden.${SECRET_CLUSTER_DOMAIN}"
       ADMIN_TOKEN: ${SECRET_VAULTWARDEN_ADMIN_TOKEN}
       DATABASE_URL: ${SECRET_VAULTWARDEN_DB_URL}
       TZ: "Europe/Paris"
