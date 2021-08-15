@@ -17,11 +17,6 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    image:
-      registry: quay.io
-      repository: oriedge/k8s_gateway
-      tag: v0.1.7
-      pullPolicy: IfNotPresent
     domain: "${SECRET_CLUSTER_DOMAIN}"
     service:
       type: LoadBalancer
