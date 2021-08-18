@@ -17,7 +17,7 @@ spec:
             - name: regcred
           containers:
             - name: trash-updater
-              image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/home-cluster-jobs:1.1.0
+              image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/home-cluster-jobs:1.2.0
               imagePullPolicy: IfNotPresent
               env:
                 - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
