@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://charts.kasten.io/
       chart: k10
-      version: 4.0.10
+      version: 4.0.9
       sourceRef:
         kind: HelmRepository
         name: kasten-charts
@@ -20,7 +20,7 @@ spec:
   values:
     eula:
       accept: true
-      company: "${SECRET_CLUSTER_DOMAIN/./-}"
+      company: "${SECRET_CLUSTER_DOMAIN}"
       email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
     global:
       persistence:
