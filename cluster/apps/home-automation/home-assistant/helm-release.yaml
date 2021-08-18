@@ -34,6 +34,9 @@ spec:
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
 
+    securityContext:
+      privileged: true
+
     service:
       main:
         annotations:
@@ -85,6 +88,12 @@ spec:
       config:
         enabled: true
         existingClaim: hass-config
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
+        hostPathType: CharDevice
+        mountPath: /dev/ttyUSB0
 
     addons:
       codeserver:
@@ -114,10 +123,10 @@ spec:
               paths:
                 - path: /
                   pathType: Prefix
-              tls:
-                - hosts:
-                    - "hass-config.${SECRET_CLUSTER_DOMAIN}"
-              secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+          tls:
+            - hosts:
+                - "hass-config.${SECRET_CLUSTER_DOMAIN}"
+          secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
         volumeMounts:
           - name: config
             mountPath: /config
@@ -126,3 +135,10 @@ spec:
       requests:
         cpu: 500m
         memory: 1000Mi
+
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - { key: "feature.node.kubernetes.io/custom-rflink", operator: In, values: ["true"] }
