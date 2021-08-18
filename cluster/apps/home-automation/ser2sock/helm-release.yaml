@@ -35,8 +35,8 @@ spec:
       usb:
         enabled: true
         type: hostPath
-        # hostPathType: CharDevice
-        hostPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735191C111-if00
+        hostPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
+        hostPathType: CharDevice
         mountPath: /dev/ttyUSB0
 
     resources:
