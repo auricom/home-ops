@@ -26,7 +26,7 @@ spec:
       ND_SCANINTERVAL: 15m
       ND_LOGLEVEL: info
       ND_SESSIONTIMEOUT: 24h
-      ND_ENABLETRANSCODINGCONFIG: "true"
+      # ND_ENABLETRANSCODINGCONFIG: "true"
       ND_MUSICFOLDER: /mnt/storage/music/Artistes
 
     persistence:
