@@ -1,0 +1,34 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-backups-benji
+spec:
+  storageClassName: nfs-backups-benji
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: ${LOCAL_LAN_TRUENAS}
+    path: /mnt/storage/backups/benji
+  mountOptions:
+    - tcp
+    - intr
+    - hard
+    - noatime
+    - nodiratime
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-backups-benji
+  namespace: rook-ceph
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-backups-benji
+  resources:
+    requests:
+      storage: 1Mi

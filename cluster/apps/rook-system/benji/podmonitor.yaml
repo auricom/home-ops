@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: benji
+  namespace: rook-ceph
+spec:
+  podMetricsEndpoints:
+    - interval: 10m
+      path: /metrics
+      port: metrics
+      scrapeTimeout: 2m
+  selector:
+    matchLabels:
+      app: pushgateway
+      release: benji

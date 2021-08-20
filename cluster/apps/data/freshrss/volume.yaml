@@ -5,7 +5,7 @@ metadata:
   name: freshrss-config
   namespace: data
   labels:
-    kasten-io-snapshots: "enable"
+    benji-backup.me/instance: "benji-k8s"
 spec:
   accessModes:
     - ReadWriteOnce

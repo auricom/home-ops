@@ -5,7 +5,7 @@ metadata:
   name: lychee-files
   namespace: media
   labels:
-    kasten-io-snapshots: "enable"
+    benji-backup.me/instance: "benji-k8s"
 spec:
   accessModes:
     - ReadWriteOnce

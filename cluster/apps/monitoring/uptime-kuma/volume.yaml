@@ -5,7 +5,7 @@ metadata:
   name: uptime-kuma-config
   namespace: monitoring
   labels:
-    kasten-io-snapshots: "enable"
+    benji-backup.me/instance: "benji-k8s"
 spec:
   accessModes:
     - ReadWriteOnce

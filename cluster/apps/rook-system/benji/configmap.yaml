@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: benji-ceph-etc
+  namespace: rook-ceph
+data:
+  ceph.conf: |
+    [global]
+    mon_host = rook-ceph-mon-b.rook-ceph.svc.cluster.local:6789,rook-ceph-mon-c.rook-ceph.svc.cluster.local:6789,rook-ceph-mon-d.rook-ceph.svc.cluster.local:6789
+
+    [client.admin]
+    keyring = /etc/ceph/keyring
