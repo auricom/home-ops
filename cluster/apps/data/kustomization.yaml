@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - bookstack
   - freshrss
+  - hajimari
   - homer
   - jobs
   - joplin-server
