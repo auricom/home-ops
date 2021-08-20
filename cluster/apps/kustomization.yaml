@@ -4,7 +4,6 @@ resources:
   - data
   - development
   - home-automation
-  - kasten-io
   - media
   - monitoring
   - networking
