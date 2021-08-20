@@ -111,11 +111,7 @@
       "id": 5,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": ["mean", "max", "min"],
           "displayMode": "table",
           "placement": "right"
         },
@@ -207,11 +203,7 @@
       "id": 2,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": ["mean", "max", "min"],
           "displayMode": "table",
           "placement": "right"
         },
@@ -299,11 +291,7 @@
       "id": 6,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": ["mean", "max", "min"],
           "displayMode": "hidden",
           "placement": "right"
         },
@@ -315,7 +303,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "hass_temperature_c{entity=~\"sensor.temperature_servers_temperature\"}",
+          "expr": "hass_sensor_temperature_celsius{entity=~\"sensor.temperature_servers_temperature\"}",
           "interval": "",
           "legendFormat": "datacenter",
           "refId": "A"
@@ -329,9 +317,7 @@
   ],
   "schemaVersion": 30,
   "style": "dark",
-  "tags": [
-    "homelab"
-  ],
+  "tags": ["homelab"],
   "templating": {
     "list": []
   },

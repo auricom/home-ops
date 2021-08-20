@@ -111,11 +111,7 @@
       "id": 6,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": ["mean", "max", "min"],
           "displayMode": "table",
           "placement": "right"
         },
@@ -127,14 +123,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "hass_temperature_c{entity=~\"sensor.temperature_living_room_temperature\"}",
+          "expr": "hass_sensor_temperature_celsius{entity=~\"sensor.temperature_living_room_temperature\"}",
           "interval": "",
           "legendFormat": "Salon",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "hass_temperature_c{entity=~\"sensor.temperature_bedroom_temperature\"}",
+          "expr": "hass_sensor_temperature_celsius{entity=~\"sensor.temperature_bedroom_temperature\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "Chambre 1",
@@ -142,7 +138,7 @@
         },
         {
           "exemplar": true,
-          "expr": "hass_temperature_c{entity=~\"sensor.temperature_office_temperature\"}",
+          "expr": "hass_sensor_temperature_celsius{entity=~\"sensor.temperature_office_temperature\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "Bureau",
@@ -218,10 +214,7 @@
       "id": 7,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
+          "calcs": ["mean", "max"],
           "displayMode": "table",
           "placement": "right"
         },
@@ -233,14 +226,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "hass_power_w{entity=\"sensor.servers_plug_switch_electricity_power\"}",
+          "expr": "hass_sensor_power_w{entity=\"sensor.servers_plug_switch_electricity_power\"}",
           "interval": "",
           "legendFormat": "Servers",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "hass_power_w{entity=\"sensor.bureau_plug_switch_electricity_power\"}",
+          "expr": "hass_sensor_power_w{entity=\"sensor.bureau_plug_switch_electricity_power\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "claude-fixe",
@@ -315,10 +308,7 @@
       "id": 8,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
+          "calcs": ["mean", "max"],
           "displayMode": "table",
           "placement": "right"
         },
@@ -330,14 +320,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "hass_power_w{entity=~\"sensor.power_plug_avr_power\"}",
+          "expr": "hass_sensor_power_w{entity=~\"sensor.power_plug_avr_power\"}",
           "interval": "",
           "legendFormat": "Ampli",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "hass_power_w{entity=~\"sensor.power_plug_projector_power\"}",
+          "expr": "hass_sensor_power_w{entity=~\"sensor.power_plug_projector_power\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "Vidéoprojecteur",
@@ -345,7 +335,7 @@
         },
         {
           "exemplar": true,
-          "expr": "hass_power_w{entity=~\"sensor.power_plug_subwoofer_power\"}",
+          "expr": "hass_sensor_power_w{entity=~\"sensor.power_plug_subwoofer_power\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "Caisson de basses",
@@ -360,9 +350,7 @@
   ],
   "schemaVersion": 30,
   "style": "dark",
-  "tags": [
-    "home-assistant"
-  ],
+  "tags": ["home-assistant"],
   "templating": {
     "list": []
   },

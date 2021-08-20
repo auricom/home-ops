@@ -252,15 +252,6 @@ spec:
               - targets: ["${LOCAL_LAN_OPNSENSE}:9273"]
                 labels:
                   app: "opnsense"
-          - job_name: "hass"
-            scrape_interval: 60s
-            metrics_path: "/api/prometheus"
-            bearer_token: "${SECRET_HASS_TOKEN}"
-            static_configs:
-              - targets:
-                  ["home-assistant.home-automation.svc.cluster.local.:8123"]
-                labels:
-                  app: "hass"
           - job_name: "truenas"
             scrape_interval: 60s
             metrics_path: "/metrics"
