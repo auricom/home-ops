@@ -21,9 +21,9 @@ spec:
       repository: ghcr.io/toboshii/hajimari
       tag: v0.1.0
     env:
-      TZ: "America/New_York"
+      TZ: "Europe/Paris"
     hajimari:
-      defaultEnable: false
+      defaultEnable: true
       namespaceSelector:
         matchNames:
           - home-automation
