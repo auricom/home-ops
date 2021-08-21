@@ -34,7 +34,7 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
-        tls: false
+        tls: true
     queryFrontend:
       enabled: false
     bucketweb:
