@@ -32,8 +32,8 @@ spec:
         existingClaim: readarr-config
       nfs-video-media:
         enabled: true
-        existingClaim: nfs-video-media
-        mountPath: "/mnt/storage/video"
+        existingClaim: nfs-home-claude-media
+        mountPath: "/mnt/storage/home/claude"
       qbittorrent-cache:
         enabled: true
         existingClaim: qbittorrent-cache
