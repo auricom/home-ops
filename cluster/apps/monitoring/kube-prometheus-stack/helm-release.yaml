@@ -40,6 +40,9 @@ spec:
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
+        tls:
+          - hosts:
+              - "alert-manager.${SECRET_CLUSTER_DOMAIN}"
       config:
         global:
           resolve_timeout: 5m
@@ -149,6 +152,7 @@ spec:
         - vonage-status-panel
         - grafana-worldmap-panel
         - grafana-clock-panel
+        - camptocamp-prometheus-alertmanager-datasource
       dashboardProviders:
         dashboardproviders.yaml:
           apiVersion: 1
@@ -174,6 +178,11 @@ spec:
           access: proxy
           url: http://thanos-query:9090/
           isDefault: true
+        - name: Alertmanager
+          type: camptocamp-prometheus-alertmanager-datasource
+          # type: alertmanager
+          access: proxy
+          url: http://alertmanager-operated:9093/
       grafana.ini:
         server:
           root_url: https://grafana.${SECRET_CLUSTER_DOMAIN}
@@ -202,6 +211,9 @@ spec:
           kubernetes.io/ingress.class: "nginx"
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts: ["grafana.${SECRET_CLUSTER_DOMAIN}"]
+        tls:
+          - hosts:
+              - "grafana.${SECRET_CLUSTER_DOMAIN}"
     kubeEtcd:
       enabled: false
     kubeControllerManager:
@@ -222,6 +234,9 @@ spec:
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts: ["prometheus.${SECRET_CLUSTER_DOMAIN}"]
+        tls:
+          - hosts:
+              - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
         replicas: 2
         replicaExternalLabelName: "replica"
