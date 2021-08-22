@@ -6,4 +6,5 @@ resources:
   - volume.yaml
   - helm-release.yaml
   - podmonitor.yaml
+  - prometheus-rule.yaml
   - pgbackups.yaml
