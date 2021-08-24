@@ -19,8 +19,6 @@ spec:
   values:
     updateStrategy: RollingUpdate
     configuration:
-      rebootDays:
-        - we
       startTime: "2:00"
       endTime: "5:00"
       timeZone: "Europe/Paris"
