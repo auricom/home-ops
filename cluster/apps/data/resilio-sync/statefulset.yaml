@@ -205,8 +205,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
+  # annotations:
     # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
   labels:
     app.kubernetes.io/instance: resilio-sync
@@ -214,7 +213,7 @@ metadata:
   name: resilio-sync
   namespace: data
 spec:
-  # ingressClassName: "traefik"
+  ingressClassName: "nginx"
   tls:
     - hosts:
         - "resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}"

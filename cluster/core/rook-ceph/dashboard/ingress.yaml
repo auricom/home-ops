@@ -4,14 +4,13 @@ kind: Ingress
 metadata:
   name: rook-ceph-mgr-dashboard
   namespace: rook-ceph
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
+  # annotations:
     # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
   labels:
     app.kubernetes.io/instance: rook-ceph-mgr-dashboard
     app.kubernetes.io/name: rook-ceph-mgr-dashboard
 spec:
-  # ingressClassName: "traefik"
+  ingressClassName: "nginx"
   rules:
     - host: "rook.${SECRET_CLUSTER_DOMAIN}"
       http:

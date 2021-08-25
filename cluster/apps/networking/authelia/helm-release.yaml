@@ -27,8 +27,7 @@ spec:
 
     ingress:
       enabled: true
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
+      # annotations:
         # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       subdomain: login
 
@@ -159,3 +158,14 @@ spec:
         key: SMTP_PASSWORD
         value: "${SECRET_AUTHELIA_SMTP_PASSWORD}"
         filename: SMTP_PASSWORD
+
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Ingress
+              name: authelia
+            patch:
+              - op: add
+                path: /spec/ingressClassName
+                value: nginx

@@ -29,7 +29,6 @@ spec:
         enabled: true
         hostname: "thanos.${SECRET_CLUSTER_DOMAIN}"
         annotations:
-          kubernetes.io/ingress.class: "nginx"
           nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
@@ -61,13 +60,13 @@ spec:
         secret_key: "${SECRET_MINIO_SECRET_KEY}"
         insecure: false
 
-  # postRenderers:
-  #   - kustomize:
-  #       patchesJson6902:
-  #         - target:
-  #             kind: Ingress
-  #             name: thanos-query
-  #           patch:
-  #             - op: add
-  #               path: /spec/ingressClassName
-  #               value: traefik
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Ingress
+              name: thanos-query
+            patch:
+              - op: add
+                path: /spec/ingressClassName
+                value: nginx

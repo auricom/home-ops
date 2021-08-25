@@ -52,9 +52,8 @@ spec:
     ingress:
       main:
         enabled: true
-        # ingressClassName: "traefik"
-        annotations:
-          kubernetes.io/ingress.class: "nginx"
+        ingressClassName: "nginx"
+        # annotations:
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts:
           - host: "vaultwarden.${SECRET_CLUSTER_DOMAIN}"
@@ -66,12 +65,7 @@ spec:
               - path: /notifications/hub
                 pathType: Prefix
                 servicePort: 3012
-          - host: "bitwarden.${SECRET_CLUSTER_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
         tls:
           - hosts:
               - "vaultwarden.${SECRET_CLUSTER_DOMAIN}"
-              - "bitwarden.${SECRET_CLUSTER_DOMAIN}"
             secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
