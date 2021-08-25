@@ -115,7 +115,8 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        # annotations:
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-large@kubernetescrd
         hosts:
