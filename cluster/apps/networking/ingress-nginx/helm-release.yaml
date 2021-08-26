@@ -17,6 +17,7 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+
     controller:
       replicaCount: 2
       service:
@@ -26,11 +27,22 @@ spec:
         externalTrafficPolicy: Local
       publishService:
         enabled: true
+
       config:
         ssl-protocols: "TLSv1.3 TLSv1.2"
         custom-http-errors: 404,403,500,503
         enable-vts-status: "false"
         hsts-max-age: "31449600"
+        proxy-body-size: "50m"
+
+      extraArgs:
+        default-ssl-certificate: "networking/${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+
+      resources:
+        requests:
+          memory: 250Mi
+          cpu: 50m
+
       metrics:
         enabled: true
         serviceMonitor:
@@ -38,12 +50,7 @@ spec:
           namespace: networking
           namespaceSelector:
             any: true
-      extraArgs:
-        default-ssl-certificate: "networking/${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
-      resources:
-        requests:
-          memory: 250Mi
-          cpu: 50m
+
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -56,11 +63,14 @@ spec:
                       values:
                         - ingress-nginx
                 topologyKey: kubernetes.io/hostname
+
     defaultBackend:
       enabled: true
+
       image:
         repository: ghcr.io/181192/custom-error-pages
         tag: latest
+
       resources:
         requests:
           memory: 250Mi
