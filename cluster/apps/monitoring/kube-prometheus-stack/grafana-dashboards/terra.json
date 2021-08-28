@@ -8,6 +8,12 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -15,8 +21,7 @@
   "editable": false,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 6,
-  "iteration": 1629787652654,
+  "iteration": 1630168073016,
   "links": [],
   "panels": [
     {
@@ -81,7 +86,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.0.5",
+      "pluginVersion": "8.1.0",
       "targets": [
         {
           "exemplar": true,
@@ -139,7 +144,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.0.5",
+      "pluginVersion": "8.1.0",
       "targets": [
         {
           "exemplar": true,
@@ -299,7 +304,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.0.5",
+      "pluginVersion": "8.1.0",
       "targets": [
         {
           "exemplar": true,
@@ -434,11 +439,11 @@
           "selected": true,
           "text": [
             "bluna-luna",
-            "beth-ust"
+            "meth-beth"
           ],
           "value": [
             "bluna-luna",
-            "beth-ust"
+            "meth-beth"
           ]
         },
         "description": null,
@@ -455,17 +460,12 @@
             "value": "bluna-luna"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "meth-beth",
             "value": "meth-beth"
-          },
-          {
-            "selected": true,
-            "text": "beth-ust",
-            "value": "beth-ust"
           }
         ],
-        "query": "bluna-luna,meth-beth,beth-ust",
+        "query": "bluna-luna,meth-beth",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
