@@ -5,6 +5,5 @@ resources:
   - emqx
   - frigate
   - home-assistant
-  - ser2sock
   - zigbee2mqtt
   - zwavejs2mqtt
