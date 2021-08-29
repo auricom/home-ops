@@ -9,6 +9,7 @@ resources:
   - homer
   - jobs
   - joplin-server
+  - nitter
   - pgadmin
   - pgbackups
   - postgresql-kube
