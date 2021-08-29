@@ -89,5 +89,5 @@ spec:
                   number: 3001
   tls:
     - hosts:
-        - "healthchecks.${SECRET_CLUSTER_DOMAIN}"
+        - "uptime-kuma.${SECRET_CLUSTER_DOMAIN}"
       secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
