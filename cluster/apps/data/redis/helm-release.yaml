@@ -17,13 +17,17 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    architecture: standalone
+
     auth:
       password: ${SECRET_REDIS_PASSWORD}
+
     master:
       service:
         annotations:
           prometheus.io/probe: "true"
           prometheus.io/protocol: tcp
+
     replica:
       persistence:
         enabled: false
