@@ -41,7 +41,7 @@ spec:
     sidecar:
       image:
         repository: nginx
-        tag: 1.21.1
+        tag: 1.21.3
         pullPolicy: IfNotPresent
 
     persistence:
