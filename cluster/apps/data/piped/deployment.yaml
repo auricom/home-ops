@@ -36,7 +36,7 @@ spec:
             - name: config
               mountPath: /app/config.properties
               subPath: config.properties
-        - image: varnish:6.6-alpine
+        - image: varnish:7.0-alpine
           imagePullPolicy: IfNotPresent
           name: varnish
           volumeMounts:
