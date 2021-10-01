@@ -39,7 +39,7 @@ spec:
       enabled: true
       image:
         repository: bitnami/mariadb
-        tag: "10.5.12"
+        tag: "10.6.4"
       auth:
         database: bookstack
         username: bookstack
