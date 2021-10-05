@@ -385,7 +385,7 @@ spec:
                         - prometheus
                 topologyKey: "kubernetes.io/hostname"
         thanos:
-          image: quay.io/thanos/thanos:v0.22.0
+          image: quay.io/thanos/thanos:v0.23.1
           objectStorageConfig:
             name: thanos-objstore-secret
             key: objstore.yml
