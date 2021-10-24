@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: blakeblackshear/frigate
-      tag: 0.9.0-f110a26-amd64
+      tag: 0.9.4-armv7
 
     securityContext:
       privileged: true
