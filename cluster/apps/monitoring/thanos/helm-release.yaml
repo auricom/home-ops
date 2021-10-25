@@ -58,7 +58,7 @@ spec:
         endpoint: ${SECRET_MINIO_ENDPOINT}
         access_key: "${SECRET_MINIO_ACCESS_KEY}"
         secret_key: "${SECRET_MINIO_SECRET_KEY}"
-        insecure: true
+        insecure: false
 
   postRenderers:
     - kustomize:
