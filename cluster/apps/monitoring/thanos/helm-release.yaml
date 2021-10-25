@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: thanos
-      version: 7.0.1
+      version: 5.3.2
       sourceRef:
         kind: HelmRepository
         name: bitnami-charts
@@ -58,7 +58,7 @@ spec:
         endpoint: ${SECRET_MINIO_ENDPOINT}
         access_key: "${SECRET_MINIO_ACCESS_KEY}"
         secret_key: "${SECRET_MINIO_SECRET_KEY}"
-        insecure: false
+        insecure: true
 
   postRenderers:
     - kustomize:
