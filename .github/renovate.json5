@@ -158,7 +158,7 @@
       automergeType: "branch",
       requiredStatusChecks: null,
       matchUpdateTypes: ["minor", "patch"],
-      matchPackageNames: ["ghcr.io/k8s-at-home/prowlarr"],
+      matchPackageNames: ["ghcr.io/k8s-at-home/prowlarr-nightly"],
     },
     {
       matchDatasources: ["helm", "docker"],
