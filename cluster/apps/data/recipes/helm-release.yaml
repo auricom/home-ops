@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: vabene1111/recipes
-      tag: 0.17.2
+      tag: 0.17.3
       pullPolicy: IfNotPresent
 
     env:
