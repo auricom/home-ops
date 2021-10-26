@@ -20,7 +20,7 @@ spec:
     image:
       repository: deluan/navidrome
       pullPolicy: IfNotPresent
-      tag: 0.45.1
+      tag: 0.46.0
 
     env:
       ND_SCANINTERVAL: 15m
