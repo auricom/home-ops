@@ -20,7 +20,7 @@ spec:
     image:
       repository: ghcr.io/linuxserver/bookstack
       pullPolicy: IfNotPresent
-      tag: "version-v21.08.6"
+      tag: "version-v21.10.1"
 
     env:
       APP_URL: https://bookstack.${SECRET_CLUSTER_DOMAIN}/
