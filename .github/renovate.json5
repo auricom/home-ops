@@ -122,7 +122,7 @@
     // custom version schemes
     {
       matchDatasources: ["docker"],
-      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+).*.(?<compatibility>.*)$",
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-amd64$",
       matchPackageNames: ["blakeblackshear/frigate"],
     },
     // custom version schemes
