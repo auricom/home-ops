@@ -51,7 +51,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: uptime-kuma
     app.kubernetes.io/name: uptime-kuma
-  name: uptime-kuma
+  name: uptime-kuma-web
   namespace: monitoring
 spec:
   ports:
@@ -84,7 +84,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: uptime-kuma
+                name: uptime-kuma-web
                 port:
                   number: 3001
   tls:
