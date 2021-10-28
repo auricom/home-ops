@@ -41,6 +41,7 @@ spec:
         options:
           - name: ndots
             value: "1"
+      enableServiceLinks: false
 ---
 apiVersion: v1
 kind: Service
