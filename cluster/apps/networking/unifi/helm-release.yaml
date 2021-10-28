@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: unifi
-      version: 4.0.0
+      version: 4.2.3
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
@@ -27,13 +27,35 @@ spec:
 
     service:
       main:
-        annotations:
-          coredns.io/hostname: unifi
+        ports:
+          stun:
+            enabled: false
+          syslog:
+            enabled: false
+          discovery:
+            enabled: false
+        #annotations:
           #traefik.ingress.kubernetes.io/service.serversscheme: https
-        type: LoadBalancer
-        externalIPs:
-          - ${CLUSTER_LB_UNIFI}
-        externalTrafficPolicy: Local
+        udp:
+          enabled: true
+          type: LoadBalancer
+          externalIPs:
+            - ${CLUSTER_LB_UNIFI}
+          externalTrafficPolicy: Local
+          ports:
+            stun:
+              enabled: true
+              port: 3478
+              protocol: UDP
+            syslog:
+              enabled: true
+              port: 5514
+              protocol: UDP
+            discovery:
+              enabled: true
+              port: 10001
+              protocol: UDP
+
 
     ingress:
       main:
