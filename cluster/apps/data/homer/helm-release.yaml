@@ -41,8 +41,7 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        annotations:
-          kubernetes.io/ingress.class: "nginx"
+#        annotations:
           # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
           # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts:
