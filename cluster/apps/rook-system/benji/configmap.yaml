@@ -7,7 +7,7 @@ metadata:
 data:
   ceph.conf: |
     [global]
-    mon_host = rook-ceph-mon-b.rook-ceph.svc.cluster.local:6789,rook-ceph-mon-d.rook-ceph.svc.cluster.local:6789,rook-ceph-mon-e.rook-ceph.svc.cluster.local:6789
+    mon_host = 10.96.26.5:6789,10.96.130.158:6789,10.96.217.147:6789
 
     [client.admin]
     keyring = /etc/ceph/keyring
