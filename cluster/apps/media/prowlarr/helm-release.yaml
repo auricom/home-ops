@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: ghcr.io/k8s-at-home/prowlarr-nightly
-      tag: v0.1.2.1052
+      tag: v0.1.2.1054
       pullPolicy: IfNotPresent
 
     env:
