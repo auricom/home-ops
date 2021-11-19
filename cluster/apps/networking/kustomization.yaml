@@ -7,5 +7,5 @@ resources:
   - certificate
   - ingress-nginx
   - k8s-gateway
-  - traefik
+  #- traefik
   - unifi
