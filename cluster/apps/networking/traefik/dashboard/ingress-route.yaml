@@ -17,4 +17,4 @@ spec:
       middlewares:
         - name: rfc1918
   tls:
-    secretName: "${SECRET_CLUSTER_DEFAULT_DOMAIN}"
+    secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
