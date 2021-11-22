@@ -64,11 +64,7 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://gilbn.github.io/theme.park/CSS/themes/qbittorrent/space-gray.css"></head>';
-            sub_filter_once on;
+        # annotations:
         #  traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts:
           - host: "qbittorrent.${SECRET_CLUSTER_DOMAIN}"
