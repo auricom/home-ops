@@ -20,7 +20,7 @@ spec:
     image:
       repository: lycheeorg/lychee-laravel
       pullPolicy: IfNotPresent
-      tag: v4.3.4
+      tag: v4.3.6
 
     env:
       PHP_TZ: Europe/Paris
