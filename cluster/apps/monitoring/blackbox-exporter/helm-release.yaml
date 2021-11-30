@@ -48,9 +48,9 @@ spec:
         - name: truenas
           url: "${LOCAL_LAN_TRUENAS}"
           module: icmp
-        - name: truenas-remote
-          url: "${LOCAL_LAN_TRUENAS_REMOTE}"
-          module: icmp
+        # - name: truenas-remote
+        #   url: "${LOCAL_LAN_TRUENAS_REMOTE}"
+        #   module: icmp
         - name: borgbackup
           url: "${LOCAL_LAN_BORGBACKUP}"
           module: icmp
