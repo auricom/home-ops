@@ -210,7 +210,7 @@ spec:
         pathType: Prefix
         ingressClassName: "nginx"
         # annotations:
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts: ["grafana.${SECRET_CLUSTER_DOMAIN}"]
         tls:
           - hosts:
@@ -274,13 +274,13 @@ spec:
               - targets: ["${LOCAL_LAN_TRUENAS}:9273"]
                 labels:
                   app: "truenas"
-          - job_name: "truenas-remote"
-            scrape_interval: 60s
-            metrics_path: "/metrics"
-            static_configs:
-              - targets: ["${LOCAL_LAN_TRUENAS_REMOTE}:9273"]
-                labels:
-                  app: "truenas-remote"
+          # - job_name: "truenas-remote"
+          #   scrape_interval: 60s
+          #   metrics_path: "/metrics"
+          #   static_configs:
+          #     - targets: ["${LOCAL_LAN_TRUENAS_REMOTE}:9273"]
+          #       labels:
+          #         app: "truenas-remote"
           # Example scrape config for probing ingresses via the Blackbox Exporter.
           #
           # The relabeling allows the actual ingress scrape endpoint to be configured
