@@ -51,9 +51,6 @@ spec:
         # - name: truenas-remote
         #   url: "${LOCAL_LAN_TRUENAS_REMOTE}"
         #   module: icmp
-        - name: borgbackup
-          url: "${LOCAL_LAN_BORGBACKUP}"
-          module: icmp
         - name: k3s-server
           url: "${LOCAL_LAN_K3SSERVER}"
           module: icmp
