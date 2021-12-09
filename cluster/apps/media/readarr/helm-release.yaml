@@ -20,7 +20,7 @@ spec:
     controllerType: deployment
     image:
       repository: ghcr.io/k8s-at-home/readarr
-      tag: v0.1.0.1053
+      tag: v0.1.0.1095
       pullPolicy: IfNotPresent
 
     env:
