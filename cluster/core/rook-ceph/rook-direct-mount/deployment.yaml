@@ -20,8 +20,7 @@ spec:
       containers:
         - name: rook-direct-mount
           image: rook/ceph:v1.8.0
-          command: ["/tini"]
-          args: ["-g", "--", "/usr/local/bin/toolbox.sh"]
+          command: ["/usr/local/bin/toolbox.sh"]
           imagePullPolicy: IfNotPresent
           env:
             - name: ROOK_CEPH_USERNAME
@@ -45,6 +44,9 @@ spec:
               name: libmodules
             - name: mon-endpoint-volume
               mountPath: /etc/rook
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
       # if hostNetwork: false, the "rbd map" command hangs, see https://github.com/rook/rook/issues/2021
       hostNetwork: true
       volumes:

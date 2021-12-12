@@ -19,14 +19,12 @@ spec:
     crds:
       enabled: false
     csi:
-      kubeletDirPath: /var/lib/kubelet
-      pluginTolerations:
-        - key: "node-role.kubernetes.io/control-plane"
-          operator: "Exists"
-          effect: "NoSchedule"
+      enableCephfsDriver: false
+      enableCephfsSnapshotter: false
     resources:
       requests:
         cpu: 100m
         memory: 128Mi
       limits:
         cpu: 1000m
+        memory: 256Mi
