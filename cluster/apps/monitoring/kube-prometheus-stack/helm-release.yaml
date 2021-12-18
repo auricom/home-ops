@@ -18,16 +18,16 @@ spec:
       interval: 5m
   timeout: 20m
   values:
-    server:
-      resources:
-        requests:
-          memory: 1500Mi
-          cpu: 200m
-        limits:
-          memory: 2000Mi
     prometheusOperator:
       createCustomResource: true
-      configReloaderCpu: 200m
+    prometheusConfigReloader:
+    resources:
+      requests:
+        cpu: 150m
+        memory: 50Mi
+      limits:
+        cpu: 200m
+        memory: 50Mi
     alertmanager:
       ingress:
         enabled: true
@@ -238,6 +238,13 @@ spec:
           - hosts:
               - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
+        resources:
+          requests:
+            memory: 1500Mi
+            cpu: 200m
+          limits:
+            cpu: 300m
+            memory: 2000Mi
         replicas: 2
         replicaExternalLabelName: "replica"
         ruleSelector: {}
