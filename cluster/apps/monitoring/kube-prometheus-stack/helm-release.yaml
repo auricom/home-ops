@@ -241,9 +241,9 @@ spec:
         resources:
           requests:
             memory: 1500Mi
-            cpu: 200m
+            cpu: 400m
           limits:
-            cpu: 300m
+            cpu: 500m
             memory: 2000Mi
         replicas: 2
         replicaExternalLabelName: "replica"
