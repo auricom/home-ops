@@ -5,3 +5,4 @@ resources:
   - operator
   - cluster
   - rook-direct-mount
+  - monitoring
