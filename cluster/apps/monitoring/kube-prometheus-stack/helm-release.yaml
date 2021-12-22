@@ -243,7 +243,6 @@ spec:
             memory: 1500Mi
             cpu: 400m
           limits:
-            cpu: 500m
             memory: 2000Mi
         replicas: 2
         replicaExternalLabelName: "replica"
