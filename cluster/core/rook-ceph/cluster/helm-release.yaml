@@ -53,7 +53,7 @@ spec:
             devices:
               - name: "nvme0n1"
     cephBlockPools:
-      - name: ceph-blockpool
+      - name: replicapool
         spec:
           failureDomain: host
           replicated:

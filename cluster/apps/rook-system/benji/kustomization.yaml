@@ -8,3 +8,4 @@ resources:
   - podmonitor.yaml
   - prometheus-rule.yaml
   - pgbackups.yaml
+  #- job.yaml

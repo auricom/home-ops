@@ -20,7 +20,7 @@ spec:
     timeZone: Europe/Paris
     benji:
       configuration:
-        configurationVersion: '1'
+        configurationVersion: "1"
         databaseEngine: postgresql://benji:secret@benji-postgresql-headless:5432/benji
         defaultStorage: storage-1
         storages:
@@ -48,12 +48,12 @@ spec:
         activeDeadlineSeconds: null
         startingDeadlineSeconds: null
       crontab:
-        - name: backup-data
+        - name: backup-pvc
           schedule: "00 22 * * *"
           command:
             - benji-backup-pvc
             - --selector
-            - 'benji-backup.me/instance=benji-k8s'
+            - "benji-backup.me/instance=benji-k8s"
         - name: benji-enforce
           schedule: "30 22 * * *"
           command:
