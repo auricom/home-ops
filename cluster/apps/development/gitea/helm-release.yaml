@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://dl.gitea.io/charts
       chart: gitea
-      version: 4.1.1
+      version: 5.0.0
       sourceRef:
         kind: HelmRepository
         name: gitea-charts
@@ -53,16 +53,9 @@ spec:
         service:
           DISABLE_REGISTRATION: true
           REQUIRE_SIGNIN_VIEW: true
-      database:
-        builtIn:
-          postgresql:
-            enabled: false
-        postgresql:
-      cache:
-        builtIn:
-          enabled: true
 
     memcached:
+      enabled: true
       image:
         repository: bitnami/memcached
         tag: 1.6.12
