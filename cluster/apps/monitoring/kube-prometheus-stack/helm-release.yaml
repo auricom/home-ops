@@ -20,14 +20,14 @@ spec:
   values:
     prometheusOperator:
       createCustomResource: true
-    prometheusConfigReloader:
-    resources:
-      requests:
-        cpu: 150m
-        memory: 50Mi
-      limits:
-        cpu: 200m
-        memory: 50Mi
+      prometheusConfigReloader:
+        resources:
+          requests:
+            cpu: 150m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 50Mi
     alertmanager:
       ingress:
         enabled: true
