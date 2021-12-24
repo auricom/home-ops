@@ -23,8 +23,8 @@ spec:
         - name: regcred
       containers:
         - name: pgbackups
-          #image: prodrigestivill/postgres-backup-local:13
-          image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/postgres-backup-local:1.0.0
+          image: prodrigestivill/postgres-backup-local:14
+          #image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/postgres-backup-local:1.0.0
           env:
             - name: POSTGRES_HOST
               value: postgresql-kube.data.svc.cluster.local.
