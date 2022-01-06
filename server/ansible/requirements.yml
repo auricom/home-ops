@@ -1,4 +1,4 @@
 ---
 roles:
 - src: xanmanning.k3s
-  version: v3.0.0
+  version: v3.0.1
