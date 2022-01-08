@@ -20,14 +20,14 @@ spec:
     image:
       repository: ghcr.io/linuxserver/bookstack
       pullPolicy: IfNotPresent
-      tag: "version-v21.11.3"
+      tag: "version-v21.12.1"
 
     env:
       APP_URL: https://bookstack.${SECRET_CLUSTER_DOMAIN}/
       DB_HOST: bookstack-mariadb
       DB_DATABASE: bookstack
-      DB_USERNAME: bookstack
-      DB_PASSWORD: ${SECRET_BOOKSTACK_DB_PASSWORD}
+      DB_USER: bookstack
+      DB_PASS: ${SECRET_BOOKSTACK_DB_PASSWORD}
 
     persistence:
       config:
@@ -61,7 +61,7 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         # annotations:
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
         hosts:
           - host: bookstack.${SECRET_CLUSTER_DOMAIN}
             paths:
