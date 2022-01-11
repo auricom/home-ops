@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: drone/drone
-      tag: 2.7.3
+      tag: 2.8.0
 
     env:
       DRONE_DATABASE_DRIVER: postgres
