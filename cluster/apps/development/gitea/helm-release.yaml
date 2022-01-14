@@ -20,6 +20,7 @@ spec:
     image:
       repository: gitea/gitea
       tag: 1.15.9
+      rootless: true
 
     gitea:
       admin:
@@ -40,7 +41,7 @@ spec:
           SCHEMA: public
         server:
           SSH_PORT: 22
-          SSH_LISTEN_PORT: 22
+          SSH_LISTEN_PORT: 30322
           SSH_DOMAIN: gitea.${SECRET_CLUSTER_DOMAIN_ROOT}
           ROOT_URL: https://gitea.${SECRET_CLUSTER_DOMAIN}
         respository:
