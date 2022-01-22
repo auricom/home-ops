@@ -5,7 +5,7 @@ metadata:
   name: sabnzbd-config
   namespace: media
   labels:
-    benji-backup.me/instance: "benji-k8s"
+    kasten-io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce
