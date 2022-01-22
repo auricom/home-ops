@@ -18,6 +18,7 @@ resources:
   - jetstack-charts.yaml
   - k8s-at-home.yaml
   - k8s-gateway-charts.yaml
+  - kasten-charts.yaml
   - kubernetes-sigs-descheduler-charts.yaml
   - node-feature-discovery.yaml
   - prometheus-community-charts.yaml
