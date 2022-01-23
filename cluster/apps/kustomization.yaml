@@ -8,5 +8,4 @@ resources:
   - media
   - monitoring
   - networking
-  - rook-system
   - secret-reflector
