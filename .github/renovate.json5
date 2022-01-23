@@ -17,12 +17,18 @@
   "repositories": ["auricom/home-cluster"],
   "onboarding": false,
   "requireConfig": false,
-  "gitAuthor": "feisar-bot <98030736+feisar-bot[bot]@users.noreply.github.com>",
+  "gitAuthor": "feisar-bot <27022259+feisar-bot[bot]@users.noreply.github.com>",
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": [
     "prIgnoreNotification"
   ],
   "rebaseWhen": "conflicted",
+  "ignorePaths": [
+    "cluster/base/",
+    "**/backup-job.yaml",
+    "**/trash-updater-job.yaml",
+    "**/travelstories/**"
+  ],
   // set up renovate managers
   "docker-compose": {
     "fileMatch": [
@@ -43,9 +49,6 @@
   "kubernetes": {
     "fileMatch": [
       "cluster/.+\\.yaml$"
-    ],
-    "ignorePaths": [
-      "cluster/base/"
     ]
   },
   "flux": {
