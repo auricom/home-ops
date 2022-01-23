@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://helm.twun.io
       chart: docker-registry
-      version: 1.16.0
+      version: 2.0.0
       sourceRef:
         kind: HelmRepository
         name: twuni-charts
@@ -39,26 +39,14 @@ spec:
 
     ingress:
       enabled: true
+      className: nginx
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "0"
         nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
         nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-        # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-large@kubernetescrd
       hosts:
         - "registry.${SECRET_CLUSTER_DOMAIN}"
       tls:
         - hosts:
             - "registry.${SECRET_CLUSTER_DOMAIN}"
           secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
-
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              kind: Ingress
-              name: docker-registry
-            patch:
-              - op: add
-                path: /spec/ingressClassName
-                value: nginx
