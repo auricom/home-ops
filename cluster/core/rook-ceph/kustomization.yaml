@@ -6,3 +6,4 @@ resources:
   - cluster
   - rook-direct-mount
   - monitoring
+  - volume-snapshot-class.yaml
