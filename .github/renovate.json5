@@ -64,6 +64,17 @@
       ],
       "datasourceTemplate": "helm"
     },
+    // regexManager to read and process External Snapshotter CRDs
+    {
+      "fileMatch": [
+        "cluster/crds/external-snapshotter/.+\\.yaml$",
+      ],
+      "matchStrings": [
+        "datasource=(?<datasource>.*?)\n *url: https:\/\/github\\.com\/(?<depName>.*?)\\.git\n *ref:\n *tag: (?<currentValue>.*)\n"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ],
     // regexManager to read and process kube-prometheus-stack CRDs
     {
       "fileMatch": [
