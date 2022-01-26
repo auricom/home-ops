@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - docker-registry
-  - drone
-  - drone-runner-kube
+  # - drone
+  # - drone-runner-kube
   - gitea
   - jobs
