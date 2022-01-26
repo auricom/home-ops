@@ -16,7 +16,13 @@ spec:
         name: node-feature-discovery-charts
         namespace: flux-system
       interval: 5m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   values:
+    nodeFeatureRule:
+      createCRD: true
     master:
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
@@ -32,25 +38,25 @@ spec:
                     operator: In
                     values: [""]
     worker:
-      config: |-
+      config:
         core:
           sources:
-          - custom
-          - pci
-          - usb
+            - custom
+            - pci
+            - usb
         sources:
           usb:
             deviceClassWhitelist:
-            - "02"
-            - "03"
-            - "0e"
-            - "ef"
-            - "fe"
-            - "ff"
+              - "02"
+              - "03"
+              - "0e"
+              - "ef"
+              - "fe"
+              - "ff"
             deviceLabelFields:
-            - "class"
-            - "vendor"
-            - "device"
+              - "class"
+              - "vendor"
+              - "device"
           custom:
             - name: "zwave"
               matchOn:
@@ -60,27 +66,29 @@ spec:
                     device: ["0200"]
             - name: "zigbee"
               matchOn:
-              - usbId:
-                  class: ["ff"]
-                  vendor: ["1a86"]
-                  device: ["7523"]
+                - usbId:
+                    class: ["ff"]
+                    vendor: ["1a86"]
+                    device: ["7523"]
             - name: "rflink"
               matchOn:
-              - usbId:
-                  class: ["02"]
-                  vendor: ["2341"]
-                  device: ["0042"]
+                - usbId:
+                    class: ["02"]
+                    vendor: ["2341"]
+                    device: ["0042"]
             - name: "coral-tpu"
               matchOn:
-              - usbId:
-                  vendor: ["1a6e", "18d1"]
+                - usbId:
+                    vendor: ["1a6e", "18d1"]
             - name: "intel-gpu"
               matchOn:
                 - pciId:
                     class: ["0300"]
                     vendor: ["8086"]
       annotations:
-        configmap.reloader.stakater.com/reload: "nfd-worker-conf"
+        configmap.reloader.stakater.com/reload: "node-feature-discovery-worker-conf"
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
