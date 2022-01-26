@@ -23,12 +23,6 @@
     "prIgnoreNotification"
   ],
   "rebaseWhen": "conflicted",
-  "ignorePaths": [
-    "cluster/base/",
-    "**/backup-job.yaml",
-    "**/trash-updater-job.yaml",
-    "**/travelstories/**"
-  ],
   // set up renovate managers
   "docker-compose": {
     "fileMatch": [

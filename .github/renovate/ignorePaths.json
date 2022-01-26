@@ -1,0 +1,8 @@
+{
+    "ignorePaths": [
+        "cluster/base/",
+        "**/backup-job.yaml",
+        "**/trash-updater-job.yaml",
+        "**/travelstories/**"
+      ]
+}
