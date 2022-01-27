@@ -9,7 +9,7 @@ repos:
       - id: yamllint
         args:
           - --config-file
-          - .github/lint/.yamllint.yaml
+          - .github/linters/.yamllint.yaml
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
     hooks:
@@ -40,4 +40,4 @@ repos:
       - id: markdownlint
         args:
           - --config
-          - ".github/lint/.markdownlint.yaml"
+          - ".github/linters/.markdownlint.yaml"
