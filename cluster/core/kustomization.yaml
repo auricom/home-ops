@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - cert-manager
   - flux-system
-  #- kasten-io
+  - kasten-io
   - kube-system
   - rook-ceph
   - system-upgrade
