@@ -13,6 +13,7 @@ resources:
   - pgbackups
   - postgresql-kube
   - recipes
+  - recipes-copy
   - redis
   - resilio-sync
   - sharry
