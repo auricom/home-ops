@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: freshrss/freshrss
-      tag: 1.19.1
+      tag: 1.19.2
       pullPolicy: IfNotPresent
 
     env:
