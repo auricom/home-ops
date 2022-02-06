@@ -9,12 +9,13 @@
       "pluginName": "Prometheus"
     }
   ],
+  "__elements": [],
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.0.5"
+      "version": "8.3.4"
     },
     {
       "type": "datasource",
@@ -38,18 +39,28 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
-  "editable": true,
-  "gnetId": null,
+  "editable": false,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -111,7 +122,11 @@
       "id": 5,
       "options": {
         "legend": {
-          "calcs": ["mean", "max", "min"],
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
           "displayMode": "table",
           "placement": "right"
         },
@@ -129,13 +144,14 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "OPNsense - CPU",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -203,7 +219,11 @@
       "id": 2,
       "options": {
         "legend": {
-          "calcs": ["mean", "max", "min"],
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
           "displayMode": "table",
           "placement": "right"
         },
@@ -222,14 +242,11 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "k3s Nodes - CPU",
       "transformations": [],
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -291,7 +308,11 @@
       "id": 6,
       "options": {
         "legend": {
-          "calcs": ["mean", "max", "min"],
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
           "displayMode": "hidden",
           "placement": "right"
         },
@@ -302,22 +323,26 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
-          "expr": "hass_sensor_temperature_celsius{entity=~\"sensor.temperature_servers_temperature\"}",
+          "expr": "sum(hass_sensor_temperature_celsius{entity=~\"sensor.temperature_servers_temperature\"})",
           "interval": "",
           "legendFormat": "datacenter",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Datacenter",
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 30,
+  "schemaVersion": 34,
   "style": "dark",
-  "tags": ["homelab"],
+  "tags": [
+    "homelab"
+  ],
   "templating": {
     "list": []
   },
@@ -341,5 +366,6 @@
   "timezone": "",
   "title": "Homelab / Temperatures",
   "uid": "aEY0BVGnz",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
