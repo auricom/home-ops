@@ -4,15 +4,15 @@ metadata:
     name: home-automation
     namespace: home-automation
 stringData:
-    prometheus-token: ENC[AES256_GCM,data:mmJ2rCImQvvstpUbAxF2X4B1pODp5g5Z0dOoagAJmUCToWYzl3AjR6seZlIEFbB+iJv2BxiE3NhgNuVH5auHnL/Vadc++QhHVUlDBwvq2Nsn6pkDb/8Jq7T2hkxlWxLosqrWVABZNRz4hQRAALxvYGEKHtG/SyoH8VOtifpTky1an3slzxeY7Bm7sU//biBnNo6xb421DNdJ7Kls03tvNhNEDm71KN15uWS7+CDjVCultj7IqwX2,iv:N24Yhl+qdZQ09eWSWU/8KU2DqNEeCpEYZm2Jkx99F94=,tag:51pwg3H4nGGU57ObriHsAA==,type:str]
+    prometheus-token: ENC[AES256_GCM,data:NiP3ioOYLz+DEeo39/Guk1iyxw9eMzHv/x4L/hq+LRDfpPnxlmWixuq2yOmhaW8bZSFDXudr2eGUZwBMXXmTUVTL/RgVg6yDy70kJ53YGLcRCWI3GntlwZqF1xqMkUXk+4Ap663cYFM15pS18s9SaWogJ3N/SXrC3uD0l7aPxlF5O+MNoTiK+CNogXS0/QAAnvaop3Y3MN6i81qp5owHATV2SOorXlatgQxR0pxf0ZEfU36NoIBQ,iv:PSvU8RUnULu5Wm/F8jSLb2ESH2QTx3UZUUJgzUPEyio=,tag:bnSVYptDVsWAfvEvo6nJwg==,type:str]
 sops:
     kms: []
     gcp_kms: []
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2022-02-07T17:57:27Z"
-    mac: ENC[AES256_GCM,data:PKauFe3atXrCmYpW19SgA5XyPeVqGieWgl8HIb5+HRR8fLq7vgwN+egELw27EU+xEBIau/Oy0S9r1kNiRhquN7NdjXC2XmQig1mSMAgL9cVNUCFkQXvd4q1mcBaFSSCGGCIBvyWGOesY7HAUQmBNkqwXGaZPGze9knT8DNJ2VC8=,iv:jowCEHvelA1SnXb2m49XnaKLYLZP7HOfljUXFuXvDHM=,tag:Po+17t/JRMSVtClNWXnrog==,type:str]
+    lastmodified: "2022-02-08T14:42:41Z"
+    mac: ENC[AES256_GCM,data:ZdNG4+tlVJgi7KYQDEJZ01rzjscrgX2Pel/kneV9kZqbukmJi5yWLFdPM9Ll0xO89hLGW/Aa2PCvA5Kwpa8x5itGODiY6LimCWqX1YQ5/nZ4eUMHjXorWcduxHD8qc5zFkDbvUwhCyZ1mmhgN5sI0pFBDWtkVbQd7nfDCnxHwLE=,iv:GH81+X9bbww4o+eAMp6+yosUX3R77SXW8xFlTzOFv34=,tag:pDT+ybsa1UgWRNSFzGtw1g==,type:str]
     pgp:
         - created_at: "2021-08-20T16:21:08Z"
           enc: |
