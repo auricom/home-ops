@@ -22,6 +22,10 @@ spec:
       tag: 1.15.11
       rootless: true
 
+    containerSecurityContext:
+      capabilities:
+        add: ["SYS_CHROOT"]
+
     gitea:
       admin:
         email: ${SECRET_GITEA_ADMIN_EMAIL}
