@@ -1,0 +1,66 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bookstack-books-export
+  namespace: data
+spec:
+  schedule: "@daily"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: bookstack-books-export
+        spec:
+          serviceAccountName: jobs
+          imagePullSecrets:
+            - name: regcred
+          containers:
+            - name: gitea-repositories-backup
+              image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/home-cluster-jobs:1.2.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - "bin/sh"
+                - "-ec"
+                - |
+                  #!/bin/bash
+
+                  set -o nounset
+                  set -o errexit
+
+                  mkdir -p ~/.ssh
+                  cp /opt/id_rsa ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+
+                  ssh -o StrictHostKeyChecking=no homelab@${LOCAL_LAN_TRUENAS} << 'EOF'
+
+                    set -x
+
+                    WORK_DIR="/mnt/storage/backups/apps/bookstack"
+
+                    SHELVES=$(curl --silent --location --request GET "https://bookstack.${SECRET_CLUSTER_DOMAIN}/api/shelves" --header "Authorization: Token ${SECRET_BOOKSTACK_TOKEN_ID}:${SECRET_BOOKSTACK_TOKEN_SECRET}" | jq --raw-output .data[].id)
+
+                    for shelf in $SHELVES
+                    do
+                        shelf_slug=$(curl --silent --location --request GET "https://bookstack.${SECRET_CLUSTER_DOMAIN}/api/shelves/$shelf" --header "Authorization: Token ${SECRET_BOOKSTACK_TOKEN_ID}:${SECRET_BOOKSTACK_TOKEN_SECRET}" | jq --raw-output .slug)
+                        mkdir -p $WORK_DIR/$shelf_slug
+                        BOOKS=$(curl --silent --location --request GET "https://bookstack.${SECRET_CLUSTER_DOMAIN}/api/shelves/$shelf" --header "Authorization: Token ${SECRET_BOOKSTACK_TOKEN_ID}:${SECRET_BOOKSTACK_TOKEN_SECRET}" | jq --raw-output .books[].id)
+                        for book in $BOOKS
+                        do
+                            book_slug=$(curl --silent --location --request GET "https://bookstack.${SECRET_CLUSTER_DOMAIN}/api/books/$book" --header "Authorization: Token ${SECRET_BOOKSTACK_TOKEN_ID}:${SECRET_BOOKSTACK_TOKEN_SECRET}" | jq --raw-output .slug)
+                            echo "INFO: export book $book_slug..."
+                            curl --silent --location --request GET "https://bookstack.${SECRET_CLUSTER_DOMAIN}/api/books/$book/export/html" --header "Authorization: Token ${SECRET_BOOKSTACK_TOKEN_ID}:${SECRET_BOOKSTACK_TOKEN_SECRET}" --output $WORK_DIR/$shelf_slug/$book_slug.html
+                        done
+                    done
+                  EOF
+
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local:8000/ping/d671a835-0731-448a-b20b-284500e5753a
+              volumeMounts:
+                - name: secret
+                  mountPath: /opt/id_rsa
+                  subPath: deployment-rsa-priv-key
+          volumes:
+            - name: secret
+              secret:
+                secretName: drone-pipelines
+          restartPolicy: Never

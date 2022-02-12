@@ -1,0 +1,71 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: bookstack
+  namespace: data
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: bookstack
+      version: 3.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    image:
+      repository: ghcr.io/linuxserver/bookstack
+      pullPolicy: IfNotPresent
+      tag: "version-v21.12.5"
+
+    env:
+      APP_URL: https://bookstack.${SECRET_CLUSTER_DOMAIN}/
+      DB_HOST: bookstack-mariadb
+      DB_DATABASE: bookstack
+      DB_USERNAME: bookstack
+      DB_PASSWORD: ${SECRET_BOOKSTACK_DB_PASSWORD}
+
+    persistence:
+      config:
+        enabled: true
+        mountPath: /config
+        existingClaim: bookstack-config
+
+    mariadb:
+      enabled: true
+      image:
+        repository: bitnami/mariadb
+        tag: "10.6.5"
+      auth:
+        database: bookstack
+        username: bookstack
+        password: ${SECRET_BOOKSTACK_DB_PASSWORD}
+        rootPassword: ${SECRET_BOOKSTACK_DB_ROOT_PASSWORD}
+      primary:
+        persistence:
+          enabled: true
+          existingClaim: bookstack-db
+
+    service:
+      main:
+        annotations:
+          prometheus.io/probe: "true"
+          prometheus.io/protocol: http
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - host: bookstack.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "bookstack.${SECRET_CLUSTER_DOMAIN}"
+            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
