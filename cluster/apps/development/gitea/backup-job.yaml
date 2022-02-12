@@ -34,7 +34,7 @@ spec:
 
                   ssh -o StrictHostKeyChecking=no homelab@${LOCAL_LAN_TRUENAS} << 'EOF'
 
-                    WORK_DIR="/mnt/storage/backups/gitea"
+                    WORK_DIR="/mnt/storage/backups/apps/gitea"
 
                     ORGANISATIONS=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/orgs" --header "Authorization: Bearer ${SECRET_GITEA_API_TOKEN}" | jq --raw-output .[].username)
                     ORGANISATIONS+=" auricom"
