@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
-      version: 32.0.3
+      version: 33.2.0
       sourceRef:
         kind: HelmRepository
         name: prometheus-community-charts
@@ -54,6 +54,9 @@ spec:
         route:
           receiver: "pushover"
           routes:
+            - receiver: "null"
+              match:
+                alertname: InfoInhibitor
             - match:
                 alertname: Watchdog
               receiver: "null"
