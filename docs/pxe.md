@@ -11,8 +11,8 @@
 
 ```console
 $ mkdir -p /var/lib/tftpboot/pxelinux/
-$ curl https://releases.ubuntu.com/20.04/ubuntu-20.04.3-live-server-amd64.iso -o /var/lib/tftpboot/ubuntu-20.04.3-live-server-amd64.iso
-$ mount -t cd9660 /dev/`mdconfig -f /var/lib/tftpboot/ubuntu-20.04.3-live-server-amd64.iso` /mnt
+$ curl https://releases.ubuntu.com/20.04/ubuntu-20.04.4-live-server-amd64.iso -o /var/lib/tftpboot/ubuntu-20.04.4-live-server-amd64.iso
+$ mount -t cd9660 /dev/`mdconfig -f /var/lib/tftpboot/ubuntu-20.04.4-live-server-amd64.iso` /mnt
 $ cp /mnt/casper/vmlinuz /var/lib/tftpboot/pxelinux/
 $ cp /mnt/casper/initrd /var/lib/tftpboot/pxelinux/
 $ umount /mnt
