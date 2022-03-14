@@ -17,7 +17,6 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-
     controller:
       replicaCount: 2
       service:
@@ -30,7 +29,8 @@ spec:
 
       config:
         ssl-protocols: "TLSv1.3 TLSv1.2"
-        custom-http-errors: 404,403,500,503
+        custom-http-errors: |
+          401,403,404,500,501,502,503
         enable-vts-status: "false"
         hsts-max-age: "31449600"
         proxy-body-size: "50m"
@@ -66,11 +66,14 @@ spec:
 
     defaultBackend:
       enabled: true
-
       image:
-        repository: ghcr.io/181192/custom-error-pages
-        tag: latest
-
+        repository: ghcr.io/tarampampam/error-pages
+        tag: 2.7.0
+      extraEnvs:
+        - name: TEMPLATE_NAME
+          value: l7-light
+        - name: SHOW_DETAILS
+          value: "true"
       resources:
         requests:
           memory: 250Mi
