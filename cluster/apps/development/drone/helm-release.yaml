@@ -8,12 +8,11 @@ spec:
   interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://charts.drone.io
       chart: drone
-      version: 0.1.7
+      version: 0.4.2
       sourceRef:
         kind: HelmRepository
-        name: drone-charts
+        name: drone-volker-charts
         namespace: flux-system
       interval: 5m
   values:
@@ -21,7 +20,7 @@ spec:
       repository: drone/drone
       tag: 2.11.0
 
-    env:
+    config:
       DRONE_DATABASE_DRIVER: postgres
       DRONE_DATABASE_DATASOURCE: ${SECRET_DRONE_DATABASE_DATASOURCE}
       DRONE_DATABASE_SECRET: ${SECRET_DRONE_DATABASE_SECRET}
@@ -30,34 +29,22 @@ spec:
       DRONE_GITEA_CLIENT_SECRET: ${SECRET_DRONE_GITEA_CLIENT_SECRET}
       DRONE_GITEA_SERVER: https://gitea.${SECRET_CLUSTER_DOMAIN}
       DRONE_GIT_ALWAYS_AUTH: true
-      DRONE_LOGS_TEXT: true
+      DRONE_LOGS_DEBUG: false
       DRONE_LOGS_PRETTY: true
       DRONE_LOGS_COLOR: true
+      DRONE_REGISTRATION_CLOSED: true
       DRONE_SERVER_PROTO: https
       DRONE_SERVER_HOST: drone.${SECRET_CLUSTER_DOMAIN}
 
-    updateStrategy:
-      type: Recreate
-
-    persistentVolume:
-      enabled: false
-
     ingress:
       enabled: true
+      className: "nginx"
       hosts:
         - host: "drone.${SECRET_CLUSTER_DOMAIN}"
-          paths: ["/"]
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
       tls:
         - hosts:
             - "drone.${SECRET_CLUSTER_DOMAIN}"
           secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              kind: Ingress
-              name: drone
-            patch:
-              - op: add
-                path: /spec/ingressClassName
-                value: traefik

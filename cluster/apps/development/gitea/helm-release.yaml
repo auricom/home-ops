@@ -58,6 +58,8 @@ spec:
         service:
           DISABLE_REGISTRATION: true
           REQUIRE_SIGNIN_VIEW: true
+        webhook:
+          ALLOWED_HOST_LIST: "drone.k3s.xpander.ovh"
 
     postgresql:
       enabled: false
