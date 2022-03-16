@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: drone/drone-runner-kube
-      tag: 1.0.0-rc.2
+      tag: 1.0.0-rc.3
     config:
       DRONE_RPC_SECRET: ${SECRET_DRONE_RPC_SECRET}
       DRONE_RPC_PROTO: http
@@ -26,5 +26,3 @@ spec:
       DRONE_NAMESPACE_DEFAULT: development
       DRONE_RPC_HOST: drone
       DRONE_SECRET_PLUGIN_ENDPOINT: http://drone-kubernetes-secrets:3000
-      # DRONE_RPC_DUMP_HTTP: "true"
-      # DRONE_DEBUG: "true"
