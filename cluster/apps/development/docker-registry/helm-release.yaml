@@ -19,10 +19,13 @@ spec:
   values:
     storage: s3
 
+    persistence:
+      deleteEnabled: true
+
     s3:
       region: "us-east-1"
       regionEndpoint: ${SECRET_MINIO_ENDPOINT}
-      bucket: docker-registry
+      bucket: docker-registry-v2
       encrypt: false
       secure: true
 
