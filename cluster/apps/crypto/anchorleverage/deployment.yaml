@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: anchorleverage
+  name: anchorleverage-testnet
   namespace: crypto
   labels:
-    app.kubernetes.io/instance: anchorleverage
-    app.kubernetes.io/name: anchorleverage
+    app.kubernetes.io/instance: anchorleverage-testnet
+    app.kubernetes.io/name: anchorleverage-testnet
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/instance: anchorleverage
-      app.kubernetes.io/name: anchorleverage
+      app.kubernetes.io/instance: anchorleverage-testnet
+      app.kubernetes.io/name: anchorleverage-testnet
   template:
     metadata:
       labels:
-        app.kubernetes.io/instance: anchorleverage
-        app.kubernetes.io/name: anchorleverage
+        app.kubernetes.io/instance: anchorleverage-testnet
+        app.kubernetes.io/name: anchorleverage-testnet
     spec:
       containers:
         - image: luigi311/anchorleverage:20220304
@@ -36,12 +36,8 @@ spec:
               value: ""
             - name: TELEGRAM_CHAT_ID
               value: ""
-            - name: MNEMONIC
-              value: "${SECRET_ANCHOR_MNEMONIC}"
             - name: PASSWORD
               value: "${SECRET_ANCHOR_PASSWORD}"
-            - name: SALT
-              value: ""
             - name: CHAIN_ID
               value: "bombay-12"
               # value: "columbus-5"
@@ -67,3 +63,11 @@ spec:
               value: "40"
             - name: DELEVERAGE_BORROW_USAGE_TARGET
               value: "90"
+          volumeMounts:
+            - name: env
+              mountPath: /app/.env
+              subPath: .env
+      volumes:
+        - name: env
+          configMap:
+            name: anchorleverage-testnet
