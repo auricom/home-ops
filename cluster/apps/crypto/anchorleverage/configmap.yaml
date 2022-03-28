@@ -4,15 +4,15 @@ metadata:
     name: anchorleverage-testnet
     namespace: crypto
 data:
-    .env: ENC[AES256_GCM,data:xyZ2j7/4PPMyBFKaPWZMQnROvSDCpUl9RSBUL4nDTJ80/Pv9H2nINvQtblwWtayrjaBffgavPIJABWHAwiIsTxLG5RllXa/P2G3K6+VIjrJAa9OhGkJw4K1+4sEyyFJBJQ8RQvlf5OIKUzsCzsKLuEDtH2Mu3D8zm1vAPn3RVrjrFIlxpara0XdAXZvTiBz1TR++hUiYNgMAtt/tpYCTFApnPZIdO2kenDyYFLTuXMoaFET4qse2P4R8x0yPy4TXxJd2eU/t6cLwCcJJjNX7lug1TA4xoZnbCUN/i5qUcORggwtXkfp3irmhTO9WzfdduFk4aKOJNwLFz8P3LMqsuEnJfmQFVpDNiTQz988X6GKS8+E3uiSBZPpG6IsqzRyWlGfnPGr1UIIN0WqhViL3NK5GhiqLdpSsGXb1D0vw2mjFaEMbUBJuJeO9cNT363NvRZ5d1zqfyUpvDx0R97HpS6ZFF7lfrZpqt+LriGUPZtxGj/ZFDpJBWpuFSg==,iv:4RyUeu3trFSUSH4FyXh2Zlm0wzdMQgZDKDhd4VcjH5A=,tag:yMNOO+TwLHAmohqWbjriJA==,type:str]
+    .env: ENC[AES256_GCM,data:giJOATGoF/+7gfbCEQ41JMX660uyW7XZQ7GKTJ324bBEzrpwlN0M9cEui1jz7FIyQHMbEVhRn5BuaWnTNnxtQVsPJBzLSq8GYZ1WW3oEy0jRZ5JS74CrgrEivB9rHWb4WV5b03s0NUoxATkrkgnFRf9bWbAs5XTfU5GkSIH+aDYQqapwbdqAya2fRAAY5uViJN3OJm5ZO8S/pwAu0+t5ybvg0/wVYfTzvoCxL1vrBnzQLQafJwJJjhXl3J9ucddlqEREtfsTwxhoRL164dUG0Iq+McVxRYZgXgjFTN37GnFEdctAqQh4e4WE5rDW7Zrp2Og1h+cvxwgMKbZE4jifcSIIBg8oVeN1lF3hVF+QI1QAexvlWC2sR3Elch15VAee1IsZ9RbrXf4GrmgrQCI/nesJuoOrnCuHh6A2dM+wcjAdySBqqfI4V7fM4ipEI+SXQK7zxzUfZHM3V5A/MRZOLsopIjZKC+3g1ELhTE0LXpJDZn7xQTDmdIQHS/bBOOzfaqzrUXCmWVwCZyX15h9SSLt5/klaxGAzF96rXz7xIXzsD0dUlUaTmx5aNA/fYItAjWY+dRyhXilfo8fcN+3oXMeecolDPfunM8tdLdCM+SHGIfsXzajeoxI=,iv:WX1dobHk/nc01Zu64FURbK/DnfQ6YJgZv1PCfOtEgJk=,tag:EB/4ycVLHSWrFucv3miRxA==,type:str]
 sops:
     kms: []
     gcp_kms: []
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2022-03-21T23:16:11Z"
-    mac: ENC[AES256_GCM,data:SOSoGDjVI9Bpxj7MfJRZqtWEKkG9yGRcXakXGDLgNgBUk78iIvm5zcFcKn0Y6BkkmenG2k7VQxAPpSx62psEBOfHH8Bkw+oeAeq0W00kpkP941gaDcOLt0wqfxkXdaVJ7Vcxp/lTNMcqHUrijFW9m6Ehg7cutjcaaLnw/gfspFA=,iv:wuNuouw5XN6i9qtSU7MVbr6Xg03x1JDP+me6wcIJlDU=,tag:a5jvG4LzDfeKerjFA4OtRQ==,type:str]
+    lastmodified: "2022-03-29T00:05:47Z"
+    mac: ENC[AES256_GCM,data:inFw07aJ8W3njPSrTh98SFI8afCPlRN1xY0CFNyHzwt5cW8T9a323FZTFzt5n7hRP4dM4NTG8zwXpj5EZXEeh2SnUY8Caah8bkp0nuF3My0XPVvhvsylj/3hjFJ/DH2zoDcMx5jjDSPu2sTVwRxzMtkI3uvqwd28J0ZfVYe4mH0=,iv:vhL4LV5addTTp5RS6YAiV3Ps+POIzxL4TJwPhWQdZk0=,tag:wJEhYT/W3Bq+L6hajawxbA==,type:str]
     pgp:
         - created_at: "2022-03-21T23:16:11Z"
           enc: |

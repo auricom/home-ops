@@ -7,8 +7,12 @@ metadata:
   labels:
     app.kubernetes.io/instance: anchorleverage-testnet
     app.kubernetes.io/name: anchorleverage-testnet
+  annotations:
+    configmap.reloader.stakater.com/reload: "anchorleverage-testnet"
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/instance: anchorleverage-testnet
@@ -31,11 +35,7 @@ spec:
             - name: DEBUG
               value: "False"
             - name: NOTIFY_TELEGRAM
-              value: "False"
-            - name: TELEGRAM_TOKEN
-              value: ""
-            - name: TELEGRAM_CHAT_ID
-              value: ""
+              value: "True"
             - name: PASSWORD
               value: "${SECRET_ANCHOR_PASSWORD}"
             - name: CHAIN_ID
@@ -48,9 +48,9 @@ spec:
             - name: MAX_SPREAD
               value: "0.01"
             - name: ANCHOR_USAGE_TARGET_PERCENTAGE
-              value: "75"
+              value: "80"
             - name: ANCHOR_USAGE_MIN_PERCENTAGE
-              value: "70"
+              value: "75"
             - name: ANCHOR_USAGE_MAX_PERCENTAGE
               value: "85"
             - name: ANCHOR_ANC_MAX_BALANCE
