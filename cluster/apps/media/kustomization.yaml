@@ -17,5 +17,5 @@ resources:
   - sabnzbd
   - sonarr
   - tdarr
-  - travelstories
+  # - travelstories
   - volumes
