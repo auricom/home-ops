@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: anchorleverage-testnet
+    name: anchorleverage
     namespace: crypto
 data:
     .env: ENC[AES256_GCM,data:giJOATGoF/+7gfbCEQ41JMX660uyW7XZQ7GKTJ324bBEzrpwlN0M9cEui1jz7FIyQHMbEVhRn5BuaWnTNnxtQVsPJBzLSq8GYZ1WW3oEy0jRZ5JS74CrgrEivB9rHWb4WV5b03s0NUoxATkrkgnFRf9bWbAs5XTfU5GkSIH+aDYQqapwbdqAya2fRAAY5uViJN3OJm5ZO8S/pwAu0+t5ybvg0/wVYfTzvoCxL1vrBnzQLQafJwJJjhXl3J9ucddlqEREtfsTwxhoRL164dUG0Iq+McVxRYZgXgjFTN37GnFEdctAqQh4e4WE5rDW7Zrp2Og1h+cvxwgMKbZE4jifcSIIBg8oVeN1lF3hVF+QI1QAexvlWC2sR3Elch15VAee1IsZ9RbrXf4GrmgrQCI/nesJuoOrnCuHh6A2dM+wcjAdySBqqfI4V7fM4ipEI+SXQK7zxzUfZHM3V5A/MRZOLsopIjZKC+3g1ELhTE0LXpJDZn7xQTDmdIQHS/bBOOzfaqzrUXCmWVwCZyX15h9SSLt5/klaxGAzF96rXz7xIXzsD0dUlUaTmx5aNA/fYItAjWY+dRyhXilfo8fcN+3oXMeecolDPfunM8tdLdCM+SHGIfsXzajeoxI=,iv:WX1dobHk/nc01Zu64FURbK/DnfQ6YJgZv1PCfOtEgJk=,tag:EB/4ycVLHSWrFucv3miRxA==,type:str]
@@ -11,8 +11,8 @@ sops:
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2022-03-29T00:05:47Z"
-    mac: ENC[AES256_GCM,data:inFw07aJ8W3njPSrTh98SFI8afCPlRN1xY0CFNyHzwt5cW8T9a323FZTFzt5n7hRP4dM4NTG8zwXpj5EZXEeh2SnUY8Caah8bkp0nuF3My0XPVvhvsylj/3hjFJ/DH2zoDcMx5jjDSPu2sTVwRxzMtkI3uvqwd28J0ZfVYe4mH0=,iv:vhL4LV5addTTp5RS6YAiV3Ps+POIzxL4TJwPhWQdZk0=,tag:wJEhYT/W3Bq+L6hajawxbA==,type:str]
+    lastmodified: "2022-03-29T21:05:17Z"
+    mac: ENC[AES256_GCM,data:BOoud3sOTqv1Chz+CfP4VunLq4bSCiA2u1S9OFkDRTRoBDn6/6T3xJqY7QZbwarrU4La0+kEFyKIYZiGZgZNb+thB+YzqxYlrooxejO5W/b/VTpvSiG9VX8sOI/zmxC1LrVRifW2DmYQC9Llu9T8ozeFJpsHN0fyEq5jtEvXTHM=,iv:WhvTGgTyn/ib0PTUatfQUGoRKl6ObMfWzkkmTutG3jU=,tag:JJRasdNWmdI2ohHiH2Ou0A==,type:str]
     pgp:
         - created_at: "2022-03-21T23:16:11Z"
           enc: |

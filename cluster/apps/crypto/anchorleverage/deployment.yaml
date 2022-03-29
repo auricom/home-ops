@@ -2,26 +2,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: anchorleverage-testnet
+  name: anchorleverage
   namespace: crypto
   labels:
-    app.kubernetes.io/instance: anchorleverage-testnet
-    app.kubernetes.io/name: anchorleverage-testnet
+    app.kubernetes.io/instance: anchorleverage
+    app.kubernetes.io/name: anchorleverage
   annotations:
-    configmap.reloader.stakater.com/reload: "anchorleverage-testnet"
+    configmap.reloader.stakater.com/reload: "anchorleverage"
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/instance: anchorleverage-testnet
-      app.kubernetes.io/name: anchorleverage-testnet
+      app.kubernetes.io/instance: anchorleverage
+      app.kubernetes.io/name: anchorleverage
   template:
     metadata:
       labels:
-        app.kubernetes.io/instance: anchorleverage-testnet
-        app.kubernetes.io/name: anchorleverage-testnet
+        app.kubernetes.io/instance: anchorleverage
+        app.kubernetes.io/name: anchorleverage
     spec:
       containers:
         - image: luigi311/anchorleverage:20220304
@@ -39,8 +39,8 @@ spec:
             - name: PASSWORD
               value: "${SECRET_ANCHOR_PASSWORD}"
             - name: CHAIN_ID
-              value: "bombay-12"
-              # value: "columbus-5"
+              #value: "bombay-12"
+              value: "columbus-5"
             - name: WALLET_MIN_UST_BALANCE
               value: "10"
             - name: WALLET_MAX_UST_BALANCE
@@ -48,17 +48,17 @@ spec:
             - name: MAX_SPREAD
               value: "0.01"
             - name: ANCHOR_USAGE_TARGET_PERCENTAGE
-              value: "80"
-            - name: ANCHOR_USAGE_MIN_PERCENTAGE
-              value: "75"
-            - name: ANCHOR_USAGE_MAX_PERCENTAGE
               value: "85"
+            - name: ANCHOR_USAGE_MIN_PERCENTAGE
+              value: "80"
+            - name: ANCHOR_USAGE_MAX_PERCENTAGE
+              value: "93"
             - name: ANCHOR_ANC_MAX_BALANCE
               value: "20"
             - name: UST_EARN_TO_BORROW_TARGET_RATIO
               value: "30"
             - name: UST_EARN_TO_BORROW_MIN_RATIO
-              value: "20"
+              value: "18"
             - name: UST_EARN_TO_BORROW_MAX_RATIO
               value: "40"
             - name: DELEVERAGE_BORROW_USAGE_TARGET
@@ -70,4 +70,4 @@ spec:
       volumes:
         - name: env
           configMap:
-            name: anchorleverage-testnet
+            name: anchorleverage
