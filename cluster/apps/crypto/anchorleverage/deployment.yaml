@@ -54,15 +54,15 @@ spec:
             - name: ANCHOR_USAGE_MAX_PERCENTAGE
               value: "93"
             - name: ANCHOR_ANC_MAX_BALANCE
-              value: "20"
+              value: "20000"
             - name: UST_EARN_TO_BORROW_TARGET_RATIO
-              value: "30"
-            - name: UST_EARN_TO_BORROW_MIN_RATIO
-              value: "18"
-            - name: UST_EARN_TO_BORROW_MAX_RATIO
               value: "40"
+            - name: UST_EARN_TO_BORROW_MIN_RATIO
+              value: "5"
+            - name: UST_EARN_TO_BORROW_MAX_RATIO
+              value: "55"
             - name: DELEVERAGE_BORROW_USAGE_TARGET
-              value: "90"
+              value: "95"
           volumeMounts:
             - name: env
               mountPath: /app/.env
