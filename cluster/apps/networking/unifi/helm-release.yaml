@@ -28,17 +28,40 @@ spec:
     service:
       main:
         type: LoadBalancer
+        externalTrafficPolicy: Local
         externalIPs:
           - ${CLUSTER_LB_UNIFI}
+        ports:
+          stun:
+            enabled: false
+          syslog:
+            enabled: false
+          discovery:
+            enabled: false
+      udp:
+        enabled: true
+        type: LoadBalancer
         externalTrafficPolicy: Local
+        externalIPs:
+          - ${CLUSTER_LB_UNIFI}
+        ports:
+          stun:
+            enabled: true
+            port: 3478
+            protocol: UDP
+          syslog:
+            enabled: false
+            port: 5514
+            protocol: UDP
+          discovery:
+            enabled: true
+            port: 10001
+            protocol: UDP
 
     ingress:
       main:
         enabled: true
         ingressClassName: "nginx"
-        # annotations:
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-        # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-medium@kubernetescrd
         hosts:
           - host: "unifi.${SECRET_CLUSTER_DOMAIN}"
             paths:
