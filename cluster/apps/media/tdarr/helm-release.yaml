@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: haveagitgat/tdarr
-      tag: 2.00.16
+      tag: 2.00.18
       pullPolicy: IfNotPresent
 
     env:
