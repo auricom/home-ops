@@ -24,7 +24,8 @@ spec:
         app.kubernetes.io/name: anchorleverage
     spec:
       containers:
-        - image: luigi311/anchorleverage:20220304
+        - image: pirhana/anchorleverage:terraswap-2022042
+          #image: luigi311/anchorleverage:20220304
           imagePullPolicy: IfNotPresent
           name: anchorleverage
           env:
@@ -63,6 +64,8 @@ spec:
               value: "90"
             - name: DELEVERAGE_BORROW_USAGE_TARGET
               value: "90"
+            - name: TERRASWAP_ACTIVE
+              value: "false"
           volumeMounts:
             - name: env
               mountPath: /app/.env
