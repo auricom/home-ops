@@ -22,8 +22,7 @@ spec:
       enabled: true
     ingress:
       dashboard:
-        annotations:
-          kubernetes.io/ingress.class: "nginx"
+        ingressClassName: "nginx"
         host:
           name: "rook.${SECRET_CLUSTER_DOMAIN}"
           path: "/"
