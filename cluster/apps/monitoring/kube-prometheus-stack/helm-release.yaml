@@ -16,8 +16,103 @@ spec:
         name: prometheus-community-charts
         namespace: flux-system
       interval: 5m
-  timeout: 20m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
+    alertmanager:
+      config:
+        global:
+          resolve_timeout: 5m
+        receivers:
+          - name: "null"
+          - name: "pushover"
+            pushover_configs:
+              - user_key: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_USER_KEY}
+                token: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_TOKEN}
+                send_resolved: true
+                html: true
+                priority: |-
+                  {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
+                url_title: View in Alert Manager
+                title: |-
+                  [{{ .Status | toUpper -}}
+                  {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
+                  ] {{ .CommonLabels.alertname }}
+                message: |-
+                  {{- range .Alerts }}
+                    {{- if ne .Labels.severity "" }}
+                      <b>Severity:</b> <i>{{ .Labels.severity }}</i>
+                    {{- else }}
+                      <b>Severity:</b> <i>N/A</i>
+                    {{- end }}
+                    {{- if ne .Annotations.description "" }}
+                      <b>Description:</b> <i>{{ .Annotations.description }}</i>
+                    {{- else if ne .Annotations.summary "" }}
+                      <b>Summary:</b> <i>{{ .Annotations.summary }}</i>
+                    {{- else if ne .Annotations.message "" }}
+                      <b>Message:</b> <i>{{ .Annotations.message }}</i>
+                    {{- else }}
+                      <b>Description:</b> <i>N/A</i>
+                    {{- end }}
+                    {{- if gt (len .Labels.SortedPairs) 0 }}
+                      <b>Details:</b>
+                      {{- range .Labels.SortedPairs }}
+                        • <b>{{ .Name }}:</b> <i>{{ .Value }}</i>
+                      {{- end }}
+                    {{- end }}
+                  {{- end }}
+        route:
+          receiver: "pushover"
+          routes:
+            - receiver: "null"
+              matchers:
+                - alertname =~ "InfoInhibitor|Watchdog"
+            - receiver: "pushover"
+              matchers:
+                - severity = "critical"
+              continue: true
+        inhibit_rules:
+          - source_matchers:
+              - severity = "critical"
+            target_matchers:
+              - severity = "warning"
+            equal: ["alertname", "namespace"]
+      alertmanagerSpec:
+        replicas: 2
+        podAntiAffinity: hard
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: rook-ceph-block
+              resources:
+                requests:
+                  storage: 10Gi
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
+        hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
+        tls:
+          - hosts:
+              - "alert-manager.${SECRET_CLUSTER_DOMAIN}"
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
     prometheusOperator:
       createCustomResource: true
       prometheusConfigReloader:
@@ -28,55 +123,8 @@ spec:
           limits:
             cpu: 300m
             memory: 50Mi
-    alertmanager:
-      ingress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
-        hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
-        tls:
-          - hosts:
-              - "alert-manager.${SECRET_CLUSTER_DOMAIN}"
-      config:
-        global:
-          resolve_timeout: 5m
-        receivers:
-          - name: "null"
-          - name: "pushover"
-            pushover_configs:
-              - user_key: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_USER_KEY}
-                token: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_TOKEN}
-        route:
-          receiver: "pushover"
-          routes:
-            - receiver: "null"
-              match:
-                alertname: InfoInhibitor
-            - match:
-                alertname: Watchdog
-              receiver: "null"
-            - receiver: "pushover"
-        inhibit_rules:
-          - source_match:
-              severity: "critical"
-            target_match:
-              severity: "warning"
-            # Apply inhibition if the alertname is the same.
-            equal: ["alertname", "namespace"]
-      alertmanagerSpec:
-        storage:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: rook-ceph-block
-              resources:
-                requests:
-                  storage: 10Gi
     nodeExporter:
+      enabled: true
       serviceMonitor:
         relabelings:
           - action: replace
@@ -86,6 +134,7 @@ spec:
               - __meta_kubernetes_pod_node_name
             targetLabel: kubernetes_node
     kubelet:
+      enabled: true
       serviceMonitor:
         metricRelabelings:
           - action: replace
@@ -231,8 +280,6 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts: ["prometheus.${SECRET_CLUSTER_DOMAIN}"]
         tls:
           - hosts:
@@ -240,12 +287,13 @@ spec:
       prometheusSpec:
         resources:
           requests:
-            memory: 1500Mi
+            memory: 2000Mi
             cpu: 400m
           limits:
-            memory: 2000Mi
+            memory: 6000Mi
         replicas: 2
         replicaExternalLabelName: "replica"
+        podAntiAffinity: hard
         ruleSelector: {}
         ruleNamespaceSelector: {}
         ruleSelectorNilUsesHelmValues: false
@@ -255,7 +303,8 @@ spec:
         podMonitorSelector: {}
         podMonitorNamespaceSelector: {}
         podMonitorSelectorNilUsesHelmValues: false
-        retention: 6h
+        retention: 2d
+        retentionSize: "6GB"
         enableAdminAPI: true
         walCompression: true
         storageSpec:
@@ -265,6 +314,12 @@ spec:
               resources:
                 requests:
                   storage: 10Gi
+        thanos:
+          image: quay.io/thanos/thanos:v0.25.2
+          version: v0.25.2
+          objectStorageConfig:
+            name: thanos-objstore-secret
+            key: objstore.yml
         additionalScrapeConfigs:
           - job_name: "opnsense"
             scrape_interval: 60s
@@ -380,20 +435,19 @@ spec:
                 target_label: kubernetes_namespace
               - source_labels: [__meta_kubernetes_service_name]
                 target_label: kubernetes_name
-        affinity:
-          podAntiAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - prometheus
-                topologyKey: "kubernetes.io/hostname"
-        thanos:
-          image: quay.io/thanos/thanos:v0.25.2
-          objectStorageConfig:
-            name: thanos-objstore-secret
-            key: objstore.yml
       thanosService:
         enabled: true
+      thanosServiceMonitor:
+        enabled: true
+      thanosIngress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+        hosts:
+          - &host "thanos-sidecar.${SECRET_CLUSTER_DOMAIN}"
+        tls:
+          - hosts:
+              - *host
