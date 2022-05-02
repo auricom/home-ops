@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - emqx
-  - frigate
+  # - frigate
   - home-assistant
   - zigbee2mqtt
   - zwavejs2mqtt

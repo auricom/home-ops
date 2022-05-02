@@ -8,90 +8,61 @@ spec:
   interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: frigate
-      version: 7.1.0
+      chart: kah-common-chart
+      version: 1.1.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
         namespace: flux-system
       interval: 5m
+  install:
+    createNamespace: true
   values:
+    fullnameOverride: *app
     image:
-      repository: blakeblackshear/frigate
-      tag: 0.9.0-f110a26-amd64
-
-    securityContext:
-      privileged: true
-
-    persistence:
-      data:
-        enabled: true
-        existingClaim: frigate-config
-        mountPath: /data
-      usb:
-        enabled: true
-        type: hostPath
-        hostPath: /dev/bus/usb
-      cache:
-        enabled: true
-        type: emptyDir
-        medium: Memory
-        sizeLimit: 2Gi
-        mountPath: /dev/shm
-
-    config: |
-      mqtt:
-        host: emqx
-        topic_prefix: frigate
-        user: ${SECRET_MQTT_USERNAME}
-        password: ${SECRET_MQTT_PASSWORD}
-
-      database:
-        path: /data/frigate.db
-
-      detectors:
-        coral:
-          type: edgetpu
-          device: usb
-
-      objects:
-        track:
-        - person
-        - dog
-        - cat
-        filters:
-          person:
-            min_area: 2500
-            max_area: 100000
-            threshold: 0.7
-          dog:
-            min_area: 1000
-            max_area: 10000
-            threshold: 0.7
-          cat:
-            min_area: 1000
-            max_area: 10000
-            threshold: 0.7
-
-      ffmpeg:
-        hwaccel_args:
-        - -hwaccel
-        - vaapi
-        - -hwaccel_device
-        - /dev/dri/renderD128
-        - -hwaccel_output_format
-        - yuv420p
-
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: "frigate-config"
-
+      repository: docker.io/blakeblackshear/frigate
+      tag: 0.10.1-amd64
+    env:
+      TZ: "Europe/Paris"
+      MQTT_USER: "${SECRET_MQTT_USERNAME}"
+      MQTT_PASSWORD: ${SECRET_MQTT_PASSWORD}
     service:
       main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http
-
+        ports:
+          http:
+            port: &port 5000
+    probes:
+      liveness:
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /api/version
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness:
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /api/version
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      startup:
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /api/version
+            port: *port
+          failureThreshold: 30
+          periodSeconds: 10
     ingress:
       main:
         enabled: true
@@ -99,18 +70,41 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts:
-          - host: "frigate.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "frigate.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - "frigate.${SECRET_CLUSTER_DOMAIN}"
-            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
-
+              - *host
+    securityContext:
+      privileged: true
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: *app
+        subPath: config.yaml
+        mountPath: /config/config.yml
+        readOnly: true
+      data:
+        enabled: true
+        existingClaim: frigate-config
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/bus/usb
+        hostPathType: Directory
+        mountPath: /dev/bus/usb
+      cache:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 4Gi
+        mountPath: /dev/shm
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: *app
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -120,16 +114,11 @@ spec:
                   operator: In
                   values:
                     - "true"
-                - key: feature.node.kubernetes.io/custom-intel-gpu
-                  operator: In
-                  values:
-                    - "true"
-
     resources:
       requests:
-        gpu.intel.com/i915: 1
-        memory: 100Mi
         cpu: 500m
+        memory: 1000Mi
+        gpu.intel.com/i915: "1"
       limits:
-        gpu.intel.com/i915: 1
-        memory: 2000Mi
+        memory: 6000Mi
+        gpu.intel.com/i915: "1"
