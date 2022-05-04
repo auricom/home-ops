@@ -59,7 +59,7 @@ spec:
             - name: UST_EARN_TO_BORROW_TARGET_RATIO
               value: "60"
             - name: UST_EARN_TO_BORROW_MIN_RATIO
-              value: "5"
+              value: "1"
             - name: UST_EARN_TO_BORROW_MAX_RATIO
               value: "90"
             - name: DELEVERAGE_BORROW_USAGE_TARGET
