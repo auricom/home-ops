@@ -8,7 +8,7 @@ spec:
   locationSpec:
     type: FileStore
     fileStore:
-      claimName: k10-backup-v1
+      claimName: nfs-backups-kubernetes
       path: pvc-export
     credential:
       secretType: ""

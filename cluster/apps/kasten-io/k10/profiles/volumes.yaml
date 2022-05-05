@@ -1,28 +1,35 @@
 ---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-backups-kubernetes
+provisioner: nfs
+reclaimPolicy: Retain
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: k10-backup-v1
+  name: nfs-backups-kubernetes
 spec:
-  storageClassName: k10-backup-nfs
+  storageClassName: nfs-backups-kubernetes
   capacity:
     storage: 1Mi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: "truenas.${SECRET_CLUSTER_DOMAIN_ROOT}"
+    server: "${LOCAL_LAN_TRUENAS}"
     path: /mnt/storage/backups/kubernetes
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: k10-backup-v1
+  name: nfs-backups-kubernetes
   namespace: kasten-io
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: k10-backup-nfs
+  storageClassName: nfs-backups-kubernetes
   resources:
     requests:
       storage: 1Mi
