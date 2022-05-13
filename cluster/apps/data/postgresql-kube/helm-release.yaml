@@ -20,7 +20,7 @@ spec:
     image:
       registry: docker.io
       repository: bitnami/postgresql
-      tag: 14.2.0
+      tag: 14.3.0
       pullPolicy: IfNotPresent
     postgresqlUsername: postgres
     postgresqlPassword: ${SECRET_POSTGRESQL_KUBE_POSTGRES_PASSWORD}
