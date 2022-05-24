@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: drone-runner
-      version: 0.5.0
+      version: 0.5.1
       sourceRef:
         kind: HelmRepository
         name: drone-volker-charts
