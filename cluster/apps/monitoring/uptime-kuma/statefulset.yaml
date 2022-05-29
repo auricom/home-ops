@@ -24,7 +24,7 @@ spec:
         app.kubernetes.io/name: uptime-kuma
     spec:
       containers:
-        - image: louislam/uptime-kuma:1.15.1
+        - image: louislam/uptime-kuma:1.16.1
           name: uptime-kuma
           ports:
             - containerPort: 3001
