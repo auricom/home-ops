@@ -28,7 +28,7 @@ spec:
     ingress:
       enabled: true
       # annotations:
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+      # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       subdomain: login
 
       tls:
@@ -41,7 +41,7 @@ spec:
 
       env:
         - name: TZ
-          value: Europe/Paris
+          value: ${TIMEZONE}
 
       extraVolumeMounts:
         - name: config-custom

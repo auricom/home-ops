@@ -23,7 +23,7 @@ spec:
       pullPolicy: IfNotPresent
 
     env:
-      TZ: "Europe/Paris"
+      TZ: "${TIMEZONE}"
 
     podSecurityContext:
       runAsUser: 568

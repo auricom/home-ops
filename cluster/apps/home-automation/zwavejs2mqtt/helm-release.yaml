@@ -23,7 +23,7 @@ spec:
       tag: 6.11.0
 
     env:
-      TZ: "Europe/Paris"
+      TZ: "${TIMEZONE}"
 
     securityContext:
       privileged: true
@@ -70,4 +70,8 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - { key: "feature.node.kubernetes.io/custom-zwave", operator: In, values: ["true"] }
+                - {
+                    key: "feature.node.kubernetes.io/custom-zwave",
+                    operator: In,
+                    values: ["true"],
+                  }

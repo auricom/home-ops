@@ -1,7 +1,7 @@
 ---
 - name: locale | set timezone
   community.general.timezone:
-    name: "{{ timezone | default('Europe/Paris') }}"
+    name: "{{ timezone | default('${TIMEZONE}') }}"
 
 - name: locale | copy timesyncd config
   ansible.builtin.copy:

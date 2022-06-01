@@ -23,7 +23,7 @@ spec:
       pullPolicy: IfNotPresent
 
     env:
-      TZ: "Europe/Paris"
+      TZ: "${TIMEZONE}"
 
     persistence:
       config:
@@ -41,9 +41,9 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-#        annotations:
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
+        #        annotations:
+        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts:
           - host: "homer.${SECRET_CLUSTER_DOMAIN}"
             paths:
@@ -77,8 +77,8 @@ spec:
           enabled: true
           ingressClassName: "nginx"
           # annotations:
-            # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-            # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
+          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
           hosts:
             - host: "homer-config.${SECRET_CLUSTER_DOMAIN}"
               paths:

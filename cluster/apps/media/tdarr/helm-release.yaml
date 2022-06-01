@@ -23,7 +23,7 @@ spec:
       pullPolicy: IfNotPresent
 
     env:
-      TZ: Europe/Paris
+      TZ: ${TIMEZONE}
       webUIPort: 8265
       serverIP: 0.0.0.0
       serverPort: 8266

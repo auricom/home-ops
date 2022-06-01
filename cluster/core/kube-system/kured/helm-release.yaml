@@ -21,7 +21,7 @@ spec:
     configuration:
       startTime: "2:00"
       endTime: "5:00"
-      timeZone: "Europe/Paris"
+      timeZone: "${TIMEZONE}"
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"

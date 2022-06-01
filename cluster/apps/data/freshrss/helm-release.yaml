@@ -23,7 +23,7 @@ spec:
       pullPolicy: IfNotPresent
 
     env:
-      TZ: Europe/Paris
+      TZ: ${TIMEZONE}
       CRON_MIN: "18,48"
       DOMAIN: "https://freshrss.${SECRET_CLUSTER_DOMAIN}/"
 

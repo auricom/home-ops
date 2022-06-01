@@ -22,7 +22,7 @@ spec:
       tag: v3.5.3
 
     env:
-      TZ: "Europe/Paris"
+      TZ: "${TIMEZONE}"
 
     persistence:
       config:

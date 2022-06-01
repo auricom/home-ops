@@ -22,7 +22,7 @@ spec:
       tag: 1.25.1
 
     env:
-      TZ: Europe/Paris
+      TZ: ${TIMEZONE}
       ZIGBEE2MQTT_DATA: /data
 
     config:
@@ -105,4 +105,8 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - { key: "feature.node.kubernetes.io/custom-zigbee", operator: In, values: ["true"] }
+                - {
+                    key: "feature.node.kubernetes.io/custom-zigbee",
+                    operator: In,
+                    values: ["true"],
+                  }

@@ -251,7 +251,7 @@ spec:
         smtp:
           enabled: false
         date_formats:
-          default_timezone: Europe/Paris
+          default_timezone: ${TIMEZONE}
         feature_toggles:
           enable: ngalert
       ingress:

@@ -23,7 +23,7 @@ spec:
       repository: docker.io/blakeblackshear/frigate
       tag: 0.10.1-amd64
     env:
-      TZ: "Europe/Paris"
+      TZ: "${TIMEZONE}"
       MQTT_USER: "${SECRET_MQTT_USERNAME}"
       MQTT_PASSWORD: ${SECRET_MQTT_PASSWORD}
     service:

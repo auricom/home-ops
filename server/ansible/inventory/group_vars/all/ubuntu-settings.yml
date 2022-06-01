@@ -6,7 +6,7 @@ skip_upgrade_packages: false
 skip_remove_packages: false
 
 # Timezone for the servers
-timezone: "Europe/Paris"
+timezone: "${TIMEZONE}"
 
 # # Set custom ntp servers
 # ntp_servers:

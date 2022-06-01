@@ -23,7 +23,7 @@ spec:
       tag: v4.4.0
 
     env:
-      PHP_TZ: Europe/Paris
+      PHP_TZ: ${TIMEZONE}
       DB_CONNECTION: pgsql
       DB_HOST: postgresql-kube.data.svc.cluster.local.
       DB_PORT: 5432

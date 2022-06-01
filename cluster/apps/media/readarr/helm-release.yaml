@@ -24,7 +24,7 @@ spec:
       pullPolicy: IfNotPresent
 
     env:
-      TZ: "Europe/Paris"
+      TZ: "${TIMEZONE}"
 
     persistence:
       config:

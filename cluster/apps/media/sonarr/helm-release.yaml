@@ -23,7 +23,7 @@ spec:
       tag: v3.0.8.1507
       pullPolicy: IfNotPresent
     env:
-      TZ: "Europe/Paris"
+      TZ: "${TIMEZONE}"
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568

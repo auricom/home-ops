@@ -59,7 +59,7 @@ spec:
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ
-                  value: "Europe/Paris"
+                  value: "${TIMEZONE}"
                 - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
                   value: "1"
               command:

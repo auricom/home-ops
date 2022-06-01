@@ -28,7 +28,7 @@ spec:
           name: resilio-sync-claude
           env:
             - name: TZ
-              value: "Europe/Paris"
+              value: "${TIMEZONE}"
             - name: PUID
               value: "1026"
             - name: PGID
@@ -62,7 +62,7 @@ spec:
           name: resilio-sync-helene
           env:
             - name: TZ
-              value: "Europe/Paris"
+              value: "${TIMEZONE}"
             - name: PUID
               value: "1027"
             - name: PGID
@@ -206,7 +206,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   # annotations:
-    # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+  # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
   labels:
     app.kubernetes.io/instance: resilio-sync
     app.kubernetes.io/name: resilio-sync

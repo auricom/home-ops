@@ -33,7 +33,7 @@ spec:
       POSTGRES_USER: recipes
       POSTGRES_PASSWORD: ${SECRET_RECIPES_DB_PASSWORD}
       GUNICORN_MEDIA: "0"
-      TIMEZONE: Europe/Paris
+      TIMEZONE: ${TIMEZONE}
       FRACTION_PREF_DEFAULT: "0"
       COMMENT_PREF_DEFAULT: "1"
       SHOPPING_MIN_AUTOSYNC_INTERVAL: "5"
@@ -64,8 +64,8 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         # annotations:
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-small@kubernetescrd
+        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-small@kubernetescrd
         hosts:
           - host: "recipes.${SECRET_CLUSTER_DOMAIN}"
             paths:
