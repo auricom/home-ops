@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - bazarr
+  - calibre
   - flood
   - jellyfin
   - jobs
