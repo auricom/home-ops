@@ -28,7 +28,7 @@ spec:
       config:
         enabled: true
         existingClaim: calibre-config
-      media:
+      books:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"

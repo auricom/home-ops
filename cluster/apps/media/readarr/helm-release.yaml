@@ -30,10 +30,18 @@ spec:
       config:
         enabled: true
         existingClaim: readarr-config
-      nfs-video-media:
+      books:
         enabled: true
-        existingClaim: nfs-home-claude-media
-        mountPath: "/mnt/storage/home/claude"
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/home/claude/books
+        mountPath: /mnt/storage/home/claude/books
+      usenet:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/video/.usenet
+        mountPath: /mnt/storage/video/.usenet
       qbittorrent-cache:
         enabled: true
         existingClaim: qbittorrent-cache

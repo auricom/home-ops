@@ -34,8 +34,10 @@ spec:
     persistence:
       photo:
         enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/photo
         mountPath: /mnt/storage/photo
-        existingClaim: nfs-photo-media
         readOnly: true
       files:
         enabled: true

@@ -20,4 +20,3 @@ resources:
   - tdarr
   # - travelstories
   - trash-updater
-  - volumes

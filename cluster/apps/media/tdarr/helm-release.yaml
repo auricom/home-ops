@@ -41,10 +41,12 @@ spec:
         enabled: true
         mountPath: /app/server
         existingClaim: tdarr-data
-      media:
+      video:
         enabled: true
-        mountPath: /media
-        existingClaim: nfs-video-media
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/video
+        mountPath: /mnt/storage/video
 
     service:
       main:

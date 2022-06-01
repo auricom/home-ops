@@ -26,18 +26,24 @@ spec:
       config:
         enabled: true
         existingClaim: jellyfin-config
-      nfs-music-media:
+      music:
         enabled: true
-        existingClaim: nfs-music-media
-        mountPath: "/mnt/storage/music"
-      nfs-video-media:
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/music
+        mountPath: /mnt/storage/music
+      photo:
         enabled: true
-        existingClaim: nfs-video-media
-        mountPath: "/mnt/storage/video"
-      nfs-photo-media:
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/photo
+        mountPath: /mnt/storage/photo
+      video:
         enabled: true
-        existingClaim: nfs-photo-media
-        mountPath: "/mnt/storage/photo"
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/video
+        mountPath: /mnt/storage/video
 
     service:
       main:

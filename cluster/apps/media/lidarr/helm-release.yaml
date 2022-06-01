@@ -34,18 +34,22 @@ spec:
       config:
         enabled: true
         existingClaim: lidarr-config
-      nfs-music-media:
+      music:
         enabled: true
-        existingClaim: nfs-music-media
-        mountPath: "/mnt/storage/music"
-      nfs-video-media:
-        enabled: true
-        existingClaim: nfs-video-media
-        mountPath: "/mnt/storage/video"
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/music
+        mountPath: /mnt/storage/music
       qbittorrent-cache:
         enabled: true
         existingClaim: qbittorrent-cache
         mountPath: "/downloads"
+      usenet:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/video/.usenet
+        mountPath: /mnt/storage/video/.usenet
 
     ingress:
       main:

@@ -33,10 +33,12 @@ spec:
       config:
         enabled: true
         existingClaim: sonarr-config
-      nfs-video-media:
+      video:
         enabled: true
-        existingClaim: nfs-video-media
-        mountPath: "/mnt/storage/video"
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/video
+        mountPath: /mnt/storage/video
       qbittorrent-cache:
         enabled: true
         existingClaim: qbittorrent-cache

@@ -1,8 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - nfs-downloads-media.yaml
-  - nfs-home-claude-media.yaml
-  - nfs-music-media.yaml
-  - nfs-photo-media.yaml
-  - nfs-video-media.yaml

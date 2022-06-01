@@ -29,10 +29,12 @@ spec:
       config:
         enabled: true
         existingClaim: pyload-config
-      nfs-downloads-media:
+      downloads:
         enabled: true
-        existingClaim: nfs-downloads-media
-        mountPath: "/mnt/storage/downloads"
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/downloads
+        mountPath: /mnt/storage/downloads
 
     service:
       main:
