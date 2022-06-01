@@ -4,6 +4,7 @@ resources:
   - namespace.yaml
   - bazarr
   - calibre
+  - calibre-web
   - flood
   - jellyfin
   - jobs
