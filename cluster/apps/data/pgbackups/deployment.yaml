@@ -55,13 +55,14 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - name: nfs-backups-data
+            - name: backups
               mountPath: /backups
               subPath: postgresql
       volumes:
-        - name: nfs-backups-data
-          persistentVolumeClaim:
-            claimName: nfs-backups-data
+        - name: backups
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/backups
       dnsConfig:
         options:
           - name: ndots
