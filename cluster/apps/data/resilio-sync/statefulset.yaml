@@ -24,7 +24,7 @@ spec:
         app.kubernetes.io/name: resilio-sync
     spec:
       containers:
-        - image: ghcr.io/linuxserver/resilio-sync:version-2.7.2.1375
+        - image: ghcr.io/linuxserver/resilio-sync:version-2.7.3.1381-1
           name: resilio-sync-claude
           env:
             - name: TZ
@@ -45,20 +45,20 @@ spec:
             - name: sync-conf-claude
               mountPath: /config/sync.conf
               subPath: sync.conf
-            - name: home-claude-data
+            - name: home-claude
               mountPath: /sync/home/claude
-            - name: nfs-photo-data
+            - name: photo
               mountPath: /sync/photo
-            - name: nfs-backups-data
+            - name: backups
               mountPath: /sync/backup
-            - name: nfs-music-data
+            - name: music
               mountPath: /sync/music
-            - name: nfs-video-data
+            - name: video
               mountPath: /sync/video
               subPath: video
-            - name: nfs-shared-documents-data
+            - name: shared-documents
               mountPath: /sync/shared-documents
-        - image: ghcr.io/linuxserver/resilio-sync:version-2.7.2.1375
+        - image: ghcr.io/linuxserver/resilio-sync:version-2.7.3.1381-1
           name: resilio-sync-helene
           env:
             - name: TZ
@@ -79,9 +79,9 @@ spec:
             - name: sync-conf-helene
               mountPath: /config/sync.conf
               subPath: sync.conf
-            - name: home-helene-data
+            - name: home-helene
               mountPath: /sync/home
-            - name: nfs-backups-data
+            - name: backups
               mountPath: /sync/backup
       volumes:
         - name: config
@@ -93,27 +93,34 @@ spec:
         - name: sync-conf-helene
           configMap:
             name: resilio-sync-helene-conf
-        - name: home-claude-data
-          persistentVolumeClaim:
-            claimName: nfs-home-claude-data
-        - name: home-helene-data
-          persistentVolumeClaim:
-            claimName: nfs-home-helene-data
-        - name: nfs-backups-data
-          persistentVolumeClaim:
-            claimName: nfs-backups-data
-        - name: nfs-photo-data
-          persistentVolumeClaim:
-            claimName: nfs-photo-data
-        - name: nfs-music-data
-          persistentVolumeClaim:
-            claimName: nfs-music-data
-        - name: nfs-video-data
-          persistentVolumeClaim:
-            claimName: nfs-video-data
-        - name: nfs-shared-documents-data
-          persistentVolumeClaim:
-            claimName: nfs-shared-documents-data
+        - name: home-claude
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/home/claude
+        - name: home-helene
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/home/helene
+        - name: backups
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/backups
+        - name: photo
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/photo
+        - name: music
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/music
+        - name: video
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/video
+        - name: shared-documents
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/shared-documents
       dnsConfig:
         options:
           - name: ndots
