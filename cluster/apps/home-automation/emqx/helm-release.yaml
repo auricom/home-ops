@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://repos.emqx.io/charts
       chart: emqx
-      version: 4.4.4
+      version: 4.4.3
       sourceRef:
         kind: HelmRepository
         name: emqx-charts
@@ -54,21 +54,23 @@ spec:
         prometheus.io/probe: "true"
         prometheus.io/protocol: tcp
       type: LoadBalancer
-      loadBalancerIP: ${CLUSTER_LB_EMQX}
+      externalIPs:
+        - ${CLUSTER_LB_EMQX}
       externalTrafficPolicy: Local
 
     ingress:
       dashboard:
         enabled: true
-        # annotations:
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        ingressClassName: nginx
         path: /
         hosts:
-          - emqx.${SECRET_CLUSTER_DOMAIN}
+          - &host "emqx.${SECRET_CLUSTER_DOMAIN}"
         tls:
           - hosts:
-              - "emqx.${SECRET_CLUSTER_DOMAIN}"
-            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+              - *host
+
+    metrics:
+      enabled: true
 
     affinity:
       podAntiAffinity:
@@ -89,23 +91,3 @@ spec:
         memory: 150Mi
       limits:
         memory: 512Mi
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              kind: Service
-              name: emqx
-            patch:
-              - op: remove
-                path: /spec/loadBalancerIP
-              - op: add
-                path: /spec/externalIPs
-                value:
-                  - "${CLUSTER_LB_EMQX}"
-          - target:
-              kind: Ingress
-              name: emqx-dashboard
-            patch:
-              - op: add
-                path: /spec/ingressClassName
-                value: nginx
