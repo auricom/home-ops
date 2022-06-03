@@ -24,7 +24,7 @@ spec:
 
     env:
       APP_URL: https://bookstack.${SECRET_CLUSTER_DOMAIN}/
-      DB_HOST: bookstack-mariadb
+      DB_HOST: mariadb.data.svc.cluster.local.
       DB_DATABASE: bookstack
       DB_USERNAME: bookstack
       DB_PASSWORD: ${SECRET_BOOKSTACK_DB_PASSWORD}
@@ -36,19 +36,7 @@ spec:
         existingClaim: bookstack-config
 
     mariadb:
-      enabled: true
-      image:
-        repository: bitnami/mariadb
-        tag: "10.7.4"
-      auth:
-        database: bookstack
-        username: bookstack
-        password: ${SECRET_BOOKSTACK_DB_PASSWORD}
-        rootPassword: ${SECRET_BOOKSTACK_DB_ROOT_PASSWORD}
-      primary:
-        persistence:
-          enabled: true
-          existingClaim: bookstack-db
+      enabled: false
 
     service:
       main:
