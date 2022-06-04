@@ -16,8 +16,8 @@ resources:
   - qbittorrent
   - radarr
   - readarr
+  - recyclarr
   - sabnzbd
   - sonarr
   - tdarr
   # - travelstories
-  - trash-updater

@@ -1,0 +1,29 @@
+---
+# A starter config to use with Trash Updater. Most values are set to "reasonable defaults".
+# Update the values below as needed for your instance. You will be required to update the
+# API Key and URL for each instance you want to use.
+#
+# Many optional settings have been omitted to keep this template simple.
+#
+# For more details on the configuration, see the Configuration Reference on the wiki here:
+# https://github.com/rcdailey/trash-updater/wiki/Configuration-Reference
+
+sonarr:
+  - base_url: http://sonarr:8989
+    api_key: ${SONARR_API_KEY}
+    quality_definition: hybrid
+    release_profiles:
+      - trash_ids:
+          - EBC725268D687D588A20CBC5F97E538B # Low Quality Groups
+          - 1B018E0C53EC825085DD911102E2CA36 # Release Sources (Streaming Service)
+          - 71899E6C303A07AF0E4746EFF9873532 # P2P Groups + Repack/Proper
+          - d428eda85af1df8904b4bbe4fc2f537c # Anime - First release profile
+          - 6cd9e10bb5bb4c63d2d7cd3279924c7b # Anime - Second release profile
+
+radarr:
+  - base_url: http://radarr:7878
+    api_key: ${RADARR_API_KEY}
+    delete_old_custom_formats: true
+    quality_definition:
+      type: movie
+      preferred_ratio: 0.5
