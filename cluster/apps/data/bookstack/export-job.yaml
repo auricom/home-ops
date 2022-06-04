@@ -54,7 +54,7 @@ spec:
                     done
                   EOF
 
-                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local:8000/ping/d671a835-0731-448a-b20b-284500e5753a
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local:8000/ping/63ddc7f3-87c4-405d-8fab-b666b9d6c67e
               volumeMounts:
                 - name: secret
                   mountPath: /opt/id_rsa
