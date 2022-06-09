@@ -15,6 +15,7 @@
   "platform": "github",
   "username": "feisar-bot[bot]",
   "repositories": ["auricom/home-cluster"],
+  "assignees": ["auricom"],
   "onboarding": false,
   "requireConfig": false,
   "gitAuthor": "feisar-bot <27022259+feisar-bot[bot]@users.noreply.github.com>",
