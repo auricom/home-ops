@@ -20,7 +20,7 @@ spec:
       repository: wallabag/wallabag
       # Upgrading the wallabag version generally requires a migration.
       # see https://doc.wallabag.org/en/admin/upgrade.html
-      tag: 2.5.0
+      tag: 2.5.1
 
     env:
       SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
