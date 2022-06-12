@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: b4bz/homer
-      tag: 22.02.2
+      tag: v22.06.1
       pullPolicy: IfNotPresent
 
     env:
