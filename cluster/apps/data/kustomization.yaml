@@ -10,7 +10,6 @@ resources:
   - jobs
   - joplin-server
   - mariadb
-  - nitter
   - pgadmin
   - pgbackups
   - postgresql-kube
