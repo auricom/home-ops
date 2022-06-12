@@ -17,16 +17,12 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
-    image:
-      registry: docker.io
-      repository: bitnami/postgresql
-      tag: 14.3.0
-      pullPolicy: IfNotPresent
-    postgresqlUsername: postgres
-    postgresqlPassword: ${SECRET_POSTGRESQL_KUBE_POSTGRES_PASSWORD}
-    persistence:
-      enabled: true
-      existingClaim: postgresql-kube
+    auth:
+      postgresPassword: ${SECRET_POSTGRESQL_KUBE_POSTGRES_PASSWORD}
+    primary:
+      persistence:
+        enabled: true
+        existingClaim: postgresql-kube
     commonAnnotations:
       prometheus.io/probe: "true"
       prometheus.io/protocol: "tcp"
