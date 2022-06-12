@@ -7,3 +7,4 @@ resources:
   - kube-system
   - rook-ceph
   - system-upgrade
+  - storageclasses.yaml
