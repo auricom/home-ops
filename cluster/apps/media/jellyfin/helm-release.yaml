@@ -20,7 +20,7 @@ spec:
     image:
       repository: ghcr.io/k8s-at-home/jellyfin
       pullPolicy: IfNotPresent
-      tag: v10.7.7
+      tag: v10.8.0
 
     persistence:
       config:
