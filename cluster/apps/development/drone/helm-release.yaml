@@ -9,10 +9,10 @@ spec:
   chart:
     spec:
       chart: drone
-      version: 0.7.1
+      version: 0.2.5
       sourceRef:
         kind: HelmRepository
-        name: drone-volker-charts
+        name: drone-charts
         namespace: flux-system
       interval: 5m
   values:
@@ -20,7 +20,7 @@ spec:
       repository: drone/drone
       tag: 2.12.1
 
-    config:
+    env:
       DRONE_DATABASE_DRIVER: postgres
       DRONE_DATABASE_DATASOURCE: ${SECRET_DRONE_DATABASE_DATASOURCE}
       DRONE_DATABASE_SECRET: ${SECRET_DRONE_DATABASE_SECRET}

@@ -8,7 +8,6 @@ resources:
   - bitnami-charts.yaml
   - cert-manager-webhook-ovh.yaml
   - drone-charts.yaml
-  - drone-volker-charts.yaml
   - emxq-charts.yaml
   - gitea-charts.yaml
   - grafana-loki-charts.yaml
