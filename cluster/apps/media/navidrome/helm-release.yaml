@@ -2,62 +2,78 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: navidrome
+  name: &app navidrome
   namespace: media
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: navidrome
-      version: 6.3.2
+      chart: kah-common-chart
+      version: 1.1.2
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
         namespace: flux-system
-      interval: 5m
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
+    global:
+      nameOverride: *app
     image:
-      repository: deluan/navidrome
-      pullPolicy: IfNotPresent
+      repository: docker.io/deluan/navidrome
       tag: 0.47.5
-
     env:
-      ND_SCANINTERVAL: 15m
-      ND_LOGLEVEL: info
+      TZ: "${TIMEZONE}"
+      ND_LOGLEVEL: "info"
+      ND_SCANSCHEDULE: "1h"
       ND_SESSIONTIMEOUT: 24h
-      # ND_ENABLETRANSCODINGCONFIG: "true"
       ND_MUSICFOLDER: /mnt/storage/music/Artistes
-
+    service:
+      main:
+        ports:
+          http:
+            port: 4533
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "services.${SECRET_CLUSTER_DOMAIN_ROOT}."
+          external-dns/is-public: "true"
+        hosts:
+          - host: &host-release "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+          - host: &host-custom "music.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host-release
+              - *host-custom
     persistence:
       config:
         enabled: true
-        mountPath: /data
         existingClaim: navidrome-config
+        mountPath: /data
       music:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/music
         mountPath: /mnt/storage/music
-
-    service:
-      main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http
-
-    ingress:
-      main:
-        enabled: true
-        ingressClassName: "nginx"
-        # annotations:
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-        hosts:
-          - host: "navidrome.${SECRET_CLUSTER_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - "navidrome.${SECRET_CLUSTER_DOMAIN}"
+        readOnly: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 750Mi
