@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - authelia
   - certificate
+  - external-dns
   - ingress-nginx
   - k8s-gateway
   - unifi
