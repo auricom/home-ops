@@ -51,8 +51,8 @@ spec:
               mountPath: /sync/photo
             - name: backups
               mountPath: /sync/backup
-            - name: music
-              mountPath: /sync/music
+            - name: music-transcoded
+              mountPath: /sync/music_transcoded
             - name: video
               mountPath: /sync/video
               subPath: video
@@ -109,10 +109,10 @@ spec:
           nfs:
             server: "${LOCAL_LAN_TRUENAS}"
             path: /mnt/storage/photo
-        - name: music
+        - name: music-transcoded
           nfs:
-            server: "${LOCAL_LAN_TRUENAS}"
-            path: /mnt/storage/music
+            server: "${LOCAL_LAN_OPENMEDIAVAULT}"
+            path: /export/music_transcoded
         - name: video
           nfs:
             server: "${LOCAL_LAN_TRUENAS}"
