@@ -53,8 +53,9 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        # annotations:
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "services.${SECRET_CLUSTER_DOMAIN_ROOT}."
+          external-dns/is-public: "true"
         hosts:
           - host: "vaultwarden.${SECRET_CLUSTER_DOMAIN}"
             paths:

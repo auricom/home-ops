@@ -8,7 +8,6 @@ spec:
   interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://charts.authelia.com
       chart: authelia
       version: 0.8.34
       sourceRef:
@@ -27,8 +26,10 @@ spec:
 
     ingress:
       enabled: true
-      # annotations:
-      # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+      className: nginx
+      annotations:
+        external-dns.alpha.kubernetes.io/target: "services.${SECRET_CLUSTER_DOMAIN_ROOT}."
+        external-dns/is-public: "true"
       subdomain: login
 
       tls:
@@ -163,14 +164,3 @@ spec:
         key: STORAGE_ENCRYPTION_KEY
         value: "${SECRET_AUTHELIA_STORAGE_ENCRYPTION_KEY}"
         filename: STORAGE_ENCRYPTION_KEY
-
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              kind: Ingress
-              name: authelia
-            patch:
-              - op: add
-                path: /spec/ingressClassName
-                value: nginx

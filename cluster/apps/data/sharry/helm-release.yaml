@@ -116,9 +116,9 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         annotations:
+          external-dns.alpha.kubernetes.io/target: "services.${SECRET_CLUSTER_DOMAIN_ROOT}."
+          external-dns/is-public: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-large@kubernetescrd
         hosts:
           - host: "sharry.${SECRET_CLUSTER_DOMAIN}"
             paths:
