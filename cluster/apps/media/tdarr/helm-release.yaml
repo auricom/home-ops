@@ -41,6 +41,12 @@ spec:
         enabled: true
         mountPath: /app/server
         existingClaim: tdarr-data
+      music:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/music
+        mountPath: /mnt/storage/music
       video:
         enabled: true
         type: nfs
