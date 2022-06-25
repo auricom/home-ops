@@ -20,4 +20,5 @@ resources:
   - sabnzbd
   - sonarr
   - tdarr
+  - theme-park
   # - travelstories
