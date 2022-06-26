@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: eikek0/sharry
-      tag: v1.10.0
+      tag: v1.11.0
       pullPolicy: IfNotPresent
 
     args:
