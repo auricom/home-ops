@@ -2,10 +2,10 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: music_transcode
+  name: music-transcode
   namespace: media
 spec:
-  schedule: "0 3 * * *"
+  schedule: "0 2 * * *"
   concurrencyPolicy: "Forbid"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 5
@@ -19,14 +19,14 @@ spec:
           restartPolicy: OnFailure
           initContainers:
           containers:
-            - name: transcode_incremental
-              image: ghcr.io/auricom/freac:v1.1.6
+            - name: transcode-incremental
+              image: ghcr.io/auricom/freac:v1.1.6@sha256:9593f447273f1cbddb86c81fc095b9c071e6885010d8f00e061c819e2205b31f
               imagePullPolicy: IfNotPresent
               env:
                 - name: TRANSCODE_INPUT_DIR
-                  value: /mnt/storage/music
+                  value: /mnt/music/
                 - name: TRANSCODE_OUTPUT_DIR
-                  value: /export/music_transcoded
+                  value: /mnt/music_transcoded/
                 - name: TRANSCODE_FREAC_BIN
                   value: /app/freac.AppImage
               command:
@@ -35,19 +35,24 @@ spec:
                 - |
                   #!/bin/bash
 
-                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /apps/transcode.bash
-                  chmod a+x /apps/transcode.bash
-                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /apps/transcode_exclude.cfg
-                  cd /apps
+                  sleep 8000
+
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
+                  chmod a+x /tmp/transcode.bash
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
+                  cd /tmp
                   ./transcode.bash
-            - name: transcode_delete_unwanted
-              image: ghcr.io/auricom/freac:v1.1.6
+                  if [ $? -eq 0 ]; then
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/567e6103-4c88-47d7-8ed3-92422a6b6274
+                  fi
+            - name: transcode-delete-unwanted
+              image: ghcr.io/auricom/freac:v1.1.6@sha256:9593f447273f1cbddb86c81fc095b9c071e6885010d8f00e061c819e2205b31f
               imagePullPolicy: IfNotPresent
               env:
                 - name: TRANSCODE_INPUT_DIR
-                  value: /mnt/storage/music
+                  value: /mnt/music/
                 - name: TRANSCODE_OUTPUT_DIR
-                  value: /export/music_transcoded
+                  value: /mnt/music_transcoded/
                 - name: TRANSCODE_FREAC_BIN
                   value: /app/freac.AppImage
               command:
@@ -56,16 +61,21 @@ spec:
                 - |
                   #!/bin/bash
 
-                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /apps/transcode.bash
-                  chmod a+x /apps/transcode.bash
-                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /apps/transcode_exclude.cfg
-                  cd /apps
+                  sleep 8000
+
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
+                  chmod a+x /tmp/transcode.bash
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
+                  cd /tmp
                   ./transcode.bash -d
+                  if [ $? -eq 0 ]; then
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/20b32d57-1a22-4416-b18b-92e7bcaa0f4c
+                  fi
               volumeMounts:
                 - name: music-transcoded
-                  mountPath: /export/music_transcoded
+                  mountPath: /mnt/music_transcoded
                 - name: music
-                  mountPath: /mnt/storage/music
+                  mountPath: /mnt/music
                   readOnly: true
           volumes:
             - name: music-transcoded
