@@ -18,7 +18,7 @@
   "assignees": ["auricom"],
   "onboarding": false,
   "requireConfig": false,
-  "gitAuthor": "feisar-bot <27022259+feisar-bot[bot]@users.noreply.github.com>",
+  "gitAuthor": "feisar-bot <feisar-bot[bot]@users.noreply.github.com>",
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": [
     "prIgnoreNotification"
