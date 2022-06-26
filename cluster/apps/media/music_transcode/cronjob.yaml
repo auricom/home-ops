@@ -1,0 +1,61 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: music-transcode
+  namespace: media
+spec:
+  schedule: "0 2 * * *"
+  suspend: true
+  concurrencyPolicy: "Forbid"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      ttlSecondsAfterFinished: 300
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: OnFailure
+          initContainers:
+          containers:
+            - name: transcode-incremental
+              image: ghcr.io/auricom/freac:v1.1.6@sha256:8dfb5026b4567697b91ca44fb6d0a012aedc1b9d4ece239c0f2a686d0df3f57c
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TRANSCODE_INPUT_DIR
+                  value: /mnt/music/
+                - name: TRANSCODE_OUTPUT_DIR
+                  value: /mnt/music_transcoded/
+                - name: TRANSCODE_FREAC_BIN
+                  value: /app/freaccmd
+              command:
+                - "/bin/sh"
+                - "-ec"
+                - |
+                  #!/bin/bash
+
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
+                  chmod a+x /tmp/transcode.bash
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
+                  cd /tmp
+                  ./transcode.bash -c
+                  ./transcode.bash -r
+                  if [ $? -eq 0 ]; then
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b99854a4-d298-4acb-a02c-a56860132de3
+                  fi
+              volumeMounts:
+                - name: music-transcoded
+                  mountPath: /mnt/music_transcoded
+                - name: music
+                  mountPath: /mnt/music
+          volumes:
+            - name: music-transcoded
+              nfs:
+                server: "${LOCAL_LAN_OPENMEDIAVAULT}"
+                path: /export/music_transcoded
+            - name: music
+              nfs:
+                server: "${LOCAL_LAN_TRUENAS}"
+                path: /mnt/storage/music
