@@ -10,6 +10,7 @@ resources:
   - jobs
   - lidarr
   - lychee
+  - music_transcode
   - navidrome
   - prowlarr
   - pyload

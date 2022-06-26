@@ -1,0 +1,78 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: music_transcode
+  namespace: media
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: "Forbid"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      ttlSecondsAfterFinished: 300
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: OnFailure
+          initContainers:
+          containers:
+            - name: transcode_incremental
+              image: ghcr.io/auricom/freac:v1.1.6
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TRANSCODE_INPUT_DIR
+                  value: /mnt/storage/music
+                - name: TRANSCODE_OUTPUT_DIR
+                  value: /export/music_transcoded
+                - name: TRANSCODE_FREAC_BIN
+                  value: /app/freac.AppImage
+              command:
+                - "/bin/sh"
+                - "-ec"
+                - |
+                  #!/bin/bash
+
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /apps/transcode.bash
+                  chmod a+x /apps/transcode.bash
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /apps/transcode_exclude.cfg
+                  cd /apps
+                  ./transcode.bash
+            - name: transcode_delete_unwanted
+              image: ghcr.io/auricom/freac:v1.1.6
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TRANSCODE_INPUT_DIR
+                  value: /mnt/storage/music
+                - name: TRANSCODE_OUTPUT_DIR
+                  value: /export/music_transcoded
+                - name: TRANSCODE_FREAC_BIN
+                  value: /app/freac.AppImage
+              command:
+                - "/bin/sh"
+                - "-ec"
+                - |
+                  #!/bin/bash
+
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /apps/transcode.bash
+                  chmod a+x /apps/transcode.bash
+                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /apps/transcode_exclude.cfg
+                  cd /apps
+                  ./transcode.bash -d
+              volumeMounts:
+                - name: music-transcoded
+                  mountPath: /export/music_transcoded
+                - name: music
+                  mountPath: /mnt/storage/music
+                  readOnly: true
+          volumes:
+            - name: music-transcoded
+              nfs:
+                server: "${LOCAL_LAN_OPENMEDIAVAULT}"
+                path: /export/music_transcoded
+            - name: music
+              nfs:
+                server: "${LOCAL_LAN_TRUENAS}"
+                path: /mnt/storage/music
