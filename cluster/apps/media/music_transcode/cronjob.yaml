@@ -20,7 +20,7 @@ spec:
           initContainers:
           containers:
             - name: transcode-incremental
-              image: ghcr.io/auricom/freac:v1.1.6@sha256:9593f447273f1cbddb86c81fc095b9c071e6885010d8f00e061c819e2205b31f
+              image: ghcr.io/auricom/freac:v1.1.6@sha256:7f40c212e2ed2e6f92456f32041b42ea90afc79b8eec50a9751c85916b6648ad
               imagePullPolicy: IfNotPresent
               env:
                 - name: TRANSCODE_INPUT_DIR
@@ -46,7 +46,7 @@ spec:
                   curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/567e6103-4c88-47d7-8ed3-92422a6b6274
                   fi
             - name: transcode-delete-unwanted
-              image: ghcr.io/auricom/freac:v1.1.6@sha256:9593f447273f1cbddb86c81fc095b9c071e6885010d8f00e061c819e2205b31f
+              image: ghcr.io/auricom/freac:v1.1.6@sha256:7f40c212e2ed2e6f92456f32041b42ea90afc79b8eec50a9751c85916b6648ad
               imagePullPolicy: IfNotPresent
               env:
                 - name: TRANSCODE_INPUT_DIR
