@@ -17,7 +17,7 @@ spec:
             - name: regcred
           containers:
             - name: gitea-repositories-backup
-              image: docker pull ghcr.io/k8s-at-home/kubectl:v1.24.1
+              image: ghcr.io/k8s-at-home/kubectl:v1.24.1
               imagePullPolicy: IfNotPresent
               command:
                 - "bin/sh"
