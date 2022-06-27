@@ -6,6 +6,7 @@ metadata:
   namespace: media
 spec:
   schedule: "0 2 * * *"
+  suspend: true
   concurrencyPolicy: "Forbid"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 5
@@ -42,7 +43,7 @@ spec:
                   ./transcode.bash -c
                   ./transcode.bash -r
                   if [ $? -eq 0 ]; then
-                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/567e6103-4c88-47d7-8ed3-92422a6b6274
+                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b99854a4-d298-4acb-a02c-a56860132de3
                   fi
               volumeMounts:
                 - name: music-transcoded

@@ -270,12 +270,10 @@ remove_absent_from_source()
     echo "INFO: removing empty directories..."
     
     if [ $MODE_DRY_RUN == false ]; then
-        DIRECTORIES="$TRANSCODE_OUTPUT_DIR $TRANSCODE_DB"
-        mapfile -t StringArray <<< "$DIRECTORIES"
-        for val in "${StringArray[@]}"; do
-            cd "$val"
-            fd --type empty --exec-batch rmdir
-        done
+        cd "$TRANSCODE_OUTPUT_DIR"
+        fd --type empty --exec-batch rmdir
+        cd "$TRANSCODE_DB"
+        fd --type empty --exec-batch rmdir
     fi
 }
 
