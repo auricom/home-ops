@@ -39,38 +39,10 @@ spec:
                   chmod a+x /tmp/transcode.bash
                   curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
                   cd /tmp
-                  ./transcode.bash
+                  ./transcode.bash -c
+                  ./transcode.bash -r
                   if [ $? -eq 0 ]; then
                   curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/567e6103-4c88-47d7-8ed3-92422a6b6274
-                  fi
-              volumeMounts:
-                - name: music-transcoded
-                  mountPath: /mnt/music_transcoded
-                - name: music
-                  mountPath: /mnt/music
-            - name: transcode-delete-unwanted
-              image: ghcr.io/auricom/freac:v1.1.6@sha256:8dfb5026b4567697b91ca44fb6d0a012aedc1b9d4ece239c0f2a686d0df3f57c
-              imagePullPolicy: IfNotPresent
-              env:
-                - name: TRANSCODE_INPUT_DIR
-                  value: /mnt/music/
-                - name: TRANSCODE_OUTPUT_DIR
-                  value: /mnt/music_transcoded/
-                - name: TRANSCODE_FREAC_BIN
-                  value: /app/freaccmd
-              command:
-                - "/bin/sh"
-                - "-ec"
-                - |
-                  #!/bin/bash
-
-                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
-                  chmod a+x /tmp/transcode.bash
-                  curl --location raw.githubusercontent.com/auricom/home-cluster/main/server/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
-                  cd /tmp
-                  ./transcode.bash -d
-                  if [ $? -eq 0 ]; then
-                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/20b32d57-1a22-4416-b18b-92e7bcaa0f4c
                   fi
               volumeMounts:
                 - name: music-transcoded
