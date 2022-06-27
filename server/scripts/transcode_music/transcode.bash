@@ -292,5 +292,5 @@ else
     remove_absent_from_source
 fi
 
-rm $TRANSCODE_INPUT_DIR/.fdignore
-rm $TRANSCODE_OUTPUT_DIR/.fdignore
+rm "$TRANSCODE_INPUT_DIR/.fdignore"
+rm "$TRANSCODE_OUTPUT_DIR/.fdignore"
