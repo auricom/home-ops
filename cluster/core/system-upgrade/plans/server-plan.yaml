@@ -31,4 +31,4 @@ spec:
       effect: "NoSchedule"
   upgrade:
     image: rancher/k3s-upgrade
-  channel: https://update.k3s.io/v1-release/channels/v1.23
+  channel: https://update.k3s.io/v1-release/channels/v1.24
