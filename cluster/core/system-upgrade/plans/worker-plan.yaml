@@ -11,7 +11,7 @@ metadata:
     k3s-upgrade: worker
 spec:
   concurrency: 1
-  channel: https://update.k3s.io/v1-release/channels/v1.23
+  channel: https://update.k3s.io/v1-release/channels/v1.24
   nodeSelector:
     matchExpressions:
       #- key: k3s-upgrade
