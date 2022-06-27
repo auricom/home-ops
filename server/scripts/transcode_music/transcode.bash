@@ -273,8 +273,8 @@ remove_absent_from_source()
         DIRECTORIES="$TRANSCODE_OUTPUT_DIR $TRANSCODE_DB"
         mapfile -t StringArray <<< "$DIRECTORIES"
         for val in "${StringArray[@]}"; do
-            cd $val
-                fd --type empty --exec-batch rmdir
+            cd "$val"
+            fd --type empty --exec-batch rmdir
         done
     fi
 }
