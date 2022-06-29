@@ -45,6 +45,40 @@ spec:
             password = "${SECRET_SHARRY_DB_PASSWORD}"
           }
 
+        # How files are stored.
+        files {
+          # The id of an enabled store from the `stores` array that should
+          # be used.
+          default-store = "minio"
+
+          # A list of possible file stores. Each entry must have a unique
+          # id. The `type` is one of: default-database, filesystem, s3.
+          #
+          # All stores with enabled=false are
+          # removed from the list. The `default-store` must be enabled.
+          stores = {
+            database =
+              { enabled = true
+                type = "default-database"
+              }
+
+            filesystem =
+              { enabled = false
+                type = "file-system"
+                directory = "/some/directory"
+              }
+
+            minio =
+              { enabled = false
+                type = "s3"
+                endpoint = "${SECRET_MINIO_ENDPOINT}"
+                access-key = "${SECRET_MINIO_ACCESS_KEY}"
+                secret-key = "${SECRET_MINIO_SECRET_KEY}"
+                bucket = "sharry"
+              }
+          }
+          ...
+        }
           webapp {
             # This is shown in the top right corner of the web application
             app-name = "Sharry"
