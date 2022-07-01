@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - export-job.yaml
   - helm-release.yaml
-  - volumes.yaml
+  - volume.yaml
