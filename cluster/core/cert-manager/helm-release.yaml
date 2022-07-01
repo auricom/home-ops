@@ -21,12 +21,8 @@ spec:
     crds: CreateReplace
     remediation:
       retries: 3
-  upgrade:
-    crds: CreateReplace
-    remediation:
-      retries: 3
   values:
-    installCRDs: true
+    installCRDs: false
     webhook:
       enabled: true
     extraArgs:
