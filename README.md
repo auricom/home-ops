@@ -22,7 +22,7 @@ flux bootstrap github \
   --version=latest \
   --owner=auricom \
   --repository=home-ops \
-  --path=cluster \
+  --path=cluster/base \
   --personal \
   --network-policy=false
 ```
