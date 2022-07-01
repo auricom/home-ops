@@ -15,11 +15,20 @@ spec:
         kind: HelmRepository
         name: rook-ceph-charts
         namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   dependsOn:
-    - name: rook-ceph
+    - name: rook-ceph-operator
+      namespace: rook-ceph
   values:
     monitoring:
       enabled: true
+      createPrometheusRules: true
     ingress:
       dashboard:
         ingressClassName: "nginx"
@@ -29,6 +38,10 @@ spec:
         tls:
           - hosts:
               - "rook.${SECRET_CLUSTER_DOMAIN}"
+    configOverride: |
+      [global]
+      bdev_enable_discard = true
+      bdev_async_discard = true
     cephClusterSpec:
       mgr:
         count: 1
@@ -108,6 +121,11 @@ spec:
           requests:
             cpu: "500m"
             memory: "100Mi"
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      name: csi-rbdplugin-snapclass
+      annotations:
+        k10.kasten.io/is-snapshot-class: "true"
     cephBlockPools:
       - name: replicapool
         spec:
