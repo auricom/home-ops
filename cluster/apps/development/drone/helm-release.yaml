@@ -36,6 +36,10 @@ spec:
       DRONE_SERVER_PROTO: https
       DRONE_SERVER_HOST: drone.${SECRET_CLUSTER_DOMAIN}
 
+    persistentVolume:
+      enabled: true
+      existingClaim: "drone-config"
+
     ingress:
       enabled: true
       className: "nginx"
