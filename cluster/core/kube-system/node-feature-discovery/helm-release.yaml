@@ -17,12 +17,12 @@ spec:
         namespace: flux-system
       interval: 5m
   install:
-    crds: CreateReplace
-  upgrade:
-    crds: CreateReplace
+    createNamespace: true
+    remediation:
+      retries: 5
   values:
     nodeFeatureRule:
-      createCRD: true
+      createCRD: false
     master:
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
