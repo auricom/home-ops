@@ -73,7 +73,6 @@ spec:
 
     persistence:
       enabled: true
-      size: 10Gi
       existingClaim: "gitea-config"
 
     service:
