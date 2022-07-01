@@ -34,10 +34,6 @@ spec:
       config:
         enabled: true
         existingClaim: qbittorrent-config
-      qbittorrent-cache:
-        enabled: true
-        existingClaim: qbittorrent-cache
-        mountPath: "/downloads"
       downloads:
         enabled: true
         type: nfs

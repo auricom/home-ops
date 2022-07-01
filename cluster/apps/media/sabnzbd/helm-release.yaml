@@ -34,7 +34,13 @@ spec:
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/downloads
         mountPath: /mnt/storage/downloads
-      usenet:
+      music-usenet:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/music/.usenet
+        mountPath: /mnt/storage/music/.usenet
+      video-usenet:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"

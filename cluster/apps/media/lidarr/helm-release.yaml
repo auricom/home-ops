@@ -40,16 +40,12 @@ spec:
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/music
         mountPath: /mnt/storage/music
-      qbittorrent-cache:
-        enabled: true
-        existingClaim: qbittorrent-cache
-        mountPath: "/downloads"
-      usenet:
+      downloads:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
-        path: /mnt/storage/video/.usenet
-        mountPath: /mnt/storage/video/.usenet
+        path: /mnt/storage/downloads
+        mountPath: /mnt/storage/downloads
 
     ingress:
       main:

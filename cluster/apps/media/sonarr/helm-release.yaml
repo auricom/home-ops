@@ -39,10 +39,6 @@ spec:
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/video
         mountPath: /mnt/storage/video
-      qbittorrent-cache:
-        enabled: true
-        existingClaim: qbittorrent-cache
-        mountPath: "/downloads"
 
     ingress:
       main:
