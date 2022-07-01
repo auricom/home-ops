@@ -21,7 +21,7 @@
 flux bootstrap github \
   --version=latest \
   --owner=auricom \
-  --repository=home-cluster \
+  --repository=home-ops \
   --path=cluster \
   --personal \
   --network-policy=false
