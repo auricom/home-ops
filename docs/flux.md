@@ -21,7 +21,7 @@ Install Flux into your cluster
 ```sh
 flux bootstrap github \
 --owner=auricom \
---repository=home-cluster \
+--repository=home-ops \
 --path=cluster/base \
 --personal \
 --private=false \

@@ -8,13 +8,13 @@
     ":separatePatchReleases",
     "docker:enableMajor",
     ":enablePreCommit",
-    "github>auricom/home-cluster//.github/renovate/autoMerge",
-    "github>auricom/home-cluster//.github/renovate/labels",
-    "github>auricom/home-cluster//.github/renovate/semanticCommits"
+    "github>auricom/home-ops//.github/renovate/autoMerge",
+    "github>auricom/home-ops//.github/renovate/labels",
+    "github>auricom/home-ops//.github/renovate/semanticCommits"
   ],
   "platform": "github",
   "username": "feisar-bot[bot]",
-  "repositories": ["auricom/home-cluster"],
+  "repositories": ["auricom/home-ops"],
   "assignees": ["auricom"],
   "onboarding": false,
   "requireConfig": false,
@@ -60,7 +60,7 @@
   "regexManagers": [
     {
       "description": "Process CRD dependencies",
-      "fileMatch": ["cluster/base-custom/crds/.+\\.ya?ml$"],
+      "fileMatch": ["cluster/configuration/crds/.+\\.ya?ml$"],
       "matchStrings": [
         // GitRepository where 'Git release/tag' matches 'Helm' version
         "registryUrl=(?<registryUrl>\\S+) chart=(?<depName>\\S+)\n.*?(?<currentValue>[^-\\s]*)\n",

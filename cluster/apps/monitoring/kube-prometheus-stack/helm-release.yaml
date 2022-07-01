@@ -146,7 +146,7 @@ spec:
       dashboards:
         default:
           kubernetes-custom:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temparatures.json
+            url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temparatures.json
             datasource: Prometheus
           # Ref: https://grafana.com/grafana/dashboards/2842
           ceph-cluster:
@@ -171,13 +171,13 @@ spec:
             url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/control-plane.json
             datasource: Prometheus
           home-assistant:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/home-assistant.json
+            url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/home-assistant.json
             datasource: Prometheus
           homelab-temperatures:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temperatures.json
+            url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temperatures.json
             datasource: Prometheus
           truenas:
-            url: https://raw.githubusercontent.com/auricom/home-cluster/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/truenas.json
+            url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/truenas.json
             datasource: Prometheus
           lidarr:
             url: https://raw.githubusercontent.com/k8s-at-home/grafana-dashboards/main/lidarr.json
