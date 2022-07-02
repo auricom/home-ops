@@ -212,8 +212,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  # annotations:
-  # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
   labels:
     app.kubernetes.io/instance: resilio-sync
     app.kubernetes.io/name: resilio-sync
@@ -225,7 +223,6 @@ spec:
     - hosts:
         - "resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}"
         - "resilio-sync-helene.${SECRET_CLUSTER_DOMAIN}"
-      secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
   rules:
     - host: "resilio-sync-claude.${SECRET_CLUSTER_DOMAIN}"
       http:

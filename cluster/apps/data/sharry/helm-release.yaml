@@ -151,4 +151,3 @@ spec:
         tls:
           - hosts:
               - "sharry.${SECRET_CLUSTER_DOMAIN}"
-            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"

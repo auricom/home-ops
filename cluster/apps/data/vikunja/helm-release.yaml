@@ -54,7 +54,6 @@ spec:
         tls:
           - hosts:
               - "vikunja.${SECRET_CLUSTER_DOMAIN}"
-            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
 
     additionalContainers:
       - name: api

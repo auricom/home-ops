@@ -90,8 +90,6 @@ spec:
       annotations:
         nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
         nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-        # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
       hosts:
         - host: "blackbox.${SECRET_CLUSTER_DOMAIN}"
           paths:
@@ -100,7 +98,6 @@ spec:
       tls:
         - hosts:
             - "blackbox.${SECRET_CLUSTER_DOMAIN}"
-          secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
 
   postRenderers:
     - kustomize:

@@ -30,9 +30,6 @@ spec:
 
     ingress:
       enabled: true
-      annotations:
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-        # traefik.ingress.kubernetes.io/router.middlewares: networking-buffering-medium@kubernetescrd
       hosts:
         - host: "pgadmin.${SECRET_CLUSTER_DOMAIN}"
           paths:
@@ -41,7 +38,6 @@ spec:
       tls:
         - hosts:
             - "pgadmin.${SECRET_CLUSTER_DOMAIN}"
-          secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
   postRenderers:
     - kustomize:
         patchesJson6902:

@@ -41,9 +41,6 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        #        annotations:
-        # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-        # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
         hosts:
           - host: "homer.${SECRET_CLUSTER_DOMAIN}"
             paths:
@@ -57,7 +54,6 @@ spec:
           - hosts:
               - "homer.${SECRET_CLUSTER_DOMAIN}"
               - "services.${SECRET_CLUSTER_DOMAIN}"
-            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
 
     addons:
       codeserver:
@@ -76,9 +72,6 @@ spec:
         ingress:
           enabled: true
           ingressClassName: "nginx"
-          # annotations:
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
           hosts:
             - host: "homer-config.${SECRET_CLUSTER_DOMAIN}"
               paths:
@@ -87,7 +80,6 @@ spec:
           tls:
             - hosts:
                 - "homer-config.${SECRET_CLUSTER_DOMAIN}"
-              secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
         volumeMounts:
           - name: config
             mountPath: /www/assets

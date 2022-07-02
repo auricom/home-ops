@@ -47,6 +47,5 @@ spec:
         - *host
       tls:
         enabled: true
-        secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
     grafana:
       enabled: false

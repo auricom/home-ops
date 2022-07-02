@@ -53,7 +53,6 @@ spec:
         tls:
           - hosts:
               - "freshrss.${SECRET_CLUSTER_DOMAIN}"
-            secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
 
     resources:
       requests:

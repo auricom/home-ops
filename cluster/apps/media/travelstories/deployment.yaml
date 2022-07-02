@@ -77,8 +77,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
     nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-    # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-    # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd, networking-buffering-small@kubernetescrd
   labels:
     app.kubernetes.io/instance: travelstories
     app.kubernetes.io/name: travelstories
@@ -100,4 +98,3 @@ spec:
   tls:
     - hosts:
         - "tdarr.${SECRET_CLUSTER_DOMAIN}"
-      secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"

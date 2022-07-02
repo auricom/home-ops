@@ -68,8 +68,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  # annotations:
-    # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
   labels:
     app.kubernetes.io/instance: uptime-kuma
     app.kubernetes.io/name: uptime-kuma
@@ -91,4 +89,4 @@ spec:
   tls:
     - hosts:
         - "uptime-kuma.${SECRET_CLUSTER_DOMAIN}"
-      secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
+      secretName:"${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
