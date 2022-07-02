@@ -45,7 +45,5 @@ spec:
       urlPath: k10
       hosts:
         - *host
-      tls:
-        enabled: true
     grafana:
       enabled: false
