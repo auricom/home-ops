@@ -38,7 +38,7 @@ spec:
 
     pod:
       # Must be Deployment, DaemonSet, or StatefulSet.
-      kind: DaemonSet
+      kind: Deployment
 
       env:
         - name: TZ
@@ -124,9 +124,7 @@ spec:
 
       session:
         redis:
-          enabled: true
-          enabledSecret: true
-          host: redis-master.data.svc.cluster.local
+          enabled: false
 
       storage:
         postgres:
