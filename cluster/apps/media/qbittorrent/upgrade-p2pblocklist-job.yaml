@@ -33,5 +33,5 @@ spec:
                   echo $QBITTORRENT_POD | grep qbittorrent
                   test $? -eq 0 && kubectl cp /tmp/ipfilter.dat media/$QBITTORRENT_POD:/config/ipfilter.dat
                   curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b4651e4f-5058-436b-a237-0df660e9de9e
-                  kubectl delete pod $QBITTORRENT_POD --namespace media
+                  kubectl rollout restart deployment qbittorrent --namespace media
           restartPolicy: Never
