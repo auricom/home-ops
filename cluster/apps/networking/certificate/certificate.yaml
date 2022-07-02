@@ -12,3 +12,4 @@ spec:
   dnsNames:
     - "${SECRET_CLUSTER_DOMAIN}"
     - "*.${SECRET_CLUSTER_DOMAIN}"
+  secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
