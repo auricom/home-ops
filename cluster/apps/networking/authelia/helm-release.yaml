@@ -150,10 +150,6 @@ spec:
         key: JWT_TOKEN
         value: "${SECRET_AUTHELIA_JWT_SECRET}"
         filename: JWT_TOKEN
-      redis:
-        key: REDIS_PASSWORD
-        value: "${SECRET_REDIS_PASSWORD}"
-        filename: REDIS_PASSWORD
       smtp:
         key: SMTP_PASSWORD
         value: "${SECRET_AUTHELIA_SMTP_PASSWORD}"
