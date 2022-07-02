@@ -100,7 +100,7 @@ spec:
             cpu: "15m"
             memory: "64Mi"
           limits:
-            memory: "60Mi"
+            memory: "128Mi"
         logcollector:
           requests:
             cpu: "100m"
