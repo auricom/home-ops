@@ -34,8 +34,9 @@ spec:
       persistence:
         storageClass: rook-ceph-block
     auth:
-      tokenAuth:
+      basicAuth:
         enabled: true
+        htpasswd: ${SECRET_K10_HTPASSWD}
     clusterName: k8s
     ingress:
       create: true
