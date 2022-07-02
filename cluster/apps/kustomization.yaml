@@ -8,4 +8,4 @@ resources:
   - media
   - monitoring
   - networking
-  - secret-reflector
+  #- secret-reflector
