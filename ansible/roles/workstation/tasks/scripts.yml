@@ -1,0 +1,14 @@
+---
+- name: scripts | create directory
+  ansible.builtin.file:
+    state: directory
+    path: "~/.local/scripts"
+
+- name: scripts | copy scripts
+  ansible.builtin.copy:
+    src: "scripts/{{ item }}"
+    dest: "~/.local/scripts"
+    mode: 0755
+  with_items:
+    - backup-local-usb-disk-one.bash
+    - backup-local-usb-disk-two.bash

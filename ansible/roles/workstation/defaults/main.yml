@@ -1,0 +1,42 @@
+fonts_dir: ~/.local/share/fonts
+icons_dir: ~/.local/share/icons
+newaita_iconset_url: "https://github.com/cbrnix/Newaita/archive/1.09.20a.tar.gz"
+nas_hostname: truenas
+mnt_dir: /mnt
+nas_dir: ~/NAS
+nfs_shares:
+  - {
+      src: "{{ nas_hostname }}:/mnt/storage/downloads",
+      path: "{{ mnt_dir }}/downloads",
+      link: "{{ nas_dir }}/downloads",
+    }
+  - {
+      src: "{{ nas_hostname }}:/mnt/storage/shared-documents",
+      path: "{{ mnt_dir }}/shared-documents",
+      link: "{{ nas_dir }}/shared-documents",
+    }
+  - {
+      src: "{{ nas_hostname }}:/mnt/storage/home/claude",
+      path: "{{ mnt_dir }}/home-claude",
+      link: "{{ nas_dir }}/home-claude",
+    }
+  - {
+      src: "{{ nas_hostname }}:/mnt/storage/home/helene",
+      path: "{{ mnt_dir }}/home-helene",
+      link: "{{ nas_dir }}/home-helene",
+    }
+  - {
+      src: "{{ nas_hostname }}:/mnt/storage/photo",
+      path: "{{ mnt_dir }}/photo",
+      link: "{{ nas_dir }}/photo",
+    }
+  - {
+      src: "{{ nas_hostname }}:/mnt/storage/music",
+      path: "{{ mnt_dir }}/music",
+      link: "/home/claude/Music",
+    }
+  - {
+      src: "{{ nas_hostname }}:/mnt/storage/video",
+      path: "{{ mnt_dir }}/video",
+      link: "/home/claude/Videos",
+    }

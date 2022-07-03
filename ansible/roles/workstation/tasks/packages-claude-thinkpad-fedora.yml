@@ -1,0 +1,14 @@
+---
+- name: packages-claude-thinkpad-fedora | dnf
+  ansible.builtin.dnf:
+    name:
+      - tlp
+      - wireguard-tools
+  become: true
+
+- name: packages-claude-thinkpad-fedora | tlp-ui
+  ansible.builtin.pip:
+    name:
+      - git+https://github.com/d4nj1/TLPUI.git
+    state: present
+  become: true

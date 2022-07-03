@@ -1,0 +1,9 @@
+homelab_homedir: "/mnt/{{ pool_name }}/home/homelab"
+backups_dir: "/mnt/{{ pool_name }}/backups/"
+telegraf_dir: "{{ homelab_homedir }}/telegraf"
+scripts_dir: "{{ homelab_homedir }}/scripts"
+certificates_dir: "{{ homelab_homedir }}/letsencrypt/{{ SECRET_DOMAIN }}"
+
+ping_ip: 192.168.8.1
+wg_interface: wg0-client
+dns_hostname: services.{{ SECRET_DOMAIN }}

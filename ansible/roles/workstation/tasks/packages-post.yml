@@ -1,0 +1,14 @@
+---
+- name: packages-post | modify resilio-sync service file
+  ansible.builtin.replace:
+    path: /usr/lib/systemd/user/resilio-sync.service
+    regexp: "multi-user"
+    replace: "default"
+  become: true
+
+- name: packages-post | activate resilio-sync service
+  ansible.builtin.systemd:
+    name: resilio-sync
+    scope: user
+    state: started
+    enabled: yes

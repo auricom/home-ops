@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: home-automation
+    namespace: home-automation
+stringData:
+    prometheus-token: ENC[AES256_GCM,data:XQS2cNao60Cw3oWPBG3qRs69u4ZhBB8qWm5s6z13CDomfcdfA60YSSU7Vtcdb8E7wnI2t/X3Kul8Vlt8evYv/Tkh5UN1oiqa+upFQ/tOlIHFmRfz1snE5XlREc/sB2FN8xUIDRdHObfwz9NcfEcrt0MP+1mXN1IUIA5BDAAFT05TALeUjdY3CTfht6idIFlqs3YN2uvfDYoq5nKIN4J3uN0rWJI46BD+FnmpE243ChM+Cn1NS2sa,iv:lcCmW8TASJHWgOjs9qRh1XaGqPpCHn9HkU+Ma+Iqyv0=,tag:bRNDK8TEyHIMZlixYRDGGw==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1hhurqwmfvl9m3vh3hk8urulfzcdsrep2ax2neazqt435yhpamu3qj20asg
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQWjZ1RG9QZnBQSUNNSHN4
+            MTdwMDlvaGk4NEVxdmdZOGR1QnpLNFkzOTNZCjhZeEloeWQzemp1cVJrbEpxbWJB
+            T3NXRkRxTU54MGxUbk45YTJoQkl2dWMKLS0tIFkzQ0hvQWdxK2NKQlVlNWhUODQ3
+            RDRiUkRFSVI4S29mdWRMbE9RNFhLQlUKcx+FKlWUqt5YOxIKlvNiexCarLnW3FXU
+            M+lPXuGDvjo2Pg5InhPCheuxSVxea85uRRmROTWWOfjMKNYyfMiXLw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2022-07-03T14:41:50Z"
+    mac: ENC[AES256_GCM,data:rCAXrXozuI+YJwCDMWQeMvzC3Aoa/Eb89AQEBbLeOQMp7z5p7VCuzaSP52vsW50ii/Rr+VjgDEhoyVSiRAw9IoqcQCjNFZfW6nbXyKZIQGgSfiDKg5DrZLsLOJEg5JUX9u8zzVB2VyIpuDAtDrZHgmvBq+t/gSncSNzb7UW2Aw4=,iv:nkSndVS3YbIGPLMvPWwjgfRL8L5Qac71Jls1OBvX3s8=,tag:nmCKDjXBURMtQpQ5WfjHSg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3

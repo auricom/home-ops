@@ -1,0 +1,17 @@
+---
+- name: Boostrap host to enable Ansible playbooks
+  hosts: all
+  become: true
+  become_user: root
+  vars:
+    python_pwd: /usr/bin/python
+    python_package: python3
+  tasks:
+    - name: Check for Python
+      raw: test -e {{ python_pwd }}
+      changed_when: false
+      failed_when: false
+      register: check_python
+    - name: Install Python
+      raw: pkg install -y {{ python_package }}
+      when: check_python.rc != 0

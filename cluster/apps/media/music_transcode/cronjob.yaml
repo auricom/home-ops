@@ -36,9 +36,9 @@ spec:
                 - |
                   #!/bin/bash
 
-                  curl --location raw.githubusercontent.com/auricom/home-ops/main/server/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
+                  curl --location raw.githubusercontent.com/auricom/home-ops/main/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
                   chmod a+x /tmp/transcode.bash
-                  curl --location raw.githubusercontent.com/auricom/home-ops/main/server/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
+                  curl --location raw.githubusercontent.com/auricom/home-ops/main/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
                   cd /tmp
                   ./transcode.bash -c
                   ./transcode.bash -r

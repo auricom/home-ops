@@ -1,0 +1,10 @@
+---
+- name: telegraf | clone git repository
+  ansible.builtin.git:
+    repo: https://github.com/samuelkadolph/truenas-telegraf
+    dest: "{{ telegraf_dir }}"
+
+- name: telegraf | copy configuration
+  ansible.builtin.template:
+    src: telegraf/telegraf.conf
+    dest: "{{ telegraf_dir }}/telegraf.conf"

@@ -1,0 +1,19 @@
+---
+- name: directories | create
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item }}"
+  loop:
+    - "{{ homelab_homedir }}/letsencrypt"
+    - "{{ telegraf_dir }}"
+    - "{{ backups_dir }}servers/{{ ansible_facts['nodename'] }}"
+    - "{{ scripts_dir }}"
+
+- name: directories | truenas
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item }}"
+  loop:
+    - "{{ backups_dir }}servers/coreelec.{{ SECRET_DOMAIN }}"
+    - "{{ backups_dir }}servers/opnsense.{{ SECRET_DOMAIN }}"
+  when: "main_nas == true"

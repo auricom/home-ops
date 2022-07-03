@@ -1,0 +1,65 @@
+---
+- name: repositories | enable the RPM Fusion repository
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: True
+  loop:
+    - https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+    - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm
+  become: true
+
+- name: repositories | enable copr repositories
+  ansible.builtin.command:
+    cmd: dnf copr enable -y {{ item.repo }}
+    creates: "{{ item.file }}"
+  loop:
+    - {
+        repo: "tomaszgasior/mushrooms",
+        file: "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:tomaszgasior:mushrooms.repo",
+      }
+  become: true
+  when: ansible_facts['nodename'] == "claude-fixe-fedora"
+
+- name: repositories | copy yum repo files
+  ansible.builtin.copy:
+    src: "yum/{{ item }}"
+    dest: "/etc/yum.repos.d/{{ item }}"
+  loop:
+    - vscodium.repo
+  become: true
+
+- name: repositories | resilio sync - import repository GPG key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://linux-packages.resilio.com/resilio-sync/key.asc
+  become: true
+
+- name: repositories | resilio sync - add repository
+  ansible.builtin.yum_repository:
+    name: rslsync
+    description: Resilio Sync Repository
+    baseurl: https://linux-packages.resilio.com/resilio-sync/rpm/$basearch
+    gpgcheck: yes
+  become: true
+
+- name: repositories | brave - check presence
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/brave-browser-rpm-release.s3.brave.com_x86_64_.repo
+  register: brave
+
+- name: repositories | brave - add repository
+  ansible.builtin.command:
+    cmd: dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
+    warn: false
+  args:
+    creates: /etc/yum.repos.d/brave-browser-rpm-release.s3.brave.com_x86_64_.repo
+  become: true
+  when: brave.stat.exists == False
+
+- name: repositories | brave - import asc
+  ansible.builtin.command:
+    cmd: rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+    warn: false
+  become: true
+  when: brave.stat.exists == False

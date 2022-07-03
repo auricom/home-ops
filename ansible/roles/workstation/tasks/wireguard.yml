@@ -1,0 +1,6 @@
+---
+- name: wireguard | copy wireguard configuration
+  ansible.builtin.copy:
+    src: wireguard/{{ ansible_facts['nodename'] }}.conf
+    dest: ~/wireguard.conf
+    mode: 0600

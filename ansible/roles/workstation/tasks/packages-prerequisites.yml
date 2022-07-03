@@ -1,0 +1,18 @@
+---
+- name: packages-prerequisites | clone homebrew GitHub repo
+  ansible.builtin.git:
+    repo: "https://github.com/Homebrew/brew"
+    dest: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/Homebrew"
+    version: "master"
+
+
+- name: packages-prerequisites | create bin directory for homebrew
+  ansible.builtin.file:
+    path: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/bin"
+    state: directory
+
+- name: packages-prerequisites | create a symbolic link for brew
+  ansible.builtin.file:
+    src: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/Homebrew/bin/brew"
+    dest: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/bin/brew"
+    state: link

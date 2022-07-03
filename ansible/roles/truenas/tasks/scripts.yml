@@ -1,0 +1,25 @@
+---
+- name: scripts | copy scripts
+  ansible.builtin.copy:
+    src: "scripts/{{ item }}"
+    dest: "{{ scripts_dir }}/{{ item }}"
+    mode: 0755
+  loop:
+    - certificates_deploy.py
+    - snapshots_clearempty.py
+    - snapshots_prune.py
+    - telegraf_hddtemp.bash
+
+- name: scripts | template scripts
+  ansible.builtin.template:
+    src: "scripts/{{ item.name }}"
+    dest: "{{ scripts_dir }}/{{ item.name }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { name: "backupconfig_cloudsync_pre.bash", mode: "0775" }
+    - { name: "certificates_deploy.bash", mode: "0775" }
+    - { name: "certificates_deploy.conf", mode: "0664" }
+    - { name: "snapshots_prune.sh", mode: "0775" }
+    - { name: "report_pools.sh", mode: "0775" }
+    - { name: "report_smart.sh", mode: "0775" }
+    - { name: "report_ups.sh", mode: "0775" }

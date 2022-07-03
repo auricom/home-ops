@@ -1,0 +1,9 @@
+---
+- ansible.builtin.include_tasks: directories.yml
+
+- ansible.builtin.include_tasks: scripts.yml
+
+- ansible.builtin.include_tasks: telegraf.yml
+
+- ansible.builtin.include_tasks: wireguard.yml
+  when: "main_nas == false"

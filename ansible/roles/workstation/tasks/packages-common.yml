@@ -1,0 +1,99 @@
+---
+- name: packages-common | dnf
+  ansible.builtin.dnf:
+    name:
+      - codium
+      - mpv
+      - resilio-sync
+      - gnome-tweak-tool
+      - la-capitaine-cursor-theme
+      - git
+      - fish
+      - alacritty
+      - redhat-rpm-config
+      - python3-devel
+      - python3-virtualenv
+      - ffmpeg-libs
+      - nano
+      - nfs-utils
+      - libgtop2-devel
+      - fuse-exfat
+      - exfat-utils
+      - openssl
+      - openssl-devel
+      - libacl-devel
+      - gcc-c++
+      - picard
+      - pinta
+      - calibre
+      - mediawriter
+      - hugo
+      - stress
+      - vlc
+      - p7zip
+      - p7zip-plugins
+      - lsd
+      - bat
+      - fzf
+      - fd-find
+      - remmina
+      - yp-tools
+      - ffmpeg
+      - deadbeef
+      - nmap
+      - jq
+      - gnupg
+      - steam
+      - npm
+      - ShellCheck
+      - gnome-extensions-app
+      - neovim
+      - brave-browser
+      - starship
+      - tmux
+      - cawbird
+      - age
+    state: present
+    update_cache: yes
+  become: true
+
+- name: packages-common | python
+  ansible.builtin.pip:
+    name:
+      - borgbackup
+      - yt-dlp
+      - s-tui
+      - pylint
+      - pre-commit
+      - comictagger
+    state: present
+    extra_args: --user
+
+- name: packages-common | flatpak
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - https://dl.flathub.org/repo/appstream/com.borgbase.Vorta.flatpakref
+    - https://dl.flathub.org/repo/appstream/com.discordapp.Discord.flatpakref
+    - https://dl.flathub.org/repo/appstream/com.bitwarden.desktop.flatpakref
+    - https://dl.flathub.org/repo/appstream/net.mediaarea.MediaInfo.flatpakref
+    - https://dl.flathub.org/repo/appstream/net.cozic.joplin_desktop.flatpakref
+    - https://dl.flathub.org/repo/appstream/uk.co.ibboard.cawbird.flatpakref
+  become: true
+
+- name: packages-common | brew
+  community.general.homebrew:
+    name:
+      - minio/stable/mc
+      - kubectl
+      - helm
+      - kustomize
+      - fluxcd/tap/flux
+      - sops
+      - gh
+      - derailed/popeye/popeye
+      - chezmoi
+    path: /home/{{ lookup('env', 'USER') }}/.linuxbrew/bin
+    state: present
+    update_homebrew: yes

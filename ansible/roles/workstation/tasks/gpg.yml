@@ -1,0 +1,13 @@
+---
+- name: gpg | create directory
+  ansible.builtin.file:
+    state: directory
+    path: ~/.gnupg
+    mode: 0700
+
+# https://github.com/drduh/YubiKey-Guide#using-keys
+- name: gpg | get gpg configuration
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/drduh/config/master/gpg.conf
+    dest: ~/.gnupg/gpg.conf
+    mode: 0600

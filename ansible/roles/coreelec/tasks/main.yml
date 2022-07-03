@@ -1,0 +1,8 @@
+---
+- ansible.builtin.include_tasks: backup.yml
+  tags:
+    - backup
+
+- ansible.builtin.include_tasks: nfs.yml
+  tags:
+    - nfs

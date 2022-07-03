@@ -1,0 +1,27 @@
+---
+- name: system | disable password sudo
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%wheel"
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+    validate: visudo -cf %s
+  become: true
+
+- name: system | remove old unused kernels
+  ansible.builtin.lineinfile:
+    dest: /etc/yum.conf
+    state: present
+    line: "installonly_limit=3"
+    create: true
+  become: true
+
+- name: system | get better download speed with DNF
+  ansible.builtin.blockinfile:
+    path: /etc/dnf/dnf.conf
+    block: |
+      defaultyes=True
+      deltarpm=True
+      install_weak_deps=False
+      max_parallel_downloads={{ ansible_processor_vcpus | default('8') }}
+  become: true

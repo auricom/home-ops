@@ -1,0 +1,6 @@
+---
+root_path: /storage
+nfs_shares:
+  - music
+  - photo
+  - video

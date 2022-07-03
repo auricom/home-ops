@@ -1,0 +1,56 @@
+---
+- ansible.builtin.include_tasks: system.yml
+  tags:
+    - system
+
+- ansible.builtin.include_tasks: repositories.yml
+  tags:
+    - packages
+
+- ansible.builtin.include_tasks: packages-prerequisites.yml
+  tags:
+    - packages
+
+- ansible.builtin.include_tasks: packages-common.yml
+  tags:
+    - packages
+
+- ansible.builtin.include_tasks: packages-claude-fixe-fedora.yml
+  tags:
+    - packages
+  when: ansible_facts['nodename'] == "claude-fixe-fedora"
+
+- ansible.builtin.include_tasks: packages-claude-thinkpad-fedora.yml
+  tags:
+    - packages
+  when: ansible_facts['nodename'] == "claude-thinkpad-fedora"
+
+- ansible.builtin.include_tasks: packages-post.yml
+  tags:
+    - packages
+
+- ansible.builtin.include_tasks: chezmoi.yml
+  tags:
+    - chezmoi
+
+- ansible.builtin.include_tasks: gpg.yml
+  tags:
+    - gpg
+
+- ansible.builtin.include_tasks: shell.yml
+  tags:
+    - shell
+
+- ansible.builtin.include_tasks: gnome.yml
+  tags:
+    - gnome
+
+- ansible.builtin.include_tasks: nfs.yml
+  tags:
+    - nfs
+  when: ansible_facts['nodename'] == "claude-fixe-fedora"
+
+- ansible.builtin.include_tasks: wireguard.yml
+  tags:
+    - wireguard
+  when: ansible_facts['nodename'] == "claude-thinkpad-fedora"

@@ -27,25 +27,20 @@ flux bootstrap github \
   --network-policy=false
 ```
 
-## SOPS secret from GPG key
+## SOPS secret from age key
 
 ```bash
-gpg \
-  --export-secret-keys \
-  --armor <GPG_KEY_ID> | \
-  kubectl create secret generic sops-gpg \
-  --namespace=flux-system \
-  --from-file=sops.asc=/dev/stdin
+age-keygen -o $HOME/sops/age/key.txt
+cat $HOME/sops/age/key.txt |
+kubectl create secret generic sops-age \
+--namespace=flux-system \
+--from-file=$HOME/sops/age/key.txt=/dev/stdin
 ```
 
 ## Encrypt kubernetes resources with sops binary
 
 ```bash
-sops \
-  --encrypt \
-  --pgp=<GPG_KEY_ID> \
-  --encrypted-regex '^(data|stringData)$' \
-  --in-place <FILE_PATH>
+sops --encrypt --in-place <FILE_PATH>
 ```
 
 ## Install pre-commit hooks

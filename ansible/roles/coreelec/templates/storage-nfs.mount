@@ -1,0 +1,16 @@
+ #====================================================
+[Unit]
+Description=TrueNAS nfs share {{ item }}
+Requires=network-online.service
+After=network-online.service
+Before=kodi.service
+
+[Mount]
+What=truenas:/mnt/storage/{{ item }}
+Where=/storage/mnt/{{ item }}
+Options=
+Type=nfs
+
+[Install]
+WantedBy=multi-user.target
+#====================================================

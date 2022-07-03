@@ -1,0 +1,7 @@
+---
+alacritty:
+  font_size: 9.0
+  window_columns: 100
+  window_lines: 28
+remmina:
+  font_size: 9

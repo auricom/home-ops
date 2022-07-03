@@ -1,0 +1,63 @@
+---
+- name: nfs | create root directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ mnt_dir }}"
+    mode: 0777
+  become: true
+
+- name: nfs | create directories
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item.path }}"
+  loop: "{{ nfs_shares }}"
+  become: true
+
+- name: nfs | mount shares
+  ansible.builtin.mount:
+    state: present
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+    fstype: nfs4
+    opts: _netdev
+  with_items: "{{ nfs_shares }}"
+  become: true
+
+- name: nfs | create links dir
+  ansible.builtin.file:
+    state: directory
+    path: "{{ nas_dir }}"
+
+- name: nfs | stat music folder
+  ansible.builtin.stat:
+    path: ~/Music
+  register: music
+
+- name: nfs | remove music folder
+  file:
+    path: ~/Music
+    state: absent
+  when: music.stat.isdir is defined and music.stat.isdir
+  
+- name: nfs | stat videos folder
+  ansible.builtin.stat:
+    path: ~/Videos
+  register: videos
+
+- name: nfs | remove videos folder
+  file:
+    path: ~/Videos
+    state: absent
+  when: videos.stat.isdir is defined and videos.stat.isdir
+
+- name: nfs | stat music folder
+  ansible.builtin.stat:
+    path: ~/Music
+  register: music
+
+- name: nfs | create links
+  ansible.builtin.file:
+    state: link
+    src: "{{ item.path }}"
+    dest: "{{ item.link }}"
+  with_items: "{{ nfs_shares }}"

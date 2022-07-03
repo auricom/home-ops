@@ -1,0 +1,6 @@
+---
+- name: shell | make Fish default shell
+  ansible.builtin.user:
+    name: claude
+    shell: /usr/bin/fish
+  become: true

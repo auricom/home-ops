@@ -1,0 +1,19 @@
+---
+- name: nfs | create directories
+  ansible.builtin.file:
+    path: "{{ root_path }}/mnt/{{ item }}"
+    state: directory
+  loop: "{{ nfs_shares }}"
+
+- name: nfs | create system.d services
+  ansible.builtin.template:
+    src: "storage-nfs.mount"
+    dest: "/storage/.config/system.d/storage-mnt-{{ item }}.mount"
+  loop: "{{ nfs_shares }}"
+
+- name: nfs | activate system.d services
+  ansible.builtin.systemd:
+    name: storage-mnt-{{ item }}.mount
+    state: started
+    enabled: yes
+  loop: "{{ nfs_shares }}"

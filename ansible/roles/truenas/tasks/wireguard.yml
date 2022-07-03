@@ -1,0 +1,17 @@
+---
+- name: wireguard | configuration
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - {
+        src: "wireguard/{{ ansible_facts['nodename'] }}.conf",
+        dest: "{{ homelab_homedir }}/{{ wg_interface }}.conf",
+        mode: 400,
+      }
+    - {
+        src: "wireguard/ip-check.bash",
+        dest: "{{ homelab_homedir }}/wireguard-ip-check.bash",
+        mode: 700,
+      }

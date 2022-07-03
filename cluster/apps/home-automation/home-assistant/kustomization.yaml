@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - helm-release.yaml
   - volume.yaml
-  - token.yaml
+  - token.sops.yaml
   - podmonitor.yaml

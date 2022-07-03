@@ -1,0 +1,24 @@
+kind: Secret
+SECRET_DOMAIN: ENC[AES256_GCM,data:n+Lk4Mw+/akb1XA=,iv:5kXTjxflpwZM3vlkZde4S8O9RM8V0Ij5zHhmt67IKXg=,tag:AXQguN0ZVM89qpNQDXDKXA==,type:str]
+SECRET_CLUSTER_DOMAIN: ENC[AES256_GCM,data:nzhB4YHDYvQwTjRdTUGj,iv:emxp70PPzGPJP2x3LlCRRzh0gTNohnvI9Nr+f+PFZwo=,tag:m44ScVH/9hNxiYRdVx2xrA==,type:str]
+SECRET_EMAIL_DOMAIN: ENC[AES256_GCM,data:Xu0RNCdH+AUHpoq2c9Q=,iv:RxBNXZU2tXqv78Orkf/aWTrKVTHVDurnX/YldvNRl/o=,tag:DJZk/5QAnUUzeEwsRidUCQ==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1hhurqwmfvl9m3vh3hk8urulfzcdsrep2ax2neazqt435yhpamu3qj20asg
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0dGgya0lVNUtvMEhmWFpm
+            dE8wdkppSEZiMjVteS9pZkxFaUltQ0VlUzNFCk1oVzVHTVIxVnIvL21YemtZVmJz
+            a3lmMnJaNGI2NXlUKzduS1ZVa1o5amcKLS0tICtLS2pRZjk4U285TzJnV0J3MUkw
+            c3JkOFZzYnpINjQ5QnNkaE9IYUdXL3MKsBelDv/z5nTYC6/1Zm8kmzqEoLBVPnhy
+            v0v/6n1GksmzslbNdKhy+xtxHYrqouhc2P4hNi0R8p8u76RXERN5fg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2022-07-03T14:39:29Z"
+    mac: ENC[AES256_GCM,data:Ny+6wcVbhfKt3lrB8mJTH29VS0ikuTBvU4Rf7dSXVWx/8y/RB+NlhY8Ul9frxH9J0QxCB3sKw0ur3OLg5FS+cuDa8QjO0MLgSDLcleHDwF7t2uiKX1RPMR1uvAlJzD/c9Meord+xfHv1XSjs80mPXuApr03o+pV1pSpf/0XgntY=,iv:Uq3+LEvQAoH1O0EYFX/gxuaIEjycPbik/Etdhpz8h2k=,tag:Btvd9va/CmOY6ruYXvdPVQ==,type:str]
+    pgp: []
+    unencrypted_regex: ^(kind)$
+    version: 3.7.3

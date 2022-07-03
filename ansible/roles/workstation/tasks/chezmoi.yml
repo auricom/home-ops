@@ -1,0 +1,15 @@
+---
+- name: configuration | include vars
+  ansible.builtin.include_vars:
+    file: vars/{{ ansible_facts['nodename'] }}.yml
+
+- name: configuration | create chezmoi directory
+  ansible.builtin.file:
+    state: directory
+    path: ~/.config/chezmoi
+
+- name: configuration | templating chezmoi.toml
+  ansible.builtin.template:
+    src: chezmoi.toml.j2
+    dest: ~/.config/chezmoi/chezmoi.toml
+    mode: 0600

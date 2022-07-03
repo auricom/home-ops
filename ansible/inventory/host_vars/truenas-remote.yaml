@@ -1,0 +1,3 @@
+main_nas: false
+pool_name: vol1
+snapshots_interval: "daily:14,weekly:12,monthly:12,yearly:3"
