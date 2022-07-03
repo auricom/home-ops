@@ -25,9 +25,6 @@ spec:
   values:
     global:
       nameOverride: *app
-    controller:
-      replicas: 3
-      strategy: RollingUpdate
     image:
       repository: ghcr.io/k8s-at-home/theme-park
       tag: v1.9.6
@@ -48,13 +45,6 @@ spec:
         tls:
           - hosts:
               - *host
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
     resources:
       requests:
         cpu: 10m
