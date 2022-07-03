@@ -58,9 +58,9 @@ spec:
               volumeMounts:
                 - name: secret
                   mountPath: /opt/id_rsa
-                  subPath: deployment-rsa-priv-key
+                  subPath: deployment_rsa_priv_key
           volumes:
             - name: secret
               secret:
-                secretName: drone-pipelines
+                secretName: bookstack-secrets
           restartPolicy: Never
