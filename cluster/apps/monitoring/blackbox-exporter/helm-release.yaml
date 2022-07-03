@@ -8,16 +8,29 @@ spec:
   interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: prometheus-blackbox-exporter
       version: 5.8.2
       sourceRef:
         kind: HelmRepository
         name: prometheus-community-charts
         namespace: flux-system
-      interval: 5m
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
+    fullnameOverride: blackbox-exporter
+
+    image:
+      repository: quay.io/prometheus/blackbox-exporter
     allowIcmp: true
+
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: "blackbox-exporter"
 
     config:
       modules:
@@ -30,8 +43,8 @@ spec:
           prober: http
           timeout: 30s
           http:
-            valid_http_versions: ["HTTP/1.0", "HTTP/1.1", "HTTP/2.0"]
-            no_follow_redirects: false
+            valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+            follow_redirects: true
             preferred_ip_protocol: "ip4"
         tcp_connect:
           prober: tcp
@@ -45,22 +58,37 @@ spec:
         interval: 2m
         scrapeTimeout: 30s
       targets:
-        - name: truenas
+        - module: http_2xx
+          name: opnsense-http
+          url: "https://opnsense.${SECRET_DOMAIN}"
+        - module: http_2xx
+          name: truenas-http
+          url: "https://truenas.${SECRET_DOMAIN}"
+        - module: http_2xx
+          name: truenas-remote-http
+          url: "https://truenas-remote.${SECRET_DOMAIN}"
+        - name: truenas-icmp
           url: "${LOCAL_LAN_TRUENAS}"
           module: icmp
-        # - name: truenas-remote
-        #   url: "${LOCAL_LAN_TRUENAS_REMOTE}"
-        #   module: icmp
-        - name: k3s-server
+        - name: truenas-remote-icmp
+          url: "${LOCAL_LAN_TRUENAS_REMOTE}"
+          module: icmp
+        - name: openmediavault-icmp
+          url: "${LOCAL_LAN_OPENMEDIAVAULT}"
+          module: icmp
+        - name: coreelec-icmp
+          url: "${LOCAL_LAN_COREELEC}"
+          module: icmp
+        - name: k3s-master-icmp
           url: "${LOCAL_LAN_K3SSERVER}"
           module: icmp
-        - name: k3s-worker1
+        - name: k3s-worker1-icmp
           url: "${LOCAL_LAN_K3SWORKER1}"
           module: icmp
-        - name: k3s-worker2
+        - name: k3s-worker2-icmp
           url: "${LOCAL_LAN_K3SWORKER2}"
           module: icmp
-        - name: k3s-worker3
+        - name: k3s-worker3-icmp
           url: "${LOCAL_LAN_K3SWORKER3}"
           module: icmp
 
@@ -70,13 +98,30 @@ spec:
         app: prometheus-operator
         release: prometheus
       rules:
-        - alert: HostDown
-          expr: probe_success == 0
-          for: 10m
+        - alert: BlackboxSslCertificateWillExpireSoon
+          expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 3
+          for: 15m
           labels:
             severity: critical
           annotations:
-            message: The host {{"{{ $labels.target }}"}} is currently unreachable
+            description: |-
+              The SSL certificate for {{"{{ $labels.target }}"}} will expire in less than 3 days
+        - alert: BlackboxSslCertificateExpired
+          expr: probe_ssl_earliest_cert_expiry - time() <= 0
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            description: |-
+              The SSL certificate for {{"{{ $labels.target }}"}} has expired
+        - alert: BlackboxProbeFailed
+          expr: probe_success == 0
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            description: |-
+              The host {{"{{ $labels.target }}"}} is currently unreachable
         - alert: SlowResponseTime
           annotations:
             message: The response time for {{"{{ $labels.target }}"}} has been greater than 30 seconds for 5 minutes.
@@ -87,6 +132,7 @@ spec:
 
     ingress:
       enabled: true
+      className: nginx
       annotations:
         nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
         nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
@@ -98,14 +144,3 @@ spec:
       tls:
         - hosts:
             - "blackbox.${SECRET_CLUSTER_DOMAIN}"
-
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              kind: Ingress
-              name: blackbox-exporter-prometheus-blackbox-exporter
-            patch:
-              - op: add
-                path: /spec/ingressClassName
-                value: nginx

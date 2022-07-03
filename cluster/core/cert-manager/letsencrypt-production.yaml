@@ -12,7 +12,7 @@ spec:
     solvers:
       - dns01:
           webhook:
-            groupName: "${SECRET_CLUSTER_DOMAIN_ROOT}"
+            groupName: "${SECRET_DOMAIN}"
             solverName: ovh
             config:
               endpoint: ovh-eu

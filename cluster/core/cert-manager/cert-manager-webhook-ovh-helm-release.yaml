@@ -17,4 +17,4 @@ spec:
         namespace: flux-system
       interval: 1440m
   values:
-    groupName: "${SECRET_CLUSTER_DOMAIN_ROOT}"
+    groupName: "${SECRET_DOMAIN}"

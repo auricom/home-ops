@@ -49,7 +49,7 @@ spec:
       - ingress
     txtOwnerId: "default"
     domainFilters:
-      - "${SECRET_CLUSTER_DOMAIN_ROOT}"
+      - "${SECRET_DOMAIN}"
     serviceMonitor:
       enabled: true
     resources:

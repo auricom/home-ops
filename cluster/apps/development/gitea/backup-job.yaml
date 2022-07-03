@@ -69,7 +69,7 @@ spec:
                             else
                                 echo "INFO: clone $org/$repo..."
                                 cd $WORK_DIR/$org
-                                git clone git@gitea.${SECRET_CLUSTER_DOMAIN_ROOT}:$org/$repo.git
+                                git clone git@gitea.${SECRET_DOMAIN}:$org/$repo.git
                                 test $? -ne 0 && exit 1
                             fi
                         done

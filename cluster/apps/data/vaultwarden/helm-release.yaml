@@ -31,7 +31,7 @@ spec:
       SIGNUPS_ALLOWED: "false"
       WEBSOCKET_ENABLED: "true"
       SMTP_HOST: smtp.fastmail.com
-      SMTP_FROM: vaultwarden@${SECRET_CLUSTER_DOMAIN_ROOT}
+      SMTP_FROM: vaultwarden@${SECRET_DOMAIN}
       SMTP_FROM_NAME: vaultwarden
       SMTP_PORT: 587
       SMTP_SSL: "true"
@@ -54,7 +54,7 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         annotations:
-          external-dns.alpha.kubernetes.io/target: "services.${SECRET_CLUSTER_DOMAIN_ROOT}."
+          external-dns.alpha.kubernetes.io/target: "services.${SECRET_DOMAIN}."
           external-dns/is-public: "true"
         hosts:
           - host: "vaultwarden.${SECRET_CLUSTER_DOMAIN}"
