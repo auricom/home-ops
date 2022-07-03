@@ -76,9 +76,6 @@ spec:
         - name: openmediavault-icmp
           url: "${LOCAL_LAN_OPENMEDIAVAULT}"
           module: icmp
-        - name: coreelec-icmp
-          url: "${LOCAL_LAN_COREELEC}"
-          module: icmp
         - name: k3s-master-icmp
           url: "${LOCAL_LAN_K3SSERVER}"
           module: icmp
