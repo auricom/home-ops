@@ -9,4 +9,3 @@ resources:
   - monitoring
   - networking
   - rook-ceph
-  #- secret-reflector
