@@ -27,5 +27,4 @@ resources:
   - runix-charts.yaml
   - stakater-charts.yaml
   - traefik-charts.yaml
-  - twuni-charts.yaml
   - weaveworks-kured-charts.yaml
