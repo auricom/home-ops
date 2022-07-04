@@ -2,34 +2,49 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: vaultwarden
+  name: &app vaultwarden
   namespace: data
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: vaultwarden
-      version: 5.0.0
+      chart: kah-common-chart
+      version: 1.1.2
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
         namespace: flux-system
-      interval: 5m
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
+    global:
+      nameOverride: *app
+
     image:
-      repository: vaultwarden/server
+      repository: ghcr.io/k8s-at-home/vaultwarden
       tag: 1.25.0
-      pullPolicy: IfNotPresent
+
+    strategy:
+      type: Recreate
 
     env:
+      DATA_FOLDER: "data"
+      ICON_CACHE_FOLDER: "data/icon_cache"
+      ATTACHMENTS_FOLDER: "data/attachments"
       DOMAIN: "https://vaultwarden.${SECRET_CLUSTER_DOMAIN}"
       ADMIN_TOKEN: ${SECRET_VAULTWARDEN_ADMIN_TOKEN}
       DATABASE_URL: ${SECRET_VAULTWARDEN_DB_URL}
       TZ: "${TIMEZONE}"
-      DATA_FOLDER: "data"
       SIGNUPS_ALLOWED: "false"
       WEBSOCKET_ENABLED: "true"
+      WEBSOCKET_ADDRESS: 0.0.0.0
+      WEBSOCKET_PORT: 3012
       SMTP_HOST: smtp.fastmail.com
       SMTP_FROM: vaultwarden@${SECRET_DOMAIN}
       SMTP_FROM_NAME: vaultwarden
@@ -38,16 +53,20 @@ spec:
       SMTP_USERNAME: ${SECRET_SMTP_USERNAME}
       SMTP_PASSWORD: ${SECRET_VAULTWARDEN_SMTP_PASSWORD}
 
-    persistence:
-      config:
-        enabled: true
-        existingClaim: vaultwarden-data
-
     service:
       main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: tcp
+        ports:
+          http:
+            port: 80
+          websocket:
+            enabled: true
+            port: 3012
+
+    persistence:
+      data:
+        enabled: true
+        existingClaim: vaultwarden-data
+        mountPath: /data
 
     ingress:
       main:
@@ -57,15 +76,22 @@ spec:
           external-dns.alpha.kubernetes.io/target: "services.${SECRET_DOMAIN}."
           external-dns/is-public: "true"
         hosts:
-          - host: "vaultwarden.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
-              - path: /notifications/hub/negotiate
-                pathType: Prefix
               - path: /notifications/hub
                 pathType: Prefix
-                servicePort: 3012
+              - path: /notifications/hub/negotiate
+                pathType: Prefix
+                service:
+                  port: 3012
         tls:
           - hosts:
-              - "vaultwarden.${SECRET_CLUSTER_DOMAIN}"
+              - *host
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 2Gi
