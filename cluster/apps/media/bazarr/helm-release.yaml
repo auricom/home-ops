@@ -2,25 +2,33 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: bazarr
+  name: &app bazarr
   namespace: media
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: bazarr
-      version: 10.5.2
+      chart: kah-common-chart
+      version: 1.1.2
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
         namespace: flux-system
-      interval: 5m
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
+    global:
+      nameOverride: *app
+
     image:
       repository: ghcr.io/k8s-at-home/bazarr
       tag: v1.1.0
-      pullPolicy: IfNotPresent
 
     env:
       TZ: "${TIMEZONE}"
@@ -43,9 +51,9 @@ spec:
 
     service:
       main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http
+        ports:
+          http:
+            port: 6767
 
     ingress:
       main:
@@ -54,20 +62,19 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd, networking-buffering-small@kubernetescrd
+
         hosts:
-          - host: "bazarr.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - "bazarr.${SECRET_CLUSTER_DOMAIN}"
+              - *host
 
     resources:
       requests:
-        memory: 500Mi
-        cpu: 500m
+        cpu: 100m
+        memory: 256Mi
       limits:
-        memory: 1500Mi
+        memory: 1Gi
