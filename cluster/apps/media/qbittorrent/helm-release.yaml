@@ -2,28 +2,38 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: qbittorrent
+  name: &app qbittorrent
   namespace: media
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: qbittorrent
-      version: 13.4.3
+      chart: kah-common-chart
+      version: 1.1.2
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
         namespace: flux-system
-      interval: 5m
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
+    global:
+      nameOverride: *app
+
     image:
       repository: ghcr.io/k8s-at-home/qbittorrent
       tag: v4.4.3.1
-      pullPolicy: IfNotPresent
 
     env:
       TZ: "${TIMEZONE}"
+      QBITTORRENT__PORT: &port 8080
+      QBITTORRENT__BT_PORT: &port-bt 50413
 
     podSecurityContext:
       runAsUser: 568
@@ -34,6 +44,7 @@ spec:
       config:
         enabled: true
         existingClaim: qbittorrent-config
+        mountPath: /config
       downloads:
         enabled: true
         type: nfs
@@ -42,18 +53,19 @@ spec:
         mountPath: /mnt/storage/downloads
 
     service:
+      main:
+        ports:
+          http:
+            port: *port
       bittorrent:
         enabled: true
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: tcp
         type: LoadBalancer
         externalIPs:
-          - ${CLUSTER_LB_QBITTORRENT}
+          - "${CLUSTER_LB_QBITTORRENT}"
         ports:
           bittorrent:
-            port: 50413
-            name: bittorrent
+            enabled: true
+            port: *port-bt
             protocol: TCP
             targetPort: 6881
         externalTrafficPolicy: Local
@@ -62,18 +74,22 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        # annotations:
-        #  traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        annotations:
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
+
         hosts:
-          - host: "qbittorrent.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - "qbittorrent.${SECRET_CLUSTER_DOMAIN}"
+              - *host
 
     resources:
       requests:
-        memory: 4Gi
         cpu: 500m
+        memory: 4Gi
+      limits:
+        memory: 6Gi
