@@ -1,0 +1,102 @@
+---
+- hosts: localhost
+  become: false
+  gather_facts: true
+  any_errors_fatal: true
+  vars:
+    alacritty:
+      font_size: 11.0
+      window_columns: 150
+      window_lines: 40
+  tasks:
+    - name: system | disable password sudo
+      ansible.builtin.lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: "^%admin"
+        line: "%admin ALL=(ALL) NOPASSWD: ALL"
+        validate: visudo -cf %s
+      become: true
+    - name: chezmoi | create chezmoi directory
+      ansible.builtin.file:
+        state: directory
+        path: ~/.config/chezmoi
+    - name: chezmoi | templating chezmoi.toml
+      ansible.builtin.blockinfile:
+        path: ~/.config/chezmoi/chezmoi.toml
+        create: yes
+        block: |
+          [data]
+            alacritty_font_size = 11.0
+            alaritty_window_columns = 150
+            alacritty_window_lines = 40
+    - name: gnome | create directories
+      ansible.builtin.file:
+        state: directory
+        path: ~/.local/share/fonts
+    - name: gnome | download nerd fonts
+      ansible.builtin.get_url:
+        url: "{{ item }}"
+        dest: ~/.local/share/fonts
+      loop:
+        - https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Retina/complete/Fira%20Code%20Retina%20Nerd%20Font%20Complete.ttf
+        - https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Retina/complete/Fira%20Code%20Retina%20Nerd%20Font%20Complete%20Mono.ttf
+    - name: brew | clone homebrew GitHub repo
+      ansible.builtin.git:
+        repo: "https://github.com/Homebrew/brew"
+        dest: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/Homebrew"
+        version: "master"
+    - name: brew | create bin directory for homebrew
+      ansible.builtin.file:
+        path: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/bin"
+        state: directory
+    - name: brew | create a symbolic link for brew
+      ansible.builtin.file:
+        src: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/Homebrew/bin/brew"
+        dest: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/bin/brew"
+        state: link
+    - name: shell | make Fish default shell
+      ansible.builtin.user:
+        name: "{{ lookup('env', 'USER') }}"
+        shell: /usr/bin/fish
+      become: true
+    - name: vscodium | apt key
+      ansible.builtin.apt_key:
+        url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+        keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
+    - name: vscodium | apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main"
+        filename: vscodium
+    - name: alacritty | apt repository
+      ansible.builtin.apt_repository:
+        repo: "ppa:mmstick76/alacritty"
+    - name: packages | apt
+      ansible.builtin.apt:
+        name:
+          - python3-pip
+          - neovim
+          - tmux
+          - fd-find
+          - bat
+          - fzf
+          - jq
+          - npm
+          - fish
+          - codium
+          - alacritty
+        update_cache: true
+      become: true
+    - name: packages | brew
+      community.general.homebrew:
+        name:
+          - lsd
+          - age
+          - starship
+          - shellcheck
+          - kubectl
+          - helm
+          - kustomize
+          - sops
+          - gh
+          - chezmoi
