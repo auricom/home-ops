@@ -30,11 +30,11 @@ flux bootstrap github \
 ## SOPS secret from age key
 
 ```bash
-age-keygen -o $HOME/sops/age/key.txt
-cat $HOME/sops/age/key.txt |
+age-keygen -o $HOME/sops/age/keys.txt
+cat $HOME/sops/age/keys.txt |
 kubectl create secret generic sops-age \
 --namespace=flux-system \
---from-file=$HOME/sops/age/key.txt=/dev/stdin
+--from-file=$HOME/sops/age/keys.txt=/dev/stdin
 ```
 
 ## Encrypt kubernetes resources with sops binary
