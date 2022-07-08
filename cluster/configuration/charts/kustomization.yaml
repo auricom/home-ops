@@ -11,7 +11,7 @@ resources:
   - emxq-charts.yaml
   - external-dns-charts.yaml
   - gitea-charts.yaml
-  - grafana-loki-charts.yaml
+  - grafana-charts.yaml
   - hajimari-charts.yaml
   - influxdata-charts.yaml
   - infracloudio-charts.yaml
