@@ -27,7 +27,7 @@
       {
         "description": "Rook-Ceph image and chart",
         "groupName": "Rook-Ceph",
-        "matchPackagePatterns": ["rook.ceph"],
+        "matchPackagePatterns": ["rook"],
         "matchDatasources": ["docker", "helm"],
         "group": { "commitMessageTopic": "{{{groupName}}} group" },
         "separateMinorPatch": true
