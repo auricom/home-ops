@@ -35,6 +35,12 @@ spec:
       config:
         enabled: true
         existingClaim: radarr-config
+      downloads:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/downloads
+        mountPath: /mnt/storage/downloads
       video:
         enabled: true
         type: nfs
