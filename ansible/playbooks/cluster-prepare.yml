@@ -6,22 +6,20 @@
   gather_facts: true
   any_errors_fatal: true
   pre_tasks:
-    - name: Pausing for 2 seconds...
-      pause:
-        seconds: 2
+    - name: Pausing for 5 seconds...
+      ansible.builtin.pause:
+        seconds: 5
   tasks:
     - name: Locale
       block:
         - name: Locale | Set timezone
           community.general.timezone:
-            name: "{{ timezone | default('America/New_York') }}"
+            name: "{{ timezone | default('Europe/Paris') }}"
     - name: Networking
       block:
         - name: Networking | Set hostname to inventory hostname
           ansible.builtin.hostname:
             name: "{{ inventory_hostname }}"
-          when:
-            - ansible_hostname != inventory_hostname
         - name: Networking | Update /etc/hosts to include inventory hostname
           ansible.builtin.blockinfile:
             path: /etc/hosts
@@ -81,12 +79,6 @@
           loop: "{{ public_ssh_keys | default([]) }}"
     - name: System Configuration (1)
       block:
-        - name: System Configuration (1) | Configure smartd
-          ansible.builtin.copy:
-            dest: /etc/smartd.conf
-            mode: 0644
-            content: DEVICESCAN -a -o on -S on -n standby,q -s (S/../.././02|L/../../6/03) -W 4,35,40
-          notify: Restart smartd
         - name: System Configuration (1) | Disable firewalld
           ansible.builtin.systemd:
             service: firewalld.service
@@ -136,32 +128,13 @@
           ansible.builtin.dnf:
             name: zram-generator-defaults
             state: absent
-        - name: System Configuration (2) | Disable SELinux
+        - name: System Configuration (2) | Permissive SELinux
           ansible.posix.selinux:
-            state: disabled
-        - name: System Configuration (2) | Disable mitigations
-          ansible.builtin.replace:
-            path: /etc/default/grub
-            regexp: '^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ item.key | regex_escape }}=).)*)(?:[" ]{{ item.key | regex_escape }}=\S+)?(.*")$'
-            replace: '\1 {{ item.key }}={{ item.value }}\2'
-          with_dict: "{{ grub_config }}"
-          vars:
-            grub_config:
-              mitigations: "off"
-          register: grub_status
-        - name: System Configuration (2) | Reconfigure grub and initramfs
-          ansible.builtin.command: "{{ item }}"
-          loop:
-            - grub2-mkconfig -o /boot/grub2/grub.cfg
-            - dracut --force --regenerate-all -v
-          when: grub_status.changed
+            state: permissive
+            policy: targeted
       notify: Reboot
 
   handlers:
     - name: Reboot
       ansible.builtin.reboot:
-    - name: Restart smartd
-      ansible.builtin.service:
-        name: smartd.service
-        enabled: true
-        state: restarted
+        msg: Rebooting nodes
