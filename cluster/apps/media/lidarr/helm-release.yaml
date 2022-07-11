@@ -2,25 +2,33 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: lidarr
+  name: &app lidarr
   namespace: media
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: lidarr
-      version: 14.1.3
+      chart: kah-common-chart
+      version: 1.1.2
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
         namespace: flux-system
-      interval: 5m
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
+    global:
+      nameOverride: *app
+
     image:
       repository: ghcr.io/k8s-at-home/lidarr-develop
       tag: v1.0.2.2592
-      pullPolicy: IfNotPresent
 
     env:
       TZ: "${TIMEZONE}"
@@ -34,6 +42,7 @@ spec:
       config:
         enabled: true
         existingClaim: lidarr-config
+        mountPath: /config
       music:
         enabled: true
         type: nfs
@@ -47,6 +56,12 @@ spec:
         path: /mnt/storage/downloads
         mountPath: /mnt/storage/downloads
 
+    service:
+      main:
+        ports:
+          http:
+            port: 8686
+
     ingress:
       main:
         enabled: true
@@ -57,27 +72,16 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_CLUSTER_DOMAIN}/css/base/sabnzbd/nord.css"></head>';
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_CLUSTER_DOMAIN}/css/base/lidarr/nord.css"></head>';
             sub_filter_once on;
         hosts:
-          - host: "lidarr.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - "lidarr.${SECRET_CLUSTER_DOMAIN}"
-      api:
-        enabled: true
-        ingressClassName: "nginx"
-        hosts:
-          - host: "lidarr.${SECRET_CLUSTER_DOMAIN}"
-            paths:
-              - path: /api
-                pathType: Prefix
-        tls:
-          - hosts:
-              - "lidarr.${SECRET_CLUSTER_DOMAIN}"
+              - *host
 
     resources:
       requests:
@@ -85,8 +89,3 @@ spec:
         cpu: 500m
       limits:
         memory: 1500Mi
-
-    metrics:
-      enabled: true
-      prometheusRule:
-        enabled: true
