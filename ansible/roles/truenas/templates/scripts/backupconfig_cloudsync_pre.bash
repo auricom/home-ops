@@ -6,15 +6,12 @@
 # Configuration backup Cloud Sync pre-script
 
 # Variables
-SOURCE_FOLDER="/var/db/system/configs"
+DATE=$(date +%Y%m%d)
 BACKUP_FOLDER="{{ backups_dir }}servers/{{ ansible_facts['nodename'] }}"
 
-cd ${SOURCE_FOLDER}*
-rsync --archive --delete --human-readable --delete ./ ${BACKUP_FOLDER}
-test $? -ne 0 && FLAG_NOTIF=true
-
-chmod -R 775 ${BACKUP_FOLDER}/*
-chown -R homelab:homelab ${BACKUP_FOLDER}/*
+cp -p /data/freenas-v1.db ${BACKUP_FOLDER}/${DATE}.db
+chmod -R 775 ${BACKUP_FOLDER}/${DATE}.db
+chown -R homelab:homelab ${BACKUP_FOLDER}/${DATE}.db
 
 # Keep the last 90 backups on disk
-# find ${BACKUP_FOLDER}/* -mtime +90 -type f -delete
+find ${BACKUP_FOLDER}/*.db -mtime +90 -type f -delete
