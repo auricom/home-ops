@@ -61,7 +61,6 @@ jobs:
           MARKDOWN_MARKDOWNLINT_RULES_PATH: .github/
           YAML_YAMLLINT_CONFIG_FILE: .github/linters/.yamllint.yaml
           YAML_PRETTIER_FILTER_REGEX_EXCLUDE: "(.*\\.sops\\.ya?ml)"
-
       - name: Archive production artifacts
         if: ${{ success() }} || ${{ failure() }}
         uses: actions/upload-artifact@v3
