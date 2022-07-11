@@ -15,6 +15,7 @@ resources:
   - recipes
   - resilio-sync
   - sharry
+  - truecommand
   - vaultwarden
   - vikunja
   - wallabag
