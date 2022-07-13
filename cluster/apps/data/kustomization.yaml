@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - bookstack
+  - borgserver
   - freshrss
   - homer
   - jobs
