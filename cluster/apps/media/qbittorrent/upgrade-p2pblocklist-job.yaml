@@ -15,7 +15,7 @@ spec:
           serviceAccountName: jobs
           containers:
             - name: qbittorrent-upgrade-p2pblocklist
-              image: ghcr.io/auricom/kubectl:v1.24.2@sha256:7a3a4d1ba11ef45fd31b124258c8bfa3d9cf56569de6f134a13f4db7b9634190
+              image: ghcr.io/auricom/kubectl:v1.24.2@sha256:a09ef800e935a37d9704ab9b05ebad37ef8d01228ee414f41b24114a8eb05f1f
               imagePullPolicy: IfNotPresent
               command:
                 - "/bin/sh"
