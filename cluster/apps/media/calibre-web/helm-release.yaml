@@ -42,9 +42,6 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/icon: "text-box"
-          hajimari.io/appName: "calibre-web"
         hosts:
           - host: &host "calibre-web.${SECRET_CLUSTER_DOMAIN}"
             paths:
