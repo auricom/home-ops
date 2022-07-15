@@ -7,7 +7,6 @@ resources:
   - benji-charts.yaml
   - bitnami-charts.yaml
   - cert-manager-webhook-ovh.yaml
-  - drone-charts.yaml
   - emxq-charts.yaml
   - external-dns-charts.yaml
   - gitea-charts.yaml
