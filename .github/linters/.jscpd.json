@@ -1,0 +1,3 @@
+{
+  "ignore": ["**/truenas/files/scripts/**"]
+}
