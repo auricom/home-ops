@@ -3,6 +3,7 @@
   ansible.builtin.file:
     state: directory
     path: "~/.local/scripts"
+    mode: 0700
 
 - name: scripts | copy scripts
   ansible.builtin.copy:

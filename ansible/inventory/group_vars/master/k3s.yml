@@ -30,7 +30,7 @@ k3s_server:
   # Network CIDR to use for service IPs
   service-cidr: "10.96.0.0/16"
   # Required to monitor component with kube-prometheus-stack
-  #etcd-expose-metrics: true
+  # etcd-expose-metrics: true
   kubelet-arg:
     # Enable Alpha/Beta features
     - "feature-gates=EphemeralContainers=true,MixedProtocolLBService=true,ReadWriteOncePod=true"

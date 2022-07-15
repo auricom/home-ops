@@ -20,4 +20,4 @@ rules:
   brackets:
     min-spaces-inside: 0
     max-spaces-inside: 0
-  indentation: enable
+  indentation: disable

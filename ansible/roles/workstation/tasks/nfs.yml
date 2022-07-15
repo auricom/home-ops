@@ -10,6 +10,7 @@
   ansible.builtin.file:
     state: directory
     path: "{{ item.path }}"
+    mode: 0775
   loop: "{{ nfs_shares }}"
   become: true
 
@@ -27,6 +28,7 @@
   ansible.builtin.file:
     state: directory
     path: "{{ nas_dir }}"
+    mode: 0700
 
 - name: nfs | stat music folder
   ansible.builtin.stat:
@@ -34,18 +36,18 @@
   register: music
 
 - name: nfs | remove music folder
-  file:
+  ansible.builtin.file:
     path: ~/Music
     state: absent
   when: music.stat.isdir is defined and music.stat.isdir
-  
+
 - name: nfs | stat videos folder
   ansible.builtin.stat:
     path: ~/Videos
   register: videos
 
 - name: nfs | remove videos folder
-  file:
+  ansible.builtin.file:
     path: ~/Videos
     state: absent
   when: videos.stat.isdir is defined and videos.stat.isdir

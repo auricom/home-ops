@@ -14,6 +14,7 @@
     state: present
     line: "installonly_limit=3"
     create: true
+    mode: 0644
   become: true
 
 - name: system | get better download speed with DNF

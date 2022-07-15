@@ -21,10 +21,12 @@
       ansible.builtin.file:
         state: directory
         path: ~/.config/chezmoi
+        mode: 0700
     - name: chezmoi | templating chezmoi.toml
       ansible.builtin.blockinfile:
         path: ~/.config/chezmoi/chezmoi.toml
-        create: yes
+        create: true
+        mode: 0700
         block: |
           [data]
             alacritty_font_size = 11.0
@@ -34,10 +36,12 @@
       ansible.builtin.file:
         state: directory
         path: ~/.local/share/fonts
+        mode: 0700
     - name: gnome | download nerd fonts
       ansible.builtin.get_url:
         url: "{{ item }}"
         dest: ~/.local/share/fonts
+        mode: 0700
       loop:
         - https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Retina/complete/Fira%20Code%20Retina%20Nerd%20Font%20Complete.ttf
         - https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Retina/complete/Fira%20Code%20Retina%20Nerd%20Font%20Complete%20Mono.ttf
@@ -46,10 +50,12 @@
         repo: "https://github.com/Homebrew/brew"
         dest: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/Homebrew"
         version: "master"
+        mode: 0775
     - name: brew | create bin directory for homebrew
       ansible.builtin.file:
         path: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/bin"
         state: directory
+        mode: 0775
     - name: brew | create a symbolic link for brew
       ansible.builtin.file:
         src: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/Homebrew/bin/brew"

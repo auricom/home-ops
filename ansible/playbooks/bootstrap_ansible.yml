@@ -8,10 +8,10 @@
     python_package: python3
   tasks:
     - name: Check for Python
-      raw: test -e {{ python_pwd }}
+      ansible.builtin.raw: test -e {{ python_pwd }}
       changed_when: false
       failed_when: false
       register: check_python
     - name: Install Python
-      raw: pkg install -y {{ python_package }}
+      ansible.builtin.raw: pkg install -y {{ python_package }}
       when: check_python.rc != 0

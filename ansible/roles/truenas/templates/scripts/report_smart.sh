@@ -3,7 +3,7 @@
 ### Parameters ###
 
 # Specify your email address here:
-email="truenas@{{ SECRET_EMAIL_DOMAIN }}"
+email="truenas@{{ secret_email_domain }}"
 
 # Full path to 'smartctl' program:
 smartctl=/usr/local/sbin/smartctl
@@ -48,11 +48,11 @@ get_sata_drives()
       lFound=$((lFound + 1))
     else
       gsata_smart_flag=$("$smartctl" -i "$drive" | grep -E "ATA Version is:[[:blank:]]" | awk '{print $1}')
-      if [ "$gsata_smart_flag" = "ATA" ]; then  
+      if [ "$gsata_smart_flag" = "ATA" ]; then
         lFound=$((lFound + 1))
       fi
     fi
-    if [ $lFound -gt 0 ]; then  
+    if [ $lFound -gt 0 ]; then
       SATA_list="$SATA_list $drive"
       SATA_count=$((SATA_count + 1))
     fi
@@ -103,7 +103,7 @@ if [ $SATA_count -gt 0 ]; then
    echo "|      |                        |    | Hours|Count|Count|       |Sectors|Sectors |      |          |Writes|    Count  |Age |"
    echo "+------+------------------------+----+------+-----+-----+-------+-------+--------+------+----------+------+-----------+----+"
   ) >> "$logfile"
-  
+
   ###### Detail information for each SATA drive ######
   for drive in $SATA_list; do
     (
@@ -161,7 +161,7 @@ if [ $SAS_count -gt 0 ]; then
     if [ $SATA_count -gt 0 ]; then
       echo ""
     fi
-  
+
     echo "########## SMART status report summary for all SAS drives on server ${freenashost} ##########"
     echo ""
     echo "+------+------------------------+----+-----+------+------+------+------+------+------+"
@@ -170,7 +170,7 @@ if [ $SAS_count -gt 0 ]; then
     echo "|      |                        |    |Count|Count |Elems |Errors|Errors|Errors|Errors|"
     echo "+------+------------------------+----+-----+------+------+------+------+------+------+"
   ) >> "$logfile"
-  
+
   ###### Detail information for each SAS drive ######
   for drive in $SAS_list; do
     (
@@ -204,7 +204,7 @@ if [ $SAS_count -gt 0 ]; then
 fi
 
 if [ $SATA_count -gt 0 ] || [ $SAS_count -gt 0 ]; then
- 
+
   ###### Emit SATA drive information ######
   for drive in $SATA_list; do
     vendor=$("$smartctl" -i "$drive" | grep "Vendor:" | awk '{print $NF}')
@@ -225,12 +225,12 @@ if [ $SATA_count -gt 0 ] || [ $SAS_count -gt 0 ]; then
     (
     echo ""
     echo "########## SATA drive $drive Serial: $serial"
-    echo "########## ${dinfo}" 
+    echo "########## ${dinfo}"
     "$smartctl" -n never -H -A -l error "$drive"
     "$smartctl" -n never -l selftest "$drive" | grep "# 1 \\|Num" | cut -c6-
     ) >> "$logfile"
   done
-  
+
   ###### Emit SAS drive information ######
   for drive in $SAS_list; do
     devid=$(basename "$drive")

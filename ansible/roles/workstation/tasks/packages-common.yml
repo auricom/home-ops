@@ -54,7 +54,7 @@
       - cawbird
       - age
     state: present
-    update_cache: yes
+    update_cache: true
   become: true
 
 - name: packages-common | python
@@ -96,4 +96,4 @@
       - chezmoi
     path: /home/{{ lookup('env', 'USER') }}/.linuxbrew/bin
     state: present
-    update_homebrew: yes
+    update_homebrew: true

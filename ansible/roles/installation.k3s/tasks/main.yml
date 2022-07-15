@@ -1,4 +1,0 @@
----
-- import_tasks: k3s.yml
-  tags:
-    - k3s

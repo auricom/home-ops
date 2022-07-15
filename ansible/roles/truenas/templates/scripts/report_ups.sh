@@ -6,7 +6,7 @@
 ### Parameters ###
 
 # Specify your email address here:
-email="truenas@{{ SECRET_EMAIL_DOMAIN }}"
+email="truenas@{{ secret_email_domain }}"
 
 # Set to a value greater than zero to include all available UPSC
 # variables in the report:
@@ -90,4 +90,3 @@ else
   sendmail -t -oi < ${logfile}
   rm ${logfile}
 fi
-

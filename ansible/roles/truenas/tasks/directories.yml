@@ -3,6 +3,7 @@
   ansible.builtin.file:
     state: directory
     path: "{{ item }}"
+    mode: 0775
   loop:
     - "{{ homelab_homedir }}/letsencrypt"
     - "{{ telegraf_dir }}"
@@ -13,7 +14,8 @@
   ansible.builtin.file:
     state: directory
     path: "{{ item }}"
+    mode: 0775
   loop:
-    - "{{ backups_dir }}servers/coreelec.{{ SECRET_DOMAIN }}"
-    - "{{ backups_dir }}servers/opnsense.{{ SECRET_DOMAIN }}"
-  when: "main_nas == true"
+    - "{{ backups_dir }}servers/coreelec.{{ secret_domain }}"
+    - "{{ backups_dir }}servers/opnsense.{{ secret_domain }}"
+  when: "main_nas"

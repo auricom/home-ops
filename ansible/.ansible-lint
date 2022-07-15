@@ -1,0 +1,10 @@
+# .ansible-lint
+exclude_paths:
+  - ~/.ansible/roles/xanmanning.k3s
+skip_list:
+  - yaml[indentation]
+  - yaml[line-length]
+warn_list:
+  - command-instead-of-module
+  - command-instead-of-shell
+  - unnamed-task

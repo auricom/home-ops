@@ -5,11 +5,11 @@
     dest: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/Homebrew"
     version: "master"
 
-
 - name: packages-prerequisites | create bin directory for homebrew
   ansible.builtin.file:
     path: "/home/{{ lookup('env', 'USER') }}/.linuxbrew/bin"
     state: directory
+    mode: 0775
 
 - name: packages-prerequisites | create a symbolic link for brew
   ansible.builtin.file:

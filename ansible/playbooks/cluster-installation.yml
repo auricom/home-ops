@@ -37,6 +37,7 @@
       ansible.builtin.command: |-
         git rev-parse --show-toplevel
       register: repo_abs_path
+      changed_when: "repo_abs_path.rc != 2"
 
     - name: Copy kubeconfig to provision folder
       run_once: true

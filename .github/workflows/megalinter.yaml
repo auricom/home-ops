@@ -55,7 +55,7 @@ jobs:
               )
             }}
           ANSIBLE_DIRECTORY: ansible
-          ANSIBLE_ANSIBLE_LINT_CONFIG_FILE: .github/linters/.ansible-lint
+          ANSIBLE_ANSIBLE_LINT_CONFIG_FILE: .ansible-lint
           COPYPASTE_JSCPD_CONFIG_FILE: .github/linters/.jspcd.json
           KUBERNETES_DIRECTORY: cluster
           KUBERNETES_KUBEVAL_ARGUMENTS: --ignore-missing-schemas

@@ -12,6 +12,6 @@ POOL_NAME="{{ pool_name }}"
 
 ${SCRIPT_PATH}/snapshots_prune.py --recursive --intervals ${INTERVAL} ${POOL_NAME}
 ${SCRIPT_PATH}/snapshots_clearempty.py --recursive ${POOL_NAME}
-{% if ansible_facts['nodename'] == "truenas.{{ SECRET_DOMAIN }}" %}
+{% if ansible_facts['nodename'] == "truenas.{{ secret_domain }}" %}
 ${SCRIPT_PATH}/snapshots_prune.py --recursive --intervals daily:14 storage/video
 {% endif %}

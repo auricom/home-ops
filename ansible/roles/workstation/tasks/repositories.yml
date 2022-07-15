@@ -3,7 +3,7 @@
   ansible.builtin.dnf:
     name: "{{ item }}"
     state: present
-    disable_gpg_check: True
+    disable_gpg_check: true
   loop:
     - https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
     - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm
@@ -25,6 +25,7 @@
   ansible.builtin.copy:
     src: "yum/{{ item }}"
     dest: "/etc/yum.repos.d/{{ item }}"
+    mode: 0644
   loop:
     - vscodium.repo
   become: true
@@ -40,12 +41,13 @@
     name: rslsync
     description: Resilio Sync Repository
     baseurl: https://linux-packages.resilio.com/resilio-sync/rpm/$basearch
-    gpgcheck: yes
+    gpgcheck: true
   become: true
 
 - name: repositories | brave - check presence
   ansible.builtin.stat:
     path: /etc/yum.repos.d/brave-browser-rpm-release.s3.brave.com_x86_64_.repo
+    mode: 0644
   register: brave
 
 - name: repositories | brave - add repository
@@ -55,11 +57,11 @@
   args:
     creates: /etc/yum.repos.d/brave-browser-rpm-release.s3.brave.com_x86_64_.repo
   become: true
-  when: brave.stat.exists == False
+  when: not brave.stat.exists
 
 - name: repositories | brave - import asc
   ansible.builtin.command:
     cmd: rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
     warn: false
   become: true
-  when: brave.stat.exists == False
+  when: not brave.stat.exists
