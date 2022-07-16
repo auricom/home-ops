@@ -8,7 +8,7 @@ resources:
   - freshrss
   - homer
   - jobs
-  - joplin-server
+  - joplin
   - mariadb
   - pgadmin
   - pgbackups
