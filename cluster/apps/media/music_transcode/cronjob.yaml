@@ -21,7 +21,7 @@ spec:
           initContainers:
           containers:
             - name: transcode-incremental
-              image: ghcr.io/auricom/freac:v1.1.6@sha256:8dfb5026b4567697b91ca44fb6d0a012aedc1b9d4ece239c0f2a686d0df3f57c
+              image: ghcr.io/auricom/freac:v1.1.6@sha256:c4d182b82de99f4a738dd300c30c32d893eafaa414fe8e8bb4a0051bdd4060f5
               imagePullPolicy: IfNotPresent
               env:
                 - name: TRANSCODE_INPUT_DIR
@@ -35,6 +35,8 @@ spec:
                 - "-ec"
                 - |
                   #!/bin/bash
+
+                  export LD_LIBRARY_PATH="/app"
 
                   curl --location raw.githubusercontent.com/auricom/home-ops/main/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
                   chmod a+x /tmp/transcode.bash
