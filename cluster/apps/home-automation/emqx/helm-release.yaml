@@ -51,7 +51,7 @@ spec:
               - *host
 
     metrics:
-      enabled: true
+      enabled: false
 
     affinity:
       podAntiAffinity:
