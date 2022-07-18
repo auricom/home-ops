@@ -55,7 +55,6 @@ spec:
               mountPath: /sync/music_transcoded
             - name: video
               mountPath: /sync/video
-              subPath: video
             - name: shared-documents
               mountPath: /sync/shared-documents
         - image: ghcr.io/linuxserver/resilio-sync:version-2.7.3.1381-1
