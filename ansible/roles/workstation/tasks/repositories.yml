@@ -47,7 +47,6 @@
 - name: repositories | brave - check presence
   ansible.builtin.stat:
     path: /etc/yum.repos.d/brave-browser-rpm-release.s3.brave.com_x86_64_.repo
-    mode: 0644
   register: brave
 
 - name: repositories | brave - add repository
