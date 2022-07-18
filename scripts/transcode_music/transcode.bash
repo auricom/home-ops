@@ -27,7 +27,7 @@ if [ -z "$TRANSCODE_DB" ]; then
 fi
 
 if [ -z "$TRANSCODE_FREAC_BIN" ]; then
-    export TRANSCODE_FREAC_BIN="/app/freac.AppImage"
+    export TRANSCODE_FREAC_BIN="/app/freaccmd"
 fi
 if [ -z "$TRANSCODE_COVER_EXTENSIONS" ]; then
     export TRANSCODE_COVER_EXTENSIONS="png jpg"
@@ -57,6 +57,7 @@ if [ $? -eq 0 ]; then
 else
     export TRANSCODE_FD_BIN="fd"
 fi
+export LD_LIBRARY_PATH=$(dirname $TRANSCODE_FREAC_BIN)
 
 test ! -d $TRANSCODE_DB && mkdir -p $TRANSCODE_DB
 
@@ -92,18 +93,21 @@ while getopts ':frcd' OPTION; do
 done
 
 transcode()
-{   
+{
     input_file=$1
     output_file=$2
     md5_file=$3
 
+    echo "INFO: Processing file $1..."
     if [ $MODE_DRY_RUN == false ]; then
-        $TRANSCODE_FREAC_BIN freaccmd --encoder=opus --bitrate 64 "$input_file" -o "$output_file"
-        if [ $? -ne 0 ]; then exit 1; fi  
+        output=$($TRANSCODE_FREAC_BIN --encoder=opus --bitrate 64 "$input_file" -o "$output_file")
+        result=$(echo "$output" | grep -c "Could not process")
+        if [ $result -eq 1 ]; then
+            echo -e "$output"
+            exit 1
+        fi
         mkdir -p "$TRANSCODE_DB/$(dirname "$input_file")"
         echo "$(md5sum "$input_file" | awk '{ print $1 }')" > "$md5_file"
-    else
-        echo "INFO: transcoding $1"
     fi
 }
 
@@ -157,7 +161,7 @@ directory_structure()
 }
 
 convert_covers()
-{   
+{
     echo "INFO: Looking for covers to convert..."
     cd $TRANSCODE_INPUT_DIR
 
@@ -245,7 +249,7 @@ fix_cuefiles()
 remove_absent_from_source()
 {
     cd $TRANSCODE_DB
-    
+
     EXTENSIONS="md5"
     for ext in $EXTENSIONS
     do
@@ -268,12 +272,12 @@ remove_absent_from_source()
     done
 
     echo "INFO: removing empty directories..."
-    
+
     if [ $MODE_DRY_RUN == false ]; then
         cd "$TRANSCODE_OUTPUT_DIR"
-        fd --type empty --exec-batch rmdir
+        $TRANSCODE_FD_BIN --type empty --exec-batch rmdir
         cd "$TRANSCODE_DB"
-        fd --type empty --exec-batch rmdir
+        $TRANSCODE_FD_BIN --type empty --exec-batch rmdir
     fi
 }
 
