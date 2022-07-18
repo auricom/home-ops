@@ -52,7 +52,7 @@ k3s_server_manifests_urls:
 #         username: "{{ SECRET_NEXUS_USERNAME }}"
 #         password: "{{ SECRET_NEXUS_PASSWORD }}"
 
-timezone: Europe/Paris
+timezone: Etc/UTC
 
 public_ssh_keys:
   - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL+GMHgvbtf6f7xUMAQR+vZFfD/mIIfIDNX5iP8tDRXZ claude@claude-thinkpad-fedora"

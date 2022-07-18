@@ -14,7 +14,7 @@
       block:
         - name: Locale | Set timezone
           community.general.timezone:
-            name: "{{ timezone | default('Europe/Paris') }}"
+            name: "{{ timezone | default('Etc/UTC') }}"
     - name: Networking
       block:
         - name: Networking | Set hostname to inventory hostname
