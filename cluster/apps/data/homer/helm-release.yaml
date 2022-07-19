@@ -60,7 +60,7 @@ spec:
         enabled: true
         image:
           repository: ghcr.io/k8s-at-home/code-server
-          tag: v4.5.0
+          tag: v4.5.1
         workingDir: "/www/assets"
         args:
           - --auth
