@@ -23,7 +23,7 @@ spec:
         - name: regcred
       containers:
         - name: pgbackups
-          image: ghcr.io/auricom/postgres-backup-local:v14.4@sha256:cf68b0ab665e1c56081bafcfb675d828b1677b25a0894ef6b0dda7a6e72d8b89
+          image: ghcr.io/auricom/postgres-backup-local:v14.4@sha256:b70f8ca203b38240c87c86c2d95f86d1e8e1e62602ebe1e8fd5830c2376b889e
           env:
             - name: POSTGRES_HOST
               value: postgresql-kube.data.svc.cluster.local.
