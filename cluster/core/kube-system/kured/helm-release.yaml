@@ -22,6 +22,7 @@ spec:
       startTime: "2:00"
       endTime: "5:00"
       timeZone: "${TIMEZONE}"
+      rebootSentinelCommand: sh -c "! needs-restarting --reboothint"
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"
