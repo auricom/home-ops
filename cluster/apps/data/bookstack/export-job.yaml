@@ -17,7 +17,7 @@ spec:
             - name: regcred
           containers:
             - name: gitea-repositories-backup
-              image: ghcr.io/auricom/kubectl:v1.24.2@sha256:a09ef800e935a37d9704ab9b05ebad37ef8d01228ee414f41b24114a8eb05f1f
+              image: ghcr.io/auricom/kubectl:v1.24.3@sha256:b18784dfea2180fe9091f6b111766a3f2052d93462e43c4689f6847a39e9aea3
               imagePullPolicy: IfNotPresent
               command:
                 - "bin/sh"
