@@ -50,9 +50,9 @@
         - name: Packages | Remove leaf packages
           ansible.builtin.dnf:
             autoremove: true
-        - name: Packages | Enable automatic downloads of updates
+        - name: Packages | Enable automatic install of updates
           ansible.builtin.systemd:
-            service: dnf-automatic-download.timer
+            service: dnf-automatic-install.timer
             enabled: true
             state: started
     - name: User Configuration
