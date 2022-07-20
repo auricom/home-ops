@@ -98,7 +98,7 @@ transcode()
     output_file=$2
     md5_file=$3
 
-    echo "INFO: Processing file $1..."
+    echo "##: Processing file $1..."
     if [ $MODE_DRY_RUN == false ]; then
         output=$($TRANSCODE_FREAC_BIN --encoder=opus --bitrate 64 "$input_file" -o "$output_file")
         result=$(echo "$output" | grep -c "Could not process")
@@ -172,18 +172,20 @@ convert_covers()
         mapfile -t StringArray <<< "$FILES"
         for val in "${StringArray[@]}"; do
             if [ ! -z "$val" ]; then
+                FLAG=false
                 FILENAME="$TRANSCODE_OUTPUT_DIR$(dirname "$val")/$(basename "$val" .$ext).jpg"
                 MD5_FILENAME="$TRANSCODE_DB/$(dirname "$val")/$(basename "$val").md5"
                 # Check if a MD5 checksum already exists
                 RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
                 if [ $? -ne 0 ] ; then
-                    write_jpg "$val" "$FILENAME" "$MD5_FILENAME"
+                    FLAG=true
                 # Check if an existing MD5 checksum is different
                 elif [ $MODE_CHECKSUM == true ]; then
                     if [ "$(cat "$MD5_FILENAME")" != "$(md5sum "$val" | awk '{ print $1 }')" ]; then
-                        write_jpg "$val" "$FILENAME" "$MD5_FILENAME"
+                        FLAG=true
                     fi
                 fi
+                if $FLAG; then write_jpg "$val" "$FILENAME" "$MD5_FILENAME"; fi
             fi
         done
     done
@@ -201,19 +203,21 @@ convert_music()
         mapfile -t StringArray <<< "$FILES"
         for val in "${StringArray[@]}"; do
             if [ ! -z "$val" ]; then
+                FLAG=false
                 FILEBASENAME="$TRANSCODE_OUTPUT_DIR$(dirname "$val")/$(basename "$val" .$ext)"
                 FILENAME="$FILEBASENAME.opus"
                 MD5_FILENAME="$TRANSCODE_DB/$(dirname "$val")/$(basename "$val" .$ext).md5"
                 # Check if a MD5 checksum already exists
                 RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
                 if [ $? -ne 0 ] ; then
-                    transcode "$val" "$FILENAME" "$MD5_FILENAME"
+                    FLAG=true
                 # Check if an existing MD5 checksum is different
                 elif [ $MODE_CHECKSUM == true ]; then
                     if [ "$(cat "$MD5_FILENAME")" != "$(md5sum "$val" | awk '{ print $1 }')" ]; then
-                        transcode "$val" "$FILENAME" "$MD5_FILENAME"
+                        FLAG=true
                     fi
                 fi
+                if $FLAG; then transcode "$val" "$FILENAME" "$MD5_FILENAME"; fi
             fi
         done
     done
@@ -228,20 +232,22 @@ fix_cuefiles()
     mapfile -t StringArray <<< "$FILES"
     for val in "${StringArray[@]}"; do
         if [ ! -z "$val" ]; then
+            FLAG=false
             MD5_FILENAME="$TRANSCODE_DB/$val.md5"
             REPLACEMENT_TEXT_STRING="FILE \"$(basename "$val" .cue).opus\" MP3"
             # Check if a MD5 checksum already exists
             RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
             if [ $? -ne 0 ] ; then
                 cp -pr "$val" "$TRANSCODE_OUTPUT_DIR/$val"
-                write_cue "$val" "$TRANSCODE_OUTPUT_DIR/$val" "$REPLACEMENT_TEXT_STRING" "$MD5_FILENAME"
+                FLAG=true
             # Check if an existing MD5 checksum is different
             elif [ $MODE_CHECKSUM == true ]; then
                 if [ "$(cat "$MD5_FILENAME")" != "$(md5sum "$val" | awk '{ print $1 }')" ]; then
                 cp -pr "$val" "$TRANSCODE_OUTPUT_DIR/$val"
-                    write_cue "$val" "$TRANSCODE_OUTPUT_DIR/$val" "$REPLACEMENT_TEXT_STRING" "$MD5_FILENAME"
+                    FLAG=true
                 fi
             fi
+            if $FLAG; then write_cue "$val" "$TRANSCODE_OUTPUT_DIR/$val" "$REPLACEMENT_TEXT_STRING" "$MD5_FILENAME"; fi
         fi
     done
 }

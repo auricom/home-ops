@@ -36,15 +36,18 @@ spec:
                 - |
                   #!/bin/bash
 
+                  HEALTHCHECKS=true
+
                   curl --location raw.githubusercontent.com/auricom/home-ops/main/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
                   chmod a+x /tmp/transcode.bash
                   curl --location raw.githubusercontent.com/auricom/home-ops/main/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
                   cd /tmp
                   ./transcode.bash -c
+                  test $? -ne 0 && HEALTHCHECKS=false
                   ./transcode.bash -r
-                  if [ $? -eq 0 ]; then
-                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b99854a4-d298-4acb-a02c-a56860132de3
-                  fi
+                  test $? -ne 0 && HEALTHCHECK=false
+
+                  test FLAG && curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b99854a4-d298-4acb-a02c-a56860132de3
               volumeMounts:
                 - name: music-transcoded
                   mountPath: /mnt/music_transcoded
