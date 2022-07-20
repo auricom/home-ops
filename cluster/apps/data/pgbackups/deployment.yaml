@@ -23,8 +23,7 @@ spec:
         - name: regcred
       containers:
         - name: pgbackups
-          image: prodrigestivill/postgres-backup-local:14
-          #image: registry.${SECRET_CLUSTER_DOMAIN}/homelab/postgres-backup-local:1.0.0
+          image: ghcr.io/auricom/postgres-backup-local:v14.4@sha256:cf68b0ab665e1c56081bafcfb675d828b1677b25a0894ef6b0dda7a6e72d8b89
           env:
             - name: POSTGRES_HOST
               value: postgresql-kube.data.svc.cluster.local.
@@ -46,8 +45,8 @@ spec:
               value: "3"
             - name: HEALTHCHECK_PORT
               value: "8080"
-            - name: POST_BACKUP_HOOK
-              value: "curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/c88641a5-12f2-4f32-ab9c-5a7d122a229e"
+            - name: WEBHOOK_URL
+              value: "http://healthchecks.monitoring.svc.cluster.local.:8000/ping/c88641a5-12f2-4f32-ab9c-5a7d122a229e"
           resources:
             requests:
               cpu: 150m
