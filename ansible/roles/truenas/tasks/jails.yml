@@ -1,0 +1,52 @@
+---
+- name: jails | check if jail exist
+  ansible.builtin.shell:
+    cmd: iocage list | grep {{ item }}
+  loop: "{{ groups['truenas-jails'] }}"
+  register: jails_check
+  failed_when: jails_check.rc != 0 and jails_check.rc != 1
+
+- name: jails | is iocage fetch required
+  ansible.builtin.set_fact:
+    jail_missing: true
+  loop: "{{ jails_check.results }}"
+  when: item.rc == 1
+
+- block:
+    - name: jails | get current FreeBSD release
+      ansible.builtin.shell:
+        cmd: freebsd-version -k
+      register: release
+      failed_when: release.rc != 0
+
+    - name: jails | fetch iocage template {{ release.stdout }}
+      ansible.builtin.shell:
+        cmd: iocage fetch -r {{ release.stdout }}
+      become: true
+
+    - name: jails | create jail
+      ansible.builtin.shell:
+        cmd: iocage create -r {{ release.stdout }} -n {{ item.item }} dhcp=on
+      loop: "{{ jails_check.results }}"
+      when: item.rc == 1
+      become: true
+  when: jail_missing
+
+- name: jails | check jails states
+  ansible.builtin.shell:
+    cmd: iocage get state {{ item }}
+  loop: "{{ groups['truenas-jails'] }}"
+  register: jails_state
+
+- name: jails | start jails
+  ansible.builtin.shell:
+    cmd: iocage start {{ item.item }}
+  loop: "{{ jails_state.results }}"
+  when: item.stdout == "down"
+  become: true
+
+- name: jails | prepare jails
+  ansible.builtin.include_tasks: jails-prepare.yml
+  loop: "{{ jails_state.results }}"
+  when: item.stdout == "down"
+  become: true

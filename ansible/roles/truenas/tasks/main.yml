@@ -1,9 +1,15 @@
 ---
-- ansible.builtin.include_tasks: directories.yml
+# - ansible.builtin.include_tasks: directories.yml
 
-- ansible.builtin.include_tasks: scripts.yml
+# - ansible.builtin.include_tasks: scripts.yml
 
-- ansible.builtin.include_tasks: telegraf.yml
+# - ansible.builtin.include_tasks: telegraf.yml
 
-- ansible.builtin.include_tasks: wireguard.yml
-  when: "main_nas == false"
+# - ansible.builtin.include_tasks: wireguard.yml
+#   when: "main_nas == false"
+
+# - ansible.builtin.include_tasks: jails.yml
+#   when: "main_nas"
+
+- ansible.builtin.include_tasks: jail-postgres.yml
+  when: "main_nas"

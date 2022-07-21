@@ -1,6 +1,8 @@
 kind: Secret
 root_api_key: ENC[AES256_GCM,data:e+g6jvxD9kBSYVbzGXR0QZZMAnxndPu04Dhs3UjNsjHyq+GQRlapPJDQmnTWFa11KaEK3lOiSmU4yxcRjbgG2t3a,iv:mLG+dFHrmndRm5fT4KU+TIOMiAg/urQ4Zv3YaRaoVlg=,tag:DXTWollNdF4o2Pe2qdyufw==,type:str]
 ansible_host: ENC[AES256_GCM,data:ldsDTnydWPMnAnOiSlVrkiiL6w==,iv:luNgXdV3uBRaGzBIlw4E5UrZqKBaakgwc+9YC9xXInM=,tag:MldHmJpsOqe7oJMA83Xm9g==,type:str]
+ansible_password: ENC[AES256_GCM,data:6F+H0sO8BP7QSZxE6hE=,iv:GOMmcmYZVbT+UbjmHZf4f8jJaBEKV7JWDVpoMQ0QPsI=,tag:YZHl5Sy0wMLibgN7wJ7SNw==,type:str]
+ansible_become_pass: ENC[AES256_GCM,data:KFih2YRvhMLDao5fQ+Q=,iv:cv54gnuCtg6Nt/XbUJ2osNnvPTGhnpKLc5btMY/cSW8=,tag:uxgxAj6WLqms+S2N677kyg==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -16,8 +18,8 @@ sops:
             ZFlyQ1lGbnVPaSs4cytQYzNwRnJabmcKP0ogZqsaoD6heCqmObwttBgE039aLqe2
             R55NPkQJJyFSbDbdDmPApE4IwtXay54QGw2RR4AxOZW4G2dWhdzP3w==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2022-07-04T18:20:37Z"
-    mac: ENC[AES256_GCM,data:IzuN61G8NkZwqNDkIQQPNVODoxgPQieRlSTcInajbBUdHHdVkFRlyLI2INoGd1RDDV06NsmJPM3Yj6fRlWlF4iRCO60cEHgnSyq3FRcFa6oKe9f5p5hmIBin8KMIAQOinNf8/4kqUpkZOFeY/fViBayin1cYgJ2MlMYtZRFVt0A=,iv:2DNQdjHRbtTlTgSVOrS/UTeSaVOhldbf+ek2e1gNv5s=,tag:ef/4Xtbf/021Z5NHv8Up9A==,type:str]
+    lastmodified: "2022-07-21T19:48:24Z"
+    mac: ENC[AES256_GCM,data:nEaUZqbbRmmU69uLvsJODfzG/LmehP+B9PV1aVxLJD66VJrZR/eO70NohrAGC49PPJgt/I92NJmFLYZ6vtyz/IMTPSEckv/mxHR0U7AQ8+CSnwa8Alzd85OAa9fq4XZ17BBnuT+wBHdPq1H99zLw08MXShCxzx/1ygtb58DDj+k=,iv:5VtAIHJIxONYimmiakxZL12M6+Rig9urEVVAQcEBcbk=,tag:ojoIcXajAXYeTB3vOTIYBw==,type:str]
     pgp: []
     unencrypted_regex: ^(kind)$
     version: 3.7.3
