@@ -1,0 +1,24 @@
+---
+- name: jail-prepare | create .ssh directory
+  ansible.builtin.shell:
+    cmd: iocage exec postgres 'mkdir -p /root/.ssh; echo "" > /root/.ssh/authorized_keys; chmod 700 /root/.ssh; chmod 600 /root/.ssh/authorized_keys'
+
+- name: jail-prepare | deploy ssh keys
+  ansible.builtin.shell:
+    cmd: iocage exec postgres 'echo "{{ item }}" >> /root/.ssh/authorized_keys'
+  loop: "{{ public_ssh_keys }}"
+
+- name: jail-prepare | activate sshd
+  ansible.builtin.shell:
+    cmd: iocage exec postgres 'sysrc sshd_enable="YES"'
+
+- name: jail-prepare | sshd permit root login
+  ansible.builtin.shell:
+    cmd: iocage exec postgres 'echo "PermitRootLogin yes" > /etc/ssh/sshd_config'
+
+- name: jail-prepare | start sshd
+  ansible.builtin.shell:
+    cmd: iocage exec postgres 'service sshd start'
+
+- name: jail-prepare | install packages
+  ansible.builtin.raw: pkg install -y python3 bash; ln -s /usr/local/bin/bash /bin/bash
