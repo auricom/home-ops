@@ -1,15 +1,26 @@
 ---
-# - ansible.builtin.include_tasks: directories.yml
+- ansible.builtin.include_tasks: directories.yml
 
-# - ansible.builtin.include_tasks: scripts.yml
+- ansible.builtin.include_tasks: scripts.yml
 
-# - ansible.builtin.include_tasks: telegraf.yml
+- ansible.builtin.include_tasks: telegraf.yml
 
-# - ansible.builtin.include_tasks: wireguard.yml
-#   when: "main_nas == false"
+- ansible.builtin.include_tasks: wireguard.yml
+  when: "main_nas == false"
 
-# - ansible.builtin.include_tasks: jails.yml
-#   when: "main_nas"
+- block:
+    - ansible.builtin.include_tasks: jails/main.yml
 
-- ansible.builtin.include_tasks: jail-postgres.yml
+    - ansible.builtin.shell:
+        cmd: test -f /mnt/storage/jail-mounts/postgres/data{{ postgres_version }}/postgresql.conf
+      register: postgres_data_exists
+      become: true
+      changed_when: false
+      failed_when: postgres_data_exists.rc != 0 and postgres_data_exists.rc != 1
+
+    - ansible.builtin.include_tasks: jails/postgres-init.yml
+      when: postgres_data_exists.rc == 1
+
+    - ansible.builtin.include_tasks: jails/postgres-conf.yml
+
   when: "main_nas"

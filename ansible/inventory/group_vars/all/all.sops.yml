@@ -2,6 +2,7 @@ kind: Secret
 secret_domain: ENC[AES256_GCM,data:SjdnR9pDjveodvo=,iv:GKvdD7c3bmaQN+CAYoKwAy78em9vYljGyl6VfGmJk9E=,tag:hz92J7d1NokEeyB6vxr3Uw==,type:str]
 secret_cluster_domain: ENC[AES256_GCM,data:o+bvKkMvPfZ9+oobxsZj,iv:iJTqLF0+3v/kMHWJIUXQK3++CoLI+fC6IOrQgpiXofw=,tag:XWEid6zEhdpxka88rW2mkw==,type:str]
 secret_email_domain: ENC[AES256_GCM,data:xQwrd9Tgcgpq+I63KA8=,iv:w8fs1kXFwuRBNiswZMu5i/bOazqUPRxEwMWm0z/igxg=,tag:FaWpGtK7ldOEcHgXxZX6/A==,type:str]
+postgres_password: ENC[AES256_GCM,data:xNkFUfAWE3YLRYbzHfoZRg==,iv:RDLvBCkF+cRlHZumScZbRmDsymoSjlESMBaITk0FmxE=,tag:BJdUa2NcTSNoHlng1OKjJA==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -17,8 +18,8 @@ sops:
             c3JkOFZzYnpINjQ5QnNkaE9IYUdXL3MKsBelDv/z5nTYC6/1Zm8kmzqEoLBVPnhy
             v0v/6n1GksmzslbNdKhy+xtxHYrqouhc2P4hNi0R8p8u76RXERN5fg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2022-07-15T13:41:20Z"
-    mac: ENC[AES256_GCM,data:j2ugchoPb4S5IFQjtgLOi9q715lkn+al0eM8yyIChSlbzGJB+tFi7c3Wt5r/Q1eOpCb5jvUI5XqvD9D9tTQt2yAedRADaQRnOhEa2sS/wNVgl16ZSmC3vxoQLmfR2gzf+x3MiwjnLUjh6uXhtGt/c3O6+LEOqHSACjJFo+nDkj4=,iv:LenINPlwtvqZtKO+EoIhFWRZ971jrfIOTP43cRmHCHw=,tag:qg+QTku/5w5mEY+rZEGB1w==,type:str]
+    lastmodified: "2022-07-23T10:38:21Z"
+    mac: ENC[AES256_GCM,data:VchuuJFJO63sWqBgOPQNgtzve5fA5PGo1j6UQGv+v4mFcSbb8+P0ihpynZl6bNcqdA5+dgYalsFpEOsjmHeshn9d1R9dtSiycK8k1IFUdsvbfnRTdxTwyc93xT2AGgGOstq2kPxBQ6CKHDJTI/yMpuzdd6ZoKnlxFW4+orxAf5c=,iv:w6HGOtuA6XVOaZFzB8lcSh3qEatGD3GudhbjzeJQ82k=,tag:lSvDhiiI1zhoCypHliaUXQ==,type:str]
     pgp: []
     unencrypted_regex: ^(kind)$
     version: 3.7.3
