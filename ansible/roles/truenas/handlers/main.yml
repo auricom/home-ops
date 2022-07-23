@@ -1,0 +1,7 @@
+---
+- name: restart postgresql
+  ansible.builtin.service:
+    name: postgresql
+    state: restarted
+  delegate_to: "{{ postgres_jail_ip.stdout }}"
+  remote_user: root

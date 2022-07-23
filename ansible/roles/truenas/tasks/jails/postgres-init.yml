@@ -1,0 +1,143 @@
+---
+- name: jail-postgres | get jail ip
+  ansible.builtin.shell:
+    cmd: iocage exec postgres ifconfig epair0b | grep 'inet' | awk -F ' ' '{ print $2 }'
+  changed_when: false
+  register: postgres_jail_ip
+  become: true
+
+- block:
+    - name: jail-postgres | create zfs pools
+      community.general.zfs:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "{{ pool_name }}/jail-mounts"
+        - "{{ pool_name }}/jail-mounts/postgres"
+        - "{{ pool_name }}/jail-mounts/postgres/data{{ postgres_version }}"
+
+    - name: jail-postgres | configure zfs pool postgresql
+      community.general.zfs:
+        name: "{{ pool_name }}/jail-mounts/postgres"
+        state: present
+        extra_zfs_properties:
+          atime: off
+          setuid: off
+
+    - name: jail-postgres | configure zfs pool postgresql
+      community.general.zfs:
+        name: "{{ pool_name }}/jail-mounts/postgres"
+        state: present
+        extra_zfs_properties:
+          atime: off
+          setuid: off
+
+    - name: jail-postgres | create empty data{{ postgres_version }} dir
+      ansible.builtin.shell:
+        cmd: iocage exec postgres mkdir -p /var/db/postgres/data{{ postgres_version }}
+
+    - name: jail-postgres | mount data{{ postgres_version }}
+      ansible.builtin.shell:
+        cmd: iocage fstab -a postgres /mnt/{{ pool_name }}/jail-mounts/postgres/data{{ postgres_version }} /var/db/postgres/data{{ postgres_version }} nullfs rw 0 0
+  become: true
+
+- block:
+    - name: jail-postgres | packages
+      community.general.pkgng:
+        name:
+          - postgresql{{ postgres_version }}-server
+          - postgresql{{ postgres_version }}-contrib
+          - postgresql{{ postgres_version }}-client
+          - py39-pip
+        state: present
+
+    - name: jail-postgres | pip packages
+      ansible.builtint.pip:
+        name: psycopg2
+        state: present
+
+    - name: jail-postgres | change postgres/data{{ postgres_version }} mod
+      ansible.builtin.file:
+        path: /var/db/postgres/data{{ postgres_version }}
+        owner: postgres
+        group: postgres
+
+    - name: jail-postgres | initdb
+      ansible.builtin.shell:
+        cmd: su -m postgres -c 'initdb -E UTF-8 /var/db/postgres/data{{ postgres_version }}'
+
+    - name: jail-postgres | move base and pg_wal
+      ansible.builtin.shell:
+        cmd: su -m postgres -c 'mv /var/db/postgres/data{{ postgres_version }}/{{ item }} /var/db/postgres/data{{ postgres_version }}/{{ item }}0'
+      loop:
+        - base
+        - pg_wal
+
+    - name: jail-postgres | create base and pg_wal empty dirs
+      ansible.builtin.file:
+        path: /var/db/postgres/data{{ postgres_version }}/{{ item }}
+        state: directory
+        owner: postgres
+        group: postgres
+      loop:
+        - base
+        - pg_wal
+
+  delegate_to: "{{ postgres_jail_ip.stdout }}"
+  remote_user: root
+
+- block:
+    - name: jail-postgres | create missing zfs pools
+      community.general.zfs:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "{{ pool_name }}/jail-mounts/postgres/data{{ postgres_version }}/base"
+        - "{{ pool_name }}/jail-mounts/postgres/data{{ postgres_version }}/pg_wal"
+
+    - name: jail-postgres | mount base
+      ansible.builtin.shell:
+        cmd: iocage fstab -a postgres /mnt/{{ pool_name }}/jail-mounts/postgres/data{{ postgres_version }}/{{ item }} /var/db/postgres/data{{ postgres_version }}/{{ item }} nullfs rw 0 0
+      loop:
+        - base
+        - pg_wal
+
+  become: true
+
+- block:
+    - name: jail-postgres | move base and pg_wal content to mounts
+      ansible.builtin.shell:
+        cmd: mv /var/db/postgres/data{{ postgres_version }}/{{ item }}0/* /var/db/postgres/data{{ postgres_version }}/{{ item }}/; rmdir /var/db/postgres/data{{ postgres_version }}/{{ item }}0
+      loop:
+        - base
+        - pg_wal
+
+    - name: jail-postgres | change mod
+      ansible.builtin.file:
+        path: /var/db/postgres/data{{ postgres_version }}/{{ item }}
+        state: directory
+        owner: postgres
+        group: postgres
+        recurse: true
+      loop:
+        - base
+        - pg_wal
+
+    - name: jail-postgres | enable postgresql service
+      community.general.sysrc:
+        name: postgresql_enable
+        state: present
+        value: "YES"
+
+    - name: jail-postgres | start postgresql service
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+
+    - name: jail-postgres | change postgres password
+      postgresql_query:
+        login_user: postgres
+        query: ALTER USER postgres PASSWORD '{{ postgres_password }}'
+
+  delegate_to: "{{ postgres_jail_ip.stdout }}"
+  remote_user: root

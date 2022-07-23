@@ -60,6 +60,7 @@
 - name: packages-common | python
   ansible.builtin.pip:
     name:
+      - ansible-lint
       - borgbackup
       - yt-dlp
       - s-tui
