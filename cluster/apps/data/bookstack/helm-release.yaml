@@ -28,7 +28,7 @@ spec:
 
     image:
       repository: ghcr.io/linuxserver/bookstack
-      tag: version-v22.06.2
+      tag: version-v22.07.1
 
     service:
       main:
