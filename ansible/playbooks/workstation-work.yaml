@@ -76,7 +76,10 @@
         filename: vscodium
     - name: alacritty | apt repository
       ansible.builtin.apt_repository:
-        repo: "ppa:mmstick76/alacritty"
+        repo: "{{ item }}"
+      loop:
+        - "ppa:mmstick76/alacritty"
+        - "ppa:fish-shell/release-3"
     - name: packages | apt
       ansible.builtin.apt:
         name:
@@ -106,3 +109,7 @@
           - sops
           - gh
           - chezmoi
+          - k9s
+          - awscli
+          - kubetcx
+          - kubens
