@@ -27,7 +27,7 @@ spec:
       nameOverride: *app
 
     image:
-      repository: ixsystems/truecommand
+      repository: docker.io/ixsystems/truecommand
       tag: 2.1.1
 
     service:
