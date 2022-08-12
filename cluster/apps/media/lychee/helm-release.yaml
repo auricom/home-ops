@@ -33,7 +33,7 @@ spec:
     env:
       PHP_TZ: ${TIMEZONE}
       DB_CONNECTION: pgsql
-      DB_HOST: postgresql-kube.data.svc.cluster.local.
+      DB_HOST: postgres.${SECRET_DOMAIN}
       DB_PORT: 5432
       DB_DATABASE: lychee
       DB_USERNAME: lychee

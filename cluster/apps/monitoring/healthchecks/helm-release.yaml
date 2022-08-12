@@ -28,7 +28,7 @@ spec:
       EMAIL_USE_TLS: "True"
       ALLOWED_HOSTS: "*"
       DB: postgres
-      DB_HOST: postgresql-kube.data.svc.cluster.local.
+      DB_HOST: postgres.${SECRET_DOMAIN}
       DB_PORT: 5432
       DB_NAME: healthchecks
       DB_USER: healthchecks

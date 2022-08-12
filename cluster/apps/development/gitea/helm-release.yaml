@@ -38,7 +38,7 @@ spec:
           RUN_AT_START: true
         database:
           DB_TYPE: postgres
-          HOST: postgresql-kube.data.svc.cluster.local.:5432
+          HOST: postgres.${SECRET_DOMAIN}:5432
           NAME: gitea
           USER: gitea
           PASSWD: ${SECRET_GITEA_DB_PASSWORD}

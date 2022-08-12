@@ -129,7 +129,7 @@ spec:
       storage:
         postgres:
           enabled: true
-          host: postgresql-kube.data.svc.cluster.local
+          host: postgres.${SECRET_DOMAIN}
 
       notifier:
         smtp:

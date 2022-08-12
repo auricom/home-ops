@@ -27,7 +27,7 @@ spec:
       DEBUG: "0"
       ALLOWED_HOSTS: "*"
       DB_ENGINE: django.db.backends.postgresql
-      POSTGRES_HOST: postgresql-kube.data.svc.cluster.local.
+      POSTGRES_HOST: postgres.${SECRET_DOMAIN}
       POSTGRES_PORT: 5432
       POSTGRES_DB: recipes
       POSTGRES_USER: recipes

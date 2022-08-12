@@ -34,7 +34,7 @@ spec:
       APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
       APP_PORT: 22300
       DB_CLIENT: pg
-      POSTGRES_HOST: postgresql-kube.data.svc.cluster.local.
+      POSTGRES_HOST: postgres.${SECRET_DOMAIN}
       POSTGRES_PORT: 5432
       POSTGRES_DATABASE: joplin
       POSTGRES_USER: joplin
