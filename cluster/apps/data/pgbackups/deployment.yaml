@@ -32,7 +32,7 @@ spec:
             - name: POSTGRES_USER
               value: postgres
             - name: POSTGRES_PASSWORD
-              value: ${SECRET_POSTGRESQL_KUBE_POSTGRES_PASSWORD}
+              value: ${SECRET_POSTGRESQL_POSTGRES_PASSWORD}
             - name: POSTGRES_EXTRA_OPTS
               value: "-Z9 --schema=public --blobs"
             - name: SCHEDULE
