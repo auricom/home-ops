@@ -130,6 +130,8 @@ spec:
         postgres:
           enabled: true
           host: postgres.${SECRET_DOMAIN}
+          ssl:
+            mode: verify-full
 
       notifier:
         smtp:

@@ -26,9 +26,9 @@ spec:
           image: ghcr.io/auricom/postgres-backup-local:v14.4@sha256:b70f8ca203b38240c87c86c2d95f86d1e8e1e62602ebe1e8fd5830c2376b889e
           env:
             - name: POSTGRES_HOST
-              value: postgresql-kube.data.svc.cluster.local.
+              value: postgres.${SECRET_DOMAIN}
             - name: POSTGRES_DB
-              value: authelia,drone,freshrss,gitea,hass,healthchecks,joplin,lychee,postgres,recipes,sharry,vaultwarden,vikunja,wallabag
+              value: authelia,freshrss,gitea,hass,healthchecks,joplin,lychee,recipes,sharry,vaultwarden,vikunja,wallabag
             - name: POSTGRES_USER
               value: postgres
             - name: POSTGRES_PASSWORD

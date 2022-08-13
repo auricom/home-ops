@@ -43,6 +43,7 @@ spec:
           USER: gitea
           PASSWD: ${SECRET_GITEA_DB_PASSWORD}
           SCHEMA: public
+          SSL_MODE: verify-full
         server:
           SSH_PORT: 22
           SSH_LISTEN_PORT: 30322
