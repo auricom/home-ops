@@ -11,9 +11,9 @@ resources:
   - mariadb
   - pgadmin
   - pgbackups
-  - recipes
   - resilio-sync
   - sharry
+  - tandoor
   - truecommand
   - vaultwarden
   - vikunja

@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: recipes
+  name: tandoor
   namespace: data
 spec:
   interval: 5m
@@ -64,10 +64,10 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         hosts:
-          - host: "recipes.${SECRET_CLUSTER_DOMAIN}"
+          - host: "tandoor.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - "recipes.${SECRET_CLUSTER_DOMAIN}"
+              - "tandoor.${SECRET_CLUSTER_DOMAIN}"
