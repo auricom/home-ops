@@ -27,7 +27,7 @@
 
     - name: jails | create jail
       ansible.builtin.shell:
-        cmd: iocage create -r {{ release.stdout }} -n {{ item.item }} dhcp=on
+        cmd: iocage create -r {{ release.stdout }} -n {{ item.item }} dhcp=on boot=on
       loop: "{{ jails_check.results }}"
       when: item.rc == 1
       become: true
