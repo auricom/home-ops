@@ -8,7 +8,7 @@
 
 - name: jail-postgres | copy letsencrypt certificate
   ansible.builtin.copy:
-    src: /mnt/storage/home/homelab/letsencrypt/xpander.ovh/{{ item.src }}
+    src: /mnt/storage/home/homelab/letsencrypt/{{ secret_domain }}/{{ item.src }}
     remote_src: true
     dest: /mnt/storage/jail-mounts/postgres/data{{ postgres_version }}/{{ item.dest }}
     owner: 770

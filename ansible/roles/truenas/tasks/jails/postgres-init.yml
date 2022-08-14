@@ -52,7 +52,7 @@
         state: present
 
     - name: jail-postgres | pip packages
-      ansible.builtint.pip:
+      ansible.builtin.pip:
         name: psycopg2
         state: present
 

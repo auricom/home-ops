@@ -1,0 +1,5 @@
+HostKey /keys/host/ssh_host_rsa_key
+HostKey /keys/host/ssh_host_ed25519_key
+AuthorizedKeysFile    .ssh/authorized_keys
+Subsystem    sftp    /usr/libexec/sftp-server
+PermitRootLogin yes

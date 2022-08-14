@@ -1,0 +1,112 @@
+---
+- name: jail-borgserver | get jail ip
+  ansible.builtin.shell:
+    cmd: iocage exec borgserver ifconfig epair0b | grep 'inet' | awk -F ' ' '{ print $2 }'
+  changed_when: false
+  register: borgserver_jail_ip
+  become: true
+
+- block:
+    - name: jail-borgserver | create zfs pools
+      community.general.zfs:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "{{ pool_name }}/jail-mounts"
+        - "{{ pool_name }}/jail-mounts/borgserver"
+        - "{{ pool_name }}/jail-mounts/borgserver/backups"
+        - "{{ pool_name }}/jail-mounts/borgserver/keys"
+
+    - name: jail-borgserver | create empty dirs
+      ansible.builtin.shell:
+        cmd: iocage exec borgserver mkdir -p /{{ item }}
+      loop:
+        - backups
+        - keys
+
+    - name: jail-borgserver | mount dirs
+      ansible.builtin.shell:
+        cmd: iocage fstab -a borgserver /mnt/{{ pool_name }}/jail-mounts/borgserver/{{ item }} /{{ item }} nullfs rw 0 0
+      loop:
+        - backups
+        - keys
+  become: true
+
+- block:
+    - name: jail-borgserver | packages
+      community.general.pkgng:
+        name:
+          #- py39-borgbackup
+          - sshguard
+        state: present
+
+    - name: jail-borgserver | download borg cli
+      ansible.builtin.get_url:
+        url: https://github.com/borgbackup/borg/releases/download/1.2.1/borg-freebsd64
+        dest: /usr/local/bin/borg
+        mode: 0755
+
+    - name: jail-borgserver | user borg
+      ansible.builtin.user:
+        name: borg
+        uid: 1000
+        state: present
+
+    - name: jail-borgserver | create directories
+      ansible.builtin.file:
+        path: /home/borg/.ssh
+        owner: 1000
+        group: 1000
+        state: directory
+
+    - name: jail-borgserver | authorized_keys
+      ansible.builtin.file:
+        path: /home/borg/.ssh/authorized_keys
+        owner: 1000
+        group: 1000
+        state: touch
+
+    - name: jail-borgserver | change folders mod
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: 1000
+        group: 1000
+      loop:
+        - /backups
+        - /keys
+
+    - name: jail-borgserver | copy sshd_config
+      ansible.builtin.copy:
+        src: borgserver/sshd_config
+        dest: /etc/ssh/sshd_config'
+        mode: 0644
+
+    - name: jail-borgserver | copy borgserver rc.d
+      ansible.builtin.copy:
+        src: borgserver/rc.d
+        dest: /etc/rc.d/borgserver
+        mode: 0755
+
+    - name: jail-borgserver | configure sshguard
+      community.general.sysrc:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+      loop:
+        - { name: "sshguard_enable", value: "YES" }
+        - { name: "sshguard_danger_thresh", value: "30" }
+        - { name: "sshguard_release_interval", value: "600" }
+        - { name: "sshguard_reset_interval", value: "7200" }
+
+    - name: jail-borgserver | start sshguard service
+      ansible.builtin.service:
+        name: sshguard
+        state: started
+
+    - name: jail-borgserver | restart sshd service
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
+
+  delegate_to: "{{ borgserver_jail_ip.stdout }}"
+  remote_user: root

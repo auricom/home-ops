@@ -1,9 +1,4 @@
 ---
-- name: jail-prepare | {{ outside_item.item }} | start jail
-  ansible.builtin.shell:
-    cmd: iocage start {{ outside_item.item }}
-  become: true
-
 - name: jail-prepare | {{ outside_item.item }} | create .ssh directory
   ansible.builtin.shell:
     cmd: iocage exec {{ outside_item.item }} 'mkdir -p /root/.ssh; echo "" > /root/.ssh/authorized_keys; chmod 700 /root/.ssh; chmod 600 /root/.ssh/authorized_keys'
