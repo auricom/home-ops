@@ -28,7 +28,7 @@ spec:
 
     image:
       repository: ghcr.io/k8s-at-home/jellyfin
-      tag: v10.8.3
+      tag: v10.8.4
 
     persistence:
       config:
