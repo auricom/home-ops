@@ -57,7 +57,7 @@ spec:
 
     additionalContainers:
       - name: api
-        image: vikunja/api:0.19.0
+        image: vikunja/api:0.19.2
         env:
           - name: VIKUNJA_DATABASE_TYPE
             value: "postgres"
