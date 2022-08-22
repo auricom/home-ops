@@ -27,7 +27,7 @@ spec:
       nameOverride: *app
     image:
       repository: ghcr.io/k8s-at-home/theme-park
-      tag: v1.10.0
+      tag: v1.10.1
     service:
       main:
         ports:
