@@ -28,7 +28,7 @@ spec:
 
     image:
       repository: lycheeorg/lychee-laravel
-      tag: v4.5.3
+      tag: v4.6.0
 
     env:
       PHP_TZ: ${TIMEZONE}
