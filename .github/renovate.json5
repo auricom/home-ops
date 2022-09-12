@@ -11,8 +11,7 @@
     "github>auricom/home-ops//.github/renovate/autoMerge.json5",
     "github>auricom/home-ops//.github/renovate/commitMessage.json5",
     "github>auricom/home-ops//.github/renovate/groups.json5",
-    "github>auricom/home-ops//.github/renovate/labels.json5",
-    "github>auricom/home-ops//.github/renovate/semanticCommits.json5"
+    "github>auricom/home-ops//.github/renovate/labels.json5"
   ],
   "platform": "github",
   "username": "feisar-bot[bot]",
@@ -25,11 +24,8 @@
   "suppressNotifications": ["prIgnoreNotification"],
   "rebaseWhen": "conflicted",
   "commitBodyTable": true,
-  "ignorePaths": [
-    "cluster/base/",
-    "**/backup-job.yaml",
-    "**/trash-updater-job.yaml"
-  ],
+  "commitMessagePrefix": "⬆️",
+  "ignorePaths": [],
   // set up renovate managers
   "docker-compose": {
     "fileMatch": ["ansible/.+/docker-compose.*\\.ya?ml(\\.j2)?$"]
