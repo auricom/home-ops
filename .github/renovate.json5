@@ -78,6 +78,7 @@
     },
     {
       "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
       "commitMessageExtra": "to {{newVersion}}"
     },
     // custom versioning
