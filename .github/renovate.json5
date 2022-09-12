@@ -1,123 +1,118 @@
 {
-  extends: [
-    ":enableRenovate",
+  "extends": [
     "config:base",
+    "docker:enableMajor",
     ":disableRateLimiting",
     ":dependencyDashboard",
     ":semanticCommits",
-    ":separatePatchReleases",
-    "docker:enableMajor",
     ":enablePreCommit",
-    "github>auricom/home-ops//.github/renovate/autoMerge",
-    "github>auricom/home-ops//.github/renovate/groups",
-    "github>auricom/home-ops//.github/renovate/labels",
-    "github>auricom/home-ops//.github/renovate/semanticCommits",
+    ":automergeDigest",
+    ":automergeBranchPush",
+    "github>auricom/home-ops//.github/renovate/autoMerge.json5",
+    "github>auricom/home-ops//.github/renovate/commitMessage.json5",
+    "github>auricom/home-ops//.github/renovate/groups.json5",
+    "github>auricom/home-ops//.github/renovate/labels.json5",
+    "github>auricom/home-ops//.github/renovate/semanticCommits.json5"
   ],
-  platform: "github",
-  username: "feisar-bot[bot]",
-  repositories: ["auricom/home-ops"],
-  assignees: ["auricom"],
-  onboarding: false,
-  requireConfig: false,
-  gitAuthor: "feisar-bot <feisar-bot[bot]@users.noreply.github.com>",
-  dependencyDashboardTitle: "Renovate Dashboard 🤖",
-  suppressNotifications: ["prIgnoreNotification"],
-  rebaseWhen: "conflicted",
-  ignorePaths: [
+  "platform": "github",
+  "username": "feisar-bot[bot]",
+  "repositories": ["auricom/home-ops"],
+  "assignees": ["auricom"],
+  "onboarding": false,
+  "requireConfig": false,
+  "gitAuthor": "feisar-bot <feisar-bot[bot]@users.noreply.github.com>",
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "suppressNotifications": ["prIgnoreNotification"],
+  "rebaseWhen": "conflicted",
+  "commitBodyTable": true,
+  "ignorePaths": [
     "cluster/base/",
     "**/backup-job.yaml",
-    "**/trash-updater-job.yaml",
-    "**/travelstories/**",
+    "**/trash-updater-job.yaml"
   ],
   // set up renovate managers
   "docker-compose": {
-    fileMatch: [
-      "(^|/)docker-compose.*.ya?ml$",
-      "(^|/)docker-compose.*.ya?ml.j2$",
-    ],
+    "fileMatch": ["ansible/.+/docker-compose.*\\.ya?ml(\\.j2)?$"]
+  },
+  "flux": {
+    "fileMatch": ["cluster/.+\\.ya?ml$"]
   },
   "helm-values": {
-    fileMatch: ["cluster/.+/helm-release\\.yaml$"],
+    "fileMatch": ["cluster/.+\\.ya?ml$"]
   },
-  helmv3: {
-    fileMatch: ["charts/.+/Chart\\.yaml$"],
+  "kubernetes": {
+    "fileMatch": ["cluster/.+\\.ya?ml$"]
   },
-  kubernetes: {
-    fileMatch: ["cluster/.+\\.yaml$"],
-  },
-  flux: {
-    fileMatch: ["cluster/.+\\.yaml$"],
-  },
-  regexManagers: [
+  "regexManagers": [
     {
-      description: "Process CRD dependencies",
-      fileMatch: ["cluster/configuration/crds/.+\\.ya?ml$"],
-      matchStrings: [
+      "description": "Process CRD dependencies",
+      "fileMatch": ["cluster/.+\\.ya?ml$"],
+      "matchStrings": [
         // GitRepository where 'Git release/tag' matches 'Helm' version
         "registryUrl=(?<registryUrl>\\S+) chart=(?<depName>\\S+)\n.*?(?<currentValue>[^-\\s]*)\n",
         // Kustomization where 'GitHub release artifact URL' matches 'Docker image' version
-        "datasource=(?<datasource>\\S+) image=(?<depName>\\S+)\n.*?-\\s(.*?)/(?<currentValue>[^/]+)/[^/]+\n",
+        "datasource=(?<datasource>\\S+) image=(?<depName>\\S+)\n.*?-\\s(.*?)/(?<currentValue>[^/]+)/[^/]+\n"
       ],
-      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}helm{{/if}}",
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}helm{{/if}}"
     },
     {
-      description: "Process various dependencies",
-      fileMatch: ["ansible/.+\\.ya?ml$", "cluster/.+\\.ya?ml$"],
-      matchStrings: [
-        'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?"(?<currentValue>.*)"\n',
+      "description": "Process various dependencies",
+      "fileMatch": ["ansible/.+\\.ya?ml$", "cluster/.+\\.ya?ml$"],
+      "matchStrings": [
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?\"(?<currentValue>.*)\"\n"
       ],
-      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
-      versioningTemplate: "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     },
     {
-      description: "Process raw GitHub URLs",
-      fileMatch: ["cluster/.+\\.ya?ml$"],
-      matchStrings: [
-        "https:\\/\\/raw.githubusercontent.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*",
+      "description": "Process raw GitHub URLs",
+      "fileMatch": ["cluster/.+\\.ya?ml$"],
+      "matchStrings": [
+        "https:\\/\\/raw.githubusercontent.com\\/(?<depName>[\\w\\d\\-_]+\\/[\\w\\d\\-_]+)\\/(?<currentValue>[\\w\\d\\.\\-_]+)\\/.*"
       ],
-      datasourceTemplate: "github-releases",
-      versioningTemplate: "semver",
-    },
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    }
   ],
-  packageRules: [
+  "packageRules": [
     // setup datasources
     {
-      matchDatasources: ["helm"],
-      ignoreDeprecated: true,
+      "matchDatasources": ["helm"],
+      "ignoreDeprecated": true
     },
     {
-      matchDatasources: ["docker"],
-      commitMessageExtra: "to {{newVersion}}",
+      "matchDatasources": ["docker"],
+      "commitMessageExtra": "to {{newVersion}}"
     },
     // custom versioning
     {
-      matchDatasources: ["docker"],
-      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>.*)$",
-      matchPackageNames: ["blakeblackshear/frigate"],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>.*)$",
+      "matchPackageNames": ["blakeblackshear/frigate"]
     },
     {
-      matchDatasources: ["docker"],
-      versioning: "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$",
-      matchPackageNames: ["quay.io/minio/minio"],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$",
+      "matchPackageNames": ["quay.io/minio/minio"]
     },
     {
-      matchDatasources: ["docker"],
-      versioning: "loose",
-      matchPackageNames: ["ghcr.io/k8s-at-home/qbittorrent"],
+      "matchDatasources": ["docker"],
+      "versioning": "loose",
+      "matchPackageNames": ["ghcr.io/k8s-at-home/qbittorrent"]
     },
     {
-      matchDatasources: ["docker"],
-      versioning: "regex:^version-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      matchPackageNames: [
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^version-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      "matchPackageNames": [
         "ghcr.io/linuxserver/bookstack",
         "ghcr.io/linuxserver/calibre",
-        "ghcr.io/linuxserver/healthchecks",
-      ],
+        "ghcr.io/linuxserver/healthchecks"
+      ]
     },
     {
-      matchDatasources: ["docker"],
-      versioning: "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      matchPackageNames: ["ghcr.io/linuxserver/resilio-sync"],
-    },
-  ],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      "matchPackageNames": ["ghcr.io/linuxserver/resilio-sync"]
+    }
+  ]
 }

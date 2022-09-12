@@ -1,0 +1,34 @@
+{
+  "packageRules": [
+    {
+      "description": "Auto merge container digests",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "branch",
+      "requiredStatusChecks": null,
+      "matchUpdateTypes": ["digest"],
+      "matchPackagePattern": ["ghcr.io/k8s-at-home", "ghcr.io/auricom"]
+    },
+    {
+      "description": "Auto merge containers",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "branch",
+      "requiredStatusChecks": null,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": ["ghcr.io/onedr0p/prowlarr-nightly"]
+    },
+    {
+      "description": "Auto merge GitHub Actions",
+      "matchDatasources": ["github-tags"],
+      "automerge": true,
+      "automergeType": "branch",
+      "requiredStatusChecks": null,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": [
+        "lycheeverse/lychee-action",
+        "renovatebot/github-action"
+      ]
+    }
+  ]
+}
