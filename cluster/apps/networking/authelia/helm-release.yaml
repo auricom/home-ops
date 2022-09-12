@@ -125,7 +125,16 @@ spec:
       session:
         redis:
           enabled: false
-
+          high_availability:
+            enabled: true
+            sentinel_name: redis-master
+            nodes:
+              - host: redis-node-0.redis-headless.default.svc.cluster.local
+                port: 26379
+              - host: redis-node-1.redis-headless.default.svc.cluster.local
+                port: 26379
+              - host: redis-node-2.redis-headless.default.svc.cluster.local
+                port: 26379
       storage:
         postgres:
           enabled: true
@@ -142,6 +151,44 @@ spec:
           username: ${SECRET_AUTHELIA_SMTP_EMAIL}
           sender: ${SECRET_AUTHELIA_SMTP_EMAIL}
           identifier: ${SECRET_CLUSTER_DOMAIN}
+
+      identity_providers:
+        oidc:
+          enabled: true
+          cors:
+            endpoints: ["authorization", "token", "revocation", "introspection"]
+            allowed_origins_from_client_redirect_uris: true
+          clients:
+            - id: gitea
+              secret: "${SECRET_GITEA_OAUTH_CLIENT_SECRET}"
+              public: false
+              authorization_policy: one_factor
+              scopes: ["openid", "profile", "groups", "email"]
+              redirect_uris:
+                [
+                  "https://gitea.${SECRET_CLUSTER_DOMAIN}/user/oauth2/authelia/callback",
+                ]
+              userinfo_signing_algorithm: none
+            - id: grafana
+              description: Grafana
+              secret: "${SECRET_GRAFANA_OAUTH_CLIENT_SECRET}"
+              public: false
+              authorization_policy: one_factor
+              pre_configured_consent_duration: 1y
+              scopes: ["openid", "profile", "groups", "email"]
+              redirect_uris:
+                ["https://grafana.${SECRET_CLUSTER_DOMAIN}/login/generic_oauth"]
+              userinfo_signing_algorithm: none
+            - id: outline
+              description: Outline
+              secret: "${SECRET_OUTLINE_OAUTH_CLIENT_SECRET}"
+              public: false
+              authorization_policy: one_factor
+              pre_configured_consent_duration: 1y
+              scopes: ["openid", "profile", "email", "offline_access"]
+              redirect_uris:
+                ["https://docs.${SECRET_CLUSTER_DOMAIN}/auth/oidc.callback"]
+              userinfo_signing_algorithm: none
 
     secret:
       storage:
