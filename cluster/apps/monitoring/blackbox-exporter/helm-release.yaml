@@ -27,7 +27,6 @@ spec:
 
     image:
       repository: quay.io/prometheus/blackbox-exporter
-    allowIcmp: true
 
     podAnnotations:
       configmap.reloader.stakater.com/reload: "blackbox-exporter"
@@ -51,43 +50,7 @@ spec:
           timeout: 30s
 
     serviceMonitor:
-      enabled: true
-      defaults:
-        labels:
-          release: prometheus
-        interval: 2m
-        scrapeTimeout: 30s
-      targets:
-        - module: http_2xx
-          name: opnsense-http
-          url: "https://opnsense.${SECRET_DOMAIN}"
-        - module: http_2xx
-          name: truenas-http
-          url: "https://truenas.${SECRET_DOMAIN}"
-        - module: http_2xx
-          name: truenas-remote-http
-          url: "https://truenas-remote.${SECRET_DOMAIN}"
-        - name: truenas-icmp
-          url: "${LOCAL_LAN_TRUENAS}"
-          module: icmp
-        - name: truenas-remote-icmp
-          url: "${LOCAL_LAN_TRUENAS_REMOTE}"
-          module: icmp
-        - name: openmediavault-icmp
-          url: "${LOCAL_LAN_OPENMEDIAVAULT}"
-          module: icmp
-        - name: k3s-master-icmp
-          url: "${LOCAL_LAN_K3SSERVER}"
-          module: icmp
-        - name: k3s-worker1-icmp
-          url: "${LOCAL_LAN_K3SWORKER1}"
-          module: icmp
-        - name: k3s-worker2-icmp
-          url: "${LOCAL_LAN_K3SWORKER2}"
-          module: icmp
-        - name: k3s-worker3-icmp
-          url: "${LOCAL_LAN_K3SWORKER3}"
-          module: icmp
+      enabled: false
 
     prometheusRule:
       enabled: true
