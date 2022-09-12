@@ -19,7 +19,7 @@ spec:
           restartPolicy: OnFailure
           initContainers:
             - name: render-configs
-              image: ghcr.io/k8s-at-home/recyclarr:v2.4.1
+              image: ghcr.io/k8s-at-home/recyclarr:v2.5.0
               env:
                 - name: RADARR_API_KEY
                   value: ${SECRET_RADARR_API_KEY}
@@ -37,7 +37,7 @@ spec:
                   mountPath: /shared
           containers:
             - name: sonarr
-              image: ghcr.io/k8s-at-home/recyclarr:v2.4.1
+              image: ghcr.io/k8s-at-home/recyclarr:v2.5.0
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ
@@ -56,7 +56,7 @@ spec:
                   subPath: recyclarr.yaml
                   readOnly: true
             - name: radarr
-              image: ghcr.io/k8s-at-home/recyclarr:v2.4.1
+              image: ghcr.io/k8s-at-home/recyclarr:v2.5.0
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ
