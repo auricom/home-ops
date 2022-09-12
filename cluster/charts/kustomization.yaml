@@ -4,8 +4,8 @@ kind: Kustomization
 resources:
   - authelia-charts.yaml
   - authentik-charts.yaml
-  - benji-charts.yaml
   - bitnami-charts.yaml
+  - bjw-s-charts.yaml
   - cert-manager-webhook-ovh.yaml
   - emxq-charts.yaml
   - external-dns-charts.yaml

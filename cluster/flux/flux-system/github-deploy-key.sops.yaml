@@ -1,0 +1,31 @@
+# yamllint disable
+# https://github.com/k8s-at-home/template-cluster-k3s/issues/324
+apiVersion: v1
+kind: Secret
+metadata:
+    name: github-deploy-key
+    namespace: flux-system
+stringData:
+    identity: ENC[AES256_GCM,data:9W1QtXKVHOZtK/flmsoU5+h1BTmG46s+JY98Qk9Qxt/WccZIeqtiwHozp2popqJSwOqMTzbMJuFiELOrzxY8mc7vntTuLhsguRNPPHfsXPS+ScIio32jP/cxKUl2f6myphnSWwvSmRcH1L/ixzHI5UQC1Jh6GHU/I78esqNcaucjBHqSuu118dYd0eiGfK3eLyyuUFAXP/f5UzetPsP/Mq6V2ha3svop9ZGVdVo/VjWqR2JJ/BBYzL3GLqFB6hnifLZxQ+cKun2KQKbhvhcFXkPll3ZAvgpIYm62fwfqVws98Lsn6uuByWKdEuPMgl9WtU4lfJeWso9G+sWGyinfFRzodOHk8exSsAT0g68x2IAGY7ZjQTgF5RDmii40OQBLC/I0VIjgb3C7/O3CbnU+IBr7,iv:Z9C1WbJLa5dULnXvT1Z7C5xNbI3wCNsYZtp+mJYBJF8=,tag:/JpI9PsIIV1SbZPhhYzkZg==,type:str]
+    identidy.pub: ENC[AES256_GCM,data:oXByCEAnnEmC2ZZiXjPJqkyh3h6Dqk4SyYchIlsoLr5Y9KKKvGLwZ7yGNIhpSbU7PUYdp8NIO0LMeYrK5xfUEmFKBdZl3uZ6fWQ5IFNW32v/0lwg2ZJqUIdywPLvmbPTUg8+nkcLVMMJVgN8edjWsVz69OdkpIWdbaGf/+j75cIO2QbXIUUNXC0bEzOF46zSTD3UOeQpd86AxO1W4NuRH355bPmw0RytQB7bNG8svKu8/1Ymh4CIZAizDwOqihdu6W71LfiTsNsoENMSiw==,iv:eRNPkhiaoqd+Wit+C1NPxBMM0swqbC2MlRnSsXXx0oA=,tag:zjuKq38HE3Ma134dMhj8iQ==,type:str]
+    known_hosts: ENC[AES256_GCM,data:Lcmee02u0o3QQc+/kvdwUUaSMY6Hz0gAsfagIVbAh2BC/kMHESQDgVBq98SDW68myww5GTzRXsgtxVapXc6KpOmpBF0Fh39tEpe1Q1lvzRdNKSCJ6ffuA/kupM3QUstLr4jpXzQ3mw06vM0xrei7lmyycBzF+HL3P6byE9GtFkS88bQCj4w6phUa6ve3L7ImmqL4u/F+5note0HW4STS4nChWjGielx2vdEvEQ==,iv:grJD1VvcxXLNzZxf6jROx1mGDl/ViHhT6Ht56dQ1lYY=,tag:zQdj6V6p7VS9G3qVIj6eBg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1hhurqwmfvl9m3vh3hk8urulfzcdsrep2ax2neazqt435yhpamu3qj20asg
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGUkcxTmRBUGhLbHFiMmlC
+            RTIzK09EOFByYWladXFZUm4wZHlocmVieEhJCnI2emlSN1hjRGRQdXNueWZiWHpO
+            RHMzSE12S2lHeVF3bkJRQVBZMW5nM3cKLS0tIHhieFpPalp1YXZoQWd4MHlnRkQ3
+            Vm9McjJVUnVrODBzTzVsOEZPODR2c1kKWRxQqDWq+2YsNBLXYB8frfs7YWIo4FaZ
+            tZ7eUewEEhP/sWB5zc96NoVJMQSoE+Obn0A+FBLCQFaA7AY2G9hi1w==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2022-09-12T20:34:27Z"
+    mac: ENC[AES256_GCM,data:ypR+H3I5o5cVJL4ZJwwfffHm3LuEGC6vOYM3FRwCeP+U7giVCcXNv1qHGSHhuCVynHfZUPXuJTx1gliRk4UvkP877E+nlzJAlRN10uhXS4DNWvs86EIM1cDLVzBmsjWY+q3RhZ1FC5ceVNSLdtihKLeKQz7ICyFuXhBCbuTZko0=,iv:u/EuOR3jRwPdqnMWBAdeY/WF5XrNiuUpPYkkzSqh268=,tag:ShtGtcZaEKiWVkEsqorTiQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3
