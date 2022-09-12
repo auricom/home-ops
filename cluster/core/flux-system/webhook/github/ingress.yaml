@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webhook-receiver
+  namespace: flux-system
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "services.${SECRET_DOMAIN}."
+    external-dns/is-public: "true"
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - host: "flux-webhook.${SECRET_CLUSTER_DOMAIN}"
+      http:
+        paths:
+          - path: /hook/
+            pathType: Prefix
+            backend:
+              service:
+                name: webhook-receiver
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - "flux-webhook.${SECRET_CLUSTER_DOMAIN}"
