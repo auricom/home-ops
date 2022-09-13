@@ -28,7 +28,7 @@ spec:
             - name: POSTGRES_HOST
               value: postgres.${SECRET_DOMAIN}
             - name: POSTGRES_DB
-              value: authelia,freshrss,gitea,hass,healthchecks,joplin,lychee,recipes,sharry,vaultwarden,vikunja,wallabag
+              value: authelia,freshrss,gitea,hass,healthchecks,joplin,lychee,recipes,sharry,outline,vaultwarden,vikunja,wallabag
             - name: POSTGRES_USER
               value: postgres
             - name: POSTGRES_PASSWORD
