@@ -145,12 +145,10 @@ spec:
       notifier:
         smtp:
           enabled: true
-          enabledSecret: true
-          host: smtp.fastmail.com
-          port: 587
-          username: ${SECRET_AUTHELIA_SMTP_EMAIL}
-          sender: ${SECRET_AUTHELIA_SMTP_EMAIL}
-          identifier: ${SECRET_CLUSTER_DOMAIN}
+          host: smtp-relay.default.svc.cluster.local
+          port: 2525
+          sender: authelia@${SECRET_DOMAIN}
+          identifier: ${SECRET_DOMAIN}
 
       identity_providers:
         oidc:
@@ -199,10 +197,6 @@ spec:
         key: JWT_TOKEN
         value: "${SECRET_AUTHELIA_JWT_SECRET}"
         filename: JWT_TOKEN
-      smtp:
-        key: SMTP_PASSWORD
-        value: "${SECRET_AUTHELIA_SMTP_PASSWORD}"
-        filename: SMTP_PASSWORD
       storageEncryptionKey:
         key: STORAGE_ENCRYPTION_KEY
         value: "${SECRET_AUTHELIA_STORAGE_ENCRYPTION_KEY}"

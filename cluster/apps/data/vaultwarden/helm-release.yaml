@@ -45,13 +45,10 @@ spec:
       WEBSOCKET_ENABLED: "true"
       WEBSOCKET_ADDRESS: 0.0.0.0
       WEBSOCKET_PORT: 3012
-      SMTP_HOST: smtp.fastmail.com
+      SMTP_HOST: smtp-relay.default.svc.cluster.local
       SMTP_FROM: vaultwarden@${SECRET_DOMAIN}
       SMTP_FROM_NAME: vaultwarden
-      SMTP_PORT: 587
-      SMTP_SSL: "true"
-      SMTP_USERNAME: ${SECRET_SMTP_USERNAME}
-      SMTP_PASSWORD: ${SECRET_VAULTWARDEN_SMTP_PASSWORD}
+      SMTP_PORT: 2525
 
     service:
       main:
