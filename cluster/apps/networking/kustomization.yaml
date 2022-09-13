@@ -8,4 +8,5 @@ resources:
   - external-dns
   - ingress-nginx
   - k8s-gateway
+  - smtp-relay
   - unifi
