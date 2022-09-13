@@ -5,10 +5,9 @@ metadata:
   name: kube-prometheus-stack
   namespace: monitoring
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
       version: 39.13.3
       sourceRef:
@@ -24,85 +23,37 @@ spec:
     remediation:
       retries: 5
   values:
-    alertmanager:
-      config:
-        global:
-          resolve_timeout: 5m
-        receivers:
-          - name: "null"
-          - name: "pushover"
-            pushover_configs:
-              - user_key: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_USER_KEY}
-                token: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_TOKEN}
-                send_resolved: true
-                html: true
-                priority: |-
-                  {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
-                url_title: View in Alert Manager
-                title: |-
-                  [{{ .Status | toUpper -}}
-                  {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
-                  ] {{ .CommonLabels.alertname }}
-                message: |-
-                  {{- range .Alerts }}
-                    {{- if ne .Labels.severity "" }}
-                      <b>Severity:</b> <i>{{ .Labels.severity }}</i>
-                    {{- else }}
-                      <b>Severity:</b> <i>N/A</i>
-                    {{- end }}
-                    {{- if ne .Annotations.description "" }}
-                      <b>Description:</b> <i>{{ .Annotations.description }}</i>
-                    {{- else if ne .Annotations.summary "" }}
-                      <b>Summary:</b> <i>{{ .Annotations.summary }}</i>
-                    {{- else if ne .Annotations.message "" }}
-                      <b>Message:</b> <i>{{ .Annotations.message }}</i>
-                    {{- else }}
-                      <b>Description:</b> <i>N/A</i>
-                    {{- end }}
-                    {{- if gt (len .Labels.SortedPairs) 0 }}
-                      <b>Details:</b>
-                      {{- range .Labels.SortedPairs }}
-                        • <b>{{ .Name }}:</b> <i>{{ .Value }}</i>
-                      {{- end }}
-                    {{- end }}
-                  {{- end }}
-        route:
-          receiver: "pushover"
-          routes:
-            - receiver: "null"
-              matchers:
-                - alertname =~ "InfoInhibitor|Watchdog|RebootScheduled"
-            - receiver: "pushover"
-              matchers:
-                - severity = "critical"
-              continue: true
-        inhibit_rules:
-          - source_matchers:
-              - severity = "critical"
-            target_matchers:
-              - severity = "warning"
-            equal: ["alertname", "namespace"]
-      alertmanagerSpec:
-        replicas: 2
-        podAntiAffinity: hard
-        storage:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: rook-ceph-block
-              resources:
-                requests:
-                  storage: 10Gi
-      ingress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-        hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
-        tls:
-          - hosts:
-              - "alert-manager.${SECRET_CLUSTER_DOMAIN}"
+    ###
+    ### Component values
+    ###
+    kubeApiServer:
+      enabled: true
+    kubeControllerManager:
+      enabled: false
+
+    kubeEtcd:
+      enabled: false
+
+    kubelet:
+      enabled: true
+      serviceMonitor:
+        metricRelabelings:
+          - action: replace
+            sourceLabels:
+              - node
+            targetLabel: instance
+
+    kubeProxy:
+      enabled: false
+
+    kubeScheduler:
+      enabled: false
+
+    kubeStateMetrics:
+      enabled: true
+    kube-state-metrics:
+      metricLabelsAllowlist:
+        - "persistentvolumeclaims=[*]"
       prometheus:
         monitor:
           enabled: true
@@ -113,8 +64,42 @@ spec:
               sourceLabels:
                 - __meta_kubernetes_pod_node_name
               targetLabel: kubernetes_node
+      resources:
+        requests:
+          cpu: 15m
+          memory: 127M
+        limits:
+          memory: 153M
+
+    grafana:
+      enabled: false
+      forceDeployDashboards: true
+
+    nodeExporter:
+      enabled: true
+
+    prometheus-node-exporter:
+      resources:
+        requests:
+          cpu: 23m
+          memory: 64M
+        limits:
+          memory: 64M
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
+
+    ###
+    ### Prometheus operator values
+    ###
     prometheusOperator:
-      createCustomResource: true
       prometheusConfigReloader:
         resources:
           requests:
@@ -123,35 +108,10 @@ spec:
           limits:
             cpu: 300m
             memory: 50Mi
-    nodeExporter:
-      enabled: true
-      serviceMonitor:
-        relabelings:
-          - action: replace
-            regex: (.*)
-            replacement: $1
-            sourceLabels:
-              - __meta_kubernetes_pod_node_name
-            targetLabel: kubernetes_node
-    kubelet:
-      enabled: true
-      serviceMonitor:
-        metricRelabelings:
-          - action: replace
-            sourceLabels:
-              - node
-            targetLabel: instance
-    grafana:
-      enabled: false
-      forceDeployDashboards: true
-    kubeEtcd:
-      enabled: false
-    kubeControllerManager:
-      enabled: false
-    kubeScheduler:
-      enabled: false
-    kubeProxy:
-      enabled: false
+
+    ###
+    ### Prometheus instance values
+    ###
     prometheus:
       ingress:
         enabled: true
@@ -171,7 +131,7 @@ spec:
             cpu: 400m
           limits:
             memory: 6000Mi
-        replicas: 2
+        replicas: 1
         replicaExternalLabelName: "replica"
         podAntiAffinity: hard
         ruleSelector: {}
@@ -183,8 +143,9 @@ spec:
         podMonitorSelector: {}
         podMonitorNamespaceSelector: {}
         podMonitorSelectorNilUsesHelmValues: false
-        retention: 2d
-        retentionSize: "6GB"
+        probeSelectorNilUsesHelmValues: false
+        retention: 14d
+        retentionSize: "45GB"
         enableAdminAPI: true
         walCompression: true
         storageSpec:
@@ -193,13 +154,10 @@ spec:
               storageClassName: rook-ceph-block
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 50Gi
         thanos:
           image: quay.io/thanos/thanos:v0.28.0
-          version: v0.25.2
-          objectStorageConfig:
-            name: thanos-objstore-secret
-            key: objstore.yml
+          version: v0.28.0
         additionalScrapeConfigs:
           - job_name: "opnsense"
             scrape_interval: 60s
@@ -331,3 +289,93 @@ spec:
         tls:
           - hosts:
               - *host
+
+    alertmanager:
+      config:
+        global:
+          resolve_timeout: 5m
+        receivers:
+          - name: "null"
+          - name: "pushover"
+            pushover_configs:
+              - user_key: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_USER_KEY}
+                token: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_TOKEN}
+                send_resolved: true
+                html: true
+                priority: |-
+                  {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
+                url_title: View in Alert Manager
+                title: |-
+                  [{{ .Status | toUpper -}}
+                  {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
+                  ] {{ .CommonLabels.alertname }}
+                message: |-
+                  {{- range .Alerts }}
+                    {{- if ne .Labels.severity "" }}
+                      <b>Severity:</b> <i>{{ .Labels.severity }}</i>
+                    {{- else }}
+                      <b>Severity:</b> <i>N/A</i>
+                    {{- end }}
+                    {{- if ne .Annotations.description "" }}
+                      <b>Description:</b> <i>{{ .Annotations.description }}</i>
+                    {{- else if ne .Annotations.summary "" }}
+                      <b>Summary:</b> <i>{{ .Annotations.summary }}</i>
+                    {{- else if ne .Annotations.message "" }}
+                      <b>Message:</b> <i>{{ .Annotations.message }}</i>
+                    {{- else }}
+                      <b>Description:</b> <i>N/A</i>
+                    {{- end }}
+                    {{- if gt (len .Labels.SortedPairs) 0 }}
+                      <b>Details:</b>
+                      {{- range .Labels.SortedPairs }}
+                        • <b>{{ .Name }}:</b> <i>{{ .Value }}</i>
+                      {{- end }}
+                    {{- end }}
+                  {{- end }}
+        route:
+          receiver: "pushover"
+          routes:
+            - receiver: "null"
+              matchers:
+                - alertname =~ "InfoInhibitor|Watchdog|RebootScheduled"
+            - receiver: "pushover"
+              matchers:
+                - severity = "critical"
+              continue: true
+        inhibit_rules:
+          - source_matchers:
+              - severity = "critical"
+            target_matchers:
+              - severity = "warning"
+            equal: ["alertname", "namespace"]
+      alertmanagerSpec:
+        replicas: 1
+        podAntiAffinity: hard
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: rook-ceph-block
+              resources:
+                requests:
+                  storage: 1Gi
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
+          nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
+        hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
+        tls:
+          - hosts:
+              - "alert-manager.${SECRET_CLUSTER_DOMAIN}"
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node

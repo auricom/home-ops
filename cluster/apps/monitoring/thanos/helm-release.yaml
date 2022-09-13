@@ -5,21 +5,30 @@ metadata:
   name: thanos
   namespace: monitoring
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: thanos
       version: 11.4.0
       sourceRef:
         kind: HelmRepository
         name: bitnami-charts
         namespace: flux-system
-      interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: kube-prometheus-stack
+      namespace: monitoring
   values:
     query:
       enabled: true
       replicaCount: 2
+      podAntiAffinityPreset: hard
       replicaLabels:
         - replica
       dnsDiscovery:
@@ -27,46 +36,26 @@ spec:
         sidecarsNamespace: monitoring
       ingress:
         enabled: true
-        hostname: "thanos.${SECRET_CLUSTER_DOMAIN}"
+        hostname: &host "thanos-query.${SECRET_CLUSTER_DOMAIN}"
         annotations:
           nginx.ingress.kubernetes.io/auth-url: "http://authelia.networking.svc.cluster.local/api/verify"
           nginx.ingress.kubernetes.io/auth-signin: "https://login.${SECRET_CLUSTER_DOMAIN}"
-          # traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-          # traefik.ingress.kubernetes.io/router.middlewares: networking-forward-auth@kubernetescrd
+        ingressClassName: "nginx"
         tls: true
+        extraTls:
+          - hosts:
+              - *host
     queryFrontend:
       enabled: false
     bucketweb:
-      enabled: true
+      enabled: false
     compactor:
-      enabled: true
-      strategyType: Recreate
-      persistence:
-        size: 30Gi
+      enabled: false
     storegateway:
-      enabled: true
+      enabled: false
     ruler:
       enabled: false
     metrics:
       enabled: true
       serviceMonitor:
         enabled: true
-    objstoreConfig: |-
-      type: s3
-      config:
-        bucket: thanos
-        endpoint: ${SECRET_MINIO_ENDPOINT}
-        access_key: "${SECRET_MINIO_ACCESS_KEY}"
-        secret_key: "${SECRET_MINIO_SECRET_KEY}"
-        insecure: false
-
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              kind: Ingress
-              name: thanos-query
-            patch:
-              - op: add
-                path: /spec/ingressClassName
-                value: nginx

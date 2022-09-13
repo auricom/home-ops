@@ -3,10 +3,8 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - blackbox-exporter
-  - botkube
   - grafana
   - healthchecks
   - kube-prometheus-stack
-  #- loki-stack
   - thanos
   - uptime-kuma

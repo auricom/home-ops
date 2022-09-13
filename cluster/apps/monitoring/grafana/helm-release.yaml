@@ -33,6 +33,34 @@ spec:
     admin:
       existingSecret: grafana-admin-creds
     grafana.ini:
+      auth:
+        signout_redirect_url: "https://login.${SECRET_CLUSTER_DOMAIN}/logout"
+        oauth_auto_login: false
+      auth.generic_oauth:
+        enabled: true
+        name: Authelia
+        client_id: grafana
+        client_secret: "${SECRET_GRAFANA_OAUTH_CLIENT_SECRET}"
+        scopes: "openid profile email groups"
+        empty_scopes: false
+        auth_url: "https://login.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization"
+        token_url: "https://login.${SECRET_CLUSTER_DOMAIN}/api/oidc/token"
+        api_url: "https://login.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo"
+        login_attribute_path: preferred_username
+        groups_attribute_path: groups
+        name_attribute_path: name
+        use_pkce: true
+      auth.generic_oauth.group_mapping:
+        role_attribute_path: |
+          contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'people') && 'Viewer'
+        org_id: 1
+      auth.basic:
+        disable_login_form: false
+      auth.anonymous:
+        enabled: true
+        org_name: HomeOps
+        org_id: 1
+        org_role: Viewer
       server:
         root_url: "https://grafana.${SECRET_CLUSTER_DOMAIN}"
       paths:
@@ -46,8 +74,6 @@ spec:
         mode: console
       grafana_net:
         url: https://grafana.net
-      auth.basic:
-        disable_login_form: false
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
@@ -71,25 +97,22 @@ spec:
           - name: Prometheus
             type: prometheus
             access: proxy
-            url: http://thanos-query:9090/
+            url: http://thanos-query.monitoring.svc.cluster.local:9090
             isDefault: true
           # - name: Loki
           #   type: loki
           #   access: proxy
-          #   url: http://loki-gateway:80
+          #   url: http://loki-gateway.monitoring.svc.cluster.local:80
     dashboards:
       default:
-        kubernetes-custom:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temparatures.json
-          datasource: Prometheus
         home-assistant:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/home-assistant.json
+          url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/grafana/dashboards/home-assistant.json
           datasource: Prometheus
         homelab-temperatures:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/homelab-temperatures.json
+          url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/grafana/dashboards/homelab-temperatures.json
           datasource: Prometheus
         truenas:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/kube-prometheus-stack/grafana-dashboards/truenas.json
+          url: https://raw.githubusercontent.com/auricom/home-ops/main/cluster/apps/monitoring/grafana/dashboards/truenas.json
           datasource: Prometheus
     sidecar:
       dashboards:
@@ -126,3 +149,14 @@ spec:
             - *host
     persistence:
       enabled: false
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values: ["grafana"]
+              topologyKey: kubernetes.io/hostname

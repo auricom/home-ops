@@ -57,6 +57,228 @@
   "liveNow": false,
   "panels": [
     {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 40
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(hass_sensor_temperature_celsius{entity=\"sensor.temperature_living_room_temperature\"})",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "Salon",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(hass_sensor_temperature_celsius{entity=~\"sensor.temperature_bedroom_temperature\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Chambre 1",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(hass_sensor_temperature_celsius{entity=~\"sensor.temperature_office_temperature\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Bureau",
+          "refId": "C"
+        }
+      ],
+      "title": "Home",
+      "type": "timeseries"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(hass_sensor_power_w{entity=\"sensor.servers_plug_switch_electricity_power\"})",
+          "interval": "",
+          "legendFormat": "Servers",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(hass_sensor_power_w{entity=\"sensor.bureau_plug_switch_electricity_power\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "claude-fixe",
+          "refId": "B"
+        }
+      ],
+      "title": "Computers",
+      "type": "timeseries"
+    },
+    {
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -109,193 +331,7 @@
               }
             ]
           },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 5,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
-          "displayMode": "table",
-          "placement": "right"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "pluginVersion": "8.0.5",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "avg by (app) (node_cpu_temperature_celsius{app=\"opnsense\"})",
-          "interval": "",
-          "legendFormat": "{{app}}",
-          "refId": "A"
-        }
-      ],
-      "title": "OPNsense - CPU",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "line+area"
-            }
-          },
-          "decimals": 0,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 9
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
-          "displayMode": "table",
-          "placement": "right"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "pluginVersion": "8.0.5",
-      "targets": [
-        {
-          "expr": "avg by (kubernetes_node) (\r\n  node_hwmon_temp_celsius{chip=\"platform_coretemp_0\"}\r\n )",
-          "format": "time_series",
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{kubernetes_node}}",
-          "refId": "A"
-        }
-      ],
-      "title": "k3s Nodes - CPU",
-      "transformations": [],
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "line+area"
-            }
-          },
-          "decimals": 0,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 40
-              }
-            ]
-          },
-          "unit": "celsius"
+          "unit": "watt"
         },
         "overrides": []
       },
@@ -305,15 +341,14 @@
         "x": 0,
         "y": 18
       },
-      "id": 6,
+      "id": 8,
       "options": {
         "legend": {
           "calcs": [
             "mean",
-            "max",
-            "min"
+            "max"
           ],
-          "displayMode": "hidden",
+          "displayMode": "table",
           "placement": "right"
         },
         "tooltip": {
@@ -323,25 +358,37 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
           "exemplar": true,
-          "expr": "sum(hass_sensor_temperature_celsius{entity=~\"sensor.temperature_servers_temperature\"})",
+          "expr": "hass_sensor_power_w{entity=~\"sensor.power_plug_avr_power\"}",
           "interval": "",
-          "legendFormat": "datacenter",
+          "legendFormat": "Ampli",
           "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "hass_sensor_power_w{entity=~\"sensor.power_plug_projector_power\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Vidéoprojecteur",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "hass_sensor_power_w{entity=~\"sensor.power_plug_subwoofer_power\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Caisson de basses",
+          "refId": "C"
         }
       ],
-      "title": "Datacenter",
+      "title": "Home Cinema",
       "type": "timeseries"
     }
   ],
   "schemaVersion": 34,
   "style": "dark",
   "tags": [
-    "homelab"
+    "home-assistant"
   ],
   "templating": {
     "list": []
@@ -364,8 +411,8 @@
     ]
   },
   "timezone": "",
-  "title": "Homelab / Temperatures",
-  "uid": "aEY0BVGnz",
+  "title": "Home-Assistant",
+  "uid": "sn-bOoWMk",
   "version": 1,
   "weekStart": ""
 }
