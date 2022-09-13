@@ -1,2 +1,3 @@
-secret.enc.yaml diff=sopsdiffer
+*.sops.yaml diff=sopsdiffer
 cluster-secrets.yaml diff=sopsdiffer
+*.sops.toml linguist-language=JSON
