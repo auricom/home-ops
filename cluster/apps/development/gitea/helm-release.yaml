@@ -3,36 +3,37 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: gitea
-  namespace: development
+  namespace: default
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://dl.gitea.io/charts
       chart: gitea
       version: 6.0.1
       sourceRef:
         kind: HelmRepository
         name: gitea-charts
         namespace: flux-system
-      interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
     image:
       repository: gitea/gitea
       tag: 1.17.2
       rootless: true
-
     containerSecurityContext:
       capabilities:
         add: ["SYS_CHROOT"]
-
     gitea:
       admin:
-        email: ${SECRET_GITEA_ADMIN_EMAIL}
         username: auricom
-        password: ${SECRET_GITEA_ADMIN_PASSWORD}
       config:
-        APP_NAME: "Homelab Gitea"
+        APP_NAME: "Gitea Homelab"
         cron.resync_all_sshkeys:
           ENABLED: true
           RUN_AT_START: true
@@ -50,6 +51,7 @@ spec:
           SSH_DOMAIN: gitea.${SECRET_DOMAIN}
           ROOT_URL: https://gitea.${SECRET_CLUSTER_DOMAIN}
         respository:
+          DEFAULT_BRANCH: main
           DEFAULT_PRIVATE: true
         admin:
           DISABLE_REGULAR_ORG_CREATION: true
@@ -59,34 +61,60 @@ spec:
         service:
           DISABLE_REGISTRATION: true
           REQUIRE_SIGNIN_VIEW: true
-        webhook:
-          ALLOWED_HOST_LIST: "drone.${SECRET_CLUSTER_DOMAIN}"
-
+        cron:
+          ENABLED: true
+        attachment:
+          STORAGE_TYPE: minio
+          MINIO_ENDPOINT: truenas.${SECRET_DOMAIN}:9000
+          MINIO_BUCKET: gitea
+          MINIO_USE_SSL: true
+        storage:
+          STORAGE_TYPE: minio
+          MINIO_ENDPOINT: truenas.${SECRET_DOMAIN}:9000
+          MINIO_BUCKET: gitea
+          MINIO_USE_SSL: true
+        mailer:
+          ENABLED: true
+          MAILER_TYPE: smtp
+          HOST: smtp-relay.default:2525
+          FROM: "Gitea <gitea@${SECRET_DOMAIN}>"
+        openid:
+          ENABLE_OPENID_SIGNIN: false
+          ENABLE_OPENID_SIGNUP: true
+          WHITELISTED_URIS: "auth.${SECRET_CLUSTER_DOMAIN}"
+      oauth:
+        - name: authelia
+          provider: openidConnect
+          key: gitea
+          secret: "${SECRET_GITEA_OAUTH_CLIENT_SECRET}"
+          autoDiscoverUrl: "https://auth.${SECRET_CLUSTER_DOMAIN}/.well-known/openid-configuration"
+          groupClaimName: groups
+          adminGroup: admins
+          restrictedGroup: people
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      podAnnotations:
+        secret.reloader.stakater.com/reload: gitea-config
     postgresql:
       enabled: false
-
     memcached:
       image:
         repository: bitnami/memcached
         tag: 1.6.17
       service:
         port: 11211
-
     persistence:
       enabled: true
       existingClaim: "gitea-config"
-
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: "tcp"
       ssh:
         type: LoadBalancer
         port: 22
         externalTrafficPolicy: Local
         externalIPs:
           - ${CLUSTER_LB_GITEA}
-
     ingress:
       enabled: true
       className: nginx
@@ -98,3 +126,28 @@ spec:
       tls:
         - hosts:
             - "gitea.${SECRET_CLUSTER_DOMAIN}"
+  valuesFrom:
+    - targetPath: gitea.admin.email
+      kind: Secret
+      name: gitea-config
+      valuesKey: adminEmail
+    - targetPath: gitea.admin.password
+      kind: Secret
+      name: gitea-config
+      valuesKey: adminPassword
+    - targetPath: gitea.config.attachment.MINIO_ACCESS_KEY_ID
+      kind: Secret
+      name: gitea-config
+      valuesKey: minioAccessKeyId
+    - targetPath: gitea.config.attachment.MINIO_SECRET_ACCESS_KEY
+      kind: Secret
+      name: gitea-config
+      valuesKey: minioSecretAccessKey
+    - targetPath: gitea.config.storage.MINIO_ACCESS_KEY_ID
+      kind: Secret
+      name: gitea-config
+      valuesKey: minioAccessKeyId
+    - targetPath: gitea.config.storage.MINIO_SECRET_ACCESS_KEY
+      kind: Secret
+      name: gitea-config
+      valuesKey: minioSecretAccessKey

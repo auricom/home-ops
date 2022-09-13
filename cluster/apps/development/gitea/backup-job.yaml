@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: gitea-repositories-backup
-  namespace: development
+  namespace: default
 spec:
   schedule: "@daily"
   jobTemplate:
@@ -12,9 +12,6 @@ spec:
         metadata:
           name: gitea-repositories-backup
         spec:
-          serviceAccountName: jobs
-          imagePullSecrets:
-            - name: regcred
           containers:
             - name: gitea-repositories-backup
               image: ghcr.io/auricom/kubectl:v1.25.0@sha256:ee2a4883c68adf439fe76a8102261a29cdff34c427822a08bafe264d8dbd09be
@@ -85,5 +82,5 @@ spec:
           volumes:
             - name: secret
               secret:
-                secretName: gitea-secrets
+                secretName: gitea-config
           restartPolicy: Never
