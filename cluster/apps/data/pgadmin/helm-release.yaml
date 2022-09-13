@@ -17,6 +17,11 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    
+    image:
+      repository: dpage/pgadmin4
+      tag: 6.13
+
     env:
       email: ${SECRET_PGADMIN_EMAIL}
       password: ${SECRET_PGADMIN_PASSWORD}
