@@ -16,6 +16,12 @@ spec:
             - name: gitea-repositories-backup
               image: ghcr.io/auricom/kubectl:v1.25.0@sha256:ee2a4883c68adf439fe76a8102261a29cdff34c427822a08bafe264d8dbd09be
               imagePullPolicy: IfNotPresent
+              env:
+                - name: ENV_GITEA_API_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-config
+                      key: apiToken
               command:
                 - "bin/sh"
                 - "-ec"
@@ -33,7 +39,7 @@ spec:
 
                     WORK_DIR="/mnt/storage/backups/apps/gitea"
 
-                    ORGANISATIONS=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/orgs" --header "Authorization: Bearer ${SECRET_GITEA_API_TOKEN}" | jq --raw-output .[].username)
+                    ORGANISATIONS=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/orgs" --header "Authorization: Bearer ${ENV_GITEA_API_TOKEN}" | jq --raw-output .[].username)
                     ORGANISATIONS+=" auricom"
 
                     for org in $ORGANISATIONS
@@ -44,7 +50,7 @@ spec:
                         else
                             keyword="orgs"
                         fi
-                        REPOSITORIES=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/$keyword/$org/repos?limit=1000" --header "Authorization: Bearer ${SECRET_GITEA_API_TOKEN}" | jq --raw-output .[].name)
+                        REPOSITORIES=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/$keyword/$org/repos?limit=1000" --header "Authorization: Bearer ${ENV_GITEA_API_TOKEN}" | jq --raw-output .[].name)
                         for repo in $REPOSITORIES
                         do
                             if [ -d "$WORK_DIR/$org/$repo" ]; then

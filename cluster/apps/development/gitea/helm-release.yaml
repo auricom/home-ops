@@ -42,7 +42,6 @@ spec:
           HOST: postgres.${SECRET_DOMAIN}:5432
           NAME: gitea
           USER: gitea
-          PASSWD: ${SECRET_GITEA_DB_PASSWORD}
           SCHEMA: public
           SSL_MODE: verify-full
         server:
@@ -143,6 +142,10 @@ spec:
       kind: Secret
       name: gitea-config
       valuesKey: minioSecretAccessKey
+    - targetPath: gitea.config.database.PASSWD
+      kind: Secret
+      name: gitea-config
+      valuesKey: dbPassword
     - targetPath: gitea.config.storage.MINIO_ACCESS_KEY_ID
       kind: Secret
       name: gitea-config
