@@ -81,5 +81,5 @@ identity_providers:
       #   authorization_policy: two_factor
       #   pre_configured_consent_duration: 1y
       #   scopes: ["openid", "profile", "groups", "email"]
-      #   redirect_uris: ["https://minio.${SECRET_PUBLIC_DOMAIN}/oauth_callback"]
+      #   redirect_uris: ["https://minio.${SECRET_CLUSTER_DOMAIN}/oauth_callback"]
       #   userinfo_signing_algorithm: none

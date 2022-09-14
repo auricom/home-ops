@@ -41,8 +41,9 @@ spec:
         enabled: true
         ingressClassName: nginx
         path: /
+        pathType: Prefix
         hosts:
-          - &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - &host "emqx.${SECRET_CLUSTER_DOMAIN}"
         tls:
           - hosts:
               - *host
@@ -50,7 +51,7 @@ spec:
       enabled: false
     persistence:
       enabled: true
-      storageClass: ceph-block
+      storageClass: rook-ceph-block
       size: 100Mi
     affinity:
       podAntiAffinity:
