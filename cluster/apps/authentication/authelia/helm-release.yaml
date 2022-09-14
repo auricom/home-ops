@@ -24,6 +24,8 @@ spec:
   dependsOn:
     - name: glauth
       namespace: default
+    - name: postgres
+      namespace: default
     - name: redis
       namespace: default
   values:
