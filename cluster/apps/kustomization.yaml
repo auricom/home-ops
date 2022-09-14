@@ -6,6 +6,7 @@ resources:
   - databases
   - development
   - documentation
+  - downloaders
   - home-automation
   - kasten-io
   - media
