@@ -3,56 +3,55 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: emqx
-  namespace: home-automation
+  namespace: default
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://repos.emqx.io/charts
       chart: emqx
       version: 5.0.3
       sourceRef:
         kind: HelmRepository
         name: emqx-charts
         namespace: flux-system
-      interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
     image:
       repository: public.ecr.aws/emqx/emqx
-
     replicaCount: 3
     recreatePods: true
-
     emqxConfig:
       EMQX_ALLOW_ANONYMOUS: "false"
-      EMQX_ADMIN_PASSWORD: "${SECRET_EMQX_ADMIN_PASSWORD}"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
       EMQX_AUTH__USER__1__USERNAME: "${SECRET_MQTT_USERNAME}"
       EMQX_AUTH__USER__1__PASSWORD: "${SECRET_MQTT_PASSWORD}"
-
     service:
-      annotations:
-        prometheus.io/probe: "true"
-        prometheus.io/protocol: tcp
       type: LoadBalancer
       externalIPs:
         - ${CLUSTER_LB_EMQX}
       externalTrafficPolicy: Local
-
     ingress:
       dashboard:
         enabled: true
         ingressClassName: nginx
         path: /
         hosts:
-          - &host "emqx.${SECRET_CLUSTER_DOMAIN}"
+          - &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
         tls:
           - hosts:
               - *host
-
     metrics:
       enabled: false
-
+    persistence:
+      enabled: true
+      storageClass: ceph-block
+      size: 100Mi
     affinity:
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
@@ -62,13 +61,16 @@ spec:
                 matchExpressions:
                   - key: app.kubernetes.io/name
                     operator: In
-                    values:
-                      - emqx
+                    values: ["emqx"]
               topologyKey: kubernetes.io/hostname
-
     resources:
       requests:
         cpu: 100m
         memory: 150Mi
       limits:
         memory: 512Mi
+  valuesFrom:
+    - targetPath: emqxConfig.EMQX_DASHBOARD__DEFAULT_PASSWORD
+      kind: Secret
+      name: emqx-config
+      valuesKey: admin_password
