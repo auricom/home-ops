@@ -29,8 +29,8 @@ spec:
     emqxConfig:
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
-      EMQX_AUTH__USER__1__USERNAME: "${SECRET_MQTT_USERNAME}"
-      EMQX_AUTH__USER__1__PASSWORD: "${SECRET_MQTT_PASSWORD}"
+      EMQX_AUTH__USER__1__USERNAME: ${SECRET_MQTT_USER}
+      EMQX_AUTH__USER__1__PASSWORD: ${SECRET_MQTT_PASSWORD}
     service:
       type: LoadBalancer
       externalIPs:

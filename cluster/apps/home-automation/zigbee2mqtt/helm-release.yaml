@@ -3,12 +3,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: zigbee2mqtt
-  namespace: home-automation
+  namespace: default
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: zigbee2mqtt
       version: 9.4.2
       sourceRef:
@@ -18,7 +17,7 @@ spec:
       interval: 5m
   values:
     image:
-      repository: koenkk/zigbee2mqtt
+      repository: ghcr.io/koenkk/zigbee2mqtt
       tag: 1.27.2
 
     env:
@@ -32,9 +31,9 @@ spec:
       permit_join: false
       mqtt:
         base_topic: zigbee2mqtt
-        server: "mqtt://emqx"
-        user: "${SECRET_MQTT_USERNAME}"
-        password: "${SECRET_MQTT_PASSWORD}"
+        server: "mqtt://emqx.default.svc.cluster.local"
+        user: ${SECRET_MQTT_USER}
+        password: ${SECRET_MQTT_PASSWORD}
       serial:
         port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
       advanced:
@@ -63,12 +62,6 @@ spec:
         new_api: true
     securityContext:
       privileged: true
-
-    service:
-      main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: "http"
 
     ingress:
       main:

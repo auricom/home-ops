@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - volume.yaml
   - helm-release.yaml
-namespace: home-automation
+namespace: default
 configMapGenerator:
   - name: frigate
     files:

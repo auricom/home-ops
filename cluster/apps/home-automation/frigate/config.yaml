@@ -5,7 +5,7 @@ logger:
     frigate.record: debug
 
 mqtt:
-  host: emqx
+  host: emqx.default.svc.cluster.local
   topic_prefix: frigate
   user: "{MQTT_USER}"
   password: "{MQTT_PASSWORD}"
@@ -18,16 +18,11 @@ detectors:
     type: edgetpu
     device: usb
 
-objects:
-  track:
-    - person
-  filters:
-    person:
-      min_area: 2500
-      max_area: 100000
-      threshold: 0.7
-
 ffmpeg:
+  global_args:
+    - -hide_banner
+    - -loglevel
+    - warning
   hwaccel_args:
     - -hwaccel
     - vaapi
@@ -35,44 +30,29 @@ ffmpeg:
     - /dev/dri/renderD128
     - -hwaccel_output_format
     - yuv420p
-  # Enable audio on recordings...
-  # might cause issues on recording playback
-  # output_args:
-  #   record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c:v copy -c:a aac
+  # https://github.com/blakeblackshear/frigate/issues/3296
+  output_args:
+    record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c:v copy -ar 44100 -c:a aac
+    rtmp: -c:v copy -f flv -ar 44100 -c:a aac
 
 rtmp:
   enabled: true
 
-# snapshots:
-#   enabled: true
-#   timestamp: false
-#   bounding_box: true
-#   retain:
-#     default: 7
+record:
+  enabled: true
+  retain:
+    days: 3
+    mode: all
+  events:
+    retain:
+      default: 7
+      mode: active_objects
 
-# record:
-#   enabled: true
-#   retain:
-#     days: 2
-#     mode: motion
-#   events:
-#     retain:
-#       default: 5
-#       mode: active_objects
-
-cameras:
-  # --
-  frigate_river:
-    ffmpeg:
-      inputs:
-        - path: rtsp://192.168.1.2:7447/GtBsJuujvMQwA42n
-          roles:
-            - detect
-        - path: rtsp://192.168.1.2:7447/b2K0uh13iekTbyA1
-          roles:
-            - rtmp
-            - record
-    detect:
-      width: 1024
-      height: 576
-      fps: 10
+objects:
+  track:
+    - person
+  filters:
+    person:
+      min_area: 5000
+      max_area: 100000
+      threshold: 0.7
