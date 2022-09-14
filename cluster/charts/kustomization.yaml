@@ -5,8 +5,10 @@ resources:
   - bitnami-charts.yaml
   - bjw-s-charts.yaml
   - cert-manager-webhook-ovh.yaml
+  - descheduler-charts.yaml
   - emxq-charts.yaml
   - external-dns-charts.yaml
+  - fairwinds-charts.yaml
   - gitea-charts.yaml
   - grafana-charts.yaml
   - influxdata-charts.yaml
@@ -15,7 +17,8 @@ resources:
   - k8s-at-home.yaml
   - k8s-gateway-charts.yaml
   - kasten-charts.yaml
-  - kubernetes-sigs-descheduler-charts.yaml
+  - kyverno-charts.yaml
+  - metrics-server-charts.yaml
   - node-feature-discovery.yaml
   - prometheus-community-charts.yaml
   - rook-ceph-charts.yaml

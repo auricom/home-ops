@@ -1,0 +1,32 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kured
+  namespace: kube-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: kured
+      version: 3.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: weaveworks-kured-charts
+        namespace: flux-system
+      interval: 5m
+  values:
+    updateStrategy: RollingUpdate
+    configuration:
+      startTime: "2:00"
+      endTime: "5:00"
+      timeZone: "${TIMEZONE}"
+      rebootSentinelCommand: sh -c "! needs-restarting --reboothint"
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+    metrics:
+      create: true
+      labels:
+        release: kube-prometheus-stack

@@ -4,7 +4,5 @@ resources:
   - cert-manager
   - flux-system
   - kasten-io
-  - kube-system
   - rook-ceph
-  - system-upgrade
   - storageclasses.yaml

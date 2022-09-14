@@ -5,8 +5,7 @@ metadata:
   name: webhook-receiver
   namespace: flux-system
   annotations:
-    external-dns.alpha.kubernetes.io/target: "services.${SECRET_DOMAIN}."
-    external-dns/is-public: "true"
+    external-dns.home.arpa/enabled: "true"
 spec:
   ingressClassName: "nginx"
   rules:
