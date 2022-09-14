@@ -5,6 +5,7 @@ resources:
   - bitnami-charts.yaml
   - bjw-s-charts.yaml
   - cert-manager-webhook-ovh.yaml
+  - cloudnative-pg-charts.yaml
   - descheduler-charts.yaml
   - emxq-charts.yaml
   - external-dns-charts.yaml
