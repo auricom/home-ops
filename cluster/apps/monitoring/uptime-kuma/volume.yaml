@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: uptime-kuma-config
-  namespace: monitoring
+  namespace: default
   labels:
     kasten-io/backup: "true"
 spec:
