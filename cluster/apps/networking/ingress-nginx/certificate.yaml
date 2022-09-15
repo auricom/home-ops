@@ -2,9 +2,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
-  namespace: networking
+  name: "${SECRET_CLUSTER_DOMAIN/./-}"
+  namespace: default
 spec:
+  secretName: "${SECRET_CLUSTER_DOMAIN/./-}-tls"
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
@@ -12,4 +13,3 @@ spec:
   dnsNames:
     - "${SECRET_CLUSTER_DOMAIN}"
     - "*.${SECRET_CLUSTER_DOMAIN}"
-  secretName: "${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"

@@ -3,28 +3,33 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: unifi
-  namespace: networking
+  namespace: default
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: unifi
       version: 5.1.2
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home-charts
         namespace: flux-system
-      interval: 5m
+  install:
+    createNamespace: true
+    crds: CreateReplace
+    remediation:
+      retries: 5
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 5
   values:
     image:
       repository: jacobalberty/unifi
       tag: v7.2.92
       pullPolicy: IfNotPresent
-
     env:
       TZ: "${TIMEZONE}"
-
     service:
       main:
         type: LoadBalancer
@@ -57,7 +62,6 @@ spec:
             enabled: true
             port: 10001
             protocol: UDP
-
     ingress:
       main:
         enabled: true
@@ -69,12 +73,10 @@ spec:
         tls:
           - hosts:
               - "unifi.${SECRET_CLUSTER_DOMAIN}"
-
     persistence:
       data:
         enabled: true
         existingClaim: unifi-config
-
     resources:
       requests:
         memory: 2Gi

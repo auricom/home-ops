@@ -3,22 +3,30 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: ingress-nginx
-  namespace: networking
+  namespace: default
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://kubernetes.github.io/ingress-nginx
       chart: ingress-nginx
       version: 4.2.5
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx-charts
         namespace: flux-system
-      interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
   values:
     controller:
-      replicaCount: 2
+      replicaCount: 3
       service:
         type: LoadBalancer
         externalIPs:
@@ -26,31 +34,36 @@ spec:
         externalTrafficPolicy: Local
       publishService:
         enabled: true
-
+      ingressClassResource:
+        default: true
       config:
-        ssl-protocols: "TLSv1.3 TLSv1.2"
-        custom-http-errors: |
-          401,403,404,500,501,502,503
-        enable-vts-status: "false"
+        client-header-timeout: 120
+        client-body-buffer-size: "100M"
+        client-body-timeout: 120
+        custom-http-errors: |-
+          400,401,403,404,500,502,503,504
+        enable-brotli: "true"
+        forwarded-for-header: "CF-Connecting-IP"
         hsts-max-age: "31449600"
-        proxy-body-size: "50m"
-
+        keep-alive: 120
+        keep-alive-requests: 10000
+        proxy-body-size: "100M"
+        ssl-protocols: "TLSv1.3 TLSv1.2"
+        use-forwarded-headers: "true"
       extraArgs:
-        default-ssl-certificate: "networking/${SECRET_CLUSTER_CERTIFICATE_DEFAULT}"
-
-      resources:
-        requests:
-          memory: 250Mi
-          cpu: 50m
-
+        default-ssl-certificate: |-
+          default/${SECRET_CLUSTER_DOMAIN/./-}-tls
       metrics:
         enabled: true
         serviceMonitor:
           enabled: true
-          namespace: networking
+          namespace: default
           namespaceSelector:
             any: true
-
+      resources:
+        requests:
+          memory: 250Mi
+          cpu: 50m
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -63,7 +76,6 @@ spec:
                       values:
                         - ingress-nginx
                 topologyKey: kubernetes.io/hostname
-
     defaultBackend:
       enabled: true
       image:

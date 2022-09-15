@@ -28,5 +28,3 @@ spec:
             annotations:
               +(external-dns.alpha.kubernetes.io/target): |-
                 services.${SECRET_DOMAIN}.
-              +(external-dns/is-public): |-
-                true
