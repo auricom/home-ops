@@ -2,67 +2,57 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: healthchecks
-  namespace: monitoring
+  name: &app healthchecks
+  namespace: default
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: healthchecks
-      version: 4.4.2
+      chart: app-template
+      version: 0.1.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home-charts
+        name: bjw-s-charts
         namespace: flux-system
-      interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: postgres
+      namespace: default
   values:
     image:
-      repository: ghcr.io/linuxserver/healthchecks
-      tag: v1.22.0-ls95
+      repository: ghcr.io/auricom/healthchecks
+      tag: v2.3@sha256:4cb4b12900045e83e152c5036c5ab80598fbf5f4b9d716655d24c41fd0b6e388
       pullPolicy: IfNotPresent
-
-    env:
-      SECRET_KEY: ${SECRET_HEALTHECKS_SECRET_KEY}
-      REGENERATE_SETTINGS: "True"
-      EMAIL_USE_TLS: "True"
-      ALLOWED_HOSTS: "*"
-      DB: postgres
-      DB_HOST: postgres.${SECRET_DOMAIN}
-      DB_PORT: 5432
-      DB_NAME: healthchecks
-      DB_USER: healthchecks
-      DB_PASSWORD: ${SECRET_HEALTHCHECKS_DB_PASSWORD}
-      SUPERUSER_EMAIL: ${SECRET_HEALTHCHECKS_SUPERUSER_EMAIL}
-      SUPERUSER_PASSWORD: ${SECRET_HEALTHCHECKS_SUPERUSER_PASSWORD}
-      DISCORD_CLIENT_ID: ${SECRET_HEALTHCHECKS_DISCORD_CLIENT_ID}
-      DISCORD_CLIENT_SECRET: ${SECRET_HEALTHCHECKS_DISCORD_CLIENT_SECRET}
-      SITE_ROOT: "https://healthchecks.${SECRET_CLUSTER_DOMAIN}"
-      SITE_NAME: "Homelab HealthChecks"
-      SITE_LOGO_URL: "https://image.flaticon.com/icons/svg/3629/3629830.svg"
-
-    persistence:
-      config:
-        enabled: false
-
+    envFrom:
+      - secretRef:
+          name: *app
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
-        annotations:
-          prometheus.io/probe: "true"
-          prometheus.io/protocol: http
-
+        ports:
+          http:
+            port: 80
     ingress:
       main:
         enabled: true
         ingressClassName: "nginx"
         annotations:
-          external-dns.alpha.kubernetes.io/target: "services.${SECRET_DOMAIN}."
-          external-dns/is-public: "true"
+          external-dns.home.arpa/enabled: "true"
         hosts:
-          - host: "healthchecks.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - "healthchecks.${SECRET_CLUSTER_DOMAIN}"
+              - *host
