@@ -86,19 +86,6 @@
       "matchDatasources": ["docker"],
       "versioning": "loose",
       "matchPackageNames": ["ghcr.io/onedr0p/qbittorrent"]
-    },
-    {
-      "matchDatasources": ["docker"],
-      "versioning": "regex:^version-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      "matchPackageNames": [
-        "ghcr.io/linuxserver/calibre",
-        "ghcr.io/linuxserver/healthchecks"
-      ]
-    },
-    {
-      "matchDatasources": ["docker"],
-      "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      "matchPackageNames": ["ghcr.io/linuxserver/resilio-sync"]
     }
   ]
 }
