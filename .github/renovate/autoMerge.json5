@@ -7,7 +7,7 @@
       "automergeType": "branch",
       "requiredStatusChecks": null,
       "matchUpdateTypes": ["digest"],
-      "matchPackagePattern": ["ghcr.io/onedr0p", "ghcr.io/auricom"]
+      "matchPackagePatterns": ["ghcr.io/onedr0p", "ghcr.io/auricom"]
     },
     {
       "description": "Auto merge containers",
