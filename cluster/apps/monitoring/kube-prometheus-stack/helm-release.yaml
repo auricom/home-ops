@@ -125,6 +125,8 @@ spec:
           - hosts:
               - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
+        externalLabels:
+          cluster: home-ops
         resources:
           requests:
             memory: 2000Mi
