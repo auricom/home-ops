@@ -14,7 +14,7 @@ spec:
         spec:
           containers:
             - name: gitea-repositories-backup
-              image: ghcr.io/auricom/kubectl:v1.25.0@sha256:ee2a4883c68adf439fe76a8102261a29cdff34c427822a08bafe264d8dbd09be
+              image: ghcr.io/auricom/kubectl:v1.25.0@sha256:0862a94ca7d546521aa6c2f917fab5afdcc6caa54a48e0581b29a37c1b11f37d
               imagePullPolicy: IfNotPresent
               env:
                 - name: ENV_GITEA_API_TOKEN
