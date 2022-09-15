@@ -23,7 +23,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: healthchecks
-                key: DB_USERNAME
+                key: DB_USER
           - name: POSTGRES_PASS
             valueFrom:
               secretKeyRef:

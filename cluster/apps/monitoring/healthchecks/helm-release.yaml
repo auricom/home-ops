@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: ghcr.io/auricom/healthchecks
-      tag: v2.3@sha256:4cb4b12900045e83e152c5036c5ab80598fbf5f4b9d716655d24c41fd0b6e388
+      tag: v2.3@sha256:bea1c219993d3c8d5766d1da199c6859b1c7bcae86a3dc890bbe03fbb02339cc
       pullPolicy: IfNotPresent
     envFrom:
       - secretRef:
@@ -56,3 +56,11 @@ spec:
         tls:
           - hosts:
               - *host
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *app
+    resources:
+      requests:
+        cpu: 50m
+        memory: 250Mi
+      limits:
+        memory: 500Mi
