@@ -12,7 +12,6 @@ spec:
         metadata:
           name: qbittorrent-upgrade-p2pblocklist
         spec:
-          serviceAccountName: jobs
           containers:
             - name: qbittorrent-upgrade-p2pblocklist
               image: ghcr.io/auricom/kubectl:v1.25.0@sha256:ee2a4883c68adf439fe76a8102261a29cdff34c427822a08bafe264d8dbd09be
