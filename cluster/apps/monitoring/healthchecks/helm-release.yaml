@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: ghcr.io/auricom/healthchecks
-      tag: v2.3@sha256:bea1c219993d3c8d5766d1da199c6859b1c7bcae86a3dc890bbe03fbb02339cc
+      tag: v2.3@sha256:69e31f3bc5fb7e46e851922f83055e201ee41458d9fa8089225ef616106f5d32
       pullPolicy: IfNotPresent
     envFrom:
       - secretRef:
