@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: default
 resources:
   - secret.sops.yaml
-  - config-pvc.yaml
+  - volume.yaml
   - helm-release.yaml
 configMapGenerator:
   - name: sonarr-pushover

@@ -34,7 +34,7 @@ spec:
       main:
         ports:
           http:
-            port: *port
+            port: 6767
     ingress:
       main:
         enabled: true
@@ -46,7 +46,7 @@ spec:
             sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_CLUSTER_DOMAIN}/css/base/bazarr/nord.css"></head>';
             sub_filter_once on;
         hosts:
-          - host: *host
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
