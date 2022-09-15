@@ -11,8 +11,9 @@ resources:
   - home-automation
   - kube-tools
   #- logs
-  - media
   - media-automation
+  - media-servers
   - monitoring
   - networking
   - storage
+  - web-tools

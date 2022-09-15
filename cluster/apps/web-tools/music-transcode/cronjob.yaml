@@ -1,0 +1,64 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: music-transcode
+  namespace: default
+spec:
+  schedule: "0 2 * * *"
+  suspend: true
+  concurrencyPolicy: "Forbid"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      ttlSecondsAfterFinished: 300
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: OnFailure
+          initContainers:
+          containers:
+            - name: transcode-incremental
+              image: ghcr.io/auricom/freac:v1.1.6@sha256:0f6dc07462b84efd2a9dd0816e7154a8c7f72c992f6e1cb67077ec371fe50463
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TRANSCODE_INPUT_DIR
+                  value: /mnt/music/
+                - name: TRANSCODE_OUTPUT_DIR
+                  value: /mnt/music_transcoded/
+                - name: TRANSCODE_FREAC_BIN
+                  value: /app/freaccmd
+              command:
+                - "/bin/sh"
+                - "-ec"
+                - |
+                  #!/bin/bash
+
+                  HEALTHCHECKS=true
+
+                  curl --location raw.githubusercontent.com/auricom/home-ops/main/scripts/transcode_music/transcode.bash --output /tmp/transcode.bash
+                  chmod a+x /tmp/transcode.bash
+                  curl --location raw.githubusercontent.com/auricom/home-ops/main/scripts/transcode_music/transcode_exclude.cfg --output /tmp/transcode_exclude.cfg
+                  cd /tmp
+                  ./transcode.bash -c
+                  test $? -ne 0 && HEALTHCHECKS=false
+                  ./transcode.bash -r
+                  test $? -ne 0 && HEALTHCHECK=false
+
+                  test FLAG && curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b99854a4-d298-4acb-a02c-a56860132de3
+              volumeMounts:
+                - name: music-transcoded
+                  mountPath: /mnt/music_transcoded
+                - name: music
+                  mountPath: /mnt/music
+          volumes:
+            - name: music-transcoded
+              nfs:
+                server: "${LOCAL_LAN_OPENMEDIAVAULT}"
+                path: /export/music_transcoded
+            - name: music
+              nfs:
+                server: "${LOCAL_LAN_TRUENAS}"
+                path: /mnt/storage/music
