@@ -4,5 +4,8 @@ kind: Kustomization
 namespace: default
 resources:
   - freshrss
+  - joplin
   - music-transcode
   - theme-park
+  - vaultwarden
+  - whoogle

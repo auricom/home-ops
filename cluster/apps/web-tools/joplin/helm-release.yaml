@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: &app freshrss
+  name: &app joplin
   namespace: default
 spec:
   interval: 15m
@@ -25,29 +25,34 @@ spec:
     - name: postgres
       namespace: default
   values:
+    global:
+      nameOverride: *app
     image:
-      repository: freshrss/freshrss
-      tag: 1.20.0
+      repository: joplin/server
+      tag: 2.7.4-beta
+    env:
+      APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
+      APP_PORT: 80
+      DB_CLIENT: pg
+      POSTGRES_HOST: postgres-rw.default.svc.cluster.local
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: joplin
+    envFrom:
+      - secretRef:
+          name: *app
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *app
     service:
       main:
         ports:
           http:
             port: 80
-    env:
-      TZ: ${TIMEZONE}
-      CRON_MIN: "18,48"
-      DOMAIN: "https://freshrss.${SECRET_CLUSTER_DOMAIN}/"
-    persistence:
-      config:
-        enabled: true
-        existingClaim: freshrss-config
-        mountPath: /var/www/FreshRSS/data
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
     ingress:
       main:
         enabled: true
         ingressClassName: "nginx"
+        annotations:
+          external-dns.home.arpa/enabled: "true"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
