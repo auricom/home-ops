@@ -10,7 +10,7 @@ resources:
   - downloaders
   - home-automation
   - kube-tools
-  - logs
+  #- logs
   - media
   - monitoring
   - networking
