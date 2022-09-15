@@ -12,6 +12,7 @@ resources:
   - kube-tools
   #- logs
   - media
+  - media-automation
   - monitoring
   - networking
   - storage

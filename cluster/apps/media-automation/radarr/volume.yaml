@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-config
+  namespace: default
+  labels:
+    app.kubernetes.io/name: &name radarr
+    app.kubernetes.io/instance: *name
+    kasten-io/backup: "true"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: rook-ceph-block
