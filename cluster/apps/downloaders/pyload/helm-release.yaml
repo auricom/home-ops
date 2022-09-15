@@ -23,8 +23,8 @@ spec:
       retries: 5
   values:
     image:
-      repository: linuxserver/pyload-ng
-      tag: develop-version-f2633b80
+      repository: ghcr.io/auricom/pyload-ng
+      tag: v0.5.0-b3.dev26
     env:
       TZ: "${TIMEZONE}"
     service:
