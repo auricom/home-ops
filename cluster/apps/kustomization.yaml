@@ -9,8 +9,9 @@ resources:
   - documentation
   - downloaders
   - home-automation
-  - kasten-io
   - kube-tools
+  - logs
   - media
   - monitoring
   - networking
+  - storage

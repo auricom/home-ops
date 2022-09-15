@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - cert-manager
   - flux-system
-  - kasten-io
+  - k10
   - rook-ceph
   - storageclasses.yaml
