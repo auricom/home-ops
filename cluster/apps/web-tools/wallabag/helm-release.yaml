@@ -29,7 +29,7 @@ spec:
   values:
     controller:
       replicas: 1
-      strategy: RollingUpdate
+      strategy: Recreate
     image:
       repository: wallabag/wallabag
       tag: 2.5.1
