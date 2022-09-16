@@ -8,6 +8,5 @@ resources:
   - pgadmin
   - pgbackups
   - resilio-sync
-  - sharry
   - tandoor
   - truecommand

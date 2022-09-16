@@ -14,7 +14,7 @@ spec:
       app.kubernetes.io/instance: resilio-sync
       app.kubernetes.io/name: resilio-sync
   updateStrategy:
-    type: Recreate
+    type: OnDelete
   serviceName: resilio-sync
   strategy:
   template:
