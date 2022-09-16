@@ -11,6 +11,6 @@ patchesStrategicMerge:
 configMapGenerator:
   - name: vikunja
     files:
-      - config/configuration.yml
+      - config/Caddyfile
 generatorOptions:
   disableNameSuffixHash: true

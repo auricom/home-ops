@@ -1,0 +1,31 @@
+{
+admin off
+auto_https off
+}
+
+:8080 {
+    log {
+        output stdout
+    }
+
+    @api {
+        path /api/*
+        path /.well-known/*
+        path /dav/*
+    }
+
+    header {
+        # Remove Server header
+        -Server
+    }
+
+    # API
+    handle @api {
+        reverse_proxy localhost:3456
+    }
+
+    # Filtron
+    handle {
+        reverse_proxy localhost:80
+    }
+}
