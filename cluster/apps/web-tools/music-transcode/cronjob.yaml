@@ -47,7 +47,7 @@ spec:
                   ./transcode.bash -r
                   test $? -ne 0 && HEALTHCHECK=false
 
-                  test FLAG && curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:/ping/{ping_key}/k3s-transcode-music
+                  test FLAG && curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:/ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-transcode-music
               volumeMounts:
                 - name: music-transcoded
                   mountPath: /mnt/music_transcoded

@@ -41,7 +41,7 @@ spec:
                 - |
                   #!/bin/bash
 
-                  /app/recyclarr sonarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null https://healthchecks.default.svc.cluster.local./ping/{ping_key}/k3s-recyclarr-sonarr
+                  /app/recyclarr sonarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null http://healthchecks.default.svc.cluster.local./ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-recyclarr-sonarr
               volumeMounts:
                 - name: shared
                   mountPath: /config/recyclarr.yaml
@@ -58,7 +58,7 @@ spec:
                 - |
                   #!/bin/bash
 
-                  /app/recyclarr radarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null https://healthchecks.default.svc.cluster.local./ping/{ping_key}/k3s-recyclarr-radarr
+                  /app/recyclarr radarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null http://healthchecks.default.svc.cluster.local./ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-recyclarr-radarr
               volumeMounts:
                 - name: shared
                   mountPath: /config/recyclarr.yaml

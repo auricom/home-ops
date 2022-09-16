@@ -80,7 +80,7 @@ spec:
                     echo "INFO: Backup done"
                   EOF
 
-                  curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local./ping/{ping_key}/k3s-gitea-repositories-backup
+                  curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local./ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-gitea-repositories-backup
               volumeMounts:
                 - name: secret
                   mountPath: /opt/id_rsa
