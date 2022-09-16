@@ -46,6 +46,25 @@ spec:
         tls:
           - hosts:
               - *host
+    probes:
+      liveness: &probe
+        custom: true
+        enabled: true
+        spec:
+          failureThreshold: 5
+          httpGet:
+            path: /login
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 10
+      readiness: *probe
+      startup: *probe
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     persistence:
       config:
         enabled: true
