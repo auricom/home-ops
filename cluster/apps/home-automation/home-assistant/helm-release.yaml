@@ -32,7 +32,7 @@ spec:
       tag: 2022.9.4@sha256:fb5ddff05e523de61708c19209dfbac4e283f4f5d72004abb269cc516474a6b4
     env:
       TZ: "${TIMEZONE}"
-      POSTGRES_HOST: postgres-rw.default.svc.cluster.local
+      POSTGRES_HOST: postgres-rw.default.svc.cluster.local.
       POSTGRES_DB: home_assistant
     envFrom:
       - secretRef:

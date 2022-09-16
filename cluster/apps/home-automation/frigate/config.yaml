@@ -5,7 +5,7 @@ logger:
     frigate.record: debug
 
 mqtt:
-  host: emqx.default.svc.cluster.local
+  host: emqx.default.svc.cluster.local.
   topic_prefix: frigate
   user: "{MQTT_USER}"
   password: "{MQTT_PASSWORD}"

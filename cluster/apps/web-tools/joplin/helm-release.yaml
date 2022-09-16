@@ -34,7 +34,7 @@ spec:
       APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
       APP_PORT: 80
       DB_CLIENT: pg
-      POSTGRES_HOST: postgres-rw.default.svc.cluster.local
+      POSTGRES_HOST: postgres-rw.default.svc.cluster.local.
       POSTGRES_PORT: 5432
       POSTGRES_DATABASE: joplin
     envFrom:

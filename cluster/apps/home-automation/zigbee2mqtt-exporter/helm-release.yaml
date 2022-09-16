@@ -33,7 +33,7 @@ spec:
     env:
       LOG_LEVEL: DEBUG
       LOG_MQTT_MESSAGE: "True"
-      MQTT_ADDRESS: emqx.default.svc.cluster.local
+      MQTT_ADDRESS: emqx.default.svc.cluster.local.
       MQTT_TOPIC: "zigbee2mqtt/#"
       MQTT_V5_PROTOCOL: "True"
       MQTT_USERNAME: ${SECRET_MQTT_USER}

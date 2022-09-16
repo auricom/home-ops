@@ -118,8 +118,7 @@ spec:
         pathType: Prefix
         ingressClassName: "nginx"
         annotations:
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.default.svc.cluster.local/api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_CLUSTER_DOMAIN}"
+          auth.home.arpa/enabled: "true"
         hosts: ["prometheus.${SECRET_CLUSTER_DOMAIN}"]
         tls:
           - hosts:
@@ -365,8 +364,7 @@ spec:
         pathType: Prefix
         ingressClassName: "nginx"
         annotations:
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.default.svc.cluster.local/api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_CLUSTER_DOMAIN}"
+          auth.home.arpa/enabled: "true"
         hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
         tls:
           - hosts:

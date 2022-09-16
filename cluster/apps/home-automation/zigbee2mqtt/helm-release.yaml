@@ -31,7 +31,7 @@ spec:
       permit_join: false
       mqtt:
         base_topic: zigbee2mqtt
-        server: "mqtt://emqx.default.svc.cluster.local"
+        server: "mqtt://emqx.default.svc.cluster.local."
         user: ${SECRET_MQTT_USER}
         password: ${SECRET_MQTT_PASSWORD}
       serial:
@@ -68,8 +68,7 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         annotations:
-          nginx.ingress.kubernetes.io/auth-url: "http://authelia.default.svc.cluster.local/api/verify"
-          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_CLUSTER_DOMAIN}"
+          auth.home.arpa/enabled: "true"
         hosts:
           - host: "zigbee.${SECRET_CLUSTER_DOMAIN}"
             paths:
