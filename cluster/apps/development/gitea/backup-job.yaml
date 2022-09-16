@@ -23,8 +23,8 @@ spec:
                       name: gitea-config
                       key: apiToken
               command:
-                - "bin/sh"
-                - "-ec"
+                - "/bin/bash"
+                - "-c"
                 - |
                   #!/bin/bash
 
@@ -80,7 +80,7 @@ spec:
                     echo "INFO: Backup done"
                   EOF
 
-                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/f7ff2516-e3b5-41ae-b77f-a9dc09005422
+                  curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:8000/ping/f7ff2516-e3b5-41ae-b77f-a9dc09005422
               volumeMounts:
                 - name: secret
                   mountPath: /opt/id_rsa

@@ -31,8 +31,8 @@ spec:
                 - name: TRANSCODE_FREAC_BIN
                   value: /app/freaccmd
               command:
-                - "/bin/sh"
-                - "-ec"
+                - "/bin/bash"
+                - "-c"
                 - |
                   #!/bin/bash
 
@@ -47,7 +47,7 @@ spec:
                   ./transcode.bash -r
                   test $? -ne 0 && HEALTHCHECK=false
 
-                  test FLAG && curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b99854a4-d298-4acb-a02c-a56860132de3
+                  test FLAG && curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:8000/ping/b99854a4-d298-4acb-a02c-a56860132de3
               volumeMounts:
                 - name: music-transcoded
                   mountPath: /mnt/music_transcoded

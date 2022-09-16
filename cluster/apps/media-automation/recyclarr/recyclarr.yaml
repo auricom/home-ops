@@ -10,7 +10,7 @@
 
 sonarr:
   - base_url: http://sonarr
-    api_key: ${SONARR_API_KEY}
+    api_key: ${SONARR_APIKEY}
     quality_definition: hybrid
     release_profiles:
       - trash_ids:

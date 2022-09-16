@@ -18,10 +18,10 @@ spec:
               image: ghcr.io/auricom/kubectl:v1.25.0@sha256:0862a94ca7d546521aa6c2f917fab5afdcc6caa54a48e0581b29a37c1b11f37d
               imagePullPolicy: IfNotPresent
               command:
-                - "/bin/sh"
-                - "-ec"
+                - "/bin/bash"
+                - "-c"
                 - |
-                  #!/bin/sh
+                  #!/bin/bash
 
                   set -o nounset
                   set -o errexit
@@ -32,6 +32,6 @@ spec:
                   QBITTORRENT_POD=$(echo $result | awk '{ print $NF }')
                   echo $QBITTORRENT_POD | grep qbittorrent
                   test $? -eq 0 && kubectl cp /tmp/ipfilter.dat default/$QBITTORRENT_POD:/config/ipfilter.dat
-                  curl -m 10 --retry 5 http://healthchecks.monitoring.svc.cluster.local.:8000/ping/b4651e4f-5058-436b-a237-0df660e9de9e
+                  curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:8000/ping/b4651e4f-5058-436b-a237-0df660e9de9e
                   kubectl rollout restart deployment qbittorrent --namespace default
           restartPolicy: Never
