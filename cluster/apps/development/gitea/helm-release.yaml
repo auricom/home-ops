@@ -39,11 +39,10 @@ spec:
           RUN_AT_START: true
         database:
           DB_TYPE: postgres
-          HOST: postgres.${SECRET_DOMAIN}:5432
+          HOST: postgres-rw.default.svc.cluster.local:5432
           NAME: gitea
-          USER: gitea
           SCHEMA: public
-          SSL_MODE: verify-full
+          SSL_MODE: disable
         server:
           SSH_PORT: 22
           SSH_LISTEN_PORT: 30322
@@ -146,6 +145,10 @@ spec:
       kind: Secret
       name: gitea-config
       valuesKey: dbPassword
+    - targetPath: gitea.config.database.USER
+      kind: Secret
+      name: gitea-config
+      valuesKey: dbUser
     - targetPath: gitea.config.storage.MINIO_ACCESS_KEY_ID
       kind: Secret
       name: gitea-config

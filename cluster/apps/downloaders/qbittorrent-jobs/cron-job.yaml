@@ -32,6 +32,6 @@ spec:
                   QBITTORRENT_POD=$(echo $result | awk '{ print $NF }')
                   echo $QBITTORRENT_POD | grep qbittorrent
                   test $? -eq 0 && kubectl cp /tmp/ipfilter.dat default/$QBITTORRENT_POD:/config/ipfilter.dat
-                  curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:8000/ping/b4651e4f-5058-436b-a237-0df660e9de9e
+                  curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:/ping/{ping_key}/k3s-qbittorrent-p2pblocklist
                   kubectl rollout restart deployment qbittorrent --namespace default
           restartPolicy: Never

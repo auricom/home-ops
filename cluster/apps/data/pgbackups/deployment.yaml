@@ -46,7 +46,7 @@ spec:
             - name: HEALTHCHECK_PORT
               value: "8080"
             - name: WEBHOOK_URL
-              value: "http://healthchecks.default.svc.cluster.local.:8000/ping/c88641a5-12f2-4f32-ab9c-5a7d122a229e"
+              value: "http://healthchecks.default.svc.cluster.local.:/ping/{ping_key}/postgresql-backup"
           resources:
             requests:
               cpu: 150m
