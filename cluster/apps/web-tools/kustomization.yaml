@@ -8,5 +8,6 @@ resources:
   - music-transcode
   - theme-park
   - vaultwarden
+  - vikunja
   - wallabag
   - whoogle
