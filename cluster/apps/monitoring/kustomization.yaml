@@ -5,5 +5,5 @@ resources:
   - grafana
   - healthchecks
   - kube-prometheus-stack
-  - thanos
+  # - thanos
   - uptime-kuma

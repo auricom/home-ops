@@ -76,5 +76,5 @@ spec:
         existingClaim: lychee-files
     resources:
       requests:
-        cpu: 100m
+        cpu: 15m
         memory: 256Mi

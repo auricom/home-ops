@@ -98,11 +98,7 @@ spec:
     postgresql:
       enabled: false
     memcached:
-      image:
-        repository: bitnami/memcached
-        tag: 1.6.17
-      service:
-        port: 11211
+      enabled: false
     persistence:
       enabled: true
       existingClaim: "gitea-config"
@@ -124,6 +120,13 @@ spec:
       tls:
         - hosts:
             - "gitea.${SECRET_CLUSTER_DOMAIN}"
+    resources:
+      requests:
+        cpu: 15m
+        memory: 226M
+      limits:
+        cpu: 500m
+        memory: 1Gi
   valuesFrom:
     - targetPath: gitea.admin.email
       kind: Secret
