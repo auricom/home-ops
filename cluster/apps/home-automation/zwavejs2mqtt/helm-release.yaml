@@ -24,6 +24,8 @@ spec:
   dependsOn:
     - name: node-feature-discovery
       namespace: default
+    - name: emqx
+      namespace: default
   values:
     image:
       repository: ghcr.io/zwave-js/zwavejs2mqtt

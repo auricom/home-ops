@@ -2,67 +2,43 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: zigbee2mqtt
+  name: &app zigbee2mqtt
   namespace: default
 spec:
   interval: 15m
   chart:
     spec:
-      chart: zigbee2mqtt
-      version: 9.4.2
+      chart: app-template
+      version: 0.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home-charts
+        name: bjw-s-charts
         namespace: flux-system
-      interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: node-feature-discovery
+      namespace: default
+    - name: emqx
+      namespace: default
   values:
+    fullnameOverride: *app
     image:
-      repository: ghcr.io/koenkk/zigbee2mqtt
+      repository: koenkk/zigbee2mqtt
       tag: 1.27.2
-
     env:
-      TZ: ${TIMEZONE}
+      TZ: "${TIMEZONE}"
       ZIGBEE2MQTT_DATA: /data
-
-    config:
-      homeassistant: true
-      device_options:
-        retain: true
-      permit_join: false
-      mqtt:
-        base_topic: zigbee2mqtt
-        server: "mqtt://emqx.default.svc.cluster.local."
-        user: ${SECRET_MQTT_USER}
-        password: ${SECRET_MQTT_PASSWORD}
-      serial:
-        port: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
-      advanced:
-        log_output:
-          - console
-        network_key:
-          - 204
-          - 61
-          - 75
-          - 23
-          - 44
-          - 230
-          - 24
-          - 203
-          - 53
-          - 5
-          - 248
-          - 32
-          - 50
-          - 84
-          - 44
-          - 159
-      frontend:
-        port: 8080
-      experimental:
-        new_api: true
-    securityContext:
-      privileged: true
-
+    service:
+      main:
+        ports:
+          http:
+            port: &port 8080
     ingress:
       main:
         enabled: true
@@ -70,14 +46,15 @@ spec:
         annotations:
           auth.home.arpa/enabled: "true"
         hosts:
-          - host: "zigbee.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "zigbee.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - "zigbee.${SECRET_CLUSTER_DOMAIN}"
-
+              - *host
+    securityContext:
+      privileged: true
     persistence:
       config:
         enabled: true
@@ -88,14 +65,11 @@ spec:
         type: hostPath
         hostPath: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
         hostPathType: CharDevice
-
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - {
-                    key: "feature.node.kubernetes.io/custom-zigbee",
-                    operator: In,
-                    values: ["true"],
-                  }
+    nodeSelector:
+      feature.node.kubernetes.io/custom-zigbee: "true"
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 100m
+      limits:
+        memory: 700Mi
