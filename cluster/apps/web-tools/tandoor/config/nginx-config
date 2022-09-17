@@ -1,0 +1,25 @@
+events {
+  worker_connections 1024;
+}
+http {
+  include /etc/nginx/mime.types;
+  server {
+    listen 80;
+    server_name _;
+    client_max_body_size 128M;
+    # serve media files
+    location /media/ {
+      alias /media/;
+    }
+    # serve static files
+    location /static/ {
+      alias /static/;
+    }
+    # pass requests for dynamic content to gunicorn
+    location / {
+      proxy_set_header Host $host;
+      proxy_set_header REMOTE-USER $http_x_authentik_username;
+      proxy_pass http://localhost:8080;
+    }
+  }
+}

@@ -4,9 +4,12 @@ kind: Kustomization
 namespace: default
 resources:
   - freshrss
+  - homer
+  - homer-code
   - joplin
   - music-transcode
   - sharry
+  - tandoor
   - theme-park
   - vaultwarden
   - vikunja

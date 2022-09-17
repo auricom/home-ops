@@ -12,7 +12,6 @@ resources:
   - fairwinds-charts.yaml
   - gitea-charts.yaml
   - grafana-charts.yaml
-  - influxdata-charts.yaml
   - ingress-nginx-charts.yaml
   - jetstack-charts.yaml
   - k8s-at-home.yaml
@@ -24,7 +23,6 @@ resources:
   - project-calico-charts.yaml
   - prometheus-community-charts.yaml
   - rook-ceph-charts.yaml
-  - runix-charts.yaml
   - stakater-charts.yaml
   - vector-charts.yaml
   - weaveworks-kured-charts.yaml

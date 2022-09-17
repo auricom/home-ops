@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vikunja-files
-  namespace: data
+  name: resilio-sync-claude-config
+  namespace: default
   labels:
-    app.kubernetes.io/name: &name vikunja
+    app.kubernetes.io/name: &name resilio-sync-claude
     app.kubernetes.io/instance: *name
     kasten-io/backup: "true"
 spec:

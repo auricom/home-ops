@@ -1,0 +1,104 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app resilio-sync-claude
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 0.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    image:
+      repository: ghcr.io/auricom/resilio-sync
+      tag: v2.7.3.1381-1@sha256:0dd28dcf8c6e4854fe1d6321ae4c9168d2ffd5d80b9fac90da54056eeb8d9510
+      env:
+        - name: TZ
+          value: "${TIMEZONE}"
+    service:
+      main:
+        ports:
+          http:
+            port: 8888
+          com:
+            port: 55555
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: resilio-sync-claude-config
+      sync-conf:
+        enabled: true
+        type: configMap
+        configMap:
+        name: resilio-sync-claude-sync-conf
+        mountPath: /config/sync.conf
+        subPath: sync.conf
+      backups:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/backups
+        mountPath: /sync/backup
+      home-claude:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/home/claude
+        mountPath: /sync/home/claude
+      music-transcoded:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_OPENMEDIAVAULT}"
+        path: /export/music_transcoded
+        mountPath: /sync/music_transcoded
+      photo:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/photo
+        mountPath: /sync/photo
+      shared-documents:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/shared-documents
+        mountPath: /sync/shared-documents
+      video:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/video
+        mountPath: /sync/video
+    podSecurityContext:
+      runAsUser: 0
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        memory: 2Gi

@@ -1,0 +1,55 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app pgbackups
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 0.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    image:
+      repository: prodrigestivill/postgres-backup-local
+      tag: 14-alpine@sha256:2985300b476382c727fc170d3f2b37972b8445cc92635f1bcc6fa48a1a061f01
+    env:
+      POSTGRES_HOST: postgres-rw.default.svc.cluster.local.
+      POSTGRES_DB: "authelia,freshrss,gitea,hass,healthchecks,joplin,lychee,recipes,sharry,outline,vaultwarden,vikunja,wallabag"
+      POSTGRES_EXTRA_OPTS: "-Z9 --schema=public --blobs"
+      SCHEDULE: "@daily"
+      BACKUP_KEEP_DAYS: "7"
+      BACKUP_KEEP_WEEKS: "4"
+      BACKUP_KEEP_MONTHS: "3"
+      HEALTHCHECK_PORT: "8080"
+      WEBHOOK_URL: "http://healthchecks.default.svc.cluster.local.:/ping/${SECRET_HEALTHCHECKS_PING_KEY}/postgresql-backup"
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+    persistence:
+      backups:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/backups
+        mountPath: /backups/postgresql
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 50m
+      limits:
+        memory: 512Mi

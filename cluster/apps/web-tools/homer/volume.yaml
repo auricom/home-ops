@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vikunja-files
+  name: homer-config
   namespace: data
   labels:
-    app.kubernetes.io/name: &name vikunja
+    app.kubernetes.io/name: &name homer
     app.kubernetes.io/instance: *name
     kasten-io/backup: "true"
 spec:
