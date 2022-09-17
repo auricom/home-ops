@@ -8,11 +8,11 @@ spec:
   interval: 15m
   chart:
     spec:
-      chart: calibre-web
-      version: 8.4.2
+      chart: app-template
+      version: 0.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home-charts
+        name: bjw-s-charts
         namespace: flux-system
   install:
     createNamespace: true
@@ -23,13 +23,32 @@ spec:
       retries: 5
   values:
     image:
-      repository: ghcr.io/linuxserver/calibre-web
-      tag: amd64-version-0.6.18
+      repository: ghcr.io/auricom/calibre-web
+      tag: v0.6.19@sha256:ca273f20b5690c2f67567578de6a0d0951cc5529d36d7351f37ae04b0c8084da
     env:
       TZ: "${TIMEZONE}"
-      PUID: "1026"
-      PGID: "1000"
-      DOCKER_MODS: "amd64-version-0.6.18"
+    service:
+      main:
+        ports:
+          http:
+            port: 8083
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     persistence:
       config:
         enabled: true
@@ -40,19 +59,6 @@ spec:
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/home/claude/books
         mountPath: /mnt/storage/home/claude/books
-    ingress:
-      main:
-        enabled: true
-        ingressClassName: "nginx"
-        annotations:
-        hosts:
-          - host: &host "calibre-web.${SECRET_CLUSTER_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - *host
     resources:
       requests:
         cpu: 15m
