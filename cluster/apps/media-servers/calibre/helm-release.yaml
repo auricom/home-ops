@@ -8,11 +8,11 @@ spec:
   interval: 15m
   chart:
     spec:
-      chart: calibre
-      version: 5.4.2
+      chart: app-template
+      version: 0.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home-charts
+        name: bjw-s-charts
         namespace: flux-system
   install:
     createNamespace: true
@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: ghcr.io/linuxserver/calibre
-      tag: version-v6.4.0
+      tag: v6.5.0-ls179
     env:
       TZ: "${TIMEZONE}"
       PUID: "1026"
@@ -40,8 +40,12 @@ spec:
         path: /mnt/storage/home/claude/books
         mountPath: /mnt/storage/home/claude/books
     service:
-      webserver:
-        enabled: true
+      main:
+        ports:
+          http:
+            port: 8080
+          webserver:
+            port: 8081
     ingress:
       main:
         enabled: true
@@ -49,7 +53,7 @@ spec:
         annotations:
           auth.home.arpa/enabled: "true"
         hosts:
-          - host: &host "calibre.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
