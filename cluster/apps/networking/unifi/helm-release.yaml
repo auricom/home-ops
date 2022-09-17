@@ -85,9 +85,10 @@ spec:
           - hosts:
               - *host
     persistence:
-      data:
+      config:
         enabled: true
         existingClaim: unifi-config
+        mountPath: /unifi
     resources:
       requests:
         memory: 2Gi
