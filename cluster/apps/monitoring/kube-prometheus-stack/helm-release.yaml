@@ -28,6 +28,7 @@ spec:
     ###
     kubeApiServer:
       enabled: true
+
     kubeControllerManager:
       enabled: false
 
@@ -51,14 +52,18 @@ spec:
 
     kubeStateMetrics:
       enabled: true
-    kube-state-metrics:
-      fullnameOverride: kube-state-metrics
-      resources:
-        requests:
-          cpu: 15m
-          memory: 127M
-        limits:
-          memory: 153M
+      metricLabelsAllowlist:
+        - "persistentvolumeclaims=[*]"
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
 
     grafana:
       enabled: false
@@ -66,15 +71,23 @@ spec:
 
     nodeExporter:
       enabled: true
-      serviceMonitor:
-        relabelings:
-          - action: replace
-            regex: (.*)
-            replacement: $1
-            sourceLabels:
-              - __meta_kubernetes_pod_node_name
-            targetLabel: kubernetes_node
-
+    prometheus-node-exporter:
+      resources:
+        requests:
+          cpu: 23m
+          memory: 64M
+        limits:
+          memory: 64M
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
     ###
     ### Prometheus operator values
     ###
@@ -82,11 +95,11 @@ spec:
       prometheusConfigReloader:
         resources:
           requests:
-            cpu: 150m
+            cpu: 100m
             memory: 50Mi
           limits:
             cpu: 300m
-            memory: 50Mi
+            memory: 100Mi
 
     ###
     ### Prometheus instance values
@@ -103,39 +116,22 @@ spec:
           - hosts:
               - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
-        resources:
-          requests:
-            memory: 2000Mi
-            cpu: 400m
-          limits:
-            memory: 6000Mi
         replicas: 1
         replicaExternalLabelName: "replica"
-        podAntiAffinity: hard
-        ruleSelector: {}
-        ruleNamespaceSelector: {}
         ruleSelectorNilUsesHelmValues: false
-        serviceMonitorSelector: {}
-        serviceMonitorNamespaceSelector: {}
         serviceMonitorSelectorNilUsesHelmValues: false
-        podMonitorSelector: {}
-        podMonitorNamespaceSelector: {}
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
-        retention: 14d
-        retentionSize: "45GB"
+        retention: 6h
         enableAdminAPI: true
         walCompression: true
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: rook-ceph-block
+              storageClassName: "rook-ceph-block"
               resources:
                 requests:
-                  storage: 50Gi
-        thanos:
-          image: quay.io/thanos/thanos:v0.28.0
-          version: v0.28.0
+                  storage: 20Gi
         additionalScrapeConfigs:
           - job_name: "opnsense"
             scrape_interval: 60s
@@ -158,22 +154,6 @@ spec:
               - targets: ["${LOCAL_LAN_TRUENAS_REMOTE}:9273"]
                 labels:
                   app: "truenas-remote"
-      thanosService:
-        enabled: true
-      thanosServiceMonitor:
-        enabled: true
-      thanosIngress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/ssl-redirect: "true"
-          nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-        hosts:
-          - &host "thanos-sidecar.${SECRET_CLUSTER_DOMAIN}"
-        tls:
-          - hosts:
-              - *host
 
     alertmanager:
       config:

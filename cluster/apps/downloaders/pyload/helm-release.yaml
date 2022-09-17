@@ -78,7 +78,7 @@ spec:
         mountPath: /mnt/storage/downloads
     resources:
       requests:
-        cpu: 100m
-        memory: 1Gi
+        cpu: 15m
+        memory: 105Mi
       limits:
-        memory: 5Gi
+        memory: 1Gi

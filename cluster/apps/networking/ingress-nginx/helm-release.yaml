@@ -62,8 +62,10 @@ spec:
             any: true
       resources:
         requests:
-          memory: 250Mi
-          cpu: 50m
+          memory: 411Mi
+          cpu: 23m
+        limits:
+          memory: 1Gi
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -88,5 +90,7 @@ spec:
           value: "true"
       resources:
         requests:
-          memory: 250Mi
+          memory: 105Mi
           cpu: 25m
+        limits:
+          memory: 105Mi
