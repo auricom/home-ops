@@ -14,7 +14,6 @@ resources:
   - grafana-charts.yaml
   - ingress-nginx-charts.yaml
   - jetstack-charts.yaml
-  - k8s-at-home.yaml
   - k8s-gateway-charts.yaml
   - kasten-charts.yaml
   - kyverno-charts.yaml

@@ -52,18 +52,7 @@ spec:
     kubeStateMetrics:
       enabled: true
     kube-state-metrics:
-      metricLabelsAllowlist:
-        - "persistentvolumeclaims=[*]"
-      prometheus:
-        monitor:
-          enabled: true
-          relabelings:
-            - action: replace
-              regex: (.*)
-              replacement: $1
-              sourceLabels:
-                - __meta_kubernetes_pod_node_name
-              targetLabel: kubernetes_node
+      fullnameOverride: kube-state-metrics
       resources:
         requests:
           cpu: 15m
@@ -77,24 +66,14 @@ spec:
 
     nodeExporter:
       enabled: true
-
-    prometheus-node-exporter:
-      resources:
-        requests:
-          cpu: 23m
-          memory: 64M
-        limits:
-          memory: 64M
-      prometheus:
-        monitor:
-          enabled: true
-          relabelings:
-            - action: replace
-              regex: (.*)
-              replacement: $1
-              sourceLabels:
-                - __meta_kubernetes_pod_node_name
-              targetLabel: kubernetes_node
+      serviceMonitor:
+        relabelings:
+          - action: replace
+            regex: (.*)
+            replacement: $1
+            sourceLabels:
+              - __meta_kubernetes_pod_node_name
+            targetLabel: kubernetes_node
 
     ###
     ### Prometheus operator values
@@ -124,8 +103,6 @@ spec:
           - hosts:
               - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
-        externalLabels:
-          cluster: home-ops
         resources:
           requests:
             memory: 2000Mi
@@ -181,99 +158,6 @@ spec:
               - targets: ["${LOCAL_LAN_TRUENAS_REMOTE}:9273"]
                 labels:
                   app: "truenas-remote"
-          # Example scrape config for probing ingresses via the Blackbox Exporter.
-          #
-          # The relabeling allows the actual ingress scrape endpoint to be configured
-          # via the following annotations:
-          #
-          # * `prometheus.io/probe`: Only probe ingresses that have a value of `true`
-          - job_name: "kubernetes-ingresses"
-            metrics_path: /probe
-            scrape_interval: 60s
-            params:
-              module: [http_2xx]
-            kubernetes_sd_configs:
-              - role: ingress
-            relabel_configs:
-              - source_labels:
-                  [__meta_kubernetes_ingress_annotation_prometheus_io_probe]
-                action: keep
-                regex: true
-              - source_labels:
-                  [
-                    __meta_kubernetes_ingress_scheme,
-                    __address__,
-                    __meta_kubernetes_ingress_path,
-                  ]
-                regex: (.+);(.+);(.+)
-                replacement: ${1}://${2}${3}
-                target_label: __param_target
-              - target_label: __address__
-                replacement: blackbox-exporter:9115
-              - source_labels: [__param_target]
-                target_label: instance
-              - action: labelmap
-                regex: __meta_kubernetes_ingress_label_(.+)
-              - source_labels: [__meta_kubernetes_namespace]
-                target_label: kubernetes_namespace
-              - source_labels: [__meta_kubernetes_ingress_name]
-                target_label: kubernetes_name
-          - job_name: "kubernetes-services-http"
-            metrics_path: /probe
-            scrape_interval: 60s
-            params:
-              module: [http_2xx]
-            kubernetes_sd_configs:
-              - role: service
-            relabel_configs:
-              - source_labels:
-                  [__meta_kubernetes_service_annotation_prometheus_io_probe]
-                action: keep
-                regex: true
-              - source_labels:
-                  [__meta_kubernetes_service_annotation_prometheus_io_protocol]
-                action: keep
-                regex: http
-              - source_labels: [__address__]
-                target_label: __param_target
-              - target_label: __address__
-                replacement: blackbox-exporter:9115
-              - source_labels: [__param_target]
-                target_label: instance
-              - action: labelmap
-                regex: __meta_kubernetes_service_label_(.+)
-              - source_labels: [__meta_kubernetes_namespace]
-                target_label: kubernetes_namespace
-              - source_labels: [__meta_kubernetes_service_name]
-                target_label: kubernetes_name
-          - job_name: "kubernetes-services-tcp"
-            metrics_path: /probe
-            scrape_interval: 60s
-            params:
-              module: [tcp_connect]
-            kubernetes_sd_configs:
-              - role: service
-            relabel_configs:
-              - source_labels:
-                  [__meta_kubernetes_service_annotation_prometheus_io_probe]
-                action: keep
-                regex: true
-              - source_labels:
-                  [__meta_kubernetes_service_annotation_prometheus_io_protocol]
-                action: keep
-                regex: tcp
-              - source_labels: [__address__]
-                target_label: __param_target
-              - target_label: __address__
-                replacement: blackbox-exporter:9115
-              - source_labels: [__param_target]
-                target_label: instance
-              - action: labelmap
-                regex: __meta_kubernetes_service_label_(.+)
-              - source_labels: [__meta_kubernetes_namespace]
-                target_label: kubernetes_namespace
-              - source_labels: [__meta_kubernetes_service_name]
-                target_label: kubernetes_name
       thanosService:
         enabled: true
       thanosServiceMonitor:
