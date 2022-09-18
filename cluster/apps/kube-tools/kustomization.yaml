@@ -7,7 +7,6 @@ resources:
   - goldilocks
   - intel-gpu-exporter
   - intel-gpu-plugin
-  - kured
   - kyverno
   - metrics-server
   - node-feature-discovery
