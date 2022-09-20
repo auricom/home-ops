@@ -30,7 +30,7 @@ spec:
       strategy: Recreate
     image:
       repository: caddy
-      tag: 2.5.2-alpine
+      tag: 2.6.0-alpine
     envFrom:
       - secretRef:
           name: *app
