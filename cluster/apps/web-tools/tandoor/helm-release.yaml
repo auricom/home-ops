@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: vabene1111/recipes
-      tag: "1.3.3"
+      tag: "1.4.1"
     envFrom:
       - secretRef:
           name: *app
