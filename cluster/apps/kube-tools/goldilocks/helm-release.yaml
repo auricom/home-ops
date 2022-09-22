@@ -25,11 +25,11 @@ spec:
     controller:
       resources:
         requests:
-          cpu: 35m
-          memory: 105Mi
+          cpu: 126m
+          memory: 105M
         limits:
-          cpu: 250m
-          memory: 250Mi
+          cpu: 126m
+          memory: 105M
     dashboard:
       replicaCount: 1
       ingress:
@@ -45,7 +45,8 @@ spec:
               - *host
       resources:
         requests:
-          cpu: 35m
-          memory: 105Mi
+          cpu: 15m
+          memory: 105M
         limits:
-          memory: 250Mi
+          cpu: 15m
+          memory: 105M
