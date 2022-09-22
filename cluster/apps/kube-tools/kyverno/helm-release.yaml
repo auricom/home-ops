@@ -23,7 +23,7 @@ spec:
       retries: 5
   values:
     installCRDs: false
-    replicaCount: 3
+    replicaCount: 1
     extraArgs:
       - --autogenInternals=false
       - --clientRateLimitQPS=30

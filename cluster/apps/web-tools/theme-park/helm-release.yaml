@@ -23,7 +23,7 @@ spec:
       retries: 5
   values:
     controller:
-      replicas: 3
+      replicas: 1
       strategy: RollingUpdate
     image:
       repository: ghcr.io/onedr0p/theme-park
