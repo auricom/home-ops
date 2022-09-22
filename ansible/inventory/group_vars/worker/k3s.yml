@@ -14,5 +14,6 @@ k3s_agent:
     # Allow pods to be rescheduled quicker in the case of a node failure
     # https://github.com/k3s-io/k3s/issues/1264
     - "node-status-update-frequency=4s"
-  node-label:
-    - node-role.kubernetes.io/worker=true
+    - "max-pods=150"
+  # node-label:
+  #  - node-role.kubernetes.io/worker=true
