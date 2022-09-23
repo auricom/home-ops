@@ -15,5 +15,6 @@ k3s_agent:
     # https://github.com/k3s-io/k3s/issues/1264
     - "node-status-update-frequency=4s"
     - "max-pods=150"
-  # node-label:
-  #  - node-role.kubernetes.io/worker=true
+  node-label:
+    - "upgrade.cattle.io/plan=k3s-agent"
+    - "node-role.kubernetes.io/worker=true"

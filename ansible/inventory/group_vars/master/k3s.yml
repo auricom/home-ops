@@ -69,3 +69,5 @@ k3s_server:
   # Stop k3s control plane having workloads scheduled on them
   node-taint:
     - "node-role.kubernetes.io/control-plane:NoSchedule"
+  node-label:
+    - "upgrade.cattle.io/plan=k3s-server"
