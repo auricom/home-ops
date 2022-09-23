@@ -5,10 +5,9 @@ metadata:
   name: cert-manager-webhook-ovh
   namespace: cert-manager
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      # renovate: registryUrl=https://github.com/baarde/cert-manager-webhook-ovh
       chart: ./deploy/cert-manager-webhook-ovh
       version: 0.3.0
       sourceRef:
