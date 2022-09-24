@@ -31,7 +31,7 @@ spec:
       repository: ghcr.io/onedr0p/jellyfin
       tag: 10.8.4@sha256:63b837c627d740c7965aeba0ec5c83146926c9a60b25890ae75b0c67737d2ac4
     env:
-      TZ: "${TIMEZONE}"
+      DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
     service:
       main:
         type: LoadBalancer
@@ -60,7 +60,6 @@ spec:
       supplementalGroups:
         - 44
         - 109
-        - 100
     persistence:
       config:
         enabled: true
@@ -85,6 +84,9 @@ spec:
         path: /mnt/storage/video
         mountPath: /mnt/storage/video
       transcode:
+        enabled: true
+        type: emptyDir
+      cache:
         enabled: true
         type: emptyDir
     affinity:
