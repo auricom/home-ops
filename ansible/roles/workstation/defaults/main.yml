@@ -1,7 +1,7 @@
 fonts_dir: ~/.local/share/fonts
 icons_dir: ~/.local/share/icons
 newaita_iconset_url: "https://github.com/cbrnix/Newaita/archive/1.09.20a.tar.gz"
-nas_hostname: truenas
+nas_hostname: truenas.{{ secret_domain }}
 mnt_dir: /mnt
 nas_dir: ~/NAS
 nfs_shares:

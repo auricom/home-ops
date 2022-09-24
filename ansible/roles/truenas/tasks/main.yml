@@ -11,17 +11,17 @@
 - block:
     - ansible.builtin.include_tasks: jails/main.yml
 
-    - ansible.builtin.shell:
-        cmd: test -f /mnt/storage/jail-mounts/postgres/data{{ postgres_version }}/postgresql.conf
-      register: postgres_data_exists
-      become: true
-      changed_when: false
-      failed_when: postgres_data_exists.rc != 0 and postgres_data_exists.rc != 1
+    # - ansible.builtin.shell:
+    #     cmd: test -f /mnt/storage/jail-mounts/postgres/data{{ postgres_version }}/postgresql.conf
+    #   register: postgres_data_exists
+    #   become: true
+    #   changed_when: false
+    #   failed_when: postgres_data_exists.rc != 0 and postgres_data_exists.rc != 1
 
-    - ansible.builtin.include_tasks: jails/postgres-init.yml
-      when: postgres_data_exists.rc == 1
+    # - ansible.builtin.include_tasks: jails/postgres-init.yml
+    #   when: postgres_data_exists.rc == 1
 
-    - ansible.builtin.include_tasks: jails/postgres-conf.yml
+    # - ansible.builtin.include_tasks: jails/postgres-conf.yml
 
     - ansible.builtin.shell:
         cmd: test -f /mnt/storage/jail-mounts/borgserver/keys/host/ssh_host_ed25519_key

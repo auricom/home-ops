@@ -6,7 +6,7 @@ After=network-online.service
 Before=kodi.service
 
 [Mount]
-What=truenas:/mnt/storage/{{ item }}
+What=truenas.{{ secret_domain }}:/mnt/storage/{{ item }}
 Where=/storage/mnt/{{ item }}
 Options=
 Type=nfs

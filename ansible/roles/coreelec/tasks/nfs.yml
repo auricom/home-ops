@@ -12,10 +12,13 @@
     dest: "/storage/.config/system.d/storage-mnt-{{ item }}.mount"
     mode: 0775
   loop: "{{ nfs_shares }}"
+  register: services
 
 - name: nfs | activate system.d services
   ansible.builtin.systemd:
     name: storage-mnt-{{ item }}.mount
-    state: started
+    state: restarted
     enabled: true
+    daemon_reload: true
   loop: "{{ nfs_shares }}"
+  when: services.changed
