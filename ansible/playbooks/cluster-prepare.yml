@@ -122,6 +122,9 @@
               net.ipv6.conf.all.forwarding: 1
               net.bridge.bridge-nf-call-iptables: 1
               net.bridge.bridge-nf-call-ip6tables: 1
+              net.core.netdev_budget: 1000
+              net.core.netdev_max_backlog: 65536
+              net.core.optmem_max: 40960
               fs.inotify.max_user_watches: 524288
               fs.inotify.max_user_instances: 512
         - name: System Configuration (2) | Disable swap
