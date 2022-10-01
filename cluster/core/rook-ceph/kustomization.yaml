@@ -5,5 +5,4 @@ resources:
   - operator
   - cluster
   - rook-direct-mount
-  - monitoring
   - snapshot-controller
