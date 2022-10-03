@@ -42,6 +42,7 @@ spec:
       SMTP_FROM: vaultwarden@${SECRET_DOMAIN}
       SMTP_FROM_NAME: vaultwarden
       SMTP_PORT: 2525
+      SMTP_SECURITY: off
     envFrom:
       - secretRef:
           name: *app
@@ -51,10 +52,10 @@ spec:
       main:
         ports:
           http:
-            port: 80
+            port: &port 80
           websocket:
             enabled: true
-            port: 3012
+            port: &websocket-port 3012
     persistence:
       data:
         enabled: true
@@ -71,12 +72,16 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
-              - path: /notifications/hub
-                pathType: Prefix
+                service:
+                  port: *port
               - path: /notifications/hub/negotiate
                 pathType: Prefix
                 service:
-                  port: 3012
+                  port: *port
+              - path: /notifications/hub
+                pathType: Prefix
+                service:
+                  port: *websocket-port
         tls:
           - hosts:
               - *host
