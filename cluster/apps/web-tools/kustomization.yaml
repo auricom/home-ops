@@ -6,6 +6,7 @@ resources:
   - freshrss
   - homer
   - homer-code
+  - invidious
   - joplin
   - music-transcode
   - sharry
