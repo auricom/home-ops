@@ -22,19 +22,8 @@ spec:
     remediation:
       retries: 5
   values:
+    crds:
+      create: false
     config:
       data:
         INHERITED_ANNOTATIONS: kyverno.io/ignore
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              group: apiextensions.k8s.io
-              version: v1
-              kind: CustomResourceDefinition
-            patch: |-
-              $patch: delete
-              apiVersion: apiextensions.k8s.io/v1
-              kind: CustomResourceDefinition
-              metadata:
-                name: not-used
