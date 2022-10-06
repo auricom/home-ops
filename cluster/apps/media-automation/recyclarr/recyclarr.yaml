@@ -12,7 +12,8 @@ sonarr:
   - base_url: http://sonarr
     api_key: ${SONARR_APIKEY}
     quality_definition: hybrid
-    release_profiles:
+    delete_old_custom_formats: true
+    custom_formats:
       - trash_ids:
           # Streaming Services
           - d660701077794679fd59e8bdf4ce3a29 # AMZN
