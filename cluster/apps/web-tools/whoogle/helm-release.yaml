@@ -30,7 +30,7 @@ spec:
       tag: 0.7.4
     env:
       WHOOGLE_ALT_TW: nitter.fdn.fr
-      WHOOGLE_ALT_YT: invidious.nerdvpn.de
+      WHOOGLE_ALT_YT: invidious.${SECRET_CLUSTER_DOMAIN}
       WHOOGLE_ALT_IG: imginn.com
       WHOOGLE_ALT_RD: teddit.namazso.eu
       WHOOGLE_ALT_MD: scripe.rip
