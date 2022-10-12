@@ -10,6 +10,7 @@
     ":automergeBranchPush",
     "github>auricom/home-ops//.github/renovate/autoMerge.json5",
     "github>auricom/home-ops//.github/renovate/commitMessage.json5",
+    "github>auricom/home-ops//.github/renovate/disabledDatasources.json5",
     "github>auricom/home-ops//.github/renovate/groups.json5",
     "github>auricom/home-ops//.github/renovate/labels.json5"
   ],
