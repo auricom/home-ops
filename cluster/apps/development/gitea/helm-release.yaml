@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: gitea/gitea
-      tag: 1.17.2
+      tag: 1.17.3
       rootless: true
     containerSecurityContext:
       capabilities:
