@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: pgbackups
-              image: prodrigestivill/postgres-backup-local:14-alpine@sha256:2985300b476382c727fc170d3f2b37972b8445cc92635f1bcc6fa48a1a061f01
+              image: prodrigestivill/postgres-backup-local:14-alpine@sha256:7fe6152197abadd1875c133d474111d4d45643ac045ba64731e3355e78636282
               env:
                 - name: POSTGRES_HOST
                   value: postgres-rw.default.svc.cluster.local.
