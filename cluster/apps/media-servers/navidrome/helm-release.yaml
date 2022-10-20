@@ -32,6 +32,7 @@ spec:
       ND_LOGLEVEL: info
       ND_MUSICFOLDER: /mnt/storage/music/Artistes
       ND_PORT: &port 80
+      ND_PROMETHEUS_ENABLED: "true"
       ND_REVERSEPROXYUSERHEADER: "Remote-User"
       ND_REVERSEPROXYWHITELIST: "${NET_POD_CIDR}"
       ND_SCANSCHEDULE: "@every 1h"
@@ -41,6 +42,8 @@ spec:
         ports:
           http:
             port: *port
+        monitor:
+          enabled: true
     ingress:
       main:
         enabled: true

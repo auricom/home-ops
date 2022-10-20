@@ -3,3 +3,5 @@ kind: Kustomization
 resources:
   - notifications
   - webhook
+  - pod-monitor.yaml
+  - prometheus-rule.yaml

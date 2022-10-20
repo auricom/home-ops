@@ -32,12 +32,15 @@ access_control:
       subject: ["group:admins", "group:users"]
       networks:
         - private
+    # Deny public resources
+    - domain: ["navidrome.${SECRET_CLUSTER_DOMAIN}"]
+      resources: ["^/metrics.*$"]
+      policy: deny
     # Two factors auth for WAN
     - domain:
         - "*.${SECRET_CLUSTER_DOMAIN}"
       subject: ["group:admins", "group:users"]
       policy: two_factor
-
 identity_providers:
   oidc:
     cors:
