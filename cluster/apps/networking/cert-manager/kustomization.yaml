@@ -6,6 +6,4 @@ resources:
   - secret.sops.yaml
   - helm-release.yaml
   - webhook-ovh
-  - letsencrypt-production.yaml
-  - letsencrypt-staging.yaml
   - prometheus-rule.yaml
