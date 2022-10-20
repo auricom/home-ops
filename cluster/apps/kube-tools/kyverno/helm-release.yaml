@@ -22,12 +22,8 @@ spec:
     remediation:
       retries: 5
   values:
-    installCRDs: false
-    replicaCount: 1
-    extraArgs:
-      - --autogenInternals=false
-      - --clientRateLimitQPS=30
-      - --clientRateLimitBurst=60
+    installCRDs: true
+    replicaCount: 3
     serviceMonitor:
       enabled: true
     topologySpreadConstraints:
