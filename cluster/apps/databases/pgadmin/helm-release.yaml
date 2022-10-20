@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: dpage/pgadmin4
-      tag: "6.14"
+      tag: "6.15"
     env:
       PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
     envFrom:
