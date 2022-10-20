@@ -77,7 +77,7 @@ spec:
       config:
         enabled: true
         existingClaim: zwavejs2mqtt-config
-        mountPath: /data
+        mountPath: /usr/src/app/store
       usb:
         enabled: true
         type: hostPath
