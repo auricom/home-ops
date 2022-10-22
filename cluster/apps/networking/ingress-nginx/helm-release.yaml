@@ -26,7 +26,7 @@ spec:
       namespace: default
   values:
     controller:
-      replicaCount: 1
+      replicaCount: 3
       service:
         type: LoadBalancer
         externalIPs:
