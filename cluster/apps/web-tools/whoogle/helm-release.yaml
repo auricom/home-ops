@@ -23,7 +23,7 @@ spec:
       retries: 5
   values:
     controller:
-      replicas: 1
+      replicas: 2
       strategy: RollingUpdate
     image:
       repository: docker.io/benbusby/whoogle-search
