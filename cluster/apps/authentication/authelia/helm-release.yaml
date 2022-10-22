@@ -30,7 +30,7 @@ spec:
       namespace: default
   values:
     controller:
-      replicas: 1
+      replicas: 3
       strategy: RollingUpdate
     image:
       repository: ghcr.io/authelia/authelia
