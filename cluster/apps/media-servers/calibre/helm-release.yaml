@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: ghcr.io/linuxserver/calibre
-      tag: v6.5.0-ls179
+      tag: version-v6.5.0
     env:
       TZ: "${TIMEZONE}"
       PUID: "1026"

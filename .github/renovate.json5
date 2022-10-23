@@ -87,6 +87,13 @@
       "matchDatasources": ["docker"],
       "versioning": "loose",
       "matchPackageNames": ["ghcr.io/onedr0p/qbittorrent", "docker.io/zedeus/nitter", "quay.io/invidious/invidious"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "ghcr.io/linuxserver/calibre"
+      ],
+      "versioning": "regex:^version-v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
     }
   ]
 }
