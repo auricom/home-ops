@@ -86,7 +86,7 @@
     {
       "matchDatasources": ["docker"],
       "versioning": "loose",
-      "matchPackageNames": ["ghcr.io/onedr0p/qbittorrent"]
+      "matchPackageNames": ["ghcr.io/onedr0p/qbittorrent", "docker.io/zedeus/nitter", "quay.io/invidious/invidious"]
     }
   ]
 }

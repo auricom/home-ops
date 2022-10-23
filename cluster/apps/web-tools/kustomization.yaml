@@ -9,6 +9,7 @@ resources:
   - invidious
   - joplin
   - music-transcode
+  - nitter
   - sharry
   - tandoor
   - theme-park
