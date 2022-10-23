@@ -8,6 +8,7 @@ resources:
   - homer-code
   - invidious
   - joplin
+  - libreddit
   - music-transcode
   - nitter
   - sharry
