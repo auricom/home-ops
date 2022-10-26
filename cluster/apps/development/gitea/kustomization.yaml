@@ -4,4 +4,4 @@ resources:
   - secret.sops.yaml
   - volume.yaml
   - helm-release.yaml
-  - backup-job.yaml
+  - external-backup

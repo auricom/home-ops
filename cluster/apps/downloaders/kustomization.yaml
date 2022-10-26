@@ -6,5 +6,4 @@ resources:
   - flood
   - pyload
   - qbittorrent
-  - qbittorrent-jobs
   - sabnzbd

@@ -1,0 +1,83 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app postgres-external-backup
+  namespace: &namespace default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: raw
+      version: v0.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: dysnix-charts
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: postgres
+      namespace: default
+  values:
+    resources:
+      - apiVersion: batch/v1
+        kind: CronJob
+        metadata:
+          name: *app
+          namespace: *namespace
+        spec:
+          schedule: "@daily"
+          jobTemplate:
+            spec:
+              ttlSecondsAfterFinished: 86400
+              template:
+                spec:
+                  automountServiceAccountToken: false
+                  restartPolicy: OnFailure
+                  containers:
+                    - name: *app
+                      image: prodrigestivill/postgres-backup-local:14-alpine@sha256:7fe6152197abadd1875c133d474111d4d45643ac045ba64731e3355e78636282
+                      env:
+                        - name: POSTGRES_HOST
+                          value: postgres-rw.default.svc.cluster.local.
+                        - name: POSTGRES_DB
+                          value: "authelia,freshrss,gitea,home_assistant,healthchecks,invidious,joplin,lychee,recipes,sharry,outline,vaultwarden,vikunja,wallabag"
+                        - name: POSTGRES_USER
+                          valueFrom:
+                            secretKeyRef:
+                              name: postgres-superuser
+                              key: username
+                        - name: POSTGRES_PASSWORD
+                          valueFrom:
+                            secretKeyRef:
+                              name: postgres-superuser
+                              key: password
+                        - name: POSTGRES_EXTRA_OPTS
+                          value: "-Z9 --schema=public --blobs"
+                        - name: BACKUP_KEEP_DAYS
+                          value: "7"
+                        - name: BACKUP_KEEP_WEEKS
+                          value: "4"
+                        - name: BACKUP_KEEP_MONTHS
+                          value: "3"
+                        - name: HEALTHCHECK_PORT
+                          value: "8080"
+                        - name: WEBHOOK_URL
+                          value: http://healthchecks.default.svc.cluster.local.:/ping/${SECRET_HEALTHCHECKS_PING_KEY}/postgresql-backup
+
+                      command:
+                        - "/backup.sh"
+                      volumeMounts:
+                        - name: backups
+                          mountPath: /backups
+                  volumes:
+                    - name: backups
+                      nfs:
+                        server: "${LOCAL_LAN_TRUENAS}"
+                        path: /mnt/storage/backups/postgresql
