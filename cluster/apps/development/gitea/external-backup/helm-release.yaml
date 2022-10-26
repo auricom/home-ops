@@ -41,7 +41,7 @@ spec:
                 spec:
                   containers:
                     - name: *app
-                      image: ghcr.io/auricom/kubectl:v1.25.0@sha256:75d43a3131e25f10139174e77e689eafb1b40ed9d9094d5c8c96eba5571aeefd
+                      image: ghcr.io/auricom/kubectl:v1.25.0@sha256:09ebca817ee7cefcac164fce9709f51236ce8fb6649de1c124a52ed753d40503
                       imagePullPolicy: IfNotPresent
                       env:
                         - name: ENV_GITEA_API_TOKEN
