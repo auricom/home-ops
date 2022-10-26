@@ -17,4 +17,3 @@ k3s_agent:
     - "max-pods=150"
   node-label:
     - "upgrade.cattle.io/plan=k3s-agent"
-    - "node-role.kubernetes.io/worker=true"

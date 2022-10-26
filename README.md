@@ -23,23 +23,16 @@
 ## Bootstrap Flux
 
 ```bash
-flux bootstrap github \
-  --version=latest \
-  --owner=auricom \
-  --repository=home-ops \
-  --path=cluster/base \
-  --personal \
-  --network-policy=false
+kubectl apply -k cluster/bootstrap/
 ```
 
 ## SOPS secret from age key
 
 ```bash
-age-keygen -o $HOME/sops/age/keys.txt
-cat $HOME/sops/age/keys.txt |
+cat ~/.config/sops/age/keys.txt |
 kubectl create secret generic sops-age \
---namespace=flux-system \
---from-file=$HOME/sops/age/keys.txt=/dev/stdin
+  --namespace=flux-system \
+  --from-file=age.agekey=/dev/stdin
 ```
 
 ## Encrypt kubernetes resources with sops binary
