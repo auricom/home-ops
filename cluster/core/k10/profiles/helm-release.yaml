@@ -1,0 +1,98 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app kasten-k10-profiles
+  namespace: &namespace kasten-io
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: raw
+      version: v0.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: dysnix-charts
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: k10
+      namespace: *namespace
+  values:
+    resources:
+      - apiVersion: config.kio.kasten.io/v1alpha1
+        kind: Profile
+        metadata:
+          name: k10-disaster-recovery
+          namespace: *namespace
+        spec:
+          locationSpec:
+            type: FileStore
+            fileStore:
+              claimName: nfs-backups-kubernetes
+              path: k10-disaster-recovery
+            credential:
+              secretType: ""
+              secret:
+                apiVersion: ""
+                kind: ""
+                name: ""
+                namespace: ""
+          type: Location
+      - apiVersion: config.kio.kasten.io/v1alpha1
+        kind: Profile
+        metadata:
+          name: pvc-export
+          namespace: *namespace
+        spec:
+          locationSpec:
+            type: FileStore
+            fileStore:
+              claimName: nfs-backups-kubernetes
+              path: pvc-export
+            credential:
+              secretType: ""
+              secret:
+                apiVersion: ""
+                kind: ""
+                name: ""
+                namespace: ""
+          type: Location
+      - apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: nfs-backups-kubernetes
+        provisioner: nfs
+        reclaimPolicy: Retain
+      - apiVersion: v1
+        kind: PersistentVolume
+        metadata:
+          name: nfs-backups-kubernetes
+        spec:
+          storageClassName: nfs-backups-kubernetes
+          capacity:
+            storage: 1Mi
+          accessModes:
+            - ReadWriteMany
+          persistentVolumeReclaimPolicy: Retain
+          nfs:
+            server: "${LOCAL_LAN_TRUENAS}"
+            path: /mnt/storage/backups/kubernetes
+      - apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: nfs-backups-kubernetes
+          namespace: *namespace
+        spec:
+          accessModes:
+            - ReadWriteMany
+          storageClassName: nfs-backups-kubernetes
+          resources:
+            requests:
+              storage: 1Mi

@@ -72,10 +72,10 @@ spec:
               matchExpressions:
                 - key: app.kubernetes.io/name
                   operator: In
-                  values: ["home-assistant"]
+                  values: ["homer"]
                 - key: app.kubernetes.io/instance
                   operator: In
-                  values: ["home-assistant"]
+                  values: ["homer"]
             topologyKey: kubernetes.io/hostname
     resources:
       requests:
