@@ -24,7 +24,7 @@ spec:
   dependsOn:
     - name: emqx
       namespace: default
-    - name: postgres
+    - name: postgres-cluster
       namespace: default
   values:
     image:
