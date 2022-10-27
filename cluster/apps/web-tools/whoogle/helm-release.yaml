@@ -29,14 +29,14 @@ spec:
       repository: docker.io/benbusby/whoogle-search
       tag: 0.7.4
     env:
-      WHOOGLE_ALT_TW: nitter.fdn.fr
+      WHOOGLE_ALT_TW: nitter.${SECRET_CLUSTER_DOMAIN}
       WHOOGLE_ALT_YT: invidious.${SECRET_CLUSTER_DOMAIN}
       WHOOGLE_ALT_IG: imginn.com
-      WHOOGLE_ALT_RD: teddit.namazso.eu
+      WHOOGLE_ALT_RD: libreddit.${SECRET_CLUSTER_DOMAIN}
       WHOOGLE_ALT_MD: scripe.rip
       WHOOGLE_ALT_TL: farside.link/lingva
       WHOOGLE_ALT_IMG: bibliogram.art
-      WHOOGLE_ALT_WIKI: wikiless.org
+      # WHOOGLE_ALT_WIKI: wikiless.org
       WHOOGLE_CONFIG_ALTS: 1
       WHOOGLE_CONFIG_COUNTRY: FR
       WHOOGLE_CONFIG_GET_ONLY: 1
