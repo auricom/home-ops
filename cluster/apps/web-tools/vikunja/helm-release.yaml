@@ -116,5 +116,5 @@ spec:
             subPath: Vikunja.yaml
       frontend:
         name: frontend
-        image: vikunja/frontend:0.19.1
+        image: vikunja/frontend:0.20.0
     imagePullPolicy: IfNotPresent
