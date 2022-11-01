@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: ghcr.io/auricom/celestia-app
-      tag: v0.6.0@sha256:8ea537b4654f2620df9e45846ea215e770884190e5b1792b6ec834ddf49ae9b4
+      tag: v0.6.0@sha256:43193b1f8a885b00b339be03c260c4ba8445d9dc9f01d87cc237277328c1e6a0
     env:
       CELESTIA_NODENAME: auricom
       CELESTIA_WALLET: auricom_wallet
