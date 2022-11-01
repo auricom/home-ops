@@ -1,0 +1,70 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app celestia-app
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 0.2.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    image:
+      repository: ghcr.io/auricom/celestia-app
+      tag: v0.6.0@sha256:8ea537b4654f2620df9e45846ea215e770884190e5b1792b6ec834ddf49ae9b4
+    env:
+      CELESTIA_NODENAME: auricom
+      CELESTIA_WALLET: auricom_wallet
+      CELESTIA_CHAIN: mamaki
+      HOME: /config
+    command: ["sleep", "6000"]
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
+    # envFrom:
+    #   - secretRef:
+    #       name: *app
+    service:
+      main:
+        ports:
+          p2p:
+            port: 26656
+          rpc:
+            port: 26657
+          api:
+            port: 1317
+          http:
+            port: 9090
+        monitor:
+          enabled: true
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
+    persistence:
+      data:
+        enabled: true
+        existingClaim: celestia-app-config
+        mountPath: /config
+    resources:
+      requests:
+        memory: 8Gi
+        cpu: 2

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespaces.yaml
   - authentication
+  - crypto
   - databases
   - development
   - documentation

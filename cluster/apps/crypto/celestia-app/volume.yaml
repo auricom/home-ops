@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: celestia-app-config
+  namespace: default
+  labels:
+    app.kubernetes.io/name: &name celestia-app
+    app.kubernetes.io/instance: *name
+    kasten-io/backup: "false"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: rook-ceph-block
+  resources:
+    requests:
+      storage: 300Gi
