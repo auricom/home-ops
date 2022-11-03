@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 0.2.2
+      version: 1.0.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s-charts
@@ -50,8 +50,9 @@ spec:
             port: 1317
           http:
             port: 9090
-        monitor:
-          enabled: true
+    serviceMonitor:
+      main:
+        enabled: true
     probes:
       liveness:
         enabled: false
