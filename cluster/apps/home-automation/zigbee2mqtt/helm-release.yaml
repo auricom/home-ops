@@ -30,7 +30,7 @@ spec:
     fullnameOverride: *app
     image:
       repository: koenkk/zigbee2mqtt
-      tag: 1.28.1
+      tag: 1.28.2
     env:
       TZ: "${TIMEZONE}"
       ZIGBEE2MQTT_DATA: /data
