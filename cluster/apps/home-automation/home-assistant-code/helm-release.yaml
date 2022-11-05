@@ -30,6 +30,7 @@ spec:
       tag: 4.8.1
     env:
       TZ: "${TIMEZONE}"
+      GIT_SSH_COMMAND: "ssh -i /config/.ssh/id_rsa -o IdentitiesOnly=yes"
     args:
       - --auth
       - "none"
