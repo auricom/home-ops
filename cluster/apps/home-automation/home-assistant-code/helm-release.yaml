@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: ghcr.io/coder/code-server
-      tag: 4.8.2
+      tag: 4.8.3
     env:
       TZ: "${TIMEZONE}"
       GIT_SSH_COMMAND: "ssh -i /config/.ssh/id_rsa -o IdentitiesOnly=yes"
