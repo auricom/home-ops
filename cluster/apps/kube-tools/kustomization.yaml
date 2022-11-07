@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   # - coredens-nodecache
   - descheduler
-  # - goldilocks
   - intel-gpu-exporter
   - intel-gpu-plugin
   - kyverno
@@ -13,4 +12,3 @@ resources:
   - rbac
   - reloader
   - system-upgrade
-  - vpa
