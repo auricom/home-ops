@@ -5,6 +5,7 @@
   become: true
   gather_facts: true
   any_errors_fatal: true
+  serial: 1
   pre_tasks:
     - name: Pausing for 5 seconds...
       ansible.builtin.pause:
@@ -135,8 +136,14 @@
           ansible.posix.selinux:
             state: permissive
             policy: targeted
+        - name: System Configuration (3) | NetworkManager - Calico fix
+          ansible.builtin.blockinfile:
+            path: /etc/NetworkManager/conf.d/calico.conf
+            create: true
+            block : |
+              [keyfile]
+              unmanaged-devices=interface-name:cali*;interface-name:tunl*;interface-name:vxlan.calico;interface-name:vxlan-v6.calico;interface-name:wireguard.cali;interface-name:wg-v6.cali
       notify: Reboot
-
   handlers:
     - name: Reboot
       ansible.builtin.reboot:
