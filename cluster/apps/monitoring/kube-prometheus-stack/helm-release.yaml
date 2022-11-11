@@ -132,6 +132,13 @@ spec:
               resources:
                 requests:
                   storage: 20Gi
+        thanos:
+          image: quay.io/thanos/thanos:v0.29.0
+          # renovate: datasource=docker depName=quay.io/thanos/thanos
+          version: "v0.29.0"
+          objectStorageConfig:
+            name: thanos-objstore-secret
+            key: objstore.yml
         additionalScrapeConfigs:
           - job_name: "opnsense"
             scrape_interval: 60s
@@ -154,7 +161,21 @@ spec:
               - targets: ["${LOCAL_LAN_TRUENAS_REMOTE}:9273"]
                 labels:
                   app: "truenas-remote"
-
+      thanosService:
+        enabled: true
+      thanosServiceMonitor:
+        enabled: true
+      thanosIngress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - &thanosHost "thanos-sidecar.${SECRET_DOMAIN}"
+        tls:
+          - hosts:
+              - *thanosHost
     alertmanager:
       config:
         global:
