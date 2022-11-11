@@ -18,6 +18,10 @@
         repo: "tomaszgasior/mushrooms",
         file: "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:tomaszgasior:mushrooms.repo",
       }
+    - {
+        repo: "taw/joplin",
+        file: "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:taw:joplin.repo",
+      }
   become: true
   when: ansible_facts['nodename'] == "claude-fixe-fedora"
 
@@ -64,3 +68,24 @@
     warn: false
   become: true
   when: not brave.stat.exists
+
+- name: repositories | librewolf - check presence
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/rpm.librewolf.net.repo
+  register: librewolf
+
+- name: repositories | librewolf - add repository
+  ansible.builtin.command:
+    cmd: dnf config-manager --add-repo https://rpm.librewolf.net
+    warn: false
+  args:
+    creates: /etc/yum.repos.d/rpm.librewolf.net.repo
+  become: true
+  when: not librewolf.stat.exists
+
+- name: repositories | librewolf - import asc
+  ansible.builtin.command:
+    cmd: rpm --import https://keys.openpgp.org/vks/v1/by-fingerprint/034F7776EF5E0C613D2F7934D29FBD5F93C0CFC3
+    warn: false
+  become: true
+  when: not librewolf.stat.exists

@@ -22,6 +22,7 @@
       - openssl
       - openssl-devel
       - libacl-devel
+      - libicu-devel
       - gcc-c++
       - picard
       - pinta
@@ -53,6 +54,11 @@
       - tmux
       - cawbird
       - age
+      - vorta
+      - mediainfo
+      - discord
+      - joplin
+      - librewolf
     state: present
     update_cache: true
   become: true
@@ -75,12 +81,8 @@
     name: "{{ item }}"
     state: present
   loop:
-    - https://dl.flathub.org/repo/appstream/com.borgbase.Vorta.flatpakref
-    - https://dl.flathub.org/repo/appstream/com.discordapp.Discord.flatpakref
+
     - https://dl.flathub.org/repo/appstream/com.bitwarden.desktop.flatpakref
-    - https://dl.flathub.org/repo/appstream/net.mediaarea.MediaInfo.flatpakref
-    - https://dl.flathub.org/repo/appstream/net.cozic.joplin_desktop.flatpakref
-    - https://dl.flathub.org/repo/appstream/uk.co.ibboard.cawbird.flatpakref
   become: true
 
 - name: packages-common | brew

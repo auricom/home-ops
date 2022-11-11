@@ -7,15 +7,7 @@
       - libva-vdpau-driver
       - handbrake
       - vdpauinfo
-  become: true
-
-- name: packages-claude-fixe-fedora | flatpak
-  community.general.flatpak:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - https://dl.flathub.org/repo/appstream/fr.handbrake.ghb.flatpakref
-    - https://dl.flathub.org/repo/appstream/org.bunkus.mkvtoolnix-gui.flatpakref
+      - mkvtoolnix-gui
   become: true
 
 - name: packages-claude-fixe-fedora | brew
