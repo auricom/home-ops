@@ -86,7 +86,7 @@ spec:
     additionalContainers:
       api:
         name: api
-        image: vikunja/api:0.20.0
+        image: vikunja/api:0.20.1
         imagePullPolicy: IfNotPresent
         env:
           - name: VIKUNJA_SERVICE_JWTSECRET
