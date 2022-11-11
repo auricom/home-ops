@@ -49,6 +49,15 @@
       "matchUpdateTypes": ["minor", "patch"],
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
       "separateMinorPatch": false
+    },
+    {
+      "description": "Vinkuja images",
+      "groupName": "Vikunja",
+      "matchPackagePatterns": ["vikunja"],
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor", "patch", "major"],
+      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "separateMinorPatch": true
     }
   ]
 }
