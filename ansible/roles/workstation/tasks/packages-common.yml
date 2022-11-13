@@ -81,7 +81,6 @@
     name: "{{ item }}"
     state: present
   loop:
-
     - https://dl.flathub.org/repo/appstream/com.bitwarden.desktop.flatpakref
   become: true
 
@@ -100,3 +99,55 @@
     path: /home/{{ lookup('env', 'USER') }}/.linuxbrew/bin
     state: present
     update_homebrew: true
+
+- name: packages-common | AppImage | Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "/home/{{ lookup('env', 'USER') }}/Apps"
+
+- name: packages-common | AppImage | OpenLens | Check directory
+  ansible.builtin.stat:
+    path: /home/{{ lookup('env', 'USER') }}/Apps/OpenLens
+  register: openlens
+
+- block:
+    - name: packages-common | AppImage | OpenLens | Create directory
+      ansible.builtin.file:
+        path: /home/{{ lookup('env', 'USER') }}/Apps/OpenLens
+        state: directory
+
+    - name: packages-common | AppImage | OpenLens | Get latest version
+      ansible.builtin.shell:
+        cmd: VERSION=$(curl -sX GET "https://api.github.com/repos/MuhammedKalkan/OpenLens/releases/latest" | jq --raw-output '.tag_name'); printf "%s" "${VERSION#*v}"
+      register: openlens_version
+      changed_when: false
+
+    - name: packages-common | AppImage | OpenLens | Download Binary
+      ansible.builtin.get_url:
+        url: https://github.com/MuhammedKalkan/OpenLens/releases/download/v{{ openlens_version.stdout }}/OpenLens-{{ openlens_version.stdout }}.AppImage
+        dest: /home/{{ lookup('env', 'USER') }}/Apps/OpenLens/OpenLens-{{ openlens_version.stdout }}.AppImage
+        mode: 0755
+
+    - name: packages-common | AppImage | OpenLens | Symlink
+      ansible.builtin.file:
+        src: /home/{{ lookup('env', 'USER') }}/Apps/OpenLens/OpenLens-{{ openlens_version.stdout }}.AppImage
+        dest: /home/{{ lookup('env', 'USER') }}/Apps/OpenLens/OpenLens.AppImage
+        state: link
+        mode: 0755
+
+    - name: packages-common | AppImage | OpenLens | Gnome Desktop
+      ansible.builtin.template:
+        src: application.desktop
+        dest: /home/{{ lookup('env', 'USER') }}/.local/share/applications/{{ item.name }}
+        mode: 0644
+      loop:
+        - {
+            name: "OpenLens",
+            comment: "The Kubernetes IDE",
+            path: "/home/{{ lookup('env', 'USER') }}/Apps/OpenLens",
+            command: "OpenLens.AppImage",
+            categories: "Programming;",
+          }
+  #when: not openlens.stat.exists
