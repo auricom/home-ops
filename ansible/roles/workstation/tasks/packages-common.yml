@@ -73,6 +73,7 @@
       - pylint
       - pre-commit
       - comictagger
+      - virtualfish
     state: present
     extra_args: --user
 
