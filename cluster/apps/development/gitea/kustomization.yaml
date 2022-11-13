@@ -5,5 +5,3 @@ resources:
   - volume.yaml
   - helm-release.yaml
   - external-backup
-patchesStrategicMerge:
-  - patches/postgres.yaml
