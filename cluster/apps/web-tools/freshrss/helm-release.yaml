@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: freshrss/freshrss
-      tag: 1.20.0
+      tag: 1.20.1
     service:
       main:
         ports:
