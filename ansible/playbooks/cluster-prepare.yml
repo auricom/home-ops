@@ -5,7 +5,6 @@
   become: true
   gather_facts: true
   any_errors_fatal: true
-  serial: 1
   pre_tasks:
     - name: Pausing for 5 seconds...
       ansible.builtin.pause:
@@ -140,10 +139,20 @@
           ansible.builtin.blockinfile:
             path: /etc/NetworkManager/conf.d/calico.conf
             create: true
-            block : |
+            block: |
               [keyfile]
               unmanaged-devices=interface-name:cali*;interface-name:tunl*;interface-name:vxlan.calico;interface-name:vxlan-v6.calico;interface-name:wireguard.cali;interface-name:wg-v6.cali
-      notify: Reboot
+        - name: System Configuration (3) | NetworkManager - RX Ring buffer size check
+          ansible.builtin.command:
+            cmd: "cat /etc/NetworkManager/system-connections/eno1.nmconnection"
+          register: rx_ring_cat
+          changed_when: false
+        - name: System Configuration (3) | NetworkManager - RX Ring buffer size
+          ansible.builtin.command:
+            cmd: "nmcli connection modify eno1 ethtool.ring-rx 1024"
+          when: rx_ring_cat.stdout.find("ring-rx=1024") == -1
+
+      # notify: Reboot
   handlers:
     - name: Reboot
       ansible.builtin.reboot:
