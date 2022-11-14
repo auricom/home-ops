@@ -26,8 +26,8 @@ spec:
       namespace: default
   values:
     image:
-      repository: docker.io/ceramicwhite/libreddit
-      tag: 0.22.9
+      repository: ghcr.io/auricom/libreddit
+      tag: v0.23.1
     service:
       main:
         ports:
