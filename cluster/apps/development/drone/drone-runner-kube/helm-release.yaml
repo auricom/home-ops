@@ -1,0 +1,35 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: drone-runner-kube
+  namespace: default
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: drone-runner-kube
+      version: 0.1.10
+      sourceRef:
+        kind: HelmRepository
+        name: drone
+        namespace: flux-system
+  dependsOn:
+    - name: drone-kubernetes-secrets
+      namespace: default
+  values:
+    image:
+      repository: drone/drone-runner-kube
+      tag: 1.0.0-beta.5
+    env:
+      DRONE_NAMESPACE_DEFAULT: default
+      DRONE_RPC_HOST: drone.default.svc:8080
+      DRONE_SECRET_PLUGIN_ENDPOINT: http://drone-kubernetes-secrets.default.svc:3000
+  valuesFrom:
+    - targetPath: env.DRONE_RPC_SECRET
+      kind: Secret
+      name: drone
+      valuesKey: DRONE_RPC_SECRET
+    - targetPath: env.DRONE_SECRET_PLUGIN_TOKEN
+      kind: Secret
+      name: drone
+      valuesKey: DRONE_SECRET_PLUGIN_TOKEN

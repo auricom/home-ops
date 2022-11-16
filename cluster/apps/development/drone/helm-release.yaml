@@ -1,0 +1,65 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: drone
+  namespace: default
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: drone
+      version: 0.6.4
+      sourceRef:
+        kind: HelmRepository
+        name: drone
+        namespace: flux-system
+  dependsOn:
+    - name: drone-runner-kube
+      namespace: default
+    - name: gitea
+      namespace: default
+    - name: postgres-cluster
+      namespace: default
+  values:
+    image:
+      repository: drone/drone
+      tag: 2.15.0
+    persistentVolume:
+      enabled: false
+    env:
+      DRONE_DATABASE_DRIVER: postgres
+      DRONE_GIT_ALWAYS_AUTH: true
+      DRONE_GITEA_SERVER: https://gitea.${SECRET_CLUSTER_DOMAIN}
+      DRONE_SERVER_HOST: &host drone.${SECRET_CLUSTER_DOMAIN}
+      DRONE_SERVER_PROTO: https
+      DRONE_SERVER_PROXY_HOST: drone.default.svc
+      DRONE_SERVER_PROXY_PROTO: http
+      DRONE_USER_CREATE: username:context,admin:true
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - host: *host
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - *host
+  valuesFrom:
+    - targetPath: env.DRONE_DATABASE_DATASOURCE
+      kind: Secret
+      name: drone
+      valuesKey: DRONE_DATABASE_DATASOURCE
+    - targetPath: env.DRONE_GITEA_CLIENT_ID
+      kind: Secret
+      name: drone
+      valuesKey: DRONE_GITEA_CLIENT_ID
+    - targetPath: env.DRONE_GITEA_CLIENT_SECRET
+      kind: Secret
+      name: drone
+      valuesKey: DRONE_GITEA_CLIENT_SECRET
+    - targetPath: env.DRONE_RPC_SECRET
+      kind: Secret
+      name: drone
+      valuesKey: DRONE_RPC_SECRET
