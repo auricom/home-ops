@@ -79,19 +79,19 @@ spec:
           MAILER_TYPE: smtp
           HOST: smtp-relay.default:2525
           FROM: "Gitea <gitea@${SECRET_DOMAIN}>"
-        openid:
-          ENABLE_OPENID_SIGNIN: false
-          ENABLE_OPENID_SIGNUP: true
-          WHITELISTED_URIS: "auth.${SECRET_CLUSTER_DOMAIN}"
-      oauth:
-        - name: authelia
-          provider: openidConnect
-          key: gitea
-          secret: "${SECRET_GITEA_OAUTH_CLIENT_SECRET}"
-          autoDiscoverUrl: "https://auth.${SECRET_CLUSTER_DOMAIN}/.well-known/openid-configuration"
-          groupClaimName: groups
-          adminGroup: admins
-          restrictedGroup: people
+      #   openid:
+      #     ENABLE_OPENID_SIGNIN: false
+      #     ENABLE_OPENID_SIGNUP: true
+      #     WHITELISTED_URIS: "auth.${SECRET_CLUSTER_DOMAIN}"
+      # oauth:
+      #   - name: authelia
+      #     provider: openidConnect
+      #     key: gitea
+      #     secret: "${SECRET_GITEA_OAUTH_CLIENT_SECRET}"
+      #     autoDiscoverUrl: "https://auth.${SECRET_CLUSTER_DOMAIN}/.well-known/openid-configuration"
+      #     groupClaimName: groups
+      #     adminGroup: admins
+      #     restrictedGroup: people
       metrics:
         enabled: true
         serviceMonitor:
