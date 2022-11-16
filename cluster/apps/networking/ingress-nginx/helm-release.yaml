@@ -26,7 +26,7 @@ spec:
       namespace: default
   values:
     controller:
-      replicaCount: 2
+      replicaCount: 1
       service:
         type: LoadBalancer
         externalIPs:
@@ -38,26 +38,20 @@ spec:
         default: true
       config:
         client-body-buffer-size: "100M"
-        client-body-timeout: 120
-        client-header-timeout: 120
+        client-body-timeout: 12
+        client-header-timeout: 12
         custom-http-errors: 400,401,403,404,500,502,503,504
         enable-brotli: "true"
-        forwarded-for-header: "CF-Connecting-IP"
+        enable-ocsp: "true"
+        enable-real-ip: "true"
         hsts-max-age: "31449600"
         keep-alive-requests: 10000
         keep-alive: 120
-        log-format-escape-json: "true"
-        log-format-upstream:
-          '{"time": "$time_iso8601", "remote_addr": "$proxy_protocol_addr", "x_forwarded_for": "$proxy_add_x_forwarded_for", "request_id": "$req_id",
-          "remote_user": "$remote_user", "bytes_sent": $bytes_sent, "request_time": $request_time, "status": $status, "vhost": "$host", "request_proto": "$server_protocol",
-          "path": "$uri", "request_query": "$args", "request_length": $request_length, "duration": $request_time,"method": "$request_method", "http_referrer": "$http_referer",
-          "http_user_agent": "$http_user_agent" }'
         proxy-body-size: "100M"
+        proxy-buffer-size: "16k"
+        service-upstream: "true"
         ssl-protocols: "TLSv1.3 TLSv1.2"
         use-forwarded-headers: "true"
-      extraArgs:
-        default-ssl-certificate: |-
-          default/${SECRET_CLUSTER_DOMAIN/./-}-tls
       metrics:
         enabled: true
         serviceMonitor:
@@ -65,24 +59,23 @@ spec:
           namespace: default
           namespaceSelector:
             any: true
+      extraArgs:
+        default-ssl-certificate: |-
+          default/${SECRET_CLUSTER_DOMAIN/./-}-tls
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+              app.kubernetes.io/component: controller
       resources:
         requests:
-          memory: 411Mi
-          cpu: 23m
+          memory: 400Mi
+          cpu: 25m
         limits:
           memory: 1Gi
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/name
-                      operator: In
-                      values:
-                        - ingress-nginx
-                topologyKey: kubernetes.io/hostname
     defaultBackend:
       enabled: true
       image:
@@ -93,9 +86,17 @@ spec:
           value: l7-light
         - name: SHOW_DETAILS
           value: "true"
-      resources:
-        requests:
-          memory: 105Mi
-          cpu: 25m
-        limits:
-          memory: 105Mi
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values: ["ingress-nginx"]
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values: ["default-backend"]
+                topologyKey: kubernetes.io/hostname
