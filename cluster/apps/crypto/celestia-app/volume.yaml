@@ -7,7 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/name: &name celestia-app
     app.kubernetes.io/instance: *name
-    kasten-io/backup: "false"
+    snapshot.home.arpa/enabled: "false"
 spec:
   accessModes:
     - ReadWriteOnce

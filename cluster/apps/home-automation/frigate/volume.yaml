@@ -5,7 +5,7 @@ metadata:
   name: frigate-config
   namespace: default
   labels:
-    kasten-io/backup: "true"
+    snapshot.home.arpa/enabled: "true"
 spec:
   accessModes:
     - ReadWriteOnce
