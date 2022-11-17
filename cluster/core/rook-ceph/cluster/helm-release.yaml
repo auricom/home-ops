@@ -113,10 +113,7 @@ spec:
           limits:
             memory: "1Gi"
     cephBlockPoolsVolumeSnapshotClass:
-      enabled: true
-      name: csi-rbdplugin-snapclass
-      annotations:
-        k10.kasten.io/is-snapshot-class: "true"
+      enabled: false
     cephBlockPools:
       - name: replicapool
         spec:
