@@ -28,7 +28,7 @@ spec:
     image:
       repository: gitea/gitea
       tag: 1.17.3
-      # rootless: true
+      rootless: true
     containerSecurityContext:
       capabilities:
         add: ["SYS_CHROOT"]
