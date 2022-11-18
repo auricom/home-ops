@@ -1,0 +1,10 @@
+---
+version: "3"
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  CLUSTER_DIR: "{{.PROJECT_DIR}}/cluster"
+
+includes:
+  kopia: .taskfiles/kopia.yaml

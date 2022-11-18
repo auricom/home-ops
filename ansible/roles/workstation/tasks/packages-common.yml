@@ -59,6 +59,7 @@
       - discord
       - joplin
       - librewolf
+      - go-task
     state: present
     update_cache: true
   become: true
