@@ -52,7 +52,7 @@ k3s_server_manifests_urls:
 #         username: "{{ SECRET_NEXUS_USERNAME }}"
 #         password: "{{ SECRET_NEXUS_PASSWORD }}"
 
-timezone: Etc/UTC
+timezone: Europe/Paris
 
 public_ssh_keys:
   - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL+GMHgvbtf6f7xUMAQR+vZFfD/mIIfIDNX5iP8tDRXZ claude@claude-thinkpad-fedora"
@@ -62,24 +62,17 @@ packages:
   - "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
   - "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
   - dnf-automatic
+  - dnf-plugin-system-upgrade
   - dnf-utils
   - fish
   - hdparm
   - htop
   - intel-gpu-tools
   - ipvsadm
-  # TODO(ansible): Might be required for newer Intel CPU generations
-  # https://ask.fedoraproject.org/t/intel-graphics-best-practices-and-settings-for-hardware-acceleration/21119
-  # - intel-media-driver
-  # - mesa-dri-drivers
-  # - libva-intel-driver
-  # - libva-intel-hybrid-driver
-  # - libva-utils
-  # - libva-vdpau-driver
-  # - libvdpau-va-gl
   - lm_sensors
   - nano
   - nvme-cli
+  - python3-libselinux
   - socat
   - cockpit-pcp
 

@@ -4,6 +4,7 @@
     - worker
   become: true
   gather_facts: true
+  serial: 1
   any_errors_fatal: true
   pre_tasks:
     - name: Pausing for 5 seconds...
@@ -14,7 +15,7 @@
       block:
         - name: Locale | Set timezone
           community.general.timezone:
-            name: "{{ timezone | default('Etc/UTC') }}"
+            name: "{{ timezone | default('Europe/Paris') }}"
     - name: Networking
       block:
         - name: Networking | Set hostname to inventory hostname
@@ -50,9 +51,14 @@
         - name: Packages | Remove leaf packages
           ansible.builtin.dnf:
             autoremove: true
-        - name: Packages | Enable automatic install of updates
+        - name: Packages | Enable automatic download of updates
           ansible.builtin.systemd:
-            service: dnf-automatic-install.timer
+            service: dnf-automatic-download.timer
+            enabled: true
+            state: started
+        - name: Packages | Enable cockpit
+          ansible.builtin.systemd:
+            service: cockpit.socket
             enabled: true
             state: started
     - name: User Configuration
@@ -79,6 +85,12 @@
           loop: "{{ public_ssh_keys | default([]) }}"
     - name: System Configuration (1)
       block:
+        - name: System Configuration (1) | Configure smartd
+          ansible.builtin.copy:
+            dest: /etc/smartd.conf
+            mode: 0644
+            content: DEVICESCAN -a -o on -S on -n standby,q -s (S/../.././02|L/../../6/03) -W 4,35,40
+          notify: Restart smartd
         - name: System Configuration (1) | Disable firewalld
           ansible.builtin.systemd:
             service: firewalld.service
@@ -122,9 +134,6 @@
               net.ipv6.conf.all.forwarding: 1
               net.bridge.bridge-nf-call-iptables: 1
               net.bridge.bridge-nf-call-ip6tables: 1
-              net.core.netdev_budget: 1000
-              net.core.netdev_max_backlog: 65536
-              net.core.optmem_max: 40960
               fs.inotify.max_user_watches: 524288
               fs.inotify.max_user_instances: 512
         - name: System Configuration (2) | Disable swap
@@ -135,6 +144,22 @@
           ansible.posix.selinux:
             state: permissive
             policy: targeted
+        - name: System Configuration (2) | Disable mitigations
+          ansible.builtin.replace:
+            path: /etc/default/grub
+            regexp: '^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ item.key | regex_escape }}=).)*)(?:[" ]{{ item.key | regex_escape }}=\S+)?(.*")$'
+            replace: '\1 {{ item.key }}={{ item.value }}\2'
+          with_dict: "{{ grub_config }}"
+          vars:
+            grub_config:
+              mitigations: "off"
+          register: grub_status
+        - name: System Configuration (2) | Reconfigure grub and initramfs
+          ansible.builtin.command: "{{ item }}"
+          loop:
+            - grub2-mkconfig -o /boot/grub2/grub.cfg
+            - dracut --force --regenerate-all -v
+          when: grub_status.changed
         - name: System Configuration (3) | NetworkManager - Calico fix
           ansible.builtin.blockinfile:
             path: /etc/NetworkManager/conf.d/calico.conf
