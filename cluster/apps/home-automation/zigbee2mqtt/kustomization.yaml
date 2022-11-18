@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
   - helm-release.yaml
   - volume.yaml
+  - prometheus-rule.yaml
+patchesStrategicMerge:
+  - patches/env.yaml
+  - patches/exporter.yaml

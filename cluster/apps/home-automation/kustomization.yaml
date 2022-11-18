@@ -6,5 +6,4 @@ resources:
   - home-assistant
   - home-assistant-code
   - zigbee2mqtt
-  - zigbee2mqtt-exporter
   - zwavejs2mqtt
