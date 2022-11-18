@@ -5,6 +5,8 @@ metadata:
   name: frigate-config
   namespace: default
   labels:
+    app.kubernetes.io/name: &name frigate
+    app.kubernetes.io/instance: *name
     snapshot.home.arpa/enabled: "true"
 spec:
   accessModes:

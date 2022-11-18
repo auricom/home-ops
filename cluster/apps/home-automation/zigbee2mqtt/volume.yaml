@@ -5,6 +5,8 @@ metadata:
   name: zigbee2mqtt-config
   namespace: default
   labels:
+    app.kubernetes.io/name: &name zigbee2mqtt
+    app.kubernetes.io/instance: *name
     snapshot.home.arpa/enabled: "true"
 spec:
   accessModes:

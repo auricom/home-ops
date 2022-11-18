@@ -5,6 +5,8 @@ metadata:
   name: zwavejs2mqtt-config
   namespace: default
   labels:
+    app.kubernetes.io/name: &name zwavejs2mqtt
+    app.kubernetes.io/instance: *name
     snapshot.home.arpa/enabled: "true"
 spec:
   accessModes:

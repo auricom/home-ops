@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: vikunja-files
-  namespace: data
+  namespace: default
   labels:
     app.kubernetes.io/name: &name vikunja
     app.kubernetes.io/instance: *name
