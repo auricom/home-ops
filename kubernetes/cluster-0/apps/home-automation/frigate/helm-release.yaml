@@ -1,0 +1,118 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app frigate
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: emqx
+      namespace: default
+    - name: intel-gpu-plugin
+      namespace: default
+    - name: node-feature-discovery
+      namespace: default
+  values:
+    fullnameOverride: *app
+    image:
+      repository: docker.io/blakeblackshear/frigate
+      tag: 0.11.1
+    env:
+      TZ: "${TIMEZONE}"
+      LIBVA_DRIVER_NAME: i965
+      MQTT_USER: "${SECRET_MQTT_USERNAME}"
+      MQTT_PASSWORD: ${SECRET_MQTT_PASSWORD}
+    service:
+      main:
+        ports:
+          http:
+            port: &port 5000
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /api/version
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: false
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    securityContext:
+      privileged: true
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: *app
+        subPath: config.yaml
+        mountPath: /config/config.yml
+        readOnly: true
+      data:
+        enabled: true
+        existingClaim: frigate-config
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/bus/usb
+        hostPathType: Directory
+        mountPath: /dev/bus/usb
+      cache:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 4Gi
+        mountPath: /dev/shm
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: *app
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: feature.node.kubernetes.io/custom-coral-tpu
+                  operator: In
+                  values:
+                    - "true"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 1Gi
+        gpu.intel.com/i915: "1"
+      limits:
+        memory: 6Gi
+        gpu.intel.com/i915: "1"

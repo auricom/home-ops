@@ -1,0 +1,115 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app gitea-external-backup
+  namespace: &namespace default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: raw
+      version: v0.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: dysnix
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: gitea
+      namespace: default
+  values:
+    resources:
+      - apiVersion: batch/v1
+        kind: CronJob
+        metadata:
+          name: *app
+          namespace: *namespace
+        spec:
+          schedule: "@daily"
+          jobTemplate:
+            spec:
+              template:
+                metadata:
+                  name: *app
+                spec:
+                  containers:
+                    - name: *app
+                      image: ghcr.io/auricom/kubectl:1.25.4@sha256:eef66c93cd48cacb338a8994632e0b75aafeac2fbdcc5c64314a9bf422d0380c
+                      imagePullPolicy: IfNotPresent
+                      command:
+                        - "/bin/bash"
+                        - "-c"
+                        - |
+                          #!/bin/bash
+
+                          set -o nounset
+                          set -o errexit
+
+                          mkdir -p ~/.ssh
+                          cp /opt/id_rsa ~/.ssh/id_rsa
+                          chmod 600 ~/.ssh/id_rsa
+
+                          ssh -o StrictHostKeyChecking=no homelab@${LOCAL_LAN_TRUENAS} << 'EOF'
+
+                            set -o nounset
+                            set -o errexit
+
+                            WORK_DIR="/mnt/storage/backups/apps/gitea"
+
+                            ORGANISATIONS=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/orgs" --header "Authorization: Bearer ${SECRET_GITEA_API_TOKEN}" | jq --raw-output .[].username)
+                            ORGANISATIONS+=" auricom"
+
+                            for org in $ORGANISATIONS
+                            do
+                                mkdir -p $WORK_DIR/$org
+                                if [ $org == "auricom" ]; then
+                                    keyword="users"
+                                else
+                                    keyword="orgs"
+                                fi
+                                REPOSITORIES=$(curl --silent --location --request GET "https://gitea.${SECRET_CLUSTER_DOMAIN}/api/v1/$keyword/$org/repos?limit=1000" --header "Authorization: Bearer ${SECRET_GITEA_API_TOKEN}" | jq --raw-output .[].name)
+                                for repo in $REPOSITORIES
+                                do
+                                    if [ -d "$WORK_DIR/$org/$repo" ]; then
+                                        echo "INFO: pull $org/$repo..."
+                                        cd $WORK_DIR/$org/$repo
+                                        git remote show origin -n | grep -c main &> /dev/null && MAIN_BRANCH="main" || MAIN_BRANCH="master"
+                                        git fetch --all
+                                        test $? -ne 0 && exit 1
+                                        git reset --hard origin/$MAIN_BRANCH
+                                        test $? -ne 0 && exit 1
+                                        git pull origin $MAIN_BRANCH
+                                        test $? -ne 0 && exit 1
+                                        echo "INFO: clean $org/$repo..."
+                                        git fetch --prune
+                                        for branch in $(git branch -vv | grep ': gone]' | awk '{print $1}')
+                                        do
+                                          git branch -D $branch
+                                        done
+                                    else
+                                        echo "INFO: clone $org/$repo..."
+                                        cd $WORK_DIR/$org
+                                        git clone git@gitea.${SECRET_DOMAIN}:$org/$repo.git
+                                        test $? -ne 0 && exit 1
+                                    fi
+                                done
+                            done
+                            echo "INFO: Backup done"
+                            curl -m 10 --retry 5 https://healthchecks.${SECRET_CLUSTER_DOMAIN}/ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-gitea-repositories-backup
+                          EOF
+                      volumeMounts:
+                        - name: secret
+                          mountPath: /opt/id_rsa
+                          subPath: deployment_rsa_priv_key
+                  volumes:
+                    - name: secret
+                      secret:
+                        secretName: gitea-config
+                  restartPolicy: Never

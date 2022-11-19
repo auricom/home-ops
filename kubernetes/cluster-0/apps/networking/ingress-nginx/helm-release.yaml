@@ -1,0 +1,101 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ingress-nginx
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: 4.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: cert-manager
+      namespace: default
+  values:
+    controller:
+      replicaCount: 1
+      service:
+        type: LoadBalancer
+        loadBalancerIP: "${CLUSTER_LB_NGINX}"
+        externalTrafficPolicy: Local
+      publishService:
+        enabled: true
+      ingressClassResource:
+        default: true
+      config:
+        client-body-buffer-size: "100M"
+        client-body-timeout: 12
+        client-header-timeout: 12
+        custom-http-errors: 400,401,403,404,500,502,503,504
+        enable-brotli: "true"
+        enable-ocsp: "true"
+        enable-real-ip: "true"
+        hsts-max-age: "31449600"
+        keep-alive-requests: 10000
+        keep-alive: 120
+        proxy-body-size: "100M"
+        proxy-buffer-size: "16k"
+        service-upstream: "true"
+        ssl-protocols: "TLSv1.3 TLSv1.2"
+        use-forwarded-headers: "true"
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespace: default
+          namespaceSelector:
+            any: true
+      extraArgs:
+        default-ssl-certificate: |-
+          default/${SECRET_CLUSTER_DOMAIN/./-}-tls
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+              app.kubernetes.io/component: controller
+      resources:
+        requests:
+          memory: 400Mi
+          cpu: 25m
+        limits:
+          memory: 1Gi
+    defaultBackend:
+      enabled: true
+      image:
+        repository: ghcr.io/tarampampam/error-pages
+        tag: 2.19.0
+      extraEnvs:
+        - name: TEMPLATE_NAME
+          value: l7-light
+        - name: SHOW_DETAILS
+          value: "true"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values: ["ingress-nginx"]
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values: ["default-backend"]
+                topologyKey: kubernetes.io/hostname

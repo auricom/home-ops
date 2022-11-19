@@ -19,6 +19,15 @@
       "matchPackageNames": ["ghcr.io/onedr0p/prowlarr-nightly"]
     },
     {
+      "description": "Auto merge containers (patch only)",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "branch",
+      "requiredStatusChecks": null,
+      "matchUpdateTypes": ["patch"],
+      "matchPackageNames": ["ghcr.io/auricom/kubectl"]
+    },
+    {
       "description": "Auto merge GitHub Actions",
       "matchDatasources": ["github-tags"],
       "automerge": true,

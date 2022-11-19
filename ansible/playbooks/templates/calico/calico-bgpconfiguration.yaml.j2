@@ -1,9 +1,0 @@
----
-apiVersion: crd.projectcalico.org/v1
-kind: BGPConfiguration
-metadata:
-  name: default
-spec:
-  asNumber: {{ calico_bgp_as_number }}
-  serviceExternalIPs:
-    - cidr: "{{ calico_bgp_external_ips }}"

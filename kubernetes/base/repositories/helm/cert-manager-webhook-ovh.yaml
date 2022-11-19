@@ -1,0 +1,16 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: cert-manager-webhook-ovh
+  namespace: flux-system
+spec:
+  interval: 12h
+  url: https://github.com/baarde/cert-manager-webhook-ovh
+  ref:
+    branch: master
+  ignore: |
+    # exclude all
+    /*
+    # include charts directory
+    !/deploy/

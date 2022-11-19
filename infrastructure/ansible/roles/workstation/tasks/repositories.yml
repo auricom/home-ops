@@ -1,0 +1,114 @@
+---
+- name: repositories | enable the RPM Fusion repository
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: true
+  loop:
+    - https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+    - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm
+  become: true
+
+- name: repositories | enable copr repositories
+  ansible.builtin.command:
+    cmd: dnf copr enable -y {{ item.repo }}
+    creates: "{{ item.file }}"
+  loop:
+    - {
+        repo: "tomaszgasior/mushrooms",
+        file: "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:tomaszgasior:mushrooms.repo",
+      }
+    - {
+        repo: "taw/joplin",
+        file: "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:taw:joplin.repo",
+      }
+  become: true
+  when: ansible_facts['nodename'] == "claude-fixe-fedora"
+
+- name: repositories | copy yum repo files
+  ansible.builtin.copy:
+    src: "yum/{{ item }}"
+    dest: "/etc/yum.repos.d/{{ item }}"
+    mode: 0644
+  loop:
+    - vscodium.repo
+  become: true
+
+- name: repositories | resilio sync - import repository GPG key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://linux-packages.resilio.com/resilio-sync/key.asc
+  become: true
+
+- name: repositories | resilio sync - add repository
+  ansible.builtin.yum_repository:
+    name: rslsync
+    description: Resilio Sync Repository
+    baseurl: https://linux-packages.resilio.com/resilio-sync/rpm/$basearch
+    gpgcheck: true
+  become: true
+
+- name: repositories | brave - check presence
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/brave-browser-rpm-release.s3.brave.com_x86_64_.repo
+  register: brave
+
+- name: repositories | brave - add repository
+  ansible.builtin.command:
+    cmd: dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
+    warn: false
+  args:
+    creates: /etc/yum.repos.d/brave-browser-rpm-release.s3.brave.com_x86_64_.repo
+  become: true
+  when: not brave.stat.exists
+
+- name: repositories | brave - import asc
+  ansible.builtin.command:
+    cmd: rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+    warn: false
+  become: true
+  when: not brave.stat.exists
+
+- name: repositories | librewolf - check presence
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/rpm.librewolf.net.repo
+  register: librewolf
+
+- name: repositories | librewolf - add repository
+  ansible.builtin.command:
+    cmd: dnf config-manager --add-repo https://rpm.librewolf.net
+    warn: false
+  args:
+    creates: /etc/yum.repos.d/rpm.librewolf.net.repo
+  become: true
+  when: not librewolf.stat.exists
+
+- name: repositories | librewolf - import asc
+  ansible.builtin.command:
+    cmd: rpm --import https://keys.openpgp.org/vks/v1/by-fingerprint/034F7776EF5E0C613D2F7934D29FBD5F93C0CFC3
+  become: true
+  when: not librewolf.stat.exists
+
+- name: repositories | kopia - check presence
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/kopia.repo
+  register: kopia
+
+- name: repositories | kopia - import asc
+  ansible.builtin.command:
+    cmd: rpm --import https://kopia.io/signing-key
+  become: true
+  when: not kopia.stat.exists
+
+- name: repositories | kopia - add repository
+  ansible.builtin.blockinfile:
+    path: /etc/yum.repos.d/kopia.repo
+    block: |
+      [Kopia]
+      name=Kopia
+      baseurl=http://packages.kopia.io/rpm/stable/$basearch/
+      gpgcheck=1
+      enabled=1
+      gpgkey=https://kopia.io/signing-key
+    create: true
+  become: true

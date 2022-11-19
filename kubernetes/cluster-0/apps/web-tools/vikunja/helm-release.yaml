@@ -1,0 +1,120 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app vikunja
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: postgres-cluster
+      namespace: default
+  values:
+    controller:
+      replicas: 1
+      strategy: Recreate
+    image:
+      repository: caddy
+      tag: 2.6.2-alpine
+    envFrom:
+      - secretRef:
+          name: *app
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          external-dns.home.arpa/enabled: "true"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      files:
+        enabled: true
+        existingClaim: vikunja-files
+        mountpath: /app/vikunja/files
+      caddy-config:
+        enabled: "true"
+        mountPath: /etc/caddy/Caddyfile
+        subPath: Caddyfile
+        type: "custom"
+        volumeSpec:
+          configMap:
+            name: *app
+      vikunja-config:
+        enabled: "true"
+        mountPath: /etc/vikunja/config.yml
+        subPath: Vikunja.yaml
+        type: "custom"
+        volumeSpec:
+          configMap:
+            name: *app
+    podAnnotations:
+      configMap.reloader.stakater.com/reload: *app
+      secret.reloader.stakater.com/reload: *app
+    resources:
+      requests:
+        cpu: 5m
+        memory: 10Mi
+      limits:
+        memory: 100Mi
+    additionalContainers:
+      api:
+        name: api
+        image: vikunja/api:0.20.1
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: VIKUNJA_SERVICE_JWTSECRET
+            valueFrom:
+              secretKeyRef:
+                name: vikunja
+                key: VIKUNJA_SERVICE_JWTSECRET
+          - name: VIKUNJA_DATABASE_TYPE
+            value: postgres
+          - name: VIKUNJA_DATABASE_HOST
+            value: postgres-rw.default.svc.cluster.local.
+          - name: VIKUNJA_DATABASE_DATABASE
+            value: vikunja
+          - name: VIKUNJA_DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                name: vikunja
+                key: VIKUNJA_DATABASE_USER
+          - name: VIKUNJA_DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: vikunja
+                key: VIKUNJA_DATABASE_PASSWORD
+        volumeMounts:
+          - name: vikunja-config
+            mountPath: /etc/vikunja/config.yml
+            subPath: Vikunja.yaml
+      frontend:
+        name: frontend
+        image: vikunja/frontend:0.20.1
+    imagePullPolicy: IfNotPresent

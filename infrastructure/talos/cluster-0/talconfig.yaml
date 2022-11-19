@@ -1,0 +1,89 @@
+---
+clusterName: cluster-0
+
+talosVersion: v1.2.5
+kubernetesVersion: v1.25.3
+endpoint: https://cluster-0.${domainName}:6443
+
+cniConfig:
+  name: none
+
+additionalApiServerCertSans:
+  - ${clusterEndpointIP}
+
+additionalMachineCertSans:
+  - ${clusterEndpointIP}
+  - cluster-0.${domainName}
+
+nodes:
+  - hostname: talos-node-1
+    ipAddress: 192.168.9.101
+    controlPlane: true
+    installDisk: /dev/sda
+  - hostname: talos-node-2
+    ipAddress: 192.168.9.102
+    controlPlane: true
+    installDisk: /dev/sda
+  - hostname: talos-node-3
+    ipAddress: 192.168.9.103
+    controlPlane: true
+    installDisk: /dev/sda
+  - hostname: talos-node-4
+    ipAddress: 192.168.9.104
+    controlPlane: true
+    installDisk: /dev/sda
+
+controlPlane:
+  patches:
+    - |-
+      cluster:
+        allowSchedulingOnMasters: true
+        apiServer:
+          extraArgs:
+            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
+        controllerManager:
+          extraArgs:
+            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
+        discovery:
+          registries:
+            service:
+              disabled: true
+        proxy:
+          disabled: true
+          extraArgs:
+            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
+        scheduler:
+          extraArgs:
+            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
+
+      machine:
+        files:
+          - content: |
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
+            path: /var/cri/conf.d/allow-unpriv-ports.toml
+            op: create
+        kubelet:
+          extraArgs:
+            feature-gates: GracefulNodeShutdown=true,MixedProtocolLBService=true
+            rotate-server-certificates: "true"
+        install:
+          extraKernelArgs:
+            - "talos.logging.kernel=udp://vector.${ingressDomain}:6050/"
+        logging:
+          destinations:
+            - endpoint: "udp://vector.${ingressDomain}:6051/"
+              format: json_lines
+        network:
+          extraHostEntries:
+            - ip: ${clusterEndpointIP}
+              aliases:
+                - cluster-0.${domainName}
+        sysctls:
+          fs.inotify.max_user_watches: "1048576"
+          fs.inotify.max_user_instances: "8192"
+        time:
+          disabled: false
+          servers:
+            - 192.168.8.1

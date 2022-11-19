@@ -12,8 +12,8 @@ x-preconditions: &preconditions
     msg: "Claim '{{.CLAIM}}' in namespace '{{.NAMESPACE}}' not found"
     sh: kubectl get pvc -n {{.NAMESPACE}} {{.CLAIM}}
   - &has-restore-job-file
-    msg: "File '{{.PROJECT_DIR}}/hack/kopia-restore.yaml' not found"
-    sh: "test -f {{.PROJECT_DIR}}/hack/kopia-restore.yaml"
+    msg: "File '{{.PROJECT_DIR}}/kubernetes/tools/kopia-restore.yaml' not found"
+    sh: "test -f {{.PROJECT_DIR}}/kubernetes/tools/kopia-restore.yaml"
 
 x-vars: &vars
   NAMESPACE:
@@ -54,7 +54,7 @@ tasks:
       - flux -n {{.NAMESPACE}} suspend helmrelease {{.APP}}
       - kubectl -n {{.NAMESPACE}} scale {{.NAME}} --replicas 0
       - kubectl -n {{.NAMESPACE}} wait pod --for delete --selector="app.kubernetes.io/name={{.APP}}" --timeout=2m
-      - envsubst < <(cat ./hack/kopia-restore.yaml) | kubectl apply -f -
+      - envsubst < <(cat ./kubernetes/tools/kopia-restore.yaml) | kubectl apply -f -
       - sleep 2
       - kubectl -n {{.NAMESPACE}} wait job --for condition=complete {{.APP}}-{{.CLAIM}}-restore --timeout={{.TIMEOUT | default "60m"}}
       - flux -n {{.NAMESPACE}} resume helmrelease {{.APP}}

@@ -1,0 +1,27 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - bitnami.yaml
+  - bjw-s.yaml
+  - cert-manager-webhook-ovh.yaml
+  - cilium.yaml
+  - cloudnative-pg.yaml
+  - descheduler.yaml
+  - drone.yaml
+  - dysnix.yaml
+  - emxq.yaml
+  - external-dns.yaml
+  - gitea.yaml
+  - grafana.yaml
+  - ingress-nginx.yaml
+  - jetstack.yaml
+  - k8s-gateway.yaml
+  - kyverno.yaml
+  - metrics-server.yaml
+  - node-feature-discovery.yaml
+  - prometheus-community.yaml
+  - rook-ceph.yaml
+  - stakater.yaml
+  - vector.yaml
+  - weave-gitops.yaml

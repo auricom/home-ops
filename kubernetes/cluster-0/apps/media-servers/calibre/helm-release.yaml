@@ -1,0 +1,75 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app calibre
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    image:
+      repository: ghcr.io/linuxserver/calibre
+      tag: version-v6.4.0
+    env:
+      TZ: "${TIMEZONE}"
+      PUID: "1026"
+      PGID: "1000"
+    persistence:
+      config:
+        enabled: true
+        existingClaim: calibre-config
+      books:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/home/claude/books
+        mountPath: /mnt/storage/home/claude/books
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+      webserver:
+        enabled: true
+        ports:
+          webserver:
+            enabled: true
+            port: 8081
+            protocol: TCP
+            targetPort: 8081
+        type: ClusterIP
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    resources:
+      requests:
+        cpu: 15m
+        memory: 324M
+      limits:
+        memory: 604M

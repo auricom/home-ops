@@ -1,0 +1,96 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-talos-node-2
+spec:
+  restartPolicy: Never
+  nodeName: talos-node-2
+  containers:
+    - name: disk-wipe
+      image: rook/ceph:v1.10.6
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "sgdisk --zap-all /dev/nvme0n1",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/nvme0n1",
+          "blkdiscard /dev/nvme0n1",
+          "partprobe /dev/nvme0n1",
+        ]
+      volumeMounts:
+        - mountPath: /dev
+          name: dev
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  volumes:
+    - name: dev
+      hostPath:
+        path: /dev
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-talos-node-3
+spec:
+  restartPolicy: Never
+  nodeName: talos-node-3
+  containers:
+    - name: disk-wipe
+      image: rook/ceph:v1.10.6
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "sgdisk --zap-all /dev/nvme0n1",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/nvme0n1",
+          "blkdiscard /dev/nvme0n1",
+          "partprobe /dev/nvme0n1",
+        ]
+      volumeMounts:
+        - mountPath: /dev
+          name: dev
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  volumes:
+    - name: dev
+      hostPath:
+        path: /dev
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-talos-node-4
+spec:
+  restartPolicy: Never
+  nodeName: talos-node-4
+  containers:
+    - name: disk-wipe
+      image: rook/ceph:v1.10.6
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "sgdisk --zap-all /dev/nvme0n1",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/nvme0n1",
+          "blkdiscard /dev/nvme0n1",
+          "partprobe /dev/nvme0n1",
+        ]
+      volumeMounts:
+        - mountPath: /dev
+          name: dev
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  volumes:
+    - name: dev
+      hostPath:
+        path: /dev
