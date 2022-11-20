@@ -41,7 +41,7 @@ spec:
                 spec:
                   containers:
                     - name: *app
-                      image: ghcr.io/auricom/kubectl:1.25.4@sha256:eef66c93cd48cacb338a8994632e0b75aafeac2fbdcc5c64314a9bf422d0380c
+                      image: ghcr.io/auricom/kubectl:1.25.4@sha256:197b1704d2e0c9b9e51260fced04d21df6e5f694cae87505e621be307ce798fd
                       imagePullPolicy: IfNotPresent
                       command:
                         - "/bin/bash"
