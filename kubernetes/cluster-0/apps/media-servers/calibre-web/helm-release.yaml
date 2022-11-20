@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: ghcr.io/auricom/calibre-web
-      tag: 0.6.19@sha256:5485fa7bd07823253d94c603e4759ce0d2b5d109aa8f4b5c7a4b5d3f01e30c8f
+      tag: 0.6.19@sha256:d7e1fcc333508a4c2830dd24dc4a2bd1b4103dc6f77e1c8c0cedc0656a9c5787
     env:
       TZ: "${TIMEZONE}"
     service:
