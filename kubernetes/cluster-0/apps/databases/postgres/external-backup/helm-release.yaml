@@ -47,7 +47,7 @@ spec:
                         - name: POSTGRES_HOST
                           value: postgres-rw.default.svc.cluster.local.
                         - name: POSTGRES_DB
-                          value: "drone,freshrss,gitea,healthchecks,invidious,joplin,lychee,recipes,sharry,outline,vaultwarden,vikunja,wallabag"
+                          value: "drone,freshrss,gitea,invidious,joplin,lychee,recipes,sharry,outline,vaultwarden,vikunja,wallabag"
                         - name: POSTGRES_USER
                           valueFrom:
                             secretKeyRef:
@@ -69,8 +69,7 @@ spec:
                         - name: HEALTHCHECK_PORT
                           value: "8080"
                         - name: WEBHOOK_URL
-                          value: http://healthchecks.default.svc.cluster.local.:/ping/${SECRET_HEALTHCHECKS_PING_KEY}/postgresql-backup
-
+                          value: https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/45cHKtahUg?status=up&msg=OK&ping=
                       command:
                         - "/backup.sh"
                       volumeMounts:

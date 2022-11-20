@@ -60,7 +60,7 @@ spec:
                           echo $QBITTORRENT_POD | grep qbittorrent
                           if [[ $(echo $QBITTORRENT_POD | grep qbittorrent) ]]; then
                             kubectl cp /tmp/ipfilter.dat default/$QBITTORRENT_POD:/config/ipfilter.dat
-                            kubectl rollout restart deployment qbittorrent --namespace default && curl -m 10 --retry 5 http://healthchecks.default.svc.cluster.local.:/ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-qbittorrent-p2pblocklist
+                            kubectl rollout restart deployment qbittorrent --namespace default && curl -m 10 --retry 5 https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/6RUDha9bDp?status=up&msg=OK&ping=
                           else
                             echo "qbittorrent deployment not found"
                             exit 1

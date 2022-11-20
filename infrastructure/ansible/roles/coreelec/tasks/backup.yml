@@ -10,4 +10,4 @@
     name: "daily backup"
     minute: "14"
     hour: "4"
-    job: "/storage/backup.bash && curl -fsS -m 10 --retry 5 -o /dev/null https://healthchecks.{{ secret_cluster_domain }}/ping/aae30879-cfdf-4b90-889f-d4ff69dd8aad"
+    job: "/storage/backup.bash && curl -fsS -m 10 --retry 5 -o /dev/null https://uptime-kuma.{{ secret_cluster_domain }}api/push/peJYY3K5sH?status=up&msg=OK&ping="

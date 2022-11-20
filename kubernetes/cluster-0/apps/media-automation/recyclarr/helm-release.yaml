@@ -70,7 +70,7 @@ spec:
                         - |
                           #!/bin/bash
 
-                          /app/recyclarr sonarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null http://healthchecks.default.svc.cluster.local./ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-recyclarr-sonarr
+                          /app/recyclarr sonarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/eaNLvqhfn2?status=up&msg=OK&ping=
                       volumeMounts:
                         - name: shared
                           mountPath: /config/recyclarr.yaml
@@ -87,7 +87,7 @@ spec:
                         - |
                           #!/bin/bash
 
-                          /app/recyclarr radarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null http://healthchecks.default.svc.cluster.local./ping/${SECRET_HEALTHCHECKS_PING_KEY}/k3s-recyclarr-radarr
+                          /app/recyclarr radarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/N7OJBSgxD7?status=up&msg=OK&ping=
                       volumeMounts:
                         - name: shared
                           mountPath: /config/recyclarr.yaml
