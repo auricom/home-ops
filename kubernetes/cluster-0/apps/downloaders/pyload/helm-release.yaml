@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: ghcr.io/auricom/pyload-ng
-      tag: 0.5.0-b3.dev29@sha256:f62f8e1ff4565d04ef031b9814b8b6d2376d8fc1e8c762b21b7eeafa5bf0d511
+      tag: 0.5.0-b3.dev29@sha256:7e66ed2c60441534be31ca6c5fafc4d4d5f815f008923f486ade97fbcf7ee6a9
     env:
       TZ: "${TIMEZONE}"
     service:
