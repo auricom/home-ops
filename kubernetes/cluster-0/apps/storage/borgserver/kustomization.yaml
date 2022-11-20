@@ -2,5 +2,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - kopia-kube
-  - kopia-workstations
+  - helm-release.yaml
+  - secret-clients.sops.yaml
+  - secret-host.sops.yaml
