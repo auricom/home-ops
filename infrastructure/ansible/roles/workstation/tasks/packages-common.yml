@@ -60,8 +60,7 @@
       - joplin
       - librewolf
       - go-task
-      - kopia
-      - kopia-ui
+      - git-credential-libsecret
     state: present
     update_cache: true
   become: true
