@@ -12,6 +12,10 @@ spec:
   secretRef:
     name: github-webhook-token
   resources:
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: GitRepository
+      name: home-ops
+      namespace: flux-system
     - apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
       kind: Kustomization
       name: apps
@@ -24,11 +28,11 @@ spec:
       kind: Kustomization
       name: base
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: GitRepository
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+      kind: Kustomization
       name: flux-cluster
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: GitRepository
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+      kind: Kustomization
       name: flux-installation
       namespace: flux-system
