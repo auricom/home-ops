@@ -66,12 +66,12 @@ spec:
           ENABLED: true
         attachment:
           STORAGE_TYPE: minio
-          MINIO_ENDPOINT: truenas.${SECRET_DOMAIN}:9000
+          MINIO_ENDPOINT: truenas.${SECRET_DOMAIN}:51515
           MINIO_BUCKET: gitea
           MINIO_USE_SSL: true
         storage:
           STORAGE_TYPE: minio
-          MINIO_ENDPOINT: truenas.${SECRET_DOMAIN}:9000
+          MINIO_ENDPOINT: truenas.${SECRET_DOMAIN}:51515
           MINIO_BUCKET: gitea
           MINIO_USE_SSL: true
         mailer:
