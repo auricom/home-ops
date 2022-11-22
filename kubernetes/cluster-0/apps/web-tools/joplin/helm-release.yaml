@@ -37,6 +37,12 @@ spec:
       POSTGRES_HOST: postgres-rw.default.svc.cluster.local.
       POSTGRES_PORT: 5432
       POSTGRES_DATABASE: joplin
+      MAILER_ENABLED: 1
+      MAILER_HOST: smtp-relay.default.svc.cluster.local.
+      MAILER_PORT: 2525
+      MAILER_SECURITY: none
+      MAILER_NOREPLY_NAME: JoplinServer
+      MAILER_NOREPLY_EMAIL: joplin@${SECRET_DOMAIN}
     envFrom:
       - secretRef:
           name: *app
