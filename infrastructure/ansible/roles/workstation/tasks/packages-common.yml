@@ -50,17 +50,17 @@
       - gnome-extensions-app
       - neovim
       - brave-browser
-      - starship
       - tmux
       - cawbird
       - age
       - vorta
       - mediainfo
       - discord
-      - joplin
       - librewolf
       - go-task
       - git-credential-libsecret
+      - kopia
+      - kopia-ui
     state: present
     update_cache: true
   become: true
@@ -85,6 +85,7 @@
     state: present
   loop:
     - https://dl.flathub.org/repo/appstream/com.bitwarden.desktop.flatpakref
+    - https://dl.flathub.org/repo/appstream/net.cozic.joplin_desktop.flatpakref
   become: true
 
 - name: packages-common | brew
@@ -100,6 +101,7 @@
       - gh
       - derailed/popeye/popeye
       - chezmoi
+      - starship
     path: /home/{{ lookup('env', 'USER') }}/.linuxbrew/bin
     state: present
     update_homebrew: true
@@ -154,4 +156,4 @@
             command: "OpenLens.AppImage",
             categories: "Programming;",
           }
-  #when: not openlens.stat.exists
+  when: not openlens.stat.exists
