@@ -32,7 +32,7 @@ spec:
       DRONE_GITEA_SERVER: https://gitea.${SECRET_CLUSTER_DOMAIN}
       DRONE_SERVER_HOST: &host drone.${SECRET_CLUSTER_DOMAIN}
       DRONE_SERVER_PROTO: https
-      DRONE_SERVER_PROXY_HOST: drone.default.svc
+      DRONE_SERVER_PROXY_HOST: drone.default.svc:8080
       DRONE_SERVER_PROXY_PROTO: http
       DRONE_USER_CREATE: username:context,admin:true
     ingress:
