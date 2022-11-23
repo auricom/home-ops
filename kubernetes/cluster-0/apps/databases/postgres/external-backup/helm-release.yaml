@@ -47,7 +47,7 @@ spec:
                         - name: POSTGRES_HOST
                           value: postgres-rw.default.svc.cluster.local.
                         - name: POSTGRES_DB
-                          value: "authelia,drone,freshrss,gitea,invidious,joplin,lychee,recipes,sharry,outline,vaultwarden,vikunja,wallabag"
+                          value: "authelia,drone,freshrss,gitea,invidious,joplin,lychee,paperless,recipes,sharry,outline,vaultwarden,vikunja,wallabag"
                         - name: POSTGRES_USER
                           valueFrom:
                             secretKeyRef:
