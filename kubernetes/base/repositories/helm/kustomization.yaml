@@ -20,6 +20,7 @@ resources:
   - kyverno.yaml
   - metrics-server.yaml
   - node-feature-discovery.yaml
+  - postfinance.yaml
   - prometheus-community.yaml
   - rook-ceph.yaml
   - stakater.yaml
