@@ -9,10 +9,10 @@
       "separateMinorPatch": true
     },
     {
-      "description": "External Snapshotter kustomization (for CRDs) and chart",
-      "groupName": "External Snapshotter",
-      "matchPackagePatterns": ["external-snapshotter", "snapshot-controller"],
-      "matchDatasources": ["docker", "github-tags"],
+      "description": "Flux Helm Chart",
+      "groupName": "Flux",
+      "matchPackagePatterns": ["fluxcd/flux2", "snapshot-controller"],
+      "matchDatasources": ["helm", "kustomization"],
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
       "separateMinorPatch": true
     },
