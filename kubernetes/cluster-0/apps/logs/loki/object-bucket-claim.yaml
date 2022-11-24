@@ -7,3 +7,5 @@ metadata:
 spec:
   bucketName: loki-chunks
   storageClassName: rook-ceph-bucket
+  additionalConfig:
+    maxSize: "50G"
