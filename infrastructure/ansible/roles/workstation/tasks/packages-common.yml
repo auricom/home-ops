@@ -53,7 +53,6 @@
       - tmux
       - cawbird
       - age
-      - vorta
       - mediainfo
       - discord
       - librewolf
@@ -69,7 +68,6 @@
   ansible.builtin.pip:
     name:
       - ansible-lint
-      - borgbackup
       - yt-dlp
       - s-tui
       - pylint
