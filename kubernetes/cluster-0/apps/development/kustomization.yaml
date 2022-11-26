@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - drone
   - gitea
+  - tekton

@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: &app tekton-dashboard
+  namespace: tekton-pipelines
+  labels:
+    app: *app
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/name: dashboard
+    app.kubernetes.io/part-of: *app
+    helm.toolkit.fluxcd.io/namespace: default
+  annotations:
+    auth.home.arpa/enabled: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - &host tekton.k3s.xpander.ovh
+  rules:
+    - host: *host
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            backend:
+              service:
+                name: *app
+                port:
+                  number: 9097
