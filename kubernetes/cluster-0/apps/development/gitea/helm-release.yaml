@@ -42,7 +42,7 @@ spec:
           RUN_AT_START: true
         database:
           DB_TYPE: postgres
-          HOST: postgres-rw.default.svc.cluster.local.:5432
+          HOST: ${POSTGRES_HOST}:${POSTGRES_PORT}
           NAME: gitea
           SCHEMA: public
           SSL_MODE: disable

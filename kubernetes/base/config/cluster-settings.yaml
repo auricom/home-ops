@@ -25,3 +25,5 @@ data:
   LOCAL_LAN_TRUENAS: 192.168.9.10
   LOCAL_LAN_TRUENAS_REMOTE: 10.10.0.2
   TIMEZONE: "Europe/Paris"
+  POSTGRES_HOST: "postgres-rw.default.svc.cluster.local."
+  POSTGRES_PORT: "5432"

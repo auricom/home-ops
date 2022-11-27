@@ -34,8 +34,8 @@ spec:
       APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
       APP_PORT: 80
       DB_CLIENT: pg
-      POSTGRES_HOST: postgres-rw.default.svc.cluster.local.
-      POSTGRES_PORT: 5432
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_DATABASE: joplin
       MAILER_ENABLED: 1
       MAILER_HOST: smtp-relay.default.svc.cluster.local.

@@ -34,8 +34,8 @@ spec:
       TIMEZONE: ${TIMEZONE}
       APP_NAME: Lychee
       DB_CONNECTION: pgsql
-      DB_HOST: postgres-rw.default.svc.cluster.local.
-      DB_PORT: 5432
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
       DB_DATABASE: lychee
       REDIS_HOST: redis.default.svc.cluster.local.
       REDIS_PORT: 6379

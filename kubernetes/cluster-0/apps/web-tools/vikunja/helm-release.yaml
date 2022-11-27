@@ -97,7 +97,7 @@ spec:
           - name: VIKUNJA_DATABASE_TYPE
             value: postgres
           - name: VIKUNJA_DATABASE_HOST
-            value: postgres-rw.default.svc.cluster.local.
+            value: ${POSTGRES_HOST}
           - name: VIKUNJA_DATABASE_DATABASE
             value: vikunja
           - name: VIKUNJA_DATABASE_USER

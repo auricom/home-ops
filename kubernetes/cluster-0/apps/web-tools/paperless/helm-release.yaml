@@ -40,8 +40,8 @@ spec:
       PAPERLESS_OCR_LANGUAGES: fra
       PAPERLESS_OCR_LANGUAGE: fra
       PAPERLESS_PORT: 8000
-      PAPERLESS_DBHOST: postgres-rw.default.svc.cluster.local.
-      PAPERLESS_DBPORT: 5432
+      PAPERLESS_DBHOST: ${POSTGRES_HOST}
+      PAPERLESS_DBPORT: ${POSTGRES_PORT}
       PAPERLESS_DBNAME: paperless
       PAPERLESS_REDIS: redis://paperless-redis.default.svc.cluster.local:6379
       PAPERLESS_TASK_WORKERS: 2

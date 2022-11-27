@@ -12,8 +12,8 @@
 # db:
 #   user: ${SECRET_INVIDIOUS_DB_USER}
 #   password: ${SECRET_INVIDIOUS_DB_PASSWORD}
-#   host: postgres-rw.default.svc.cluster.local
-#   port: 5432
+#   host: ${POSTGRES_HOST}
+#   port: ${POSTGRES_PORT}
 #   dbname: invidious
 
 ##
@@ -30,7 +30,7 @@
 ## Accepted values: a postgres:// URI
 ## Default: postgres://kemal:kemal@localhost:5432/invidious
 ##
-database_url: postgres://${SECRET_INVIDIOUS_DB_USER}:${SECRET_INVIDIOUS_DB_PASSWORD}@postgres-rw.default.svc.cluster.local.:5432/invidious
+database_url: postgres://${SECRET_INVIDIOUS_DB_USER}:${SECRET_INVIDIOUS_DB_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/invidious
 
 ##
 ## Enable automatic table integrity check. This will create
