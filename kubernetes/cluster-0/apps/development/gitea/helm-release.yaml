@@ -163,3 +163,36 @@ spec:
       kind: Secret
       name: gitea-config
       valuesKey: minioSecretAccessKey
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: StatefulSet
+            apiVersion: apps/v1
+            metadata:
+              name: gitea
+            spec:
+              template:
+                spec:
+                  initContainers:
+                    - name: init-db
+                      image: ghcr.io/onedr0p/postgres-initdb:14.6
+                      env:
+                        - name: POSTGRES_HOST
+                          value: ${POSTGRES_HOST}
+                        - name: POSTGRES_DB
+                          value: gitea
+                        - name: POSTGRES_SUPER_PASS
+                          valueFrom:
+                            secretKeyRef:
+                              name: postgres-superuser
+                              key: password
+                        - name: POSTGRES_USER
+                          valueFrom:
+                            secretKeyRef:
+                              name: gitea-config
+                              key: dbUser
+                        - name: POSTGRES_PASS
+                          valueFrom:
+                            secretKeyRef:
+                              name: gitea-config
+                              key: dbPassword
