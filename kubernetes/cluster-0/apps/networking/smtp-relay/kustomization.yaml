@@ -6,7 +6,7 @@ resources:
   - secret.sops.yaml
 namespace: default
 configMapGenerator:
-  - name: smtp-relay
+  - name: smtp-relay-configmap
     files:
       - maddy.conf
 generatorOptions:
