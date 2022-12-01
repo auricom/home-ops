@@ -3,14 +3,14 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 resources:
-  - secret.sops.yaml
-  - helm-release.yaml
-  - volume.yaml
+  - ./secret.sops.yaml
+  - ./helm-release.yaml
+  - ./volume.yaml
 patchesStrategicMerge:
-  - patches/postgres.yaml
+  - ./patches/postgres.yaml
 configMapGenerator:
   - name: vikunja
     files:
-      - config/Caddyfile
+      - ./config/Caddyfile
 generatorOptions:
   disableNameSuffixHash: true

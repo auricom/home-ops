@@ -2,12 +2,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  # - coredens-nodecache
-  - descheduler
-  - intel-gpu-exporter
-  - intel-gpu-plugin
-  - kyverno
-  - metrics-server
-  - node-feature-discovery
-  - rbac
-  - reloader
+  # - ./coredens-nodecache
+  - ./descheduler
+  - ./intel-gpu-exporter
+  - ./intel-gpu-plugin
+  - ./kyverno
+  - ./metrics-server
+  - ./node-feature-discovery
+  - ./rbac
+  - ./reloader

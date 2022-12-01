@@ -6,4 +6,4 @@ resources:
   - https://github.com/tektoncd/triggers/releases/download/v0.22.0/release.yaml
   - https://github.com/tektoncd/triggers/releases/download/v0.22.0/interceptors.yaml
   - https://github.com/tektoncd/dashboard/releases/download/v0.30.0/tekton-dashboard-release.yaml
-  - ingress.yaml
+  - ./ingress.yaml

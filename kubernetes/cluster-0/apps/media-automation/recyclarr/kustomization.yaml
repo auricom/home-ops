@@ -2,13 +2,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - secret.sops.yaml
-  - helm-release.yaml
+  - ./secret.sops.yaml
+  - ./helm-release.yaml
 namespace: default
 configMapGenerator:
   - name: recyclarr
     files:
-      - config/recyclarr.yaml
+      - ./config/recyclarr.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
