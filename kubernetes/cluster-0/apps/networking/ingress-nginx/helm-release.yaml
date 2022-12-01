@@ -26,7 +26,7 @@ spec:
       namespace: default
   values:
     controller:
-      replicaCount: 1
+      replicaCount: 2
       service:
         type: LoadBalancer
         loadBalancerIP: "${CLUSTER_LB_NGINX}"
