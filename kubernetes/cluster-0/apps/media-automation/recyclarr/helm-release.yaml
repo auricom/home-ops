@@ -65,12 +65,11 @@ spec:
                         - name: TZ
                           value: "${TIMEZONE}"
                       command:
-                        - "/bin/bash"
-                        - "-c"
-                        - |
-                          #!/bin/bash
-
-                          /app/recyclarr sonarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/eaNLvqhfn2?status=up&msg=OK&ping=
+                        - /app/recyclarr
+                      args:
+                        - sonarr
+                        - --config
+                        - /config/recyclarr.yaml
                       volumeMounts:
                         - name: shared
                           mountPath: /config/recyclarr.yaml
@@ -82,12 +81,11 @@ spec:
                         - name: TZ
                           value: "${TIMEZONE}"
                       command:
-                        - "/bin/bash"
-                        - "-c"
-                        - |
-                          #!/bin/bash
-
-                          /app/recyclarr radarr --config /config/recyclarr.yaml && curl -fsS -m 10 --retry 5 -o /dev/null https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/N7OJBSgxD7?status=up&msg=OK&ping=
+                        - /app/recyclarr
+                      args:
+                        - radarr
+                        - --config
+                        - /config/recyclarr.yaml
                       volumeMounts:
                         - name: shared
                           mountPath: /config/recyclarr.yaml
