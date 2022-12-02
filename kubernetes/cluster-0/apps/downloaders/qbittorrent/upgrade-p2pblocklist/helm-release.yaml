@@ -65,4 +65,5 @@ spec:
                             echo "qbittorrent deployment not found"
                             exit 1
                           fi
+                          curl -fsS -m 10 --retry 5 -o /dev/null https://uptime-kuma.k3s.xpander.ovh/api/push/6RUDha9bDp?status=up&msg=OK&ping=
                   restartPolicy: Never
