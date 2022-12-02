@@ -53,17 +53,17 @@ spec:
                           set -o errexit
                           set -o nounset
 
-                          curl --location https://github.com/DavidMoore/ipfilter/releases/download/lists/ipfilter.dat.gz --output /tmp/ipfilter.dat.gz
+                          curl --silent --location https://github.com/DavidMoore/ipfilter/releases/download/lists/ipfilter.dat.gz --output /tmp/ipfilter.dat.gz
                           gunzip /tmp/ipfilter.dat.gz
                           result=$(kubectl get pod --selector app.kubernetes.io/name=qbittorrent --output custom-columns=:metadata.name --namespace default)
                           QBITTORRENT_POD=$(echo $result | awk '{ print $NF }')
-                          echo $QBITTORRENT_POD | grep qbittorrent
-                          if [[ $(echo $QBITTORRENT_POD | grep qbittorrent) ]]; then
+                          if [[ $QBITTORRENT_POD == *"qbittorrent"* ]]; then
                             kubectl cp /tmp/ipfilter.dat default/$QBITTORRENT_POD:/config/ipfilter.dat
-                            kubectl rollout restart deployment qbittorrent --namespace default && curl -m 10 --retry 5 https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/6RUDha9bDp?status=up&msg=OK&ping=
+                            kubectl rollout restart deployment qbittorrent --namespace default
+                            curl http://uptime-kuma.default.svc.cluster.local.:3001/api/push/6RUDha9bDp?status=up&msg=OK&ping=
+                            sleep 5
                           else
                             echo "qbittorrent deployment not found"
                             exit 1
                           fi
-                          curl -fsS -m 10 --retry 5 -o /dev/null https://uptime-kuma.k3s.xpander.ovh/api/push/6RUDha9bDp?status=up&msg=OK&ping=
                   restartPolicy: Never
