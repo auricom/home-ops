@@ -12,7 +12,7 @@ hubble:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 10.244.0.0/16
+ipv4NativeRoutingCIDR: 10.69.0.0/16
 k8sServiceHost: 192.168.9.100
 k8sServicePort: 6443
 kubeProxyReplacement: strict

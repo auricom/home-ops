@@ -4,3 +4,4 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - ./configmap.yaml
+  - ./helm-release.yaml
