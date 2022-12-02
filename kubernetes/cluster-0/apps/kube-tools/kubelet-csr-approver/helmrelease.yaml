@@ -23,4 +23,4 @@ spec:
       retries: 5
   values:
     providerRegex: |
-      ^(talos)$
+      ^node-talos-[0-9]$
