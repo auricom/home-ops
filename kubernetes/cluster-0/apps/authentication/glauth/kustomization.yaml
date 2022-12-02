@@ -7,8 +7,8 @@ resources:
 secretGenerator:
   - name: glauth-secret
     files:
-      - ./server.toml=config/server.sops.toml
-      - ./groups.toml=config/groups.sops.toml
-      - ./users.toml=config/users.sops.toml
+      - server.toml=./config/server.sops.toml
+      - groups.toml=./config/groups.sops.toml
+      - users.toml=./config/users.sops.toml
 generatorOptions:
   disableNameSuffixHash: true
