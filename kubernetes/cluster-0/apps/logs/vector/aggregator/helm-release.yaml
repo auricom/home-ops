@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: vector
-      version: 0.17.1
+      version: 0.18.0
       sourceRef:
         kind: HelmRepository
         name: vector
@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: timberio/vector
-      tag: 0.25.2-debian
+      tag: 0.26.0-debian
     role: "Stateless-Aggregator"
     podAnnotations:
       configmap.reloader.stakater.com/reload: vector-aggregator
