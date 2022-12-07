@@ -2,17 +2,17 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: vector-agent
+  name: &app vector-agent
   namespace: monitoring
 spec:
-  interval: 30m
+  interval: 15m
   chart:
     spec:
-      chart: vector
-      version: 0.18.0
+      chart: app-template
+      version: 1.2.0
       sourceRef:
         kind: HelmRepository
-        name: vector
+        name: bjw-s
         namespace: flux-system
   install:
     createNamespace: true
@@ -21,64 +21,42 @@ spec:
   upgrade:
     remediation:
       retries: 5
-  dependsOn:
-    - name: loki
-      namespace: monitoring
-    - name: vector-aggregator
-      namespace: monitoring
   values:
+    controller:
+      strategy: RollingUpdate
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
-      repository: timberio/vector
+      repository: docker.io/timberio/vector
       tag: 0.26.0-debian
-    role: "Agent"
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: vector-agent
-    customConfig:
-      data_dir: /vector-data-dir
-      api:
-        enabled: false
-      # Sources
-      sources:
-        kubernetes_logs:
-          type: kubernetes_logs
-        talos_kernel_logs:
-          type: socket
-          mode: udp
-          address: 127.0.0.1:12000
-        talos_service_logs:
-          type: socket
-          mode: udp
-          address: 127.0.0.1:12001
-      # Sinks
-      sinks:
-        kubernetes_sink:
-          type: vector
-          inputs:
-            - kubernetes_logs
-          address: "vector-aggregator.monitoring:6000"
-          version: "2"
-        talos_kernel_sink:
-          type: vector
-          inputs:
-            - talos_kernel_logs
-          address: "vector-aggregator.monitoring:6050"
-          version: "2"
-        talos_service_sink:
-          type: vector
-          inputs:
-            - talos_service_logs
-          address: "vector-aggregator.monitoring:6051"
-          version: "2"
-    podMonitor:
-      enabled: true
+    args: ["--config", "/etc/vector/vector.yaml"]
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: "${CLUSTER_LB_VECTOR}"
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 8686
+
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: vector-aggregator-configmap
+        subPath: vector.yaml
+        mountPath: /etc/vector/vector.yaml
+        readOnly: true
+      data:
+        enabled: true
+        type: emptyDir
+        mountPath: /vector-data-dir
+      geoip:
+        enabled: true
+        existingClaim: vector-geoipupdate-config
     resources:
       requests:
-        cpu: 23m
-        memory: 249M
+        cpu: 35m
+        memory: 381M
       limits:
-        memory: 918M
-    service:
-      enabled: false
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        effect: NoSchedule
+        memory: 726M
