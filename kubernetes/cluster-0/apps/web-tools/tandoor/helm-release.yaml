@@ -86,7 +86,7 @@ spec:
     additionalContainers:
       nginx:
         name: nginx
-        image: nginx:1.23.2
+        image: nginx:1.23.3
         imagePullPolicy: IfNotPresent
         ports:
           - name: http
