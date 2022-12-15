@@ -23,7 +23,7 @@ spec:
   values:
     image:
       repository: drone/drone
-      tag: 2.15.0
+      tag: 2.16.0
     persistentVolume:
       enabled: false
     env:
