@@ -29,7 +29,7 @@ spec:
       nameOverride: *app
     image:
       repository: joplin/server
-      tag: 2.10.3-beta
+      tag: 2.10.4-beta
     env:
       APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
       APP_PORT: 80
