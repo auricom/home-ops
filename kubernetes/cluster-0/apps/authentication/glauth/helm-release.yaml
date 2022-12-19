@@ -38,7 +38,7 @@ spec:
             port: 5555
           ldap:
             enabled: true
-            port: 389
+            port: 8389
     podSecurityContext:
       runAsUser: 1000
       runAsGroup: 1000

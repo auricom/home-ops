@@ -32,7 +32,7 @@ spec:
       tag: 2.10.3-beta
     env:
       APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
-      APP_PORT: 80
+      APP_PORT: &port 8080
       DB_CLIENT: pg
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
@@ -52,7 +52,7 @@ spec:
       main:
         ports:
           http:
-            port: 80
+            port: *port
     ingress:
       main:
         enabled: true

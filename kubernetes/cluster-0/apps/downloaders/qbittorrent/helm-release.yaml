@@ -27,7 +27,7 @@ spec:
       tag: 4.5.0@sha256:26fa8645757f9d7e5ab72620d75fd8752c968c6b8810b8935ce770d7d1303fe9
     env:
       TZ: "${TIMEZONE}"
-      QBITTORRENT__PORT: &port 80
+      QBITTORRENT__PORT: &port 8080
       QBITTORRENT__BT_PORT: &port-bt 58462
     service:
       main:

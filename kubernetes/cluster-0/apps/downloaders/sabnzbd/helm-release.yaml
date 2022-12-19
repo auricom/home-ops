@@ -27,7 +27,7 @@ spec:
       tag: 3.7.1@sha256:4fefba8e59200d2b36c5ae7c790a85694fb7202a42b97e30286587f33629c195
     env:
       TZ: "${TIMEZONE}"
-      SABNZBD__PORT: &port 80
+      SABNZBD__PORT: &port 8080
       SABNZBD__HOST_WHITELIST_ENTRIES: >-
         sabnzbd,
         sabnzbd.default,

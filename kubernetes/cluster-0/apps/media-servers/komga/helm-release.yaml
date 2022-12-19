@@ -27,7 +27,7 @@ spec:
       tag: "0.157.5"
     env:
       TZ: "${TIMEZONE}"
-      SERVER_PORT: &port 80
+      SERVER_PORT: &port 8080
     service:
       main:
         ports:
