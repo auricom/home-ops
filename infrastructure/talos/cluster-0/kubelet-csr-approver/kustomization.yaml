@@ -10,7 +10,7 @@ helmCharts:
     namespace: kube-system
     valuesInline:
       providerRegex: |
-        ^node-talos-[0-9]$
+        ^node-talos-\w*$
 commonAnnotations:
   meta.helm.sh/release-name: kubelet-csr-approver
   meta.helm.sh/release-namespace: kube-system
