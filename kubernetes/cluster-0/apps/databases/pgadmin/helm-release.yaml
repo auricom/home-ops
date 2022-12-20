@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: dpage/pgadmin4
-      tag: "6.17"
+      tag: "6.18"
     env:
       PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
     envFrom:
@@ -32,7 +32,7 @@ spec:
           name: *app
     initContainers:
       volume-permissions:
-        image: dpage/pgadmin4:6.17
+        image: dpage/pgadmin4:6.18
         command: ["/bin/chown", "-R", "5050:5050", "/var/lib/pgadmin"]
         volumeMounts:
           - name: config
