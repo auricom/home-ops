@@ -1,6 +1,6 @@
-name: "Schedule: Renovate"
+name: "Renovate"
 
-on: # yamllint disable-line rule:truthy
+on:
   workflow_dispatch:
     inputs:
       dryRun:
@@ -14,8 +14,7 @@ on: # yamllint disable-line rule:truthy
   schedule:
     - cron: "0 * * * *"
   push:
-    branches:
-      - main
+    branches: ["main"]
     paths:
       - ".github/renovate.json5"
       - ".github/renovate/**.json5"
@@ -31,10 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
 
       - name: Generate Token
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@021a2405c7f990db57f5eae5397423dcc554159c # renovate: tag=v1.7.0
         id: generate-token
         with:
           app_id: "${{ secrets.BOT_APP_ID }}"
@@ -44,9 +43,8 @@ jobs:
         run: |
           echo "RENOVATE_DRY_RUN=${{ github.event.inputs.dryRun || env.RENOVATE_DRY_RUN }}" >> "${GITHUB_ENV}"
           echo "LOG_LEVEL=${{ github.event.inputs.logLevel || env.LOG_LEVEL }}" >> "${GITHUB_ENV}"
-
       - name: Renovate
-        uses: renovatebot/github-action@v34.66.1
+        uses: renovatebot/github-action@65207aa35d382e44f5152d0482bb5334139ecfc4 # v34.66.1
         with:
           configurationFile: "${{ env.RENOVATE_CONFIG_FILE }}"
           token: "${{ steps.generate-token.outputs.token }}"

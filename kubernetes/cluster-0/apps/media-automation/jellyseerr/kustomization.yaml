@@ -4,4 +4,4 @@ kind: Kustomization
 namespace: default
 resources:
   - ./volume.yaml
-  - ./helm-release.yaml
+  - ./helmrelease.yaml

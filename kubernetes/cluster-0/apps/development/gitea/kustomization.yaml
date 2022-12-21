@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - ./secret.sops.yaml
   - ./volume.yaml
-  - ./helm-release.yaml
+  - ./helmrelease.yaml
   - ./external-backup

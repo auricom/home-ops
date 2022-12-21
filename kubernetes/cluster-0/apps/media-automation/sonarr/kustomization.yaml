@@ -5,7 +5,7 @@ namespace: default
 resources:
   - ./secret.sops.yaml
   - ./volume.yaml
-  - ./helm-release.yaml
+  - ./helmrelease.yaml
 configMapGenerator:
   - name: sonarr-pushover
     files:

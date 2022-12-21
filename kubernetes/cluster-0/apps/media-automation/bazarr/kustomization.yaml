@@ -5,4 +5,4 @@ namespace: default
 resources:
   - ./secret.sops.yaml
   - ./volume.yaml
-  - ./helm-release.yaml
+  - ./helmrelease.yaml

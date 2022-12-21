@@ -11,7 +11,7 @@
     {
       "description": "Flux Helm Chart",
       "groupName": "Flux",
-      "matchPackagePatterns": ["fluxcd/flux2", "snapshot-controller"],
+      "matchPackagePatterns": ["fluxcd/flux2"],
       "matchDatasources": ["helm", "kustomization"],
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
       "separateMinorPatch": true

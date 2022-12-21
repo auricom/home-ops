@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - ./drone-kubernetes-secrets
   - ./drone-runner-kube
-  - ./helm-release.yaml
+  - ./helmrelease.yaml
   - ./secret.sops.yaml
