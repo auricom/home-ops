@@ -60,7 +60,7 @@ spec:
                           mountPath: /shared
                   containers:
                     - name: sonarr
-                      image: ghcr.io/recyclarr/recyclarr:4.0.0
+                      image: ghcr.io/recyclarr/recyclarr:4.0.1
                       command:
                         - /app/recyclarr/recyclarr
                       args:
@@ -71,7 +71,7 @@ spec:
                           subPath: recyclarr.yml
                           readOnly: true
                     - name: radarr
-                      image: ghcr.io/recyclarr/recyclarr:4.0.0
+                      image: ghcr.io/recyclarr/recyclarr:4.0.1
                       command:
                         - /app/recyclarr/recyclarr
                       args:
