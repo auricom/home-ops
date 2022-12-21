@@ -28,7 +28,7 @@ spec:
     env:
       FLOOD_OPTION_RUNDIR: /data
       FLOOD_OPTION_AUTH: "none"
-      FLOOD_OPTION_QBURL: "http://qbittorrent.default.svc.cluster.local."
+      FLOOD_OPTION_QBURL: "http://qbittorrent.default.svc.cluster.local.:8080"
     envFrom:
       - secretRef:
           name: *app
