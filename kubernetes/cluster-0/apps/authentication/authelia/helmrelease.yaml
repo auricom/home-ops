@@ -36,7 +36,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/authelia/authelia
-      tag: 4.37.4
+      tag: 4.37.5
     envFrom:
       - secretRef:
           name: authelia-secret
