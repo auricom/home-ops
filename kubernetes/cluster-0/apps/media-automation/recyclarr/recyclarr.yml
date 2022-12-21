@@ -10,7 +10,7 @@
 
 sonarr:
   standard:
-    base_url: http://sonarr.default.svc.cluster.local
+    base_url: http://sonarr.default.svc.cluster.local:8080
     api_key: ${SONARR_APIKEY}
     delete_old_custom_formats: true
     quality_definition:
@@ -71,7 +71,7 @@ sonarr:
 
 radarr:
   standard:
-    base_url: http://radarr.default.svc.cluster.local
+    base_url: http://radarr.default.svc.cluster.local:8080
     api_key: ${RADARR_APIKEY}
     delete_old_custom_formats: true
     quality_definition:
