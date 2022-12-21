@@ -8,7 +8,7 @@ spec:
   nodeName: talos-node-2
   containers:
     - name: disk-wipe
-      image: rook/ceph:v1.10.7
+      image: rook/ceph:v1.10.8
       securityContext:
         privileged: true
       command:
@@ -40,7 +40,7 @@ spec:
   nodeName: talos-node-3
   containers:
     - name: disk-wipe
-      image: rook/ceph:v1.10.7
+      image: rook/ceph:v1.10.8
       securityContext:
         privileged: true
       command:
@@ -72,7 +72,7 @@ spec:
   nodeName: talos-node-4
   containers:
     - name: disk-wipe
-      image: rook/ceph:v1.10.7
+      image: rook/ceph:v1.10.8
       securityContext:
         privileged: true
       command:
