@@ -11,8 +11,8 @@
     {
       "description": "Flux Helm Chart",
       "groupName": "Flux",
-      "matchPackagePatterns": ["fluxcd/flux2"],
-      "matchDatasources": ["helm", "kustomization"],
+      "matchPackagePatterns": ["fluxcd/flux2", "flux-installation"],
+      "matchDatasources": ["helm", "kustomization", "docker"],
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
       "separateMinorPatch": true
     },
