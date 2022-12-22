@@ -7,6 +7,7 @@ resources:
   - ./cert-manager-webhook-ovh.yaml
   - ./cilium.yaml
   - ./cloudnative-pg.yaml
+  - ./crowdsec.yaml
   - ./descheduler.yaml
   - ./drone.yaml
   - ./dysnix.yaml

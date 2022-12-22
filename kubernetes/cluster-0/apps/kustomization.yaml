@@ -14,5 +14,6 @@ resources:
   - ./media-servers
   - ./monitoring
   - ./networking
+  # - ./security
   - ./storage
   - ./web-tools

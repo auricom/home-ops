@@ -51,6 +51,9 @@ spec:
         service-upstream: "true"
         ssl-protocols: "TLSv1.3 TLSv1.2"
         use-forwarded-headers: "true"
+        # crowdsec bouncer
+        # plugins: "crowdsec"
+        # lua-shared-dicts: "crowdsec_cache: 50m"
       metrics:
         enabled: true
         serviceMonitor:
@@ -69,12 +72,46 @@ spec:
             matchLabels:
               app.kubernetes.io/name: ingress-nginx
               app.kubernetes.io/component: controller
-      resources:
-        requests:
-          memory: 400Mi
-          cpu: 25m
-        limits:
-          memory: 1Gi
+      # crowdsec bouncer
+      # extraVolumes:
+      # - name: crowdsec-bouncer-plugin
+      #   emptyDir: {}
+      # extraInitContainers:
+      # - name: init-clone-crowdsec-bouncer
+      #   image: crowdsecurity/lua-bouncer-plugin
+      #   tag: v0.1.11
+      #   imagePullPolicy: IfNotPresent
+      #   env:
+      #     - name: API_URL
+      #       value: "http://crowdsec-service.crowdsec.svc.cluster.local:8080"
+      #     - name: API_KEY
+      #       value: "${SECRET_CROWDSEC_NGINX_BOUNCER_API_KEY}"
+      #     - name: DISABLE_RUN
+      #       value: "true"
+      #     - name: BOUNCER_CONFIG
+      #       value: "/crowdsec/crowdsec-bouncer.conf"
+      #   command:
+      #     - "/bin/sh"
+      #     - "-c"
+      #     - |
+      #       #!/bin/sh
+
+      #       sh /docker_start.sh
+      #       mkdir -p /lua_plugins/crowdsec/
+      #       cp -pr /crowdsec/* /lua_plugins/crowdsec/
+      #   volumeMounts:
+      #   - name: crowdsec-bouncer-plugin
+      #     mountPath: /lua_plugins
+      # extraVolumeMounts:
+      # - name: crowdsec-bouncer-plugin
+      #   mountPath: /etc/nginx/lua/plugins/crowdsec
+      #   subPath: crowdsec
+      # resources:
+      #   requests:
+      #     memory: 400Mi
+      #     cpu: 25m
+      #   limits:
+      #     memory: 1Gi
     defaultBackend:
       enabled: true
       image:
