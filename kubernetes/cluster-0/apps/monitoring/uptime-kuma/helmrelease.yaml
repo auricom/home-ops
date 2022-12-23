@@ -26,7 +26,7 @@ spec:
       nameOverride: *app
     image:
       repository: louislam/uptime-kuma
-      tag: 1.18.5
+      tag: 1.19.0
     service:
       main:
         ports:
