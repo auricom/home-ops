@@ -7,7 +7,7 @@ on:
     paths: ["kubernetes/**/helmrelease.yaml"]
 
 env:
-  BOT_USERNAME: rosey-bot[bot]
+  BOT_USERNAME: feisar-bot[bot]
   KUBERNETES_DIR: kubernetes/
 
 jobs:
@@ -27,6 +27,7 @@ jobs:
           json: true
           files: |
             kubernetes/**/helmrelease.yaml
+
       - id: set-matrix
         run: echo "matrix={\"file\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "${GITHUB_OUTPUT}"
 
@@ -59,6 +60,7 @@ jobs:
       - name: Setup Tools
         run: |
           brew install helm homeport/tap/dyff kustomize yq
+
       - name: Diff
         id: diff
         run: |
@@ -69,7 +71,9 @@ jobs:
           echo "diff<<EOF" >> "${GITHUB_OUTPUT}"
           echo "${diff}" >> "${GITHUB_OUTPUT}"
           echo "EOF" >> "${GITHUB_OUTPUT}"
+
       - name: Find Comment
+        if: ${{ always() && steps.diff.outputs.diff != '' }}
         uses: peter-evans/find-comment@81e2da3af01c92f83cb927cf3ace0e085617c556 # v2.2.0
         id: find-comment
         with:
@@ -78,6 +82,7 @@ jobs:
           body-includes: ${{ matrix.file }}
 
       - name: Create or update comment
+        if: ${{ always() && steps.diff.outputs.diff != '' }}
         uses: peter-evans/create-or-update-comment@5adcb0bb0f9fb3f95ef05400558bdb3f329ee808 # renovate: tag=v2.1.0
         with:
           token: ${{ steps.generate-token.outputs.token }}
@@ -85,6 +90,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Helm Release: `${{ matrix.file }}`
+
             ```
             ${{ steps.diff.outputs.diff }}
             ```
