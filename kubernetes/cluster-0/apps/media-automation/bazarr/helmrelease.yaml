@@ -65,6 +65,10 @@ spec:
       config:
         enabled: true
         existingClaim: bazarr-config
+      add-ons:
+        enabled: true
+        type: emptyDir
+        mountPath: /add-ons
       video:
         enabled: true
         type: nfs
