@@ -33,30 +33,12 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: base
-  namespace: flux-system
-spec:
-  interval: 10m0s
-  path: ./kubernetes/base
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
----
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/kustomization_v1beta2.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-kind: Kustomization
-metadata:
   name: core
   namespace: flux-system
 spec:
   interval: 10m0s
   dependsOn:
-    - name: base
+    - name: flux-cluster
   path: ./kubernetes/cluster-0/core
   prune: false
   sourceRef:

@@ -6,3 +6,5 @@ resources:
   - ./flux-installation.yaml
   - ./flux-cluster.yaml
   - ./flux-prereqs.yaml
+  - ./config
+  - ./repositories

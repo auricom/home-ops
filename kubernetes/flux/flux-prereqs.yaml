@@ -30,6 +30,7 @@ spec:
     kind: GitRepository
     name: kube-prometheus-stack
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/gitrepository_v1beta2.json
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: GitRepository
 metadata:
