@@ -6,6 +6,7 @@
       "matchDatasources": ["docker"],
       "automerge": true,
       "automergeType": "branch",
+      "ignoreTests": true,
       "requiredStatusChecks": null,
       "matchUpdateTypes": ["digest"],
       "matchPackagePatterns": ["ghcr.io/onedr0p", "ghcr.io/auricom"]
@@ -15,6 +16,7 @@
       "matchDatasources": ["docker"],
       "automerge": true,
       "automergeType": "branch",
+      "ignoreTests": true,
       "requiredStatusChecks": null,
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackageNames": ["ghcr.io/onedr0p/prowlarr-nightly"]
@@ -24,6 +26,7 @@
       "matchDatasources": ["docker"],
       "automerge": true,
       "automergeType": "branch",
+      "ignoreTests": true,
       "requiredStatusChecks": null,
       "matchUpdateTypes": ["patch"],
       "matchPackageNames": ["ghcr.io/auricom/kubectl"]
@@ -34,6 +37,7 @@
       "matchDatasources": ["github-tags"],
       "automerge": true,
       "automergeType": "branch",
+      "ignoreTests": true,
       "requiredStatusChecks": null,
       "matchUpdateTypes": ["minor", "patch"]
     }
