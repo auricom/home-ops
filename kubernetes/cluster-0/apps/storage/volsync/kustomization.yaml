@@ -3,9 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./kopia-web
-  - ./resilio-sync
-  - ./smartctl-exporter
-  - ./snapshot-controller/ks.yaml
-  - ./truecommand
-  - ./volsync
+  # Pre Flux-Kustomizations
+  - ./namespace.yaml
+  # Flux-Kustomizations
+  - ./snapscheduler/ks.yaml
+  - ./volsync/ks.yaml
