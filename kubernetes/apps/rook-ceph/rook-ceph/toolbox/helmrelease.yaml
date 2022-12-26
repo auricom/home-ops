@@ -1,0 +1,74 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app rook-ceph-toolbox
+  namespace: rook-ceph
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    global:
+      nameOverride: *app
+    image:
+      repository: rook/ceph
+      tag: v1.10.8
+    command: ["/usr/local/bin/toolbox.sh"]
+    env:
+      ROOK_CEPH_USERNAME:
+        valueFrom:
+          secretKeyRef:
+            name: rook-ceph-mon
+            key: ceph-username
+      ROOK_CEPH_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: rook-ceph-mon
+            key: ceph-secret
+    hostNetwork: true
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+    securityContext:
+      privileged: true
+    persistence:
+      dev:
+        enabled: true
+        type: hostPath
+        hostPath: /dev
+        mountPath: /dev
+      libmodules:
+        enabled: true
+        type: hostPath
+        hostPath: /lib/modules
+        mountPath: /lib/modules
+      mon-endpoint-volume:
+        enabled: true
+        type: configMap
+        name: rook-ceph-mon-endpoints
+        subPath: data
+        mountPath: /etc/rook/mon-endpoints
+        readOnly: true
+      sysbus:
+        enabled: true
+        type: hostPath
+        hostPath: /sys/bus
+        mountPath: /sys/bus
+    service:
+      main:
+        enabled: false

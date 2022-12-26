@@ -4,7 +4,18 @@ version: "3"
 vars:
   PROJECT_DIR:
     sh: "git rev-parse --show-toplevel"
-  CLUSTER_DIR: "{{.PROJECT_DIR}}/cluster"
+  ANSIBLE_DIR: "{{.PROJECT_DIR}}/ansible"
+  CLUSTER_DIR: "{{.PROJECT_DIR}}/kubernetes"
 
 includes:
+  an: .taskfiles/Ansible/Tasks.yml
+  fx: .taskfiles/Flux/Tasks.yml
   kopia: .taskfiles/kopia.yaml
+  ku: .taskfiles/Kubernetes/Tasks.yml
+  vs: .taskfiles/VolSync/Tasks.yml
+
+tasks:
+
+  default:
+    silent: true
+    cmds: ["task -l"]

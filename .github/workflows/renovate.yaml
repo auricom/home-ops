@@ -1,23 +1,23 @@
 name: "Renovate"
 
 on:
-  workflow_dispatch:
-    inputs:
-      dryRun:
-        description: "Dry-Run"
-        default: "false"
-        required: false
-      logLevel:
-        description: "Log-Level"
-        default: "debug"
-        required: false
-  schedule:
-    - cron: "0 * * * *"
-  push:
-    branches: ["main"]
-    paths:
-      - ".github/renovate.json5"
-      - ".github/renovate/**.json5"
+#   workflow_dispatch:
+#     inputs:
+#       dryRun:
+#         description: "Dry-Run"
+#         default: "false"
+#         required: false
+#       logLevel:
+#         description: "Log-Level"
+#         default: "debug"
+#         required: false
+#   schedule:
+#     - cron: "0 * * * *"
+#   push:
+#     branches: ["main"]
+#     paths:
+#       - ".github/renovate.json5"
+#       - ".github/renovate/**.json5"
 
 env:
   LOG_LEVEL: debug

@@ -8,7 +8,7 @@ creation_rules:
       key_groups:
         - age:
             - age1hhurqwmfvl9m3vh3hk8urulfzcdsrep2ax2neazqt435yhpamu3qj20asg
-    - path_regex: infrastructure/ansible/.*\.sops\.ya?ml
+    - path_regex: ansible/.*\.sops\.ya?ml
       unencrypted_regex: ^(kind)$
       key_groups:
         - age:
@@ -17,4 +17,3 @@ creation_rules:
       key_groups:
         - age:
             - age1hhurqwmfvl9m3vh3hk8urulfzcdsrep2ax2neazqt435yhpamu3qj20asg
-

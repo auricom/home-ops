@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: node-feature-discovery
+  namespace: kube-system
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: node-feature-discovery
+      version: 0.12.0
+      sourceRef:
+        kind: HelmRepository
+        name: node-feature-discovery
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    worker:
+      annotations:
+        configmap.reloader.stakater.com/reload: node-feature-discovery-worker-conf
+      config:
+        core:
+          sources:
+            - custom
+            - pci
+            - usb
+        sources:
+          usb:
+            deviceClassWhitelist:
+              - "02"
+              - "03"
+              - "0e"
+              - "ef"
+              - "fe"
+              - "ff"
+            deviceLabelFields:
+              - class
+              - vendor
+              - device
+          custom:
+            - name: "zwave"
+              matchOn:
+                - usbId:
+                    class: ["02"]
+                    vendor: ["0658"]
+                    device: ["0200"]
+            - name: "zigbee"
+              matchOn:
+                - usbId:
+                    class: ["ff"]
+                    vendor: ["1a86"]
+                    device: ["7523"]
+            - name: "rflink"
+              matchOn:
+                - usbId:
+                    class: ["02"]
+                    vendor: ["2341"]
+                    device: ["0042"]
+            - name: "coral-tpu"
+              matchOn:
+                - usbId:
+                    vendor: ["1a6e", "18d1"]
+            - name: "intel-gpu"
+              matchOn:
+                - pciId:
+                    class: ["0300"]
+                    vendor: ["8086"]

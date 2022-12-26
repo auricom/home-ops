@@ -1,0 +1,121 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: crowdsec
+  namespace: crowdsec
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: crowdsec
+      version: 0.8.2
+      sourceRef:
+        kind: HelmRepository
+        name: crowdsec
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    container_runtime: containerd
+    image:
+      repository: crowdsecurity/crowdsec
+      tag: v1.4.3
+    lapi:
+      env:
+        # by default disable the agent for local API pods
+        - name: DISABLE_AGENT
+          value: "true"
+        - name: ENROLL_KEY
+          valueFrom:
+            secretKeyRef:
+              name: crowdsec-config
+              key: enroll_key
+        - name: ENROLL_INSTANCE_NAME
+          value: "talos@cluster-0"
+      dashboard:
+        enabled: false
+        ingress:
+          enabled: false
+          annotations:
+          ingressClassName: nginx
+          host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          tls:
+            - hosts:
+              - *host
+      resources:
+        requests:
+          cpu: 150m
+          memory: 100M
+        limits:
+          memory: 100M
+      # -- Enable persistent volumes
+      persistentVolume:
+        # -- Persistent volume for data folder. Stores e.g. registered bouncer api keys
+        data:
+          enabled: true
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: rook-ceph-filesystem
+          size: 1Gi
+        # -- Persistent volume for config folder. Stores e.g. online api credentials
+        config:
+          enabled: true
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: rook-ceph-filesystem
+          size: 100Mi
+      metrics:
+        enabled: false
+        serviceMonitor:
+          enabled: false
+      strategy:
+        type: Recreate
+    agent:
+      # To specify each pod you want to process it logs (pods present in the node)
+      acquisition:
+        # The namespace where the pod is located
+        - namespace: ingress-nginx
+          # The pod name
+          podName: ingress-nginx-controller-*
+          # as in crowdsec configuration, we need to specify the program name so the parser will match and parse logs
+          program: nginx
+      # Those are ENV variables
+      env:
+        # As it's a test, we don't want to share signals with CrowdSec so disable the Online API.
+        - name: DISABLE_crONLINE_API
+          value: "true"
+        # As we are running Nginx, we want to install the Nginx collection
+        - name: COLLECTIONS
+          value: "crowdsecurity/nginx crowdsecurity/linux crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/pgsql crowdsecurity/sshd"
+        - name: PARSERS
+          value: "crowdsecurity/cri-logs"
+        - name: TZ
+          value: "${TIMEZONE}"
+        - name: DISABLE_ONLINE_API
+          value: "false"
+      resources:
+        limits:
+          memory: 100Mi
+        requests:
+          cpu: 150m
+          memory: 100Mi
+      # -- Enable persistent volumes
+      persistentVolume:
+        # -- Persistent volume for config folder. Stores local config (parsers, scenarios etc.)
+        config:
+          enabled: true
+          accessModes:
+            - ReadWriteMany
+          storageClassName: rook-ceph-filesystem
+          size: 100Mi
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true

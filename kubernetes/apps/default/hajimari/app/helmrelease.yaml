@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: hajimari
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: hajimari
+      version: 2.0.2
+      sourceRef:
+        kind: HelmRepository
+        name: hajimari
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    env:
+      TZ: ${TIMEZONE}
+    hajimari:
+      title: Apps
+      darkTheme: espresso
+      alwaysTargetBlank: true
+      showGreeting: false
+      showAppGroups: false
+      showAppStatus: false
+      showBookmarkGroups: false
+      showGlobalBookmarks: false
+      showAppUrls: false
+      defaultEnable: true
+      namespaceSelector:
+        matchNames:
+          - default
+          - flux-system
+          - monitoring
+          - networking
+          - rook-ceph
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          hajimari.io/enable: "false"
+        hosts:
+          - host: &host apps.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: "hajimari-settings"
+    persistence:
+      data:
+        enabled: true
+        type: emptyDir
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128M

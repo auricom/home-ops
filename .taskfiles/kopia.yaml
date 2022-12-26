@@ -12,8 +12,8 @@ x-preconditions: &preconditions
     msg: "Claim '{{.CLAIM}}' in namespace '{{.NAMESPACE}}' not found"
     sh: kubectl get pvc -n {{.NAMESPACE}} {{.CLAIM}}
   - &has-restore-job-file
-    msg: "File '{{.PROJECT_DIR}}/kubernetes/tools/kopia-restore.yaml' not found"
-    sh: "test -f {{.PROJECT_DIR}}/kubernetes/tools/kopia-restore.yaml"
+    msg: "File '{{.PROJECT_DIR}}/tools/kopia-restore.yaml' not found"
+    sh: "test -f {{.PROJECT_DIR}}/tools/kopia-restore.yaml"
 
 x-vars: &vars
   NAMESPACE:

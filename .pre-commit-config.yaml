@@ -3,13 +3,6 @@
 # See https://pre-commit.com/hooks.html for more hooks
 fail_fast: false
 repos:
-  - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.28.0
-    hooks:
-      - id: yamllint
-        args:
-          - --config-file
-          - .github/linters/.yamllint.yaml
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
@@ -34,10 +27,3 @@ repos:
     rev: v2.1.1
     hooks:
       - id: forbid-secrets
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.32.2
-    hooks:
-      - id: markdownlint
-        args:
-          - --config
-          - ".github/linters/.markdownlint.yaml"

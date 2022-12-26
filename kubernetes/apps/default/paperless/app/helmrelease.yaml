@@ -1,0 +1,105 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app paperless
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: paperless-redis
+      namespace: default
+  values:
+    global:
+      nameOverride: *app
+    image:
+      repository: ghcr.io/paperless-ngx/paperless-ngx
+      tag: 1.10.2
+    env:
+      COMPOSE_PROJECT_NAME: paperless
+      PAPERLESS_CONSUMER_POLLING: "60"
+      PAPERLESS_CONSUMER_RECURSIVE: "true"
+      PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
+      PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
+      PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME: HTTP_X_AUTH_REQUEST_EMAIL
+      PAPERLESS_OCR_LANGUAGES: fra
+      PAPERLESS_OCR_LANGUAGE: fra
+      PAPERLESS_PORT: 8000
+      PAPERLESS_DBHOST: ${POSTGRES_HOST}
+      PAPERLESS_DBPORT: ${POSTGRES_PORT}
+      PAPERLESS_DBNAME: paperless
+      PAPERLESS_REDIS: redis://paperless-redis.default.svc.cluster.local:6379
+      PAPERLESS_TASK_WORKERS: 2
+      PAPERLESS_TIME_ZONE: "Europe/Paris"
+      PAPERLESS_URL: https://paperless.${SECRET_CLUSTER_DOMAIN}
+    envFrom:
+      - secretRef:
+          name: *app
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *app
+    service:
+      main:
+        ports:
+          http:
+            port: 8000
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          external-dns.home.arpa/enabled: "true"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      data:
+        enabled: true
+        mountPath: /usr/src/paperless/data
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/shared-documents/paperless/data
+      media:
+        enabled: true
+        mountPath: /usr/src/paperless/media
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/shared-documents/paperless/media
+      consume:
+        enabled: true
+        mountPath: /usr/src/paperless/consume
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/shared-documents/paperless/watch
+      export:
+        enabled: true
+        mountPath: /usr/src/paperless/export
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/shared-documents/paperless/export
+    resources:
+      requests:
+        cpu: 25m
+        memory: 3Gi
+      limits:
+        memory: 7Gi

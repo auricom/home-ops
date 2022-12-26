@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cert-manager-webhook-ovh
+  namespace: cert-manager
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: cert-manager-webhook-ovh
+      version: v0.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: cert-manager-webhook-ovh
+        namespace: flux-system
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
+  values:
+    groupName: "${SECRET_DOMAIN}"
+    certManager:
+      namespace: cert-manager
+      serviceAccountName: cert-manager
+    issuers:
+      - name: letsencrypt-staging
+        create: true
+        kind: ClusterIssuer
+        acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
+        email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
+        ovhEndpointName: ovh-eu
+        ovhAuthenticationRef:
+          applicationKeyRef:
+            name: ovh-credentials
+            key: applicationKey
+          applicationSecretRef:
+            name: ovh-credentials
+            key: applicationSecret
+          consumerKeyRef:
+            name: ovh-credentials
+            key: consumerKey
+      - name: letsencrypt-production
+        create: true
+        kind: ClusterIssuer
+        acmeServerUrl: https://acme-v02.api.letsencrypt.org/directory
+        email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
+        ovhEndpointName: ovh-eu
+        ovhAuthenticationRef:
+          applicationKeyRef:
+            name: ovh-credentials
+            key: applicationKey
+          applicationSecretRef:
+            name: ovh-credentials
+            key: applicationSecret
+          consumerKeyRef:
+            name: ovh-credentials
+            key: consumerKey

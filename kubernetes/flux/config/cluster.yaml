@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/gitrepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: home-ops-kubernetes
+  namespace: flux-system
+spec:
+  interval: 30m
+  # https://github.com/k8s-at-home/template-cluster-k3s/issues/324
+  url: ssh://git@github.com/auricom/home-ops
+  ref:
+    branch: main
+  secretRef:
+    name: github-deploy-key
+  ignore: |
+    # exclude all
+    /*
+    # include kubernetes directory
+    !/kubernetes
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/kustomization_v1beta2.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: flux-cluster
+  namespace: flux-system
+spec:
+  interval: 30m
+  path: ./kubernetes/flux
+  prune: true
+  wait: false
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false

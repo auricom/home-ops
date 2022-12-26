@@ -1,0 +1,74 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app vector-aggregator
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    controller:
+      strategy: RollingUpdate
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: docker.io/timberio/vector
+      tag: 0.26.0-debian
+    args: ["--config", "/etc/vector/vector.yaml"]
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: "${CLUSTER_LB_VECTOR}"
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 8686
+          kubernetes-logs:
+            enabled: true
+            port: 6000
+          opnsense-logs:
+            enabled: true
+            port: 6001
+          journald-logs:
+            enabled: true
+            port: 6002
+          talos-kernel:
+            enabled: true
+            port: 6050
+            protocol: UDP
+          talos-service:
+            enabled: true
+            port: 6051
+            protocol: UDP
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: vector-aggregator-configmap
+        subPath: vector.yaml
+        mountPath: /etc/vector/vector.yaml
+        readOnly: true
+      data:
+        enabled: true
+        type: emptyDir
+        mountPath: /vector-data-dir
+      geoip:
+        enabled: true
+        type: emptyDir
+        mountPath: /usr/share/GeoIP

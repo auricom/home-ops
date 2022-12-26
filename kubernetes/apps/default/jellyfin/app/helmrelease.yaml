@@ -1,0 +1,111 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app jellyfin
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: intel-gpu-plugin
+      namespace: kube-system
+    - name: node-feature-discovery
+      namespace: kube-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    image:
+      repository: ghcr.io/onedr0p/jellyfin
+      tag: 10.8.8@sha256:342c94a24b9c12e6b5a4de2d506229b9313d39026404a8137be1df9481ed0e68
+    env:
+      TZ: ${TIMEZONE}
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: "${CLUSTER_LB_JELLYFIN}"
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 8096
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
+      supplementalGroups:
+        - 44
+        - 109
+    persistence:
+      config:
+        enabled: true
+        existingClaim: jellyfin-config
+        mountPath: /config
+      music:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/music
+        mountPath: /mnt/storage/music
+      photo:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/photo
+        mountPath: /mnt/storage/photo
+      video:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/video
+        mountPath: /mnt/storage/video
+      transcode:
+        enabled: true
+        type: emptyDir
+      cache:
+        enabled: true
+        type: emptyDir
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: feature.node.kubernetes.io/custom-intel-gpu
+                  operator: In
+                  values:
+                    - "true"
+    resources:
+      requests:
+        gpu.intel.com/i915: 1
+        cpu: 100m
+        memory: 1Gi
+      limits:
+        gpu.intel.com/i915: 1
+        memory: 6Gi

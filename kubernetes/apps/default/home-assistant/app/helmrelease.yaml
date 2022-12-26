@@ -1,0 +1,108 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app home-assistant
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: cloudnative-pg
+    - name: emqx
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    image:
+      repository: ghcr.io/onedr0p/home-assistant
+      tag: 2022.12.8@sha256:472d563ab3eadcfde16848ffa59954c63cc10e71630b6e41081b8eac8c6d5ca7
+    env:
+      TZ: "${TIMEZONE}"
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: home_assistant
+    envFrom:
+      - secretRef:
+          name: *app
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: ${CLUSTER_LB_HASS}
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 8123
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - host: &host "hass.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+          - host: &host2 "home-assistant.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+              - *host2
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+      fsGroupChangePolicy: "OnRootMismatch"
+    securityContext:
+      privileged: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *app
+    persistence:
+      config:
+        enabled: true
+        existingClaim: hass-config
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
+        hostPathType: CharDevice
+        mountPath: /dev/ttyUSB0
+    resources:
+      requests:
+        cpu: 10m
+        memory: 100Mi
+      limits:
+        memory: 750Mi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - {
+                    key: "feature.node.kubernetes.io/custom-rflink",
+                    operator: In,
+                    values: ["true"],
+                  }

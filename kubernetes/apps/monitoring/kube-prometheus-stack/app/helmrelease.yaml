@@ -1,0 +1,267 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 43.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+      interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    ###
+    ### Component values
+    ###
+    kubeApiServer:
+      enabled: true
+
+    kubeControllerManager:
+      enabled: false
+
+    kubeEtcd:
+      enabled: false
+
+    kubelet:
+      enabled: true
+      serviceMonitor:
+        metricRelabelings:
+          - action: replace
+            sourceLabels:
+              - node
+            targetLabel: instance
+
+    kubeProxy:
+      enabled: false
+
+    kubeScheduler:
+      enabled: false
+
+    kubeStateMetrics:
+      enabled: true
+      metricLabelsAllowlist:
+        - "persistentvolumeclaims=[*]"
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
+
+    grafana:
+      enabled: false
+      forceDeployDashboards: true
+
+    nodeExporter:
+      enabled: true
+    prometheus-node-exporter:
+      resources:
+        requests:
+          cpu: 23m
+          memory: 64M
+        limits:
+          memory: 64M
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
+    ###
+    ### Prometheus operator values
+    ###
+    prometheusOperator:
+      prometheusConfigReloader:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 100Mi
+
+    ###
+    ### Prometheus instance values
+    ###
+    prometheus:
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts: ["prometheus.${SECRET_CLUSTER_DOMAIN}"]
+        tls:
+          - hosts:
+              - "prometheus.${SECRET_CLUSTER_DOMAIN}"
+      prometheusSpec:
+        replicas: 1
+        replicaExternalLabelName: "replica"
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        retention: 6h
+        enableAdminAPI: true
+        walCompression: true
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: "rook-ceph-block"
+              resources:
+                requests:
+                  storage: 20Gi
+        thanos:
+          image: quay.io/thanos/thanos:v0.29.0
+          # renovate: datasource=docker depName=quay.io/thanos/thanos
+          version: "v0.29.0"
+          objectStorageConfig:
+            name: thanos-objstore-secret
+            key: objstore.yml
+        additionalScrapeConfigs:
+          - job_name: "opnsense"
+            scrape_interval: 60s
+            metrics_path: "/metrics"
+            static_configs:
+              - targets: ["${LOCAL_LAN_OPNSENSE}:9273"]
+                labels:
+                  app: "opnsense"
+          - job_name: "truenas"
+            scrape_interval: 60s
+            metrics_path: "/metrics"
+            static_configs:
+              - targets: ["${LOCAL_LAN_TRUENAS}:9273"]
+                labels:
+                  app: "truenas"
+          - job_name: "truenas-remote"
+            scrape_interval: 60s
+            metrics_path: "/metrics"
+            static_configs:
+              - targets: ["${LOCAL_LAN_TRUENAS_REMOTE}:9273"]
+                labels:
+                  app: "truenas-remote"
+      thanosService:
+        enabled: true
+      thanosServiceMonitor:
+        enabled: true
+      thanosIngress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - &thanosHost "thanos-sidecar.${SECRET_DOMAIN}"
+        tls:
+          - hosts:
+              - *thanosHost
+    alertmanager:
+      config:
+        global:
+          resolve_timeout: 5m
+        receivers:
+          - name: "null"
+          - name: "pushover"
+            pushover_configs:
+              - user_key: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_USER_KEY}
+                token: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_TOKEN}
+                send_resolved: true
+                html: true
+                priority: |-
+                  {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
+                url_title: View in Alert Manager
+                title: |-
+                  [{{ .Status | toUpper -}}
+                  {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
+                  ] {{ .CommonLabels.alertname }}
+                message: |-
+                  {{- range .Alerts }}
+                    {{- if ne .Labels.severity "" }}
+                      <b>Severity:</b> <i>{{ .Labels.severity }}</i>
+                    {{- else }}
+                      <b>Severity:</b> <i>N/A</i>
+                    {{- end }}
+                    {{- if ne .Annotations.description "" }}
+                      <b>Description:</b> <i>{{ .Annotations.description }}</i>
+                    {{- else if ne .Annotations.summary "" }}
+                      <b>Summary:</b> <i>{{ .Annotations.summary }}</i>
+                    {{- else if ne .Annotations.message "" }}
+                      <b>Message:</b> <i>{{ .Annotations.message }}</i>
+                    {{- else }}
+                      <b>Description:</b> <i>N/A</i>
+                    {{- end }}
+                    {{- if gt (len .Labels.SortedPairs) 0 }}
+                      <b>Details:</b>
+                      {{- range .Labels.SortedPairs }}
+                        • <b>{{ .Name }}:</b> <i>{{ .Value }}</i>
+                      {{- end }}
+                    {{- end }}
+                  {{- end }}
+        route:
+          receiver: "pushover"
+          routes:
+            - receiver: "null"
+              matchers:
+                - alertname =~ "InfoInhibitor|Watchdog|RebootScheduled"
+            - receiver: "pushover"
+              matchers:
+                - severity = "critical"
+              continue: true
+        inhibit_rules:
+          - source_matchers:
+              - severity = "critical"
+            target_matchers:
+              - severity = "warning"
+            equal: ["alertname", "namespace"]
+      alertmanagerSpec:
+        replicas: 1
+        podAntiAffinity: hard
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: rook-ceph-block
+              resources:
+                requests:
+                  storage: 1Gi
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts: ["alert-manager.${SECRET_CLUSTER_DOMAIN}"]
+        tls:
+          - hosts:
+              - "alert-manager.${SECRET_CLUSTER_DOMAIN}"
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
