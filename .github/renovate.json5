@@ -50,6 +50,7 @@
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     // setup datasources
     {
