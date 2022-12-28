@@ -46,6 +46,7 @@ spec:
         hostname: &host "thanos-query.${SECRET_CLUSTER_DOMAIN}"
         annotations:
           auth.home.arpa/enabled: "true"
+          hajimari.io/enable: "false"
         ingressClassName: "nginx"
         tls: true
         extraTls:
@@ -74,6 +75,8 @@ spec:
         enabled: true
         hostname: &host "thanos-compactor.${SECRET_CLUSTER_DOMAIN}"
         ingressClassName: "nginx"
+        annotations:
+          hajimari.io/enable: "false"
         tls: true
         extraTls:
           - hosts:

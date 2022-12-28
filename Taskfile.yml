@@ -10,7 +10,6 @@ vars:
 includes:
   an: .taskfiles/Ansible/Tasks.yml
   fx: .taskfiles/Flux/Tasks.yml
-  kopia: .taskfiles/kopia.yaml
   ku: .taskfiles/Kubernetes/Tasks.yml
   vs: .taskfiles/VolSync/Tasks.yml
 
