@@ -45,6 +45,7 @@ spec:
         annotations:
           external-dns.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          hajimari.io/icon: mdi:account-arrow-up
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:

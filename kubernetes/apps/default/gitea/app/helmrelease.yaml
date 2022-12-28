@@ -117,6 +117,8 @@ spec:
     ingress:
       enabled: true
       className: nginx
+      annotations:
+        hajimari.io/icon: mdi:code-json
       hosts:
         - host: "gitea.${SECRET_CLUSTER_DOMAIN}"
           paths:

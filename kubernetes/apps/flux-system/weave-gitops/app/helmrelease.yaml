@@ -20,10 +20,11 @@ spec:
       create: true
       username: admin
       # passwordHash: from valuesFrom
-
     ingress:
       enabled: true
       className: nginx
+      annotations:
+        hajimari.io/icon: mdi:sawtooth-wave
       hosts:
         - host: &host "gitops.${SECRET_CLUSTER_DOMAIN}"
           paths:

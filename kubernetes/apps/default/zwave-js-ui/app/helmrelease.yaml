@@ -67,6 +67,7 @@ spec:
         ingressClassName: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
+          hajimari.io/icon: mdi:z-wave
         hosts:
           - host: &host "zwave.${SECRET_CLUSTER_DOMAIN}"
             paths:

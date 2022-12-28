@@ -60,6 +60,7 @@ spec:
         ingressClassName: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
+          hajimari.io/icon: mdi:zigbee
         hosts:
           - host: &host "zigbee.${SECRET_CLUSTER_DOMAIN}"
             paths:

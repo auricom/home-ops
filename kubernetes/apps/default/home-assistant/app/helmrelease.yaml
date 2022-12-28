@@ -51,6 +51,8 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
+        annotaions:
+          hajimari.io/icon: mdi:home-assistant
         hosts:
           - host: &host "hass.${SECRET_CLUSTER_DOMAIN}"
             paths:
