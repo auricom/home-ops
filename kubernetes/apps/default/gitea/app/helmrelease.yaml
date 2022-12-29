@@ -25,7 +25,7 @@ spec:
   values:
     image:
       repository: gitea/gitea
-      tag: 1.17.4
+      tag: 1.18.0
       rootless: true
     containerSecurityContext:
       capabilities:
@@ -75,7 +75,8 @@ spec:
         mailer:
           ENABLED: true
           MAILER_TYPE: smtp
-          HOST: smtp-relay.default:2525
+          SMTP_ADDR: smtp-relay.default
+          SMTP_PORT: 2525
           FROM: "Gitea <gitea@${SECRET_DOMAIN}>"
         webhook:
           ALLOWED_HOST_LIST: drone.default.svc
