@@ -70,10 +70,10 @@ controlPlane:
             rotate-server-certificates: "true"
         install:
           extraKernelArgs:
-            - "talos.logging.kernel=udp://vector.${ingressDomain}:6050/"
+            - "talos.logging.kernel=udp://192.168.169.108:6050/"
         logging:
           destinations:
-            - endpoint: "udp://vector.${ingressDomain}:6051/"
+            - endpoint: "udp://192.168.169.108:6051/"
               format: json_lines
         network:
           extraHostEntries:
