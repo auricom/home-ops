@@ -4,10 +4,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 resources:
+  - ./backups
   - ./helmrelease.yaml
   - ./secret.sops.yaml
-  - ./replicationsource.yaml
-  - ./restic.sops.yaml
   - ./volume.yaml
 patchesStrategicMerge:
   - ./patches/postgres.yaml

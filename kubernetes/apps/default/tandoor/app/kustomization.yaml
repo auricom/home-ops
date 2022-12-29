@@ -6,8 +6,6 @@ namespace: default
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
-  - ./replicationsource.yaml
-  - ./restic.sops.yaml
   - ./volume.yaml
 patchesStrategicMerge:
   - ./patches/env.yaml
