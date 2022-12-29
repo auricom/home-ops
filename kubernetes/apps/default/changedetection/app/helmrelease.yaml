@@ -33,7 +33,7 @@ spec:
       TZ: ${TIMEZONE}
       PORT: &port 5000
       USE_X_SETTINGS: 1
-      PLAYWRIGHT_DRIVER_URL: ws://localhost:3000/?stealth=1&--disable-web-security=true&--user-data-dir=~/browserless-cache-123
+      PLAYWRIGHT_DRIVER_URL: ws://localhost:3000/?stealth=1&--disable-web-security=true&--user-data-dir=~/tmp/cache
       PUID: 1000
       PGID: 1000
     service:
