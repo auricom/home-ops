@@ -64,5 +64,3 @@ spec:
     crds: Skip
     remediation:
       retries: 3
-  dependsOn:
-    - name: snapshot-controller

@@ -22,13 +22,6 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  dependsOn:
-    - name: emqx
-      namespace: default
-    - name: node-feature-discovery
-      namespace: kube-system
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   values:
     fullnameOverride: *app
     image:

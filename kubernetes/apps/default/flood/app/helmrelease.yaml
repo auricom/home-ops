@@ -22,10 +22,6 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  dependsOn:
-    - name: qbittorrent
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   values:
     image:
       repository: jesec/flood

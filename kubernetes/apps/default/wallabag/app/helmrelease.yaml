@@ -22,12 +22,6 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  dependsOn:
-    - name: cloudnative-pg
-    - name: redis
-      namespace: default
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   values:
     controller:
       replicas: 1

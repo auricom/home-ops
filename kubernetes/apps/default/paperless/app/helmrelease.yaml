@@ -22,9 +22,6 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  dependsOn:
-    - name: paperless-redis
-      namespace: default
   values:
     global:
       nameOverride: *app

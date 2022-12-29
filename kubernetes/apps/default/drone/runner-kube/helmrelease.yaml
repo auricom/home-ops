@@ -15,8 +15,6 @@ spec:
         kind: HelmRepository
         name: drone
         namespace: flux-system
-  dependsOn:
-    - name: drone-kubernetes-secrets
   values:
     image:
       repository: drone/drone-runner-kube

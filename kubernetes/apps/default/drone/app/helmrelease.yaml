@@ -15,10 +15,6 @@ spec:
         kind: HelmRepository
         name: drone
         namespace: flux-system
-  dependsOn:
-    - name: drone-runner-kube
-    - name: gitea
-    - name: cloudnative-pg
   values:
     image:
       repository: drone/drone

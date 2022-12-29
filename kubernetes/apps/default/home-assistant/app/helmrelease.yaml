@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 # yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -23,11 +22,6 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  dependsOn:
-    - name: cloudnative-pg
-    - name: emqx
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   values:
     image:
       repository: ghcr.io/onedr0p/home-assistant
