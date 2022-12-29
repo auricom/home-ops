@@ -1,0 +1,7 @@
+---
+configs:
+  truenas@mailrise.home.arpa:
+    mailrise:
+      title_template: "TRUENAS"
+    urls:
+      - !env_var PUSHOVER_TRUENAS

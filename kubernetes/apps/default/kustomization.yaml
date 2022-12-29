@@ -27,6 +27,7 @@ resources:
   - ./lidarr/ks.yaml
   - ./libreddit/ks.yaml
   - ./lychee/ks.yaml
+  - ./mailrise/ks.yaml
   - ./media-browser/ks.yaml
   - ./music-transcode/ks.yaml
   - ./navidrome/ks.yaml
