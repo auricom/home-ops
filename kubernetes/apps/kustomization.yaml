@@ -11,4 +11,5 @@ resources:
   - ./monitoring
   - ./networking
   - ./rook-ceph
+  - ./trivy-system
   - ./volsync
