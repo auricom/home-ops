@@ -29,7 +29,7 @@ spec:
     env:
       TZ: "${TIMEZONE}"
       FB_DATABASE: "/config/filebrowser.db"
-      FB_ROOT: "/media"
+      FB_ROOT: "/mnt/storage"
       FB_LOG: "stdout"
       FB_NOAUTH: "true"
     service:
