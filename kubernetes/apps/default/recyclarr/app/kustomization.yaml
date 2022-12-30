@@ -5,7 +5,6 @@ kind: Kustomization
 namespace: default
 resources:
   - ./cronjob.yaml
-  - ./secret.sops.yaml
 configMapGenerator:
   - name: recyclarr-configmap
     files:
