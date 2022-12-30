@@ -6,9 +6,9 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./grafana/ks.yaml
+  # - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
-  - ./loki/ks.yaml
-  - ./smartctl-exporter/ks.yaml
+  # - ./loki/ks.yaml
+  # - ./smartctl-exporter/ks.yaml
   - ./thanos/ks.yaml
-  - ./vector/ks.yaml
+  # - ./vector/ks.yaml

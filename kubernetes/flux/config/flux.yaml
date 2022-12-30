@@ -46,3 +46,20 @@ spec:
       target:
         kind: Deployment
         name: "(kustomize-controller|helm-controller|source-controller)"
+    - patch: |
+        apiVersion: v1
+        kind: Deployment
+        metadata:
+          name: helm-controller
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  resources:
+                    limits:
+                      memory:
+                      $patch: delete
+      target:
+        kind: Deployment
+        name: helm-controller
