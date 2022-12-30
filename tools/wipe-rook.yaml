@@ -1,8 +1,17 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-privileged-namespace
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
+---
+apiVersion: v1
 kind: Pod
 metadata:
   name: disk-wipe-talos-node-2
+  namespace: my-privileged-namespace
 spec:
   restartPolicy: Never
   nodeName: talos-node-2
@@ -35,6 +44,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: disk-wipe-talos-node-3
+  namespace: my-privileged-namespace
 spec:
   restartPolicy: Never
   nodeName: talos-node-3
@@ -67,6 +77,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: disk-wipe-talos-node-4
+  namespace: my-privileged-namespace
 spec:
   restartPolicy: Never
   nodeName: talos-node-4
