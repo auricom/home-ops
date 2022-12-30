@@ -9,7 +9,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
-    - name: cluster-apps-kube-prometheus-stack-app
+    - name: cluster-apps-rook-ceph-cluster
   path: ./kubernetes/apps/monitoring/thanos/app
   prune: true
   sourceRef:

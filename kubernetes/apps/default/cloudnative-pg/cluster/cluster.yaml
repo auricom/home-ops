@@ -24,7 +24,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://postgresql/
       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
-      serverName: postgres-v4
+      serverName: postgres-v5
       s3Credentials:
         accessKeyId:
           name: postgres-minio
@@ -32,20 +32,20 @@ spec:
         secretAccessKey:
           name: postgres-minio
           key: MINIO_SECRET_KEY
-  # bootstrap:
-  #   recovery:
-  #     source: postgres
-  # externalClusters:
-  #   - name: postgres
-  #     barmanObjectStore:
-  #       destinationPath: s3://postgresql/
-  #       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
-  #       s3Credentials:
-  #         accessKeyId:
-  #           name: postgres-minio
-  #           key: MINIO_ACCESS_KEY
-  #         secretAccessKey:
-  #           name: postgres-minio
-  #           key: MINIO_SECRET_KEY
-  #       wal:
-  #         maxParallel: 8
+  bootstrap:
+    recovery:
+      source: postgres-v4
+  externalClusters:
+    - name: postgres-v4
+      barmanObjectStore:
+        destinationPath: s3://postgresql/
+        endpointURL: https://truenas.${SECRET_DOMAIN}:51515
+        s3Credentials:
+          accessKeyId:
+            name: postgres-minio
+            key: MINIO_ACCESS_KEY
+          secretAccessKey:
+            name: postgres-minio
+            key: MINIO_SECRET_KEY
+        wal:
+          maxParallel: 8
