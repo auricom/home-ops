@@ -7,57 +7,57 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./authelia/ks.yaml
-  - ./bazarr/ks.yaml
-  - ./calibre/ks.yaml
-  - ./calibre-web/ks.yaml
-  - ./changedetection/ks.yaml
+  # - ./bazarr/ks.yaml
+  # - ./calibre/ks.yaml
+  # - ./calibre-web/ks.yaml
+  # - ./changedetection/ks.yaml
   - ./cloudnative-pg/ks.yaml
-  - ./drone/ks.yaml
+  # - ./drone/ks.yaml
   - ./emqx/ks.yaml
-  - ./flood/ks.yaml
-  - ./freshrss/ks.yaml
-  - ./gitea/ks.yaml
+  # - ./flood/ks.yaml
+  # - ./freshrss/ks.yaml
+  # - ./gitea/ks.yaml
   - ./glauth/ks.yaml
-  - ./hajimari/ks.yaml
+  # - ./hajimari/ks.yaml
   - ./home-assistant/ks.yaml
   - ./invidious/ks.yaml
-  - ./jellyfin/ks.yaml
-  - ./jellyseer/ks.yaml
+  # - ./jellyfin/ks.yaml
+  # - ./jellyseer/ks.yaml
   - ./joplin/ks.yaml
-  - ./komga/ks.yaml
-  - ./lidarr/ks.yaml
-  - ./libreddit/ks.yaml
-  - ./lychee/ks.yaml
+  # - ./komga/ks.yaml
+  # - ./lidarr/ks.yaml
+  # - ./libreddit/ks.yaml
+  # - ./lychee/ks.yaml
   - ./mailrise/ks.yaml
-  - ./media-browser/ks.yaml
-  - ./music-transcode/ks.yaml
-  - ./navidrome/ks.yaml
+  # - ./media-browser/ks.yaml
+  # - ./music-transcode/ks.yaml
+  # - ./navidrome/ks.yaml
   - ./nitter/ks.yaml
   - ./opnsense/ks.yaml
-  - ./outline/ks.yaml
-  - ./paperless/ks.yaml
+  # - ./outline/ks.yaml
+  # - ./paperless/ks.yaml
   - ./pgadmin/ks.yaml
-  - ./prowlarr/ks.yaml
-  - ./pyload/ks.yaml
-  - ./qbittorrent/ks.yaml
-  - ./radarr/ks.yaml
-  - ./readarr/ks.yaml
-  - ./recyclarr/ks.yaml
+  # - ./prowlarr/ks.yaml
+  # - ./pyload/ks.yaml
+  # - ./qbittorrent/ks.yaml
+  # - ./radarr/ks.yaml
+  # - ./readarr/ks.yaml
+  # - ./recyclarr/ks.yaml
   - ./redis/ks.yaml
-  - ./resilio-sync/ks.yaml
-  - ./sabnzbd/ks.yaml
-  - ./sharry/ks.yaml
-  - ./sonarr/ks.yaml
+  # - ./resilio-sync/ks.yaml
+  # - ./sabnzbd/ks.yaml
+  # - ./sharry/ks.yaml
+  # - ./sonarr/ks.yaml
   - ./smtp-relay/ks.yaml
-  - ./tandoor/ks.yaml
-  - ./theme-park/ks.yaml
-  - ./unifi/ks.yaml
-  - ./uptime-kuma/ks.yaml
+  # - ./tandoor/ks.yaml
+  # - ./theme-park/ks.yaml
+  # - ./unifi/ks.yaml
+  # - ./uptime-kuma/ks.yaml
   - ./vaultwarden/ks.yaml
-  - ./vikunja/ks.yaml
-  - ./wallabag/ks.yaml
+  # - ./vikunja/ks.yaml
+  # - ./wallabag/ks.yaml
   - ./whoogle/ks.yaml
-  - ./zigbee2mqtt/ks.yaml
-  - ./zwave-js-ui/ks.yaml
+  # - ./zigbee2mqtt/ks.yaml
+  # - ./zwave-js-ui/ks.yaml
   # Default resources
   - jobs-rbac.yaml
