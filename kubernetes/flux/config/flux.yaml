@@ -47,19 +47,20 @@ spec:
         kind: Deployment
         name: "(kustomize-controller|helm-controller|source-controller)"
     - patch: |
-        apiVersion: v1
+        apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: helm-controller
+          name: not-used
         spec:
           template:
             spec:
               containers:
                 - name: manager
                   resources:
+                    requests:
+                      memory: 512Mi
                     limits:
-                      memory:
-                      $patch: delete
+                      memory: "2Gi"
       target:
         kind: Deployment
-        name: helm-controller
+        labelSelector: control-plane=controller
