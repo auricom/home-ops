@@ -15,13 +15,19 @@ spec:
         kind: HelmRepository
         name: kyverno
         namespace: flux-system
+  maxHistory: 3
   install:
     createNamespace: true
+    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
     remediation:
       retries: 3
+  uninstall:
+    keepHistory: false
   values:
     installCRDs: true
     replicaCount: 1

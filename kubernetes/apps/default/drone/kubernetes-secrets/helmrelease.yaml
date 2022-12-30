@@ -6,7 +6,7 @@ metadata:
   name: drone-kubernetes-secrets
   namespace: default
 spec:
-  interval: 1h
+  interval: 15m
   chart:
     spec:
       chart: drone-kubernetes-secrets
@@ -15,6 +15,17 @@ spec:
         kind: HelmRepository
         name: drone
         namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
     env:
       KUBERNETES_NAMESPACE: default

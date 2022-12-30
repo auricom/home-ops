@@ -16,13 +16,19 @@ spec:
         name: prometheus-community
         namespace: flux-system
       interval: 5m
+  maxHistory: 3
   install:
     createNamespace: true
+    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
     remediation:
       retries: 3
+  uninstall:
+    keepHistory: false
   values:
     ###
     ### Component values
