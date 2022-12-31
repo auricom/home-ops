@@ -30,8 +30,8 @@ spec:
         schedule: "@daily"
     restartPolicy: OnFailure
     image:
-      repository: ghcr.io/auricom/kubectl
-      tag: 1.26.0@sha256:f512e3008d0492cbae7aac6eaccc21b13d723374715aaedd59d352d840f0229c
+      repository: ghcr.io/onedr0p/kubernetes-kubectl
+      tag: 1.24.4@sha256:41221810e5a8b370b4d60050e833388b67d2888aa79093e023e87f7ae78318ba
     command: ["/bin/bash", "/app/opnsense-backup.sh"]
     env:
       OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
