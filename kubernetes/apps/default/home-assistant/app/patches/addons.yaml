@@ -15,6 +15,7 @@ spec:
           tag: 4.9.1
         env:
           TZ: ${TIMEZONE}
+          GIT_SSH_COMMAND: "ssh -i /config/.ssh/id_rsa -o IdentitiesOnly=yes"
         workingDir: /config
         args:
           - --auth
