@@ -63,3 +63,9 @@
     ```sh
     mc admin policy set minio opnsense-private user=opnsense
     ```
+
+7. Create a retention policy
+
+    ```sh
+    mc ilm add minio/opnsense --expire-days "90"
+    ```
