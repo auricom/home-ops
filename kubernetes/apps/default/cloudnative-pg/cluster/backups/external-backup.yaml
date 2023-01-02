@@ -41,8 +41,6 @@ spec:
                   value: "3"
                 - name: HEALTHCHECK_PORT
                   value: "8080"
-                - name: WEBHOOK_URL
-                  value: https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/45cHKtahUg?status=up&msg=OK&ping=
               command:
                 - "/backup.sh"
               volumeMounts:

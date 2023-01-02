@@ -1,0 +1,105 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: truenas-certs-deploy
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        concurrencyPolicy: Forbid
+        schedule: "@daily"
+    restartPolicy: OnFailure
+    image:
+      repository: ghcr.io/auricom/kubectl
+      tag: 1.26.0@sha256:f512e3008d0492cbae7aac6eaccc21b13d723374715aaedd59d352d840f0229c
+    command: ["/bin/bash", "/app/truenas-certs-deploy.sh"]
+    env:
+      HOSTNAME: truenas
+      TRUENAS_HOME: /mnt/storage/home/homelab
+      SECRET_DOMAIN: ${SECRET_DOMAIN}
+      CERTS_DEPLOY_S3_ENABLED: "True"
+    envFrom:
+      - secretRef:
+          name: truenas-certs-deploy-secret
+    service:
+      main:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: truenas-certs-deploy-configmap
+        subPath: truenas-certs-deploy.sh
+        mountPath: /app/truenas-certs-deploy.sh
+        defaultMode: 0775
+        readOnly: true
+      config-python:
+        enabled: true
+        type: configMap
+        name: truenas-certs-deploy-configmap
+        subPath: truenas-certs-deploy.py
+        mountPath: /app/truenas-certs-deploy.py
+        defaultMode: 0775
+        readOnly: true
+      ssh:
+        enabled: true
+        type: secret
+        name: truenas-certs-deploy-secret
+        subPath: SSH_KEY
+        mountPath: /opt/id_rsa
+        defaultMode: 0775
+        readOnly: true
+    additionalContainers:
+      truenas-remote-certs-deploy:
+        name: truenas-remote-certs-deploy
+        image: ghcr.io/auricom/kubectl:1.26.0@sha256:f512e3008d0492cbae7aac6eaccc21b13d723374715aaedd59d352d840f0229c
+        command: ["/bin/bash", "/app/truenas-certs-deploy.sh"]
+        env:
+          - name: HOSTNAME
+            value: truenas-remote
+          - name: TRUENAS_HOME
+            value: /mnt/vol1/home/homelab
+          - name: SECRET_DOMAIN
+            value: ${SECRET_DOMAIN}
+          - name: CERTS_DEPLOY_S3_ENABLED
+            value: "True"
+        envFrom:
+          - secretRef:
+              name: truenas-certs-deploy-secret
+        volumeMounts:
+          - name: config
+            readOnly: true
+            mountPath: /app/truenas-certs-deploy.sh
+            subPath: truenas-certs-deploy.sh
+          - name: config-python
+            readOnly: true
+            mountPath: /app/truenas-certs-deploy.py
+            subPath: truenas-certs-deploy.py
+          - name: ssh
+            readOnly: true
+            mountPath: /opt/id_rsa
+            subPath: SSH_KEY

@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: truenas-minio-rclone
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        concurrencyPolicy: Forbid
+        schedule: "15 0 * * *"
+    restartPolicy: OnFailure
+    image:
+      repository: ghcr.io/auricom/rclone
+      tag: 1.60.1@sha256:c581a148e7f93a4ddb4fed421ea123028ff9761ddfc84b2e4a32f8de08af1c23
+    command: ["/bin/bash", "/app/minio-rclone.sh"]
+    service:
+      main:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: truenas-minio-rclone-configmap
+        subPath: minio-rclone.sh
+        mountPath: /app/minio-rclone.sh
+        defaultMode: 0775
+        readOnly: true
+      age:
+        enabled: true
+        type: secret
+        name: truenas-minio-rclone-secret
+        subPath: AGE_KEY
+        mountPath: /app/age_key
+        readOnly: true

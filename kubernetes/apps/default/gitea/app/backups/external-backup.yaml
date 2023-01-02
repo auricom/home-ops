@@ -75,7 +75,6 @@ spec:
                         done
                     done
                     echo "INFO: Backup done"
-                    curl -m 10 --retry 5 https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/Xk21W4T5mC?status=up&msg=OK&ping=
                   EOF
               volumeMounts:
                 - name: secret

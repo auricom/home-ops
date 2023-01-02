@@ -27,34 +27,17 @@ from datetime import datetime, timedelta
 from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
-parser = argparse.ArgumentParser(description='Import and activate a SSL/TLS certificate into FreeNAS.')
-parser.add_argument('-c', '--config', default=(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-    'deploy_config')), help='Path to config file, defaults to deploy_config.')
-args = parser.parse_args()
+API_KEY = os.getenv('CERTS_DEPLOY_API_KEY')
 
-if os.path.isfile(args.config):
-    config = configparser.ConfigParser()
-    config.read(args.config)
-    deploy = config['deploy']
-else:
-    print("Config file", args.config, "does not exist!")
-    exit(1)
-
-# We'll use the API key if provided
-API_KEY = deploy.get('api_key')
-# Otherwise fallback to basic password authentication
-USER = "root"
-PASSWORD = deploy.get('password')
-
-DOMAIN_NAME = deploy.get('cert_fqdn',socket.gethostname())
-FREENAS_ADDRESS = deploy.get('connect_host','localhost')
-VERIFY = deploy.getboolean('verify',fallback=False)
-PRIVATEKEY_PATH = deploy.get('privkey_path',"/root/.acme.sh/" + DOMAIN_NAME + "/" + DOMAIN_NAME + ".key")
-FULLCHAIN_PATH = deploy.get('fullchain_path',"/root/.acme.sh/" + DOMAIN_NAME + "/fullchain.cer")
-PROTOCOL = deploy.get('protocol','http://')
-PORT = deploy.get('port','80')
-FTP_ENABLED = deploy.getboolean('ftp_enabled',fallback=False)
-S3_ENABLED = deploy.getboolean('s3_enabled',fallback=False)
+DOMAIN_NAME = socket.gethostname()
+TRUENAS_ADDRESS = 'localhost'
+VERIFY = False
+PRIVATEKEY_PATH = os.getenv('CERTS_DEPLOY_PRIVATE_KEY_PATH')
+FULLCHAIN_PATH = os.getenv('CERTS_DEPLOY_FULLCHAIN_PATH')
+PROTOCOL = 'http://'
+PORT = '80'
+FTP_ENABLED = bool(os.getenv('CERTS_DEPLOY_FTP_ENABLED', ''))
+S3_ENABLED = bool(os.getenv('CERTS_DEPLOY_S3_ENABLED', ''))
 now = datetime.now()
 cert = "letsencrypt-%s-%s-%s-%s" %(now.year, now.strftime('%m'), now.strftime('%d'), ''.join(c for c in now.strftime('%X') if
 c.isdigit()))
@@ -69,10 +52,14 @@ if API_KEY:
   session.headers.update({
     'Authorization': f'Bearer {API_KEY}'
   })
-elif PASSWORD:
-  session.auth = (USER, PASSWORD)
 else:
-  print ("Unable to authenticate. Specify 'api_key' or 'password' in the config.")
+  print ("Unable to authenticate. Specify 'CERTS_DEPLOY_API_KEY' in the os Env.")
+  exit(1)
+if not PRIVATEKEY_PATH:
+  print ("Unable to find private key. Specify 'CERTS_DEPLOY_PRIVATE_KEY_PATH' in the os Env.")
+  exit(1)
+if not FULLCHAIN_PATH:
+  print ("Unable to find private key. Specify 'CERTS_DEPLOY_FULLCHAIN_PATH' in the os Env.")
   exit(1)
 
 # Load cert/key
@@ -83,7 +70,7 @@ with open(FULLCHAIN_PATH, 'r') as file:
 
 # Update or create certificate
 r = session.post(
-  PROTOCOL + FREENAS_ADDRESS + ':' + PORT + '/api/v2.0/certificate/',
+  PROTOCOL + TRUENAS_ADDRESS + ':' + PORT + '/api/v2.0/certificate/',
   verify=VERIFY,
   data=json.dumps({
     "create_type": "CERTIFICATE_CREATE_IMPORTED",
@@ -106,7 +93,7 @@ time.sleep(5)
 # Download certificate list
 limit = {'limit': 0} # set limit to 0 to disable paging in the event of many certificates
 r = session.get(
-  PROTOCOL + FREENAS_ADDRESS + ':' + PORT + '/api/v2.0/certificate/',
+  PROTOCOL + TRUENAS_ADDRESS + ':' + PORT + '/api/v2.0/certificate/',
   verify=VERIFY,
   params=limit
 )
@@ -134,7 +121,7 @@ if not new_cert_data:
 
 # Set our cert as active
 r = session.put(
-  PROTOCOL + FREENAS_ADDRESS + ':' + PORT + '/api/v2.0/system/general/',
+  PROTOCOL + TRUENAS_ADDRESS + ':' + PORT + '/api/v2.0/system/general/',
   verify=VERIFY,
   data=json.dumps({
     "ui_certificate": cert_id,
@@ -151,7 +138,7 @@ else:
 if FTP_ENABLED:
   # Set our cert as active for FTP plugin
   r = session.put(
-    PROTOCOL + FREENAS_ADDRESS + ':' + PORT + '/api/v2.0/ftp/',
+    PROTOCOL + TRUENAS_ADDRESS + ':' + PORT + '/api/v2.0/ftp/',
     verify=VERIFY,
     data=json.dumps({
       "ssltls_certfile": cert,
@@ -168,7 +155,7 @@ if FTP_ENABLED:
 if S3_ENABLED:
   # Set our cert as active for S3 plugin
   r = session.put(
-    PROTOCOL + FREENAS_ADDRESS + ':' + PORT + '/api/v2.0/s3/',
+    PROTOCOL + TRUENAS_ADDRESS + ':' + PORT + '/api/v2.0/s3/',
     verify=VERIFY,
     data=json.dumps({
       "certificate": cert_id,
@@ -205,7 +192,7 @@ if cert_id in cert_ids_same_san:
 # Delete expired and old certificates with same SAN from freenas
 for cid in (cert_ids_same_san | cert_ids_expired):
   r = session.delete(
-    PROTOCOL + FREENAS_ADDRESS + ':' + PORT + '/api/v2.0/certificate/id/' + str(cid),
+    PROTOCOL + TRUENAS_ADDRESS + ':' + PORT + '/api/v2.0/certificate/id/' + str(cid),
     verify=VERIFY
   )
 
@@ -224,7 +211,7 @@ for cid in (cert_ids_same_san | cert_ids_expired):
 # If everything goes right, the request fails with a ConnectionError
 try:
   r = session.post(
-    PROTOCOL + FREENAS_ADDRESS + ':' + PORT + '/api/v2.0/system/general/ui_restart',
+    PROTOCOL + TRUENAS_ADDRESS + ':' + PORT + '/api/v2.0/system/general/ui_restart',
     verify=VERIFY
   )
 

@@ -33,8 +33,6 @@ spec:
                   if [[ $QBITTORRENT_POD == *"qbittorrent"* ]]; then
                     kubectl cp /tmp/ipfilter.dat default/$QBITTORRENT_POD:/config/ipfilter.dat
                     kubectl rollout restart deployment qbittorrent --namespace default
-                    curl http://uptime-kuma.default.svc.cluster.local.:3001/api/push/6RUDha9bDp?status=up&msg=OK&ping=
-                    sleep 5
                   else
                     echo "qbittorrent deployment not found"
                     exit 1

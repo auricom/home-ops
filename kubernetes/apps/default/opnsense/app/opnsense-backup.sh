@@ -29,5 +29,3 @@ curl -fsSL \
     -H "Content-Type: text/xml" \
     -H "Authorization: AWS ${AWS_ACCESS_KEY_ID}:${http_signature}" \
     "${S3_URL}/${http_filepath}"
-
-test $? -eq 0 && curl -m 10 --retry 5 https://uptime-kuma.${SECRET_CLUSTER_DOMAIN}/api/push/14g69yYBhu?status=up&msg=OK&ping=

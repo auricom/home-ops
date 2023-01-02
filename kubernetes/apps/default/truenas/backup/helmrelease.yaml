@@ -1,0 +1,90 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: truenas-backup
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        concurrencyPolicy: Forbid
+        schedule: "@daily"
+    restartPolicy: OnFailure
+    image:
+      repository: ghcr.io/auricom/kubectl
+      tag: 1.26.0@sha256:f512e3008d0492cbae7aac6eaccc21b13d723374715aaedd59d352d840f0229c
+    command: ["/bin/bash", "/app/truenas-backup.sh"]
+    env:
+      HOSTNAME: truenas
+      SECRET_DOMAIN: ${SECRET_DOMAIN}
+      SECRET_CLUSTER_DOMAIN: ${SECRET_CLUSTER_DOMAIN}
+    envFrom:
+      - secretRef:
+          name: truenas-backup-secret
+    service:
+      main:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: truenas-backup-configmap
+        subPath: truenas-backup.sh
+        mountPath: /app/truenas-backup.sh
+        defaultMode: 0775
+        readOnly: true
+      ssh:
+        enabled: true
+        type: secret
+        name: truenas-backup-secret
+        subPath: SSH_KEY
+        mountPath: /opt/id_rsa
+        defaultMode: 0775
+        readOnly: true
+    additionalContainers:
+      truenas-remote-backup:
+        name: truenas-remote-backup
+        image: ghcr.io/auricom/kubectl:1.26.0@sha256:f512e3008d0492cbae7aac6eaccc21b13d723374715aaedd59d352d840f0229c
+        command: ["/bin/bash", "/app/truenas-backup.sh"]
+        env:
+          - name: HOSTNAME
+            value: truenas-remote
+          - name: SECRET_DOMAIN
+            value: ${SECRET_DOMAIN}
+          - name: SECRET_CLUSTER_DOMAIN
+            value: ${SECRET_CLUSTER_DOMAIN}
+        envFrom:
+          - secretRef:
+              name: truenas-backup-secret
+        volumeMounts:
+          - name: config
+            readOnly: true
+            mountPath: /app/truenas-backup.sh
+            subPath: truenas-backup.sh
+          - name: ssh
+            readOnly: true
+            mountPath: /opt/id_rsa
+            subPath: SSH_KEY

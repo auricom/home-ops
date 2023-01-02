@@ -5,9 +5,3 @@ kind: Kustomization
 namespace: default
 resources:
   - ./external-backup.yaml
-configMapGenerator:
-  - name: postgres-external-backup
-    files:
-      - ./00-webhook
-generatorOptions:
-  disableNameSuffixHash: true
