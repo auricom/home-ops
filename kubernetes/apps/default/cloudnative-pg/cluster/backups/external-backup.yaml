@@ -46,15 +46,8 @@ spec:
               volumeMounts:
                 - name: backups
                   mountPath: /backups
-                - name: files
-                  subPath: 00-webhook
-                  mountPath: /hooks/00-webhook
           volumes:
             - name: backups
               nfs:
                 server: "${LOCAL_LAN_TRUENAS}"
                 path: /mnt/storage/backups/postgresql
-            - name: files
-              configMap:
-                name: postgres-external-backup
-                defaultMode: 0555
