@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: lycheeorg/lychee-laravel
-      tag: v4.6.5
+      tag: v4.7.0
     env:
       TIMEZONE: ${TIMEZONE}
       APP_NAME: Lychee
