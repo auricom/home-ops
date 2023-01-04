@@ -77,12 +77,12 @@ identity_providers:
         redirect_uris:
           ["https://docs.${SECRET_CLUSTER_DOMAIN}/auth/oidc.callback"]
         userinfo_signing_algorithm: none
-      # - id: minio
-      #   description: Minio
-      #   secret: "${SECRET_MINIO_OAUTH_CLIENT_SECRET}"
-      #   public: false
-      #   authorization_policy: two_factor
-      #   pre_configured_consent_duration: 1y
-      #   scopes: ["openid", "profile", "groups", "email"]
-      #   redirect_uris: ["https://minio.${SECRET_CLUSTER_DOMAIN}/oauth_callback"]
-      #   userinfo_signing_algorithm: none
+      - id: immich
+        description: Immich
+        secret: "${SECRET_IMMICH_OAUTH_CLIENT_SECRET}"
+        public: false
+        authorization_policy: two_factor
+        pre_configured_consent_duration: 1y
+        scopes: ["openid", "profile", "email"]
+        redirect_uris: ["https://photos.${SECRET_CLUSTER_DOMAIN}/auth/login", "app.immich:/"]
+        userinfo_signing_algorithm: none
