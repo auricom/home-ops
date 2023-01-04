@@ -54,7 +54,6 @@ resources:
   - ./theme-park/ks.yaml
   - ./truenas/ks.yaml
   - ./unifi/ks.yaml
-  - ./uptime-kuma/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./vikunja/ks.yaml
   - ./wallabag/ks.yaml
