@@ -86,3 +86,12 @@ identity_providers:
         scopes: ["openid", "profile", "email"]
         redirect_uris: ["https://photos.${SECRET_CLUSTER_DOMAIN}/auth/login", "app.immich:/"]
         userinfo_signing_algorithm: none
+      - id: headlamp
+        description: Immich
+        secret: "${SECRET_HEADLAMP_OAUTH_CLIENT_SECRET}"
+        public: false
+        authorization_policy: two_factor
+        pre_configured_consent_duration: 1y
+        scopes: ["openid", "profile", "email"]
+        redirect_uris: ["https://headlamp.${SECRET_CLUSTER_DOMAIN}/oidc-callback"]
+        userinfo_signing_algorithm: none

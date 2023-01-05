@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app headlamp
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+      repository: ghcr.io/kinvolk/headlamp
+      tag: v0.14.1
+    args:
+      - "-in-cluster"
+      - "-plugins-dir=/headlamp/plugins"
+    env:
+      HEADLAMP_CONFIG_OIDC_CLIENT_ID: headlamp
+      HEADLAMP_CONFIG_OIDC_IDP_ISSUER_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/.well-known/openid-configuration
+      HEADLAMP_CONFIG_OIDC_CLIENT_SECRET: ${SECRET_HEADLAMP_OAUTH_CLIENT_SECRET}
+    service:
+      main:
+        ports:
+          http:
+            port: &port 4466
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /
+            port: *port
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          auth.home.arpa/enabled: "true"
+          hajimari.io/icon: mdi:kubernetes
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    resources:
+      requests:
+        cpu: 15m
+        memory: 324M
+      limits:
+        memory: 604M
