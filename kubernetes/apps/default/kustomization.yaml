@@ -19,6 +19,7 @@ resources:
   - ./gitea/ks.yaml
   - ./glauth/ks.yaml
   - ./hajimari/ks.yaml
+  - ./headlamp/ks.yaml
   - ./home-assistant/ks.yaml
   - ./immich/ks.yaml
   - ./invidious/ks.yaml
