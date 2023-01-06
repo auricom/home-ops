@@ -2,11 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "description": "Cert-Manager image (for CRDs) and chart",
-      "groupName": "Cert-Manager",
-      "matchPackagePatterns": ["cert-manager"],
-      "matchDatasources": ["docker", "helm"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "description": "External Snapshotter charts",
+      "groupName": "External Snapshotter",
+      "matchPackageNames": ["snapshot-controller", "snapshot-validation-webhook"],
+      "matchDatasources": ["helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": true
     },
     {
@@ -18,11 +20,13 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Node Feature Discovery kustomization (for CRDs) and chart",
-      "groupName": "Node Feature Discovery",
-      "matchPackagePatterns": ["node-feature-discovery"],
-      "matchDatasources": ["helm", "github-tags"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "description": "Immich images",
+      "groupName": "Immich",
+      "matchPackagePatterns": ["immich"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": true
     },
     {
@@ -37,15 +41,6 @@
       "description": "Thanos image and chart - mismatched versions",
       "groupName": "Thanos",
       "matchPackagePatterns": ["thanos"],
-      "matchDatasources": ["docker", "github-releases", "helm"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
-      "separateMinorPatch": false
-    },
-    {
-      "description": "Vector image and chart - mismatched versions",
-      "groupName": "Vector",
-      "matchPackagePatterns": ["vector"],
       "matchDatasources": ["docker", "github-releases", "helm"],
       "matchUpdateTypes": ["minor", "patch"],
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
