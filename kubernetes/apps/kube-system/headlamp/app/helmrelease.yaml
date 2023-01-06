@@ -35,7 +35,7 @@ spec:
       - "-plugins-dir=/headlamp/plugins"
     env:
       HEADLAMP_CONFIG_OIDC_CLIENT_ID: headlamp
-      HEADLAMP_CONFIG_OIDC_IDP_ISSUER_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/.well-known/openid-configuration
+      HEADLAMP_CONFIG_OIDC_IDP_ISSUER_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization
       HEADLAMP_CONFIG_OIDC_CLIENT_SECRET: ${SECRET_HEADLAMP_OAUTH_CLIENT_SECRET}
     service:
       main:
