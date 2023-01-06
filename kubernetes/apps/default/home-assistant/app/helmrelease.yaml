@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/home-assistant
-      tag: 2022.12.9@sha256:796eb4dd0c65eb1d01476a719684016f7f2bafbfbf6269bcadec6a7fb7321b6f
+      tag: 2023.1.1@sha256:4e689b293475a28421119e3a6f20be50ffee7ab55f72dfeca145bcaf72d2d0c7
     env:
       TZ: "${TIMEZONE}"
       POSTGRES_HOST: ${POSTGRES_HOST}
