@@ -27,5 +27,6 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    providerRegex: |
-      ^talos-node-[1-9]$
+    providerRegex: "^talos-node-[1-9]"
+    namespace: "kube-system"
+    bypassDnsResolution: true
