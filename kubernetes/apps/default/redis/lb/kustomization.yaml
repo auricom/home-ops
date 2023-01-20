@@ -4,10 +4,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 resources:
-  - ./configmap.yaml
-  - ./microservices
-  - ./machine-learning
-  - ./secret.sops.yaml
-  - ./server
-  - ./volume.yaml
-  - ./web
+  - helmrelease.yaml
+configMapGenerator:
+  - name: redis-lb-configmap
+    files:
+      - haproxy.cfg=./config/haproxy.cfg
+configurations:
+  - ./patches/kustomizeconfig.yaml

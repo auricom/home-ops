@@ -13,11 +13,6 @@ spec:
   nfs:
     server: ${LOCAL_LAN_TRUENAS}
     path: /mnt/storage/apps/immich
-  mountOptions:
-    - nfsvers=4.2
-    - nconnect=8
-    - hard
-    - noatime
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
