@@ -47,6 +47,7 @@ resources:
   - ./redis/ks.yaml
   - ./resilio-sync/ks.yaml
   - ./sabnzbd/ks.yaml
+  - ./semaphore/ks.yaml
   - ./sharry/ks.yaml
   - ./sonarr/ks.yaml
   - ./smtp-relay/ks.yaml
