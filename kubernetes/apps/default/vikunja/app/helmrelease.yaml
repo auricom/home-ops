@@ -89,7 +89,7 @@ spec:
     additionalContainers:
       api:
         name: api
-        image: vikunja/api:0.20.1
+        image: vikunja/api:0.20.2
         imagePullPolicy: IfNotPresent
         env:
           - name: VIKUNJA_SERVICE_JWTSECRET
@@ -119,5 +119,5 @@ spec:
             subPath: Vikunja.yaml
       frontend:
         name: frontend
-        image: vikunja/frontend:0.20.2
+        image: vikunja/frontend:0.20.3
     imagePullPolicy: IfNotPresent
