@@ -31,7 +31,7 @@ spec:
       nameOverride: *app
     image:
       repository: ghcr.io/paperless-ngx/paperless-ngx
-      tag: 1.11.3
+      tag: 1.12.1
     env:
       COMPOSE_PROJECT_NAME: paperless
       PAPERLESS_CONSUMER_POLLING: "60"
