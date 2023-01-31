@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: ghcr.io/auricom/libreddit
-      tag: 0.28.0@sha256:d09a3a64f4332f034863b35358c0eecda17b5dcc846cc6809abe3d37b132b1b2
+      tag: 0.28.1@sha256:25a0b2bcc945debb0d8f16575153c493dd0051c1c115b179138b2a4ad698af31
     service:
       main:
         ports:
