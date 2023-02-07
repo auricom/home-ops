@@ -30,7 +30,7 @@ spec:
     container_runtime: containerd
     image:
       repository: crowdsecurity/crowdsec
-      tag: v1.4.5
+      tag: v1.4.6
     lapi:
       env:
         # by default disable the agent for local API pods
