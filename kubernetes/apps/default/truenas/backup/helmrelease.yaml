@@ -35,7 +35,7 @@ spec:
     restartPolicy: OnFailure
     image:
       repository: ghcr.io/auricom/kubectl
-      tag: 1.26.1@sha256:7118649011f2c437e23feec4aaa045329a6c144a8d6fb6cc524ff367cb279ec2
+      tag: 1.26.1@sha256:6ba1d477d1d23537905660bfdf124cb93512d52286afb74c09a745e62e16bdad
     command: ["/bin/bash", "/app/truenas-backup.sh"]
     env:
       HOSTNAME: truenas
@@ -67,7 +67,7 @@ spec:
     additionalContainers:
       truenas-remote-backup:
         name: truenas-remote-backup
-        image: ghcr.io/auricom/kubectl:1.26.1@sha256:7118649011f2c437e23feec4aaa045329a6c144a8d6fb6cc524ff367cb279ec2
+        image: ghcr.io/auricom/kubectl:1.26.1@sha256:6ba1d477d1d23537905660bfdf124cb93512d52286afb74c09a745e62e16bdad
         command: ["/bin/bash", "/app/truenas-backup.sh"]
         env:
           - name: HOSTNAME
