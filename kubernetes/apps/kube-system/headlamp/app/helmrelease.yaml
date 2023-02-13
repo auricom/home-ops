@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: ghcr.io/kinvolk/headlamp
-      tag: v0.14.1
+      tag: v0.15.0
     args:
       - "-in-cluster"
       - "-plugins-dir=/headlamp/plugins"
