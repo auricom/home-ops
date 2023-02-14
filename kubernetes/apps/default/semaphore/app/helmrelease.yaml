@@ -38,7 +38,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/semaphoreui/semaphore
-      tag: v2.8.80
+      tag: v2.8.81
     env:
       SEMAPHORE_LDAP_ACTIVATED: "no"
       SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
