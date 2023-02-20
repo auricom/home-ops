@@ -7,4 +7,4 @@ collections:
   - name: kubernetes.core
     version: 2.4.0
   - name: community.sops
-    version: 1.6.0
+    version: 1.6.1
