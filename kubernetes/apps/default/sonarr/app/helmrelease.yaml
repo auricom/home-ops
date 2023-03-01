@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/sonarr-develop
-      tag: 4.0.0.388@sha256:30183b05125afe3e44b6f59ecb7c37491746813ed31b14352ba75c446a3f9ffb
+      tag: 4.0.0.391@sha256:b7770a7d7f7c1d29397892bf9bd6d8c12fe52e2ecea193b081801f5bbf0fc226
     env:
       TZ: "${TIMEZONE}"
       PUSHOVER_DEBUG: "false"
