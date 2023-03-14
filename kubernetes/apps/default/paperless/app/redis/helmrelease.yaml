@@ -27,7 +27,7 @@ spec:
       nameOverride: *app
     image:
       repository: docker.io/library/redis
-      tag: 7.0.8
+      tag: 7.0.9
     service:
       main:
         ports:
