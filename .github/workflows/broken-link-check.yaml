@@ -34,13 +34,15 @@ jobs:
             --no-progress
             --exclude-mail
             './**/*.md'
+
       - name: Find Link Checker Issue
         id: broken-link-check-issue
-        uses: micalevisk/last-issue-action@044e1cb7e9a4dde20e22969cb67818bfca0797be # renovate: tag=2.0.0
+        uses: micalevisk/last-issue-action@044e1cb7e9a4dde20e22969cb67818bfca0797be # renovate: tag=v2.0.0
         with:
           state: open
           labels: |
             broken-links
+
       - name: Update Issue
         uses: peter-evans/create-issue-from-file@433e51abf769039ee20ba1293a088ca19d573b7f # renovate: tag=v4.0.1
         with:

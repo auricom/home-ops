@@ -66,7 +66,7 @@
     {
       "matchDatasources": ["docker"],
       "versioning": "loose",
-      "matchPackagePatterns": ["changedetection", "immich", "plex", "qbittorrent"]
+      "matchPackagePatterns": ["changedetection", "qbittorrent"]
     },
     {
       "matchDatasources": ["docker"],
