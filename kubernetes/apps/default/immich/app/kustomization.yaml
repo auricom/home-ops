@@ -8,6 +8,7 @@ resources:
   - ./microservices
   - ./machine-learning
   - ./secret.sops.yaml
+  - ./redis
   - ./server
   - ./volume.yaml
   - ./web
