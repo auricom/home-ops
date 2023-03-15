@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app github-pushover-notifier
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      replicas: 1
+      strategy: Recreate
+    image:
+      repository: ghcr.io/auricom/github-pushover-notifier
+      tag: rolling@sha256:5b9f1ba592ec1bb0b964c3e1f01f37f6d8cd2ed967c23b0db97bfccc7470b820
+    service:
+      main:
+        enabled: false
+    envFrom:
+      - secretRef:
+          name: github-pushover-notifier-secret
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+    resources:
+      requests:
+        cpu: 50m
+        memory: 250Mi
+      limits:
+        memory: 250Mi
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: github-pushover-notifier-configmap
+        mountPath: /app/config.yaml
+        subPath: config.yaml
