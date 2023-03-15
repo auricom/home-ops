@@ -35,7 +35,7 @@ spec:
     restartPolicy: OnFailure
     image:
       repository: ghcr.io/auricom/rclone
-      tag: 1.60.1@sha256:e8452c4e2e1c7e9f41cacc73e52825ec78be0f9e74310c487acdc518a5900690
+      tag: 1.60.1@sha256:a6ed96dfef507cfacf3ddbd9669d1b8970173544099cf301536d54f75b823797
     command: ["/bin/bash", "/app/minio-rclone.sh"]
     service:
       main:
