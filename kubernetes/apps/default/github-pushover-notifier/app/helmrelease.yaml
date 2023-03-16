@@ -32,10 +32,12 @@ spec:
       strategy: Recreate
     image:
       repository: ghcr.io/auricom/github-pushover-notifier
-      tag: rolling@sha256:5b9f1ba592ec1bb0b964c3e1f01f37f6d8cd2ed967c23b0db97bfccc7470b820
+      tag: rolling@sha256:7acc3accde9c9d07a2a128c02b7032b10a65b1776d10fde4c7132a55e3798bd2
     service:
       main:
         enabled: false
+    env:
+      POSTGRES_HOST: ${POSTGRES_HOST}
     envFrom:
       - secretRef:
           name: github-pushover-notifier-secret

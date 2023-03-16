@@ -6,6 +6,8 @@ namespace: default
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
+patchesStrategicMerge:
+  - ./patches/postgres.yaml
 configMapGenerator:
   - name: github-pushover-notifier-configmap
     files:
