@@ -32,7 +32,7 @@ spec:
       strategy: Recreate
     image:
       repository: ghcr.io/auricom/github-pushover-notifier
-      tag: rolling@sha256:f4d30308d53ca11f435d4ba521e85f468483c3b7d923d5d7481ba0b84acf8117
+      tag: rolling@sha256:3c72b0a080e726c081c08a1fed1e17fdf8667cf4fb4e67d3fb0104dbc9c8f966
     service:
       main:
         enabled: false
