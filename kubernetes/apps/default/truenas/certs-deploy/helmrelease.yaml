@@ -86,7 +86,7 @@ spec:
           - name: SECRET_DOMAIN
             value: ${SECRET_DOMAIN}
           - name: CERTS_DEPLOY_S3_ENABLED
-            value: "True"
+            value: "False"
         envFrom:
           - secretRef:
               name: truenas-certs-deploy-secret

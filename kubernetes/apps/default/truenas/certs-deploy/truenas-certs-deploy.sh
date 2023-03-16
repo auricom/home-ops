@@ -7,7 +7,11 @@ mkdir -p ~/.ssh
 cp /opt/id_rsa ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
-printf -v truenas_api_key %q "$TRUENAS_API_KEY"
+if [ "${HOSTNAME}" == "truenas" ]; then
+    printf -v truenas_api_key %q "$TRUENAS_API_KEY"
+elif [ "${HOSTNAME}" == "truenas-remote" ]; then
+    printf -v truenas_api_key %q "$TRUENAS_REMOTE_API_KEY"
+fi
 printf -v cert_deploy_s3_enabled_str %q "$CERTS_DEPLOY_S3_ENABLED"
 printf -v pushover_api_key_str %q "$PUSHOVER_API_KEY"
 printf -v pushover_user_key_str %q "$PUSHOVER_USER_KEY"
@@ -33,7 +37,9 @@ SCRIPT_PATH="${HOME}/scripts"
 export CERTS_DEPLOY_API_KEY=$1
 export CERTS_DEPLOY_PRIVATE_KEY_PATH=${CERTIFICATE_PATH}/key.pem
 export CERTS_DEPLOY_FULLCHAIN_PATH=${CERTIFICATE_PATH}/fullchain.pem
-export CERTS_DEPLOY_S3_ENABLED=$2
+if [ "$2" == "True" ]; then
+    export CERTS_DEPLOY_S3_ENABLED=$2
+fi
 
 # Check if cert is older than 69 days
 result=$(find ${CERTS_DEPLOY_PRIVATE_KEY_PATH} -mtime +69)
@@ -47,9 +53,11 @@ if [[ "$result" == "${CERTS_DEPLOY_PRIVATE_KEY_PATH}" ]]; then
         --form-string "message=Certificate on $TARGET is older than 69 days. Verify than it has been renewed by ACME client on opnsense and that the upload automation has been executed" \
         https://api.pushover.net/1/messages.json
 else
-    echo "checking if $TARGET expires in less than $DAYS days"
-    result=(openssl x509 -checkend $(( 24*3600*$DAYS )) -noout -in <(openssl s_client -showcerts -connect $TARGET:443 </dev/null 2>/dev/null | openssl x509 -outform PEM))
-    if [ "$result" == "Certificate will expire" ]; then
+    echo "INFO checking if $TARGET expires in less than $DAYS days"
+    set +o errexit
+    openssl x509 -checkend $(( 24*3600*$DAYS )) -noout -in <(openssl s_client -showcerts -connect $TARGET:443 </dev/null 2>/dev/null | openssl x509 -outform PEM)
+    if [[ $? -ne 0 ]]; then
+        set -o errexit
         echo "INFO - Certificate expires in less than $DAYS days"
         echo "INFO - Deploying new certificate"
         # Deploy certificate (truenas UI & minio)

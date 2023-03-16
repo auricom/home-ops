@@ -8,10 +8,6 @@ database and captured in a backup.
 Requires paths to the cert (including the any intermediate CA certs) and private key,
 and username, password, and FQDN of your FreeNAS system.
 
-Your private key should only be readable by root, so this script must run with root
-privileges.  And, since it contains your root password, this script itself should
-only be readable by root.
-
 Source: https://github.com/danb35/deploy-freenas
 """
 
