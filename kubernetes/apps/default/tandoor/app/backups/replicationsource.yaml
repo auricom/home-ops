@@ -16,6 +16,10 @@ spec:
     cacheCapacity: 2Gi
     volumeSnapshotClassName: csi-ceph-blockpool
     storageClassName: rook-ceph-block
+    moverSecurityContext:
+      runAsUser: 70
+      runAsGroup: 70
+      fsGroup: 70
     retain:
       daily: 10
       within: 3d
