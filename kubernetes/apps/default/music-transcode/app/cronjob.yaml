@@ -21,7 +21,7 @@ spec:
           initContainers:
           containers:
             - name: transcode-incremental
-              image: ghcr.io/auricom/freac:1.1.7@sha256:d0c7273771f117a28389961f205656699f6d13f7ee5be5cec46f35079b75b74f
+              image: ghcr.io/auricom/freac:1.1.7@sha256:6f2f01265beb627567457d74a9df2f24c0a967baf1f0f9232626a6b903e82a0f
               imagePullPolicy: IfNotPresent
               env:
                 - name: TRANSCODE_INPUT_DIR
