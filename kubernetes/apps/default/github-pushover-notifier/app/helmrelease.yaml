@@ -28,11 +28,16 @@ spec:
     keepHistory: false
   values:
     controller:
-      replicas: 1
-      strategy: Recreate
+      type: cronjob
+      cronjob:
+        concurrencyPolicy: Forbid
+        schedule: "23 */3 * * *"
     image:
       repository: ghcr.io/auricom/github-pushover-notifier
-      tag: rolling@sha256:5c4758cc69fc30c24cf3ea96533cf90247465a67650b49e8e39e708c17478354
+      tag: rolling@sha256:347efbd067f15e78bf6847b1b64d241abc483ce7c3063091ba65d0572a7792fa
+    command:
+      - python
+      - /app/github-pushover-notifier.py
     service:
       main:
         enabled: false
@@ -56,3 +61,9 @@ spec:
         name: github-pushover-notifier-configmap
         mountPath: /app/config.yaml
         subPath: config.yaml
+      repositories:
+        enabled: true
+        type: configMap
+        name: github-pushover-notifier-configmap
+        mountPath: /app/github-pushover-notifier.py
+        subPath: github-pushover-notifier.py

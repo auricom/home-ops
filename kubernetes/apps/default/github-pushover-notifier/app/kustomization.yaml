@@ -12,5 +12,6 @@ configMapGenerator:
   - name: github-pushover-notifier-configmap
     files:
       - ./config/config.yaml
+      - ./config/github-pushover-notifier.py
 generatorOptions:
   disableNameSuffixHash: true
