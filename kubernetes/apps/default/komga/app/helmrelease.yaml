@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: gotson/komga
-      tag: "0.164.0"
+      tag: "0.165.0"
     env:
       TZ: "${TIMEZONE}"
       SERVER_PORT: &port 8080
