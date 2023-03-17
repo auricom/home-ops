@@ -34,7 +34,7 @@ spec:
         schedule: "23 */3 * * *"
     image:
       repository: ghcr.io/auricom/github-pushover-notifier
-      tag: rolling@sha256:efafc56accb16132ffb1404566e4440b8d6822f4bd5f301abd73d7884d75fe4e
+      tag: rolling@sha256:4f043d1f49ac9bb4ac2e8d4ea73910285f29e1431eb37109aa15548cd53adb95
     command:
       - python
       - /app/github-pushover-notifier.py
