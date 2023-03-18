@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app pushover-notifier-ankr-queries
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        concurrencyPolicy: Forbid
+        schedule: "*/30 * * * *"
+    image:
+      repository: ghcr.io/auricom/python
+      tag: rolling@sha256:7bd5bf78236f5e7e0cc61b87e0dbd745bdc3588e3555b811960624930b9799f0
+    command:
+      - python
+      - /app/script.py
+    service:
+      main:
+        enabled: false
+    env:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+    envFrom:
+      - secretRef:
+          name: pushover-notifier-ankr-queries-secret
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+    resources:
+      requests:
+        cpu: 50m
+        memory: 250Mi
+      limits:
+        memory: 250Mi
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: pushover-notifier-ankr-queries-configmap
+        mountPath: /app/config.yaml
+        subPath: config.yaml
+      script:
+        enabled: true
+        type: configMap
+        name: pushover-notifier-ankr-queries-configmap
+        mountPath: /app/script.py
+        subPath: script.py

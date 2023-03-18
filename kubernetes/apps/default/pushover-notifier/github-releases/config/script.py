@@ -27,7 +27,7 @@ conn = psycopg2.connect(
 def create_table():
     with conn.cursor() as cursor:
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS release_tracker (
+        CREATE TABLE IF NOT EXISTS github_releases (
             repo_name VARCHAR(255) PRIMARY KEY,
             latest_release VARCHAR(255),
             release_date TIMESTAMP
@@ -61,12 +61,12 @@ def main():
 
         with conn.cursor() as cursor:
             cursor.execute("""
-            INSERT INTO release_tracker (repo_name, latest_release, release_date)
+            INSERT INTO github_releases (repo_name, latest_release, release_date)
             VALUES (%s, %s, %s)
             ON CONFLICT (repo_name) DO UPDATE
             SET latest_release = EXCLUDED.latest_release,
                 release_date = EXCLUDED.release_date
-            WHERE EXCLUDED.release_date > release_tracker.release_date
+            WHERE EXCLUDED.release_date > github_releases.release_date
             RETURNING *
             """, (repo_name, latest_tag, release_date))
             result = cursor.fetchone()

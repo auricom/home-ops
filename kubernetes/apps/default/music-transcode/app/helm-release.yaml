@@ -36,7 +36,19 @@ spec:
     image:
       repository: ghcr.io/auricom/freac
       tag: 1.1.7@sha256:6f2f01265beb627567457d74a9df2f24c0a967baf1f0f9232626a6b903e82a0f
-    command: ["/app/transcode.sh -c", "/app/transcode.sh -r"]
+    command:
+      - "/bin/bash"
+      - "-c"
+      - |
+        #!/bin/bash
+
+        set -o errexit
+        set -o nounset
+
+        cd /app
+
+        /app/transcode.sh -c
+        /app/transcode.sh -r
     env:
       TRANSCODE_INPUT_DIR: /mnt/music/
       TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded/
