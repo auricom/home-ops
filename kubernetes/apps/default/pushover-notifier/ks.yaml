@@ -3,12 +3,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: cluster-apps-github-pushover-notifier
+  name: cluster-apps-pushover-notifier-github-releases
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
-  path: ./kubernetes/apps/default/github-pushover-notifier/app
+  path: ./kubernetes/apps/default/pushover-notifier/github-releases
   prune: true
   sourceRef:
     kind: GitRepository
@@ -16,7 +16,7 @@ spec:
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta1
       kind: HelmRelease
-      name: github-pushover-notifier
+      name: pushover-notifier-github-releases
       namespace: default
   interval: 30m
   retryInterval: 1m

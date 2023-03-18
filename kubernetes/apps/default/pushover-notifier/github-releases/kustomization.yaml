@@ -9,9 +9,9 @@ resources:
 patchesStrategicMerge:
   - ./patches/postgres.yaml
 configMapGenerator:
-  - name: github-pushover-notifier-configmap
+  - name: pushover-notifier-github-releases-configmap
     files:
       - ./config/config.yaml
-      - ./config/github-pushover-notifier.py
+      - ./config/script.py
 generatorOptions:
   disableNameSuffixHash: true

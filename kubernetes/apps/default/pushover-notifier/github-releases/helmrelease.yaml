@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: &app github-pushover-notifier
+  name: &app pushover-notifier-github-releases
   namespace: default
 spec:
   interval: 15m
@@ -33,11 +33,11 @@ spec:
         concurrencyPolicy: Forbid
         schedule: "23 */3 * * *"
     image:
-      repository: ghcr.io/auricom/github-pushover-notifier
-      tag: rolling@sha256:3ce89c7dcbbf1eaef98c2e2ae70b8ca6dd984ec56d018ed971938c95fd073557
+      repository: ghcr.io/auricom/python
+      tag: rolling@sha256:7bd5bf78236f5e7e0cc61b87e0dbd745bdc3588e3555b811960624930b9799f0
     command:
       - python
-      - /app/github-pushover-notifier.py
+      - /app/script.py
     service:
       main:
         enabled: false
@@ -45,7 +45,7 @@ spec:
       POSTGRES_HOST: ${POSTGRES_HOST}
     envFrom:
       - secretRef:
-          name: github-pushover-notifier-secret
+          name: pushover-notifier-github-releases-secret
     podAnnotations:
       reloader.stakater.com/auto: "true"
     resources:
@@ -58,12 +58,12 @@ spec:
       config:
         enabled: true
         type: configMap
-        name: github-pushover-notifier-configmap
+        name: pushover-notifier-github-releases-configmap
         mountPath: /app/config.yaml
         subPath: config.yaml
-      repositories:
+      script:
         enabled: true
         type: configMap
-        name: github-pushover-notifier-configmap
-        mountPath: /app/github-pushover-notifier.py
-        subPath: github-pushover-notifier.py
+        name: pushover-notifier-github-releases-configmap
+        mountPath: /app/script.py
+        subPath: script.py

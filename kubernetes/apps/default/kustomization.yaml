@@ -17,7 +17,6 @@ resources:
   - ./flood/ks.yaml
   - ./freshrss/ks.yaml
   - ./gitea/ks.yaml
-  - ./github-pushover-notifier/ks.yaml
   - ./glauth/ks.yaml
   - ./hajimari/ks.yaml
   - ./home-assistant/ks.yaml
@@ -40,6 +39,7 @@ resources:
   - ./paperless/ks.yaml
   - ./pgadmin/ks.yaml
   - ./prowlarr/ks.yaml
+  - ./pushover-notifier/ks.yaml
   - ./pyload/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml

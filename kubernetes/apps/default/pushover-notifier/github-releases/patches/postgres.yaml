@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: github-pushover-notifier
+  name: pushover-notifier-github-releases
   namespace: default
 spec:
   values:
@@ -20,4 +20,4 @@ spec:
                 key: password
         envFrom:
           - secretRef:
-              name: github-pushover-notifier-secret
+              name: pushover-notifier-github-releases-secret

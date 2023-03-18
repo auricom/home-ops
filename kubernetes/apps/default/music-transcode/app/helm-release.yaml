@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: music-transcode
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        concurrencyPolicy: Forbid
+        schedule: "@daily"
+    restartPolicy: OnFailure
+    image:
+      repository: ghcr.io/auricom/freac
+      tag: 1.1.7@sha256:6f2f01265beb627567457d74a9df2f24c0a967baf1f0f9232626a6b903e82a0f
+    command: ["/app/transcode.sh -c", "/app/transcode.sh -r"]
+    env:
+      TRANSCODE_INPUT_DIR: /mnt/music/
+      TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded/
+      TRANSCODE_FREAC_BIN: /app/freaccmd
+    service:
+      main:
+        enabled: false
+    persistence:
+      scripts:
+        enabled: true
+        type: configMap
+        name: music-transcode-configmap
+        subPath: transcode.sh
+        mountPath: /app/transcode.sh
+        defaultMode: 0775
+        readOnly: true
+      exclude:
+        enabled: true
+        type: configMap
+        name: music-transcode-configmap
+        subPath: transcode_exclude.cfg
+        mountPath: /app/transcode_exclude.cfg
+        defaultMode: 0775
+        readOnly: true
+      music:
+        enabled: true
+        type: nfs
+        mountPath: /mnt/music
+        path: /mnt/storage/music
+        server: ${LOCAL_LAN_TRUENAS}
+      music-transcoded:
+        enabled: true
+        type: nfs
+        mountPath: /mnt/music_transcoded
+        path: /mnt/storage/music_transcoded
+        server: ${LOCAL_LAN_TRUENAS}
