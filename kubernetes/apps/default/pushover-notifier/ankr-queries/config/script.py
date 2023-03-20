@@ -41,6 +41,7 @@ def send_pushover_notification(title, message):
     payload = {
         'token': PUSHOVER_API_TOKEN,
         'user': PUSHOVER_USER_KEY,
+        'html': 1,
         'title': title,
         'message': message
     }
@@ -85,7 +86,7 @@ def process_new_transactions(address, memo):
 
             send_pushover_notification(
                 f"New Transaction: {memo}",
-                f"Transaction Hash: {tx_hash}\nBlockchain: {blockchain}\nTimestamp: {timestamp}"
+                f"Transaction Hash: <a href=\"http://www.debank.com/profile/{address}/history\">{tx_hash}</a><br>Blockchain: {blockchain}<br>Timestamp: {timestamp}"
             )
 
 # Main function

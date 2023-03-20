@@ -1,3 +1,5 @@
 addresses:
   - address: "0xd14a28667d263efda2033ceb3b466399723c9c9c"
     memo: "@Defi_Maestro"
+  - address: "0xc880e1befe692db8b1c71357130f25630239e6fc"
+    memo: "@Defi_Maestro2"
