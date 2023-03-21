@@ -10,5 +10,6 @@ resources:
   - ./secret.sops.yaml
   - ./redis
   - ./server
+  - ./typesense
   - ./volume.yaml
   - ./web
