@@ -32,7 +32,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: public.ecr.aws/docker/library/haproxy
-      tag: 2.7.4-alpine
+      tag: 2.7.5-alpine
     service:
       main:
         type: LoadBalancer
