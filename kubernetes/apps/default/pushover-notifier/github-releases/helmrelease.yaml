@@ -34,7 +34,7 @@ spec:
         schedule: "23 */3 * * *"
     image:
       repository: ghcr.io/auricom/python
-      tag: rolling@sha256:9adb0e3adb6c522e2bc5ae6f9e15292bf4b83fdfd84358d702fe59ebf7b795f6
+      tag: rolling@sha256:5d1e6a530ccc76d0e1bede38bdc2d5d6b89ab1fc994980d1dd9b6d8761c39427
     command:
       - python
       - /app/script.py
