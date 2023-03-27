@@ -31,14 +31,13 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/dgtlmoon/changedetection.io
-      tag: 0.40.3
+      tag: "0.41"
     env:
       TZ: ${TIMEZONE}
       PORT: &port 5000
-      USE_X_SETTINGS: 1
-      PLAYWRIGHT_DRIVER_URL: ws://localhost:3000/?stealth=1&--disable-web-security=true&--user-data-dir=~/tmp/cache
-      PUID: 1000
-      PGID: 1000
+      PUID: 568
+      PGID: 568
+      BASE_URL: https://changedetection.${SECRET_CLUSTER_DOMAIN}
     service:
       main:
         ports:
@@ -49,6 +48,8 @@ spec:
         enabled: true
         ingressClassName: nginx
         annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
           hajimari.io/icon: mdi:web-sync
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
@@ -59,10 +60,10 @@ spec:
           - hosts:
               - *host
     podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: "OnRootMismatch"
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -73,4 +74,4 @@ spec:
         cpu: 10m
         memory: 100Mi
       limits:
-        memory: 250Mi
+        memory: 500Mi
