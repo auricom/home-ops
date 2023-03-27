@@ -28,8 +28,7 @@ spec:
     keepHistory: false
   values:
     controller:
-      replicas: 2
-      strategy: RollingUpdate
+      type: statefulset
       annotations:
         reloader.stakater.com/auto: "true"
     image:
@@ -61,7 +60,7 @@ spec:
       startup:
         enabled: false
     persistence:
-      librconfigary:
+      config:
         enabled: true
         existingClaim: immich-config
         mountPath: /config
@@ -69,5 +68,3 @@ spec:
       requests:
         cpu: 100m
         memory: 250Mi
-      limits:
-        memory: 1000Mi

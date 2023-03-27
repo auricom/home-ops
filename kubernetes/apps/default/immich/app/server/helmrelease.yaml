@@ -28,7 +28,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: immich-redis
-    - name: immich-typsense
+    - name: immich-typesense
   values:
     initContainers:
       01-init-db:
@@ -74,5 +74,3 @@ spec:
       requests:
         cpu: 100m
         memory: 250Mi
-      limits:
-        memory: 1000Mi
