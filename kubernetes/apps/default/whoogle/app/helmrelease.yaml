@@ -32,7 +32,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: docker.io/benbusby/whoogle-search
-      tag: 0.8.1
+      tag: 0.8.2
     env:
       WHOOGLE_ALT_TW: nitter.${SECRET_CLUSTER_DOMAIN}
       WHOOGLE_ALT_YT: invidious.${SECRET_CLUSTER_DOMAIN}
