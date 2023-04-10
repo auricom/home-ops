@@ -13,7 +13,7 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 10
     repository: lychee-restic
-    cacheCapacity: 2Gi
+    cacheCapacity: 20Gi
     volumeSnapshotClassName: csi-ceph-blockpool
     storageClassName: rook-ceph-block
     moverSecurityContext:
