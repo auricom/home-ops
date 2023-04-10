@@ -28,16 +28,27 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: vabene1111/recipes
-      tag: "1.4.8"
+      repository: ghcr.io/auricom/recipes
+      tag: "1.4.8@sha256:52d1193cd7f27672b7f6334a36a78c2d2c1d86981f992896edb60b6a13e48a2d"
     envFrom:
       - secretRef:
           name: *app
+    command:
+      - /app/venv/bin/gunicorn
+      - -b
+      - :8888
+      - --access-logfile
+      - "-"
+      - --error-logfile
+      - "-"
+      - --log-level
+      - INFO
+      - recipes.wsgi
     service:
       main:
         ports:
           http:
-            port: 80
+            port: &port 8080
     ingress:
       main:
         enabled: true
@@ -61,7 +72,7 @@ spec:
       files:
         enabled: true
         existingClaim: tandoor-files
-        mountPath: /opt/recipes/mediafiles
+        mountPath: /app/mediafiles
       nginx-config:
         enabled: "true"
         mountPath: /etc/nginx/nginx.conf
@@ -72,29 +83,54 @@ spec:
             name: *app
       static:
         enabled: true
-        mountPath: /opt/recipes/staticfiles
+        mountPath: /app/staticfiles
+        type: emptyDir
+      cache:
+        enabled: true
+        mountPath: /mnt/cache
         type: emptyDir
     podSecurityContext:
-      runAsUser: 0
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     podAnnotations:
       configMap.reloader.stakater.com/reload: *app
       secret.reloader.stakater.com/reload: *app
-    securityContext:
-      runAsUser: 65534
     resources:
       requests:
         cpu: 100m
         memory: 256Mi
       limits:
         memory: 512Mi
+    initContainers:
+      init-migrate:
+        image: ghcr.io/auricom/recipes:1.4.8@sha256:52d1193cd7f27672b7f6334a36a78c2d2c1d86981f992896edb60b6a13e48a2d
+        envFrom:
+          - secretRef:
+              name: *app
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          source /app/venv/bin/activate
+          echo "Updating database"
+          python3 /app/manage.py migrate
+          python3 /app/manage.py collectstatic_js_reverse
+          python3 /app/manage.py collectstatic --noinput
+        volumeMounts:
+
+          - name: static
+            mountPath: /app/static
     additionalContainers:
       nginx:
         name: nginx
-        image: nginx:1.23.4
+        image: nginxinc/nginx-unprivileged:1.22.1-alpine
         imagePullPolicy: IfNotPresent
         ports:
           - name: http
-            containerPort: 80
+            containerPort: *port
             protocol: TCP
         volumeMounts:
           - name: nginx-config
@@ -105,3 +141,5 @@ spec:
             mountPath: /media
           - name: static
             mountPath: /static
+          - name: cache
+            mountPath: /var/cache/nginx

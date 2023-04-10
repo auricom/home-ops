@@ -1,10 +1,11 @@
+pid /tmp/nginx.pid;
 events {
   worker_connections 1024;
 }
 http {
   include /etc/nginx/mime.types;
   server {
-    listen 80;
+    listen 8080;
     server_name _;
     client_max_body_size 128M;
     # serve media files
@@ -19,7 +20,7 @@ http {
     location / {
       proxy_set_header Host $host;
       proxy_set_header REMOTE-USER $http_x_authentik_username;
-      proxy_pass http://localhost:8080;
+      proxy_pass http://localhost:8888;
     }
   }
 }
