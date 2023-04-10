@@ -20,7 +20,7 @@ spec:
                 - name: POSTGRES_HOST
                   value: ${POSTGRES_HOST}
                 - name: POSTGRES_DB
-                  value: "authelia,drone,freshrss,gitea,invidious,joplin,lychee,paperless,recipes,semaphore,sharry,outline,vaultwarden,vikunja,wallabag"
+                  value: "authelia,drone,freshrss,gitea,invidious,joplin,lychee,paperless,semaphore,sharry,tandoor,outline,vaultwarden,vikunja,wallabag"
                 - name: POSTGRES_USER
                   valueFrom:
                     secretKeyRef:

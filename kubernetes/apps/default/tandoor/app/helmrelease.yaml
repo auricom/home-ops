@@ -27,17 +27,33 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: vabene1111/recipes
-      tag: "1.4.8"
+      tag: 1.4.8
     envFrom:
       - secretRef:
-          name: *app
+          name: tandoor-secret
+    command:
+      - /opt/recipes/venv/bin/gunicorn
+      - -b
+      - :8888
+      - --access-logfile
+      - "-"
+      - --error-logfile
+      - "-"
+      - --log-level
+      - INFO
+      - recipes.wsgi
     service:
       main:
         ports:
           http:
-            port: 80
+            port: &port 8888
+          nginx:
+            port: &port2 8080
     ingress:
       main:
         enabled: true
@@ -46,13 +62,16 @@ spec:
           hajimari.io/icon: mdi:chef-hat
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
-            paths:
+            paths: &paths
               - path: /
-                pathType: Prefix
+              - path: /media
+                service:
+                  port: *port2
+              - path: /static
+                service:
+                  port: *port2
           - host: &host2 "recipes.${SECRET_CLUSTER_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
+            paths: *paths
         tls:
           - hosts:
               - *host
@@ -70,32 +89,70 @@ spec:
         volumeSpec:
           configMap:
             name: *app
+      django-js-reverse:
+        enabled: true
+        type: emptyDir
+        mountPath: /opt/recipes/cookbook/static/django_js_reverse
       static:
         enabled: true
         mountPath: /opt/recipes/staticfiles
         type: emptyDir
+      cache:
+        enabled: true
+        mountPath: /mnt/cache
+        type: emptyDir
     podSecurityContext:
-      runAsUser: 0
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     podAnnotations:
       configMap.reloader.stakater.com/reload: *app
       secret.reloader.stakater.com/reload: *app
-    securityContext:
-      runAsUser: 65534
     resources:
       requests:
         cpu: 100m
         memory: 256Mi
       limits:
         memory: 512Mi
+    initContainers:
+      init-migrate:
+        image: vabene1111/recipes:1.4.8
+        env:
+          - name: DB_ENGINE
+            value: django.db.backends.postgresql_psycopg2
+          - name: POSTGRES_HOST
+            value: ${POSTGRES_HOST}
+          - name: POSTGRES_PORT
+            value: ${POSTGRES_PORT}
+          - name: POSTGRES_DB
+            value: tandoor
+        envFrom:
+          - secretRef:
+              name: tandoor-secret
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          source /opt/recipes/venv/bin/activate
+          echo "Updating database"
+          python3 /opt/recipes/manage.py migrate
+          python3 /opt/recipes/manage.py collectstatic_js_reverse
+          python3 /opt/recipes/manage.py collectstatic --noinput
+        volumeMounts:
+          - name: django-js-reverse
+            mountPath: /opt/recipes/cookbook/static/django_js_reverse
+          - name: static
+            mountPath: /opt/recipes/staticfiles
     additionalContainers:
       nginx:
         name: nginx
-        image: nginx:1.23.4
+        image: nginxinc/nginx-unprivileged:1.22.1-alpine
         imagePullPolicy: IfNotPresent
         ports:
-          - name: http
-            containerPort: 80
-            protocol: TCP
+          - name: nginx
+            containerPort: *port2
         volumeMounts:
           - name: nginx-config
             readOnly: true
@@ -105,3 +162,5 @@ spec:
             mountPath: /media
           - name: static
             mountPath: /static
+          - name: cache
+            mountPath: /var/cache/nginx

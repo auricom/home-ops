@@ -14,7 +14,7 @@ spec:
           - name: POSTGRES_HOST
             value: ${POSTGRES_HOST}
           - name: POSTGRES_DB
-            value: recipes
+            value: tandoor
           - name: POSTGRES_SUPER_PASS
             valueFrom:
               secretKeyRef:
@@ -23,10 +23,10 @@ spec:
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
-                name: tandoor
+                name: tandoor-secret
                 key: POSTGRES_USER
           - name: POSTGRES_PASS
             valueFrom:
               secretKeyRef:
-                name: tandoor
+                name: tandoor-secret
                 key: POSTGRES_PASSWORD
