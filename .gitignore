@@ -1,4 +1,4 @@
 ### SOPS ###
-.decrypted~*.yaml
+.decrypted~*
 ### KUBECONFIG ###
 provision
