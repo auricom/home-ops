@@ -25,6 +25,7 @@ resources:
   - ./jellyfin/ks.yaml
   - ./jellyseer/ks.yaml
   - ./joplin/ks.yaml
+  - ./komf/ks.yaml
   - ./komga/ks.yaml
   - ./lidarr/ks.yaml
   - ./libreddit/ks.yaml
