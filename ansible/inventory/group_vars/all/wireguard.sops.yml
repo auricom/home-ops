@@ -1,5 +1,5 @@
 kind: Secret
-wireguard_private_key: ENC[AES256_GCM,data:n7+yDJlb50mm2CiFRJ8YbvtzZaJOD2Hlz1/jbwtCSerRPTbJpDnCaL78EdI=,iv:5D8M8lKJPiduyGp6D2Woi/VEHkAVHi3v5NB2LRY+UNA=,tag:NkvkhueDrDf/1Ly9zv5YCw==,type:str]
+wireguard_private_key: ENC[AES256_GCM,data:hYbQA+dbFFfpypardaZmuY3+Zrv9tAppyHWsc5dPU+apO3dC2G+rS9udQLU=,iv:9soPytiJyjZWzOI76aRgv6zgHIpCkqiXbwWD9hBDIlA=,tag:2H7YMEgloF7lP9S9xwgWAA==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -15,8 +15,8 @@ sops:
             RHR1bnp1VXZJNUI5dmVXcXRvU2NFem8KFdpVMZL4By87eR2mFB5P2ViZxA04p2uI
             oe1Wg5bmqLNsfr+Z/Ai6Xc8D9ojuPvNXUkrzdLq5i6M+mi1ultazxQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2022-07-22T12:36:41Z"
-    mac: ENC[AES256_GCM,data:Pdlc1pFCdB6C4Zzm2HkBh8NJn/uE3KVXwWmWlUqbjHRRCqxED1X7lMVxNHgy/ZmmuB1StoZrzwGUVTGRhpcWGX9D614TrKgjPtkr4dxdshYIfIXPsskVnNfULQcvitTjprLj3JKXbZgjO86hGo5c1SgZpEiapuNdvYSHH6EGjyU=,iv:72i8p3q9Tg1kU6BExNtlakXLLt19Aic5xmgU2Hv2VqI=,tag:yu0KkQVK2/Z0mr/scwIekQ==,type:str]
+    lastmodified: "2023-04-13T20:31:26Z"
+    mac: ENC[AES256_GCM,data:kj+KwGFaLhWTdLwQtlbM8cBdaWmky/yaz9pm/wifTPOtZmBbEBtZaQ/wF9hw34bIN6PfZvtX/4RiFg/zgA5moGLmj4O5pYDhz/4txkDG0zhv7752kxXpBZMIZtSHasqc1c/u8ifHQFZhAK0kPquR1JH9iTf/j13N6uB5PqQ8nH8=,iv:zI0QSGnWQ5xe+ON/7+dD4JScDq47l9dgyz+XX+yPmXc=,tag:u8sFto0rV7FieXDXeLUWNA==,type:str]
     pgp: []
     unencrypted_regex: ^(kind)$
     version: 3.7.3
