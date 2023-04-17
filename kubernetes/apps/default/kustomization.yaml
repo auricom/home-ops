@@ -14,6 +14,7 @@ resources:
   - ./cloudnative-pg/ks.yaml
   - ./drone/ks.yaml
   - ./emqx/ks.yaml
+  - ./firefly-iii/ks.yaml
   - ./flood/ks.yaml
   - ./freshrss/ks.yaml
   - ./gitea/ks.yaml

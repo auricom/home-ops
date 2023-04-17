@@ -1,0 +1,78 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app firefly-iii
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: fireflyiii/core
+      tag: version-6.0.8
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+    env:
+      TZ: ${TIMEZONE}
+      APP_URL: "https://cash.${SECRET_DOMAIN}"
+      DB_CONNECTION: "pgsql"
+      DB_HOST: "${POSTGRES_HOST}"
+      DB_PORT: "5432"
+      DB_DATABASE: *app
+      MAIL_MAILER: log
+      TRUSTED_PROXIES: "**"
+      SEND_REGISTRATION_MAIL: false
+      SEND_ERROR_MESSAGE: false
+      SEND_LOGIN_NEW_IP_WARNING: false
+    envFrom:
+      - secretRef:
+          name: firefly-iii-secret
+    persistence:
+      config:
+        enabled: true
+        existingClaim: firefly-iii-config
+        mountPath: /var/www/html/firefly-iii/storage/upload
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          hajimari.io/icon: mdi:cash
+        hosts:
+          - host: &host "cash.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
