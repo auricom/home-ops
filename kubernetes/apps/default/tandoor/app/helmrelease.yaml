@@ -148,7 +148,7 @@ spec:
     additionalContainers:
       nginx:
         name: nginx
-        image: nginxinc/nginx-unprivileged:1.23.4-alpine
+        image: nginxinc/nginx-unprivileged:1.24.0-alpine
         imagePullPolicy: IfNotPresent
         ports:
           - name: nginx
