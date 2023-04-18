@@ -17,6 +17,7 @@ resources:
   - ./firefly-iii/ks.yaml
   - ./flood/ks.yaml
   - ./freshrss/ks.yaml
+  - ./ghostfolio/ks.yaml
   - ./gitea/ks.yaml
   - ./glauth/ks.yaml
   - ./hajimari/ks.yaml

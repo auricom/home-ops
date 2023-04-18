@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ghostfolio
+  namespace: default
+spec:
+  values:
+    initContainers:
+      init-db:
+        image: ghcr.io/onedr0p/postgres-initdb:14.7
+        env:
+          - name: POSTGRES_HOST
+            value: ${POSTGRES_HOST}
+          - name: POSTGRES_DB
+            value: ghostfolio
+          - name: POSTGRES_SUPER_PASS
+            valueFrom:
+              secretKeyRef:
+                name: postgres-superuser
+                key: password
+        envFrom:
+          - secretRef:
+              name: ghostfolio-secret
