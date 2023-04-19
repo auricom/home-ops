@@ -1,0 +1,9 @@
+{
+  "loglevel": "debug",
+  "logfromothermodules": false,
+  "log-dir": "/tmp",
+  "data-dir": "/data",
+  "sleep-secs": 20,
+  "max_size_in_mb_all_logs": 500,
+  "max_logfiles_num": 2
+}

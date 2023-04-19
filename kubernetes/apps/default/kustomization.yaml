@@ -50,6 +50,7 @@ resources:
   - ./recyclarr/ks.yaml
   - ./redis/ks.yaml
   - ./resilio-sync/ks.yaml
+  - ./rotki/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./semaphore/ks.yaml
   - ./sharry/ks.yaml
