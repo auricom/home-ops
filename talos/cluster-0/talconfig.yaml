@@ -1,8 +1,8 @@
 ---
 clusterName: cluster-0
 
-talosVersion: v1.3.1
-kubernetesVersion: v1.26.0
+talosVersion: v1.4.0
+kubernetesVersion: v1.27.1
 endpoint: https://cluster-0.${domainName}:6443
 
 cniConfig:
@@ -40,10 +40,10 @@ controlPlane:
         allowSchedulingOnMasters: true
         apiServer:
           extraArgs:
-            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
+            feature-gates: MixedProtocolLBService=true
         controllerManager:
           extraArgs:
-            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
+            feature-gates: MixedProtocolLBService=true
         discovery:
           registries:
             service:
