@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: docker.io/zedeus/nitter
-      tag: latest@sha256:35f7848581adbbb2ecac86f28aa89fdd25b10cc7d1caade9d94a69fa4cd78abe
+      tag: latest@sha256:9c67574ea2db5965fcdbcbe551f6482f0a3060b8dbd1cd7419bed6f31d54196e
     service:
       main:
         ports:
