@@ -35,7 +35,7 @@ spec:
     restartPolicy: OnFailure
     image:
       repository: ghcr.io/auricom/kubectl
-      tag: 1.26.3@sha256:7a289405a9809ac415c7e570067d6a578ae33c80f91fc18275dd9e655416f474
+      tag: 1.27.1@sha256:0c30d4754321115ac56f75ba6f66726a4c92c9b7255760a3183bef49f49ce5d7
     command: ["/bin/bash", "/app/truenas-certs-deploy.sh"]
     env:
       HOSTNAME: truenas
@@ -76,7 +76,7 @@ spec:
     additionalContainers:
       truenas-remote-certs-deploy:
         name: truenas-remote-certs-deploy
-        image: ghcr.io/auricom/kubectl:1.26.3@sha256:7a289405a9809ac415c7e570067d6a578ae33c80f91fc18275dd9e655416f474
+        image: ghcr.io/auricom/kubectl:1.27.1@sha256:0c30d4754321115ac56f75ba6f66726a4c92c9b7255760a3183bef49f49ce5d7
         command: ["/bin/bash", "/app/truenas-certs-deploy.sh"]
         env:
           - name: HOSTNAME
