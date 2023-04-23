@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/ghostfolio/ghostfolio
-      tag: 1.259.0
+      tag: 1.260.0
     env:
       NODE_ENV: production
       REDIS_HOST: redis-lb.default.svc.cluster.local
