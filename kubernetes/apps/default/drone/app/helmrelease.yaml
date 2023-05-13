@@ -83,7 +83,7 @@ spec:
                 spec:
                   initContainers:
                     - name: init-db
-                      image: ghcr.io/onedr0p/postgres-initdb:14.7
+                      image: ghcr.io/onedr0p/postgres-initdb:14.8
                       env:
                         - name: POSTGRES_HOST
                           value: ${POSTGRES_HOST}
