@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/rotki/rotki
-      tag: v1.27.1
+      tag: v1.28.0
     env:
       TZ: ${TIMEZONE}
       LOGLEVEL: info
