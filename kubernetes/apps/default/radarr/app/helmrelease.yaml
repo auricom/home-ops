@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/radarr-develop
-      tag: 4.5.0.7106@sha256:4e53a92bf36435d32a1c186903e3c542db2e06fde6a4e79d6663682958e33b63
+      tag: 4.6.1.7456@sha256:7c9b12ecb597d09b4c47c27245b97e95b2bd7d985a0a4e7236a7e2aee82bd80d
     env:
       TZ: "${TIMEZONE}"
       PUSHOVER_DEBUG: "false"
