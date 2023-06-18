@@ -29,11 +29,8 @@ spec:
   values:
     fullnameOverride: *app
     image:
-      repository: ghcr.io/koenkk/zigbee2mqtt
+      repository: koenkk/zigbee2mqtt
       tag: 1.30.3
-    env:
-      TZ: "${TIMEZONE}"
-      ZIGBEE2MQTT_DATA: /data
     service:
       main:
         ports:
