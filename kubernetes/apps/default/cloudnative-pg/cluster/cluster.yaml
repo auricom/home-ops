@@ -7,10 +7,10 @@ metadata:
   annotations:
     kyverno.io/ignore: "true"
 spec:
-  instances: 3
+  instances: 1
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 20Gi
+    size: 50Gi
     storageClass: rook-ceph-block
   superuserSecret:
     name: postgres-superuser
@@ -24,7 +24,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://postgresql/
       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
-      serverName: postgres-v5
+      serverName: postgres-v6
       s3Credentials:
         accessKeyId:
           name: postgres-minio
@@ -34,9 +34,9 @@ spec:
           key: MINIO_SECRET_KEY
   bootstrap:
     recovery:
-      source: postgres-v4
+      source: postgres-v5
   externalClusters:
-    - name: postgres-v4
+    - name: postgres-v5
       barmanObjectStore:
         destinationPath: s3://postgresql/
         endpointURL: https://truenas.${SECRET_DOMAIN}:51515
