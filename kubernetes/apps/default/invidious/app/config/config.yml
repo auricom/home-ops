@@ -414,7 +414,7 @@ feed_threads: 1
 ## Accepted values: a string
 ## Default: <none>
 ##
-#hmac_key:
+hmac_key: ${SECRET_INVIDIOUS_HMAC_KEY}
 
 ##
 ## List of video IDs where the "download" widget must be
