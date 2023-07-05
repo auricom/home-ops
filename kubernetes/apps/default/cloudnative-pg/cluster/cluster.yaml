@@ -17,7 +17,7 @@ spec:
   monitoring:
     enablePodMonitor: true
   backup:
-    retentionPolicy: 30d
+    retentionPolicy: 7d
     barmanObjectStore:
       wal:
         compression: bzip2
@@ -32,9 +32,9 @@ spec:
         secretAccessKey:
           name: postgres-minio
           key: MINIO_SECRET_KEY
-  bootstrap:
-    recovery:
-      source: postgres-v5
+  # bootstrap:
+  #   recovery:
+  #     source: postgres-v5
   externalClusters:
     - name: postgres-v5
       barmanObjectStore:
