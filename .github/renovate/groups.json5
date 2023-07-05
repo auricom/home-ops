@@ -16,6 +16,7 @@
       "groupName": "Flux",
       "matchPackagePatterns": ["fluxcd/flux2", "flux-installation"],
       "matchDatasources": ["helm", "kustomization", "docker"],
+      "versioning": "semver",
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
       "separateMinorPatch": true
     },
