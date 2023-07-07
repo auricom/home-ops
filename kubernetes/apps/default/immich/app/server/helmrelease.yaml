@@ -39,6 +39,26 @@ spec:
               name: &configMap immich-configmap
           - secretRef:
               name: &secret immich-secret
+        env:
+          - name: POSTGRES_HOST
+            value: ${POSTGRES_HOST}
+          - name: POSTGRES_DB
+            value: immich-secret
+          - name: POSTGRES_SUPER_PASS
+            valueFrom:
+              secretKeyRef:
+                name: postgres-superuser
+                key: password
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: immich-secret
+                key: DB_USERNAME
+          - name: POSTGRES_PASS
+            valueFrom:
+              secretKeyRef:
+                name: immich-secret
+                key: DB_PASSWORD
     controller:
       replicas: 2
       strategy: RollingUpdate
