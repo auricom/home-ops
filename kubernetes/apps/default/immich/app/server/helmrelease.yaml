@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: &app immich-server
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,32 +27,29 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: immich-redis
     - name: immich-typesense
+    - name: redis
   values:
     initContainers:
       01-init-db:
-        image: ghcr.io/onedr0p/postgres-initdb:14.8
+        image: ghcr.io/onedr0p/postgres-init:14.8
         imagePullPolicy: IfNotPresent
-        envFrom:
+        envFrom: &envFrom
+          - configMapRef:
+              name: &configMap immich-configmap
           - secretRef:
-              name: immich-secret
+              name: &secret immich-secret
     controller:
       replicas: 2
       strategy: RollingUpdate
       annotations:
-        reloader.stakater.com/auto: "true"
+        configmap.reloader.stakater.com/reload: *configMap
+        secret.reloader.stakater.com/reload: *secret
     image:
       repository: ghcr.io/immich-app/immich-server
-      tag: v1.62.1
-    command: /bin/sh
-    args:
-      - ./start-server.sh
-    envFrom:
-      - secretRef:
-          name: immich-secret
-      - configMapRef:
-          name: immich-configmap
+      tag: v1.66.1
+    args: ["start-server.sh"]
+    envFrom: *envFrom
     service:
       main:
         ports:

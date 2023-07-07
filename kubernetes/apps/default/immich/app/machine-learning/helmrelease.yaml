@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: &app immich-machine-learning
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -28,20 +28,22 @@ spec:
     keepHistory: false
   dependsOn:
     - name: immich-server
+    - name: redis
   values:
     controller:
-      replicas: 2
+      replicas: 1
       strategy: RollingUpdate
       annotations:
-        reloader.stakater.com/auto: "true"
+        configmap.reloader.stakater.com/reload: &configMap immich-configmap
+        secret.reloader.stakater.com/reload: &secret immich-secret
     image:
       repository: ghcr.io/immich-app/immich-machine-learning
-      tag: v1.62.1
+      tag: v1.66.1
     envFrom:
-      - secretRef:
-          name: immich-secret
       - configMapRef:
-          name: immich-configmap
+          name: *configMap
+      - secretRef:
+          name: *secret
     service:
       main:
         ports:
