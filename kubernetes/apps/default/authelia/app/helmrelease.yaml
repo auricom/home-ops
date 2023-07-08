@@ -29,6 +29,7 @@ spec:
   dependsOn:
     - name: lldap
     - name: redis
+    - name: smtp-relay
   values:
     initContainers:
       01-init-db:
