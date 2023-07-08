@@ -40,13 +40,13 @@ spec:
         ovhEndpointName: ovh-eu
         ovhAuthenticationRef:
           applicationKeyRef:
-            name: ovh-credentials
+            name: cert-manager-webhook-ovh-secret
             key: applicationKey
           applicationSecretRef:
-            name: ovh-credentials
+            name: cert-manager-webhook-ovh-secret
             key: applicationSecret
           consumerKeyRef:
-            name: ovh-credentials
+            name: cert-manager-webhook-ovh-secret
             key: consumerKey
       - name: letsencrypt-production
         create: true
@@ -56,11 +56,11 @@ spec:
         ovhEndpointName: ovh-eu
         ovhAuthenticationRef:
           applicationKeyRef:
-            name: ovh-credentials
+            name: cert-manager-webhook-ovh-secret
             key: applicationKey
           applicationSecretRef:
-            name: ovh-credentials
+            name: cert-manager-webhook-ovh-secret
             key: applicationSecret
           consumerKeyRef:
-            name: ovh-credentials
+            name: cert-manager-webhook-ovh-secret
             key: consumerKey

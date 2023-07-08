@@ -27,14 +27,14 @@ spec:
       serverName: postgres-v7
       s3Credentials:
         accessKeyId:
-          name: postgres-minio
-          key: MINIO_ACCESS_KEY
+          name: cloudnative-pg-secret
+          key: aws-access-key-id
         secretAccessKey:
-          name: postgres-minio
-          key: MINIO_SECRET_KEY
-  bootstrap:
-    recovery:
-      source: postgres-v6
+          name: cloudnative-pg-secret
+          key: aws-secret-access-key
+  # bootstrap:
+  #   recovery:
+  #     source: postgres-v6
   externalClusters:
     - name: postgres-v6
       barmanObjectStore:

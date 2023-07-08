@@ -6,5 +6,4 @@ namespace: default
 resources:
   - backups
   - ./cluster.yaml
-  - ./secret.sops.yaml
   - ./scheduledbackup.yaml
