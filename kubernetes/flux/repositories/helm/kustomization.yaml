@@ -17,6 +17,7 @@ resources:
   - ./dysnix.yaml
   - ./emxq.yaml
   - ./external-dns.yaml
+  - ./external-secrets.yaml
   - ./gitea.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
