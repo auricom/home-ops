@@ -6,7 +6,6 @@
     ":dependencyDashboard",
     ":semanticCommits",
     ":enablePreCommit",
-    ":automergeDigest",
     ":automergeBranchPush",
     "github>auricom/home-ops//.github/renovate/allowedVersions.json5",
     "github>auricom/home-ops//.github/renovate/autoMerge.json5",
