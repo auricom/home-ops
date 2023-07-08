@@ -14,7 +14,7 @@ session:
 access_control:
   ## Default policy can either be 'bypass', 'one_factor', 'two_factor' or 'deny'. It is the policy applied to any
   ## resource if there is no policy to be applied to the user.
-  default_policy: deny
+  default_policy: two_factor
   networks:
     - name: private
       networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
@@ -29,18 +29,13 @@ access_control:
     - domain:
         - "*.${SECRET_CLUSTER_DOMAIN}"
       policy: one_factor
-      subject: ["group:admins", "group:users"]
+      subject: ["group:homelab_admins", "group:homelab_users"]
       networks:
         - private
     # Deny public resources
     - domain: ["navidrome.${SECRET_CLUSTER_DOMAIN}"]
       resources: ["^/metrics.*$"]
       policy: deny
-    # Two factors auth for WAN
-    - domain:
-        - "*.${SECRET_CLUSTER_DOMAIN}"
-      subject: ["group:admins", "group:users"]
-      policy: two_factor
 identity_providers:
   oidc:
     cors:
