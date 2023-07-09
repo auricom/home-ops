@@ -6,7 +6,7 @@ metadata:
   name: cloudnative-pg
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: cloudnative-pg
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: cloudnative-pg
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     crds: CreateReplace

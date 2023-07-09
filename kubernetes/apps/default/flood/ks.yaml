@@ -9,8 +9,8 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
+    - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-qbittorrent-app
-    - name: cluster-apps-rook-ceph-cluster
     - name: cluster-apps-volsync-app
   path: ./kubernetes/apps/default/flood/app
   prune: true

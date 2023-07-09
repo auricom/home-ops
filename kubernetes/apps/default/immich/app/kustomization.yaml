@@ -5,10 +5,10 @@ kind: Kustomization
 namespace: default
 resources:
   - ./configmap.yaml
+  - ./externalsecret.yaml
   - ./microservices
   - ./machine-learning
-  - ./secret.sops.yaml
   - ./server
   - ./typesense
-  - ./volume.yaml
+  - ./volumes.yaml
   - ./web

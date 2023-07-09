@@ -6,7 +6,7 @@ metadata:
   name: &app ghostfolio
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,13 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: ghostfolio-secret
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
@@ -37,9 +44,7 @@ spec:
       NODE_ENV: production
       REDIS_HOST: redis.default.svc.cluster.local
       REDIS_PORT: 6379
-    envFrom:
-      - secretRef:
-          name: ghostfolio-secret
+    envFrom: *envFrom
     service:
       main:
         ports:

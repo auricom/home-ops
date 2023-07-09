@@ -6,7 +6,7 @@ metadata:
   name: &app joplin
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -29,6 +29,9 @@ spec:
   values:
     global:
       nameOverride: *app
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: joplin/server
       tag: 2.11.2-beta
@@ -36,9 +39,6 @@ spec:
       APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
       APP_PORT: &port 8080
       DB_CLIENT: pg
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_DATABASE: joplin
       MAILER_ENABLED: 1
       MAILER_HOST: smtp-relay.default.svc.cluster.local.
       MAILER_PORT: 2525
@@ -47,9 +47,7 @@ spec:
       MAILER_NOREPLY_EMAIL: joplin@${SECRET_DOMAIN}
     envFrom:
       - secretRef:
-          name: *app
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
+          name: joplin-secret
     service:
       main:
         ports:

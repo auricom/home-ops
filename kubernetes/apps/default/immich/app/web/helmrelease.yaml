@@ -60,7 +60,7 @@ spec:
           nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
-          - host: &host photos.devbu.io
+          - host: &host photos.${SECRET_CLUSTER_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix

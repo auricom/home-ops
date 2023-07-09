@@ -6,7 +6,7 @@ metadata:
   name: gitea
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: gitea
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: gitea
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -44,7 +44,7 @@ spec:
           RUN_AT_START: true
         database:
           DB_TYPE: postgres
-          HOST: ${POSTGRES_HOST}:${POSTGRES_PORT}
+          HOST: postgres-rw.default.svc.cluster.local:5432
           NAME: gitea
           SCHEMA: public
           SSL_MODE: disable
@@ -101,8 +101,6 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
-      podAnnotations:
-        secret.reloader.stakater.com/reload: gitea-config
     postgresql:
       enabled: false
     memcached:
@@ -138,36 +136,36 @@ spec:
   valuesFrom:
     - targetPath: gitea.admin.email
       kind: Secret
-      name: gitea-config
-      valuesKey: adminEmail
+      name: gitea-secret
+      valuesKey: GITEA_ADMIN_EMAIL
     - targetPath: gitea.admin.password
       kind: Secret
-      name: gitea-config
-      valuesKey: adminPassword
+      name: gitea-secret
+      valuesKey: GITEA_ADMIN_PASSWORD
     - targetPath: gitea.config.attachment.MINIO_ACCESS_KEY_ID
       kind: Secret
-      name: gitea-config
-      valuesKey: minioAccessKeyId
+      name: gitea-secret
+      valuesKey: GITEA_AWS_S3_ACCESS_KEY
     - targetPath: gitea.config.attachment.MINIO_SECRET_ACCESS_KEY
       kind: Secret
-      name: gitea-config
-      valuesKey: minioSecretAccessKey
+      name: gitea-secret
+      valuesKey: GITEA_AWS_S3_SECRET_KEY
     - targetPath: gitea.config.database.PASSWD
       kind: Secret
-      name: gitea-config
-      valuesKey: dbPassword
+      name: gitea-secret
+      valuesKey: POSTGRES_PASSWORD
     - targetPath: gitea.config.database.USER
       kind: Secret
-      name: gitea-config
-      valuesKey: dbUser
+      name: gitea-secret
+      valuesKey: POSTGRES_USERNAME
     - targetPath: gitea.config.storage.MINIO_ACCESS_KEY_ID
       kind: Secret
-      name: gitea-config
-      valuesKey: minioAccessKeyId
+      name: gitea-secret
+      valuesKey: GITEA_AWS_S3_ACCESS_KEY
     - targetPath: gitea.config.storage.MINIO_SECRET_ACCESS_KEY
       kind: Secret
-      name: gitea-config
-      valuesKey: minioSecretAccessKey
+      name: gitea-secret
+      valuesKey: GITEA_AWS_S3_SECRET_KEY
   postRenderers:
     - kustomize:
         patchesStrategicMerge:
@@ -179,25 +177,9 @@ spec:
               template:
                 spec:
                   initContainers:
-                    - name: init-db
-                      image: ghcr.io/onedr0p/postgres-initdb:14.8
-                      env:
-                        - name: POSTGRES_HOST
-                          value: ${POSTGRES_HOST}
-                        - name: POSTGRES_DB
-                          value: gitea
-                        - name: POSTGRES_SUPER_PASS
-                          valueFrom:
-                            secretKeyRef:
-                              name: postgres-superuser
-                              key: password
-                        - name: POSTGRES_USER
-                          valueFrom:
-                            secretKeyRef:
-                              name: gitea-config
-                              key: dbUser
-                        - name: POSTGRES_PASS
-                          valueFrom:
-                            secretKeyRef:
-                              name: gitea-config
-                              key: dbPassword
+                    - name: 01-init-db
+                      image: ghcr.io/onedr0p/postgres-init:14.8
+                      imagePullPolicy: IfNotPresent
+                      envFrom:
+                        - secretRef:
+                            name: gitea-secret

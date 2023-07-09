@@ -10,6 +10,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
+    - name: cluster-apps-external-secrets-stores
   path: ./kubernetes/apps/default/emqx/app
   prune: true
   sourceRef:

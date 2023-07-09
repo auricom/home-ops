@@ -6,7 +6,7 @@ metadata:
   name: &app home-assistant
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -27,6 +27,16 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: home-assistant-secret
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/home-assistant
       tag: 2023.7.1@sha256:53a01ba5ee421bc6ba3ab89d63ba20d40cb6684cb2230000cf72f524d262ba82
@@ -34,9 +44,7 @@ spec:
       TZ: "${TIMEZONE}"
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_DB: home_assistant
-    envFrom:
-      - secretRef:
-          name: *app
+    envFrom: *envFrom
     service:
       main:
         type: LoadBalancer

@@ -6,7 +6,7 @@ metadata:
   name: emqx
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: emqx
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: emqx
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -34,8 +34,7 @@ spec:
     emqxConfig:
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
-      EMQX_AUTH__USER__1__USERNAME: ${SECRET_MQTT_USER}
-      EMQX_AUTH__USER__1__PASSWORD: ${SECRET_MQTT_PASSWORD}
+      EMQX_DASHBOARD__DEFAULT_USERNAME: admin
     service:
       type: LoadBalancer
       loadBalancerIP: ${CLUSTER_LB_EMQX}
@@ -80,5 +79,13 @@ spec:
   valuesFrom:
     - targetPath: emqxConfig.EMQX_DASHBOARD__DEFAULT_PASSWORD
       kind: Secret
-      name: emqx-config
+      name: emqx-secret
       valuesKey: admin_password
+    - targetPath: emqxConfig.EMQX_AUTH__USER__1__USERNAME
+      kind: Secret
+      name: emqx-secret
+      valuesKey: user_1_username
+    - targetPath: emqxConfig.EMQX_AUTH__USER__1__PASSWORD
+      kind: Secret
+      name: emqx-secret
+      valuesKey: user_1_password

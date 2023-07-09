@@ -6,7 +6,7 @@ metadata:
   name: &app firefly-iii
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -27,6 +27,13 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: bazarr-secret
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
@@ -42,7 +49,7 @@ spec:
       TZ: ${TIMEZONE}
       APP_URL: "https://cash.${SECRET_DOMAIN}"
       DB_CONNECTION: "pgsql"
-      DB_HOST: "${POSTGRES_HOST}"
+      DB_HOST: postgres-rw.default.svc.cluster.local
       DB_PORT: "5432"
       DB_DATABASE: *app
       MAIL_MAILER: log

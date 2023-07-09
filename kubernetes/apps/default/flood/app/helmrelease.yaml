@@ -6,7 +6,7 @@ metadata:
   name: &app flood
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: jesec/flood
       tag: master
@@ -36,7 +39,7 @@ spec:
       FLOOD_OPTION_QBURL: "http://qbittorrent.default.svc.cluster.local.:8080"
     envFrom:
       - secretRef:
-          name: *app
+          name: flood-secret
     service:
       main:
         ports:

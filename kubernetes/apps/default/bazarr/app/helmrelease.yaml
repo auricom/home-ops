@@ -6,7 +6,7 @@ metadata:
   name: &app bazarr
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -26,7 +26,22 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: bazarr-secret
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/bazarr
       tag: 1.2.2@sha256:9656191a1347e44de7fc883912bb00d6a8d5c190dbd0dd77d5ba1ba075095b65
@@ -34,7 +49,7 @@ spec:
       TZ: "${TIMEZONE}"
     envFrom:
       - secretRef:
-          name: *app
+          name: bazarr-secret
     service:
       main:
         ports:
@@ -46,10 +61,6 @@ spec:
         ingressClassName: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_CLUSTER_DOMAIN}/css/base/bazarr/nord.css"></head>';
-            sub_filter_once on;
           hajimari.io/icon: mdi:subtitles-outline
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
@@ -80,11 +91,26 @@ spec:
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/video
         mountPath: /mnt/storage/video
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
+      scripts:
+        enabled: true
+        type: configMap
+        name: bazarr-scripts # overriden by kustomizeconfig
+        defaultMode: 0775
+        readOnly: true
     resources:
       requests:
         cpu: 23m
         memory: 204M
       limits:
         memory: 1Gi
+    sidecars:
+      subcleaner:
+        image: registry.k8s.io/git-sync/git-sync:v3.6.8
+        imagePullPolicy: IfNotPresent
+        args:
+          - --repo=https://github.com/KBlixt/subcleaner
+          - --branch=master
+          - --wait=86400 # 1 day
+          - --root=/add-ons
+        volumeMounts:
+          - { name: add-ons, mountPath: /add-ons }

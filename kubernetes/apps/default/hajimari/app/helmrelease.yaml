@@ -6,7 +6,7 @@ metadata:
   name: hajimari
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: hajimari
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: hajimari
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
