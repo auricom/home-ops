@@ -11,7 +11,7 @@ spec:
       port: http
       scrapeTimeout: 30s
       bearerTokenSecret:
-        name: home-automation
+        name: home-assistant-secret
         key: PROMETHEUS_TOKEN
   selector:
     matchLabels:

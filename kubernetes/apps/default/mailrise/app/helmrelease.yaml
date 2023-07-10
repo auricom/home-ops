@@ -6,7 +6,7 @@ metadata:
   name: &app mailrise
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -39,7 +39,7 @@ spec:
       TZ: ${TIMEZONE}
     envFrom:
       - secretRef:
-          name: *app
+          name: mailrise-secret
     service:
       main:
         type: LoadBalancer
@@ -77,8 +77,6 @@ spec:
         labelSelector:
           matchLabels:
             app.kubernetes.io/name: *app
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 10m

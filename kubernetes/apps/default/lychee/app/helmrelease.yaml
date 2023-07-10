@@ -6,7 +6,7 @@ metadata:
   name: &app lychee
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,16 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: &secret lychee-secret
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: lycheeorg/lychee-laravel
       tag: v4.9.4
@@ -34,14 +44,11 @@ spec:
       TIMEZONE: ${TIMEZONE}
       APP_NAME: Lychee
       DB_CONNECTION: pgsql
-      DB_HOST: ${POSTGRES_HOST}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_DATABASE: lychee
       REDIS_HOST: redis.default.svc.cluster.local.
       REDIS_PORT: 6379
     envFrom:
       - secretRef:
-          name: *app
+          name: lychee-secret
     service:
       main:
         ports:

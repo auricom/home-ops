@@ -32,6 +32,13 @@ spec:
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: &secret joplin-secret
     image:
       repository: joplin/server
       tag: 2.11.2-beta

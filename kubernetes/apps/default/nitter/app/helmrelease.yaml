@@ -6,7 +6,7 @@ metadata:
   name: &app nitter
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/zedeus/nitter
       tag: latest@sha256:db0674e7426309b0ae41ad36fa0bbd1d52ab7abe20823b27a49017116a2c0b34
@@ -74,8 +77,6 @@ spec:
         subPath: config.yml
         mountPath: /src/nitter.conf
         readOnly: false
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 50m
