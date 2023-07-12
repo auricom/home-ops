@@ -27,20 +27,18 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    global:
-      # imageRegistry: public.ecr.aws
-      storageClass: rook-ceph-block
     auth:
       enabled: false
       sentinel: false
-      # existingSecret: *app
-    sentinel:
-      enabled: true
-      masterSet: redis-master
-      getMasterTimeout: 10
-      startupProbe:
-        failureThreshold: 2
+    master:
+      persistence:
+        enabled: false
+    replica:
+      persistence:
+        enabled: false
+    architecture: standalone
     metrics:
       enabled: true
       serviceMonitor:
         enabled: true
+        interval: 1m

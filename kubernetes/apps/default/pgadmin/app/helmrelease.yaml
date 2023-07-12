@@ -34,7 +34,7 @@ spec:
       PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
     envFrom:
       - secretRef:
-          name: *app
+          name: pgadmin-secret
     initContainers:
       volume-permissions:
         image: dpage/pgadmin4:7.4

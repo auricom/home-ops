@@ -1,15 +1,15 @@
 ---
 session:
-  redis:
-    high_availability:
-      sentinel_name: redis-master
-      nodes:
-        - host: redis-node-0.redis-headless.default.svc.cluster.local.
-          port: 26379
-        - host: redis-node-1.redis-headless.default.svc.cluster.local.
-          port: 26379
-        - host: redis-node-2.redis-headless.default.svc.cluster.local.
-          port: 26379
+  # redis:
+  #   high_availability:
+  #     sentinel_name: redis-master
+  #     nodes:
+  #       - host: redis-node-0.redis-headless.default.svc.cluster.local.
+  #         port: 26379
+  #       - host: redis-node-1.redis-headless.default.svc.cluster.local.
+  #         port: 26379
+  #       - host: redis-node-2.redis-headless.default.svc.cluster.local.
+  #         port: 26379
 
 access_control:
   ## Default policy can either be 'bypass', 'one_factor', 'two_factor' or 'deny'. It is the policy applied to any

@@ -44,7 +44,7 @@ spec:
       TIMEZONE: ${TIMEZONE}
       APP_NAME: Lychee
       DB_CONNECTION: pgsql
-      REDIS_HOST: redis.default.svc.cluster.local.
+      REDIS_HOST: redis-master.default.svc.cluster.local.
       REDIS_PORT: 6379
     envFrom:
       - secretRef:

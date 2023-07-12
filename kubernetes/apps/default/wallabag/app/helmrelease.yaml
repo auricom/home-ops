@@ -6,7 +6,7 @@ metadata:
   name: &app wallabag
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -28,14 +28,29 @@ spec:
     keepHistory: false
   values:
     controller:
-      replicas: 1
-      strategy: Recreate
+      annotations:
+        reloader.stakater.com/auto: "true"
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: wallabag-secret
     image:
       repository: wallabag/wallabag
       tag: 2.5.4
-    envFrom:
+    envFrom: &envFrom
       - secretRef:
-          name: *app
+          name: wallabag-secret
+    env:
+      SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
+      SYMFONY__ENV__REDIS_HOST: redis-master.default.svc.cluster.local.
+      SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_CLUSTER_DOMAIN}
+      SYMFONY__ENV__SERVER_NAME: Wallabag
+      SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
+      SYMFONY__ENV__FOSUSER_CONFIRMATION: "false"
+      POPULATE_DATABASE: "false"
     enableServiceLinks: false
     service:
       main:
@@ -63,8 +78,6 @@ spec:
       images:
         enabled: true
         existingClaim: wallabag-images
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 100m

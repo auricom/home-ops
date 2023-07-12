@@ -43,7 +43,7 @@ spec:
       tag: 1.288.0
     env:
       NODE_ENV: production
-      REDIS_HOST: redis-headless.default.svc.cluster.local
+      REDIS_HOST: redis-master.default.svc.cluster.local
       REDIS_PORT: 6379
     envFrom: *envFrom
     service:
