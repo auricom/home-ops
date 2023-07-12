@@ -27,6 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      strategy: RollingUpdate
     env:
       TZ: ${TIMEZONE}
     hajimari:
