@@ -41,7 +41,7 @@ spec:
               name: &secret joplin-secret
     image:
       repository: joplin/server
-      tag: 2.11.2-beta
+      tag: 2.12.1-beta
     env:
       APP_BASE_URL: https://joplin.${SECRET_CLUSTER_DOMAIN}
       APP_PORT: &port 8080
