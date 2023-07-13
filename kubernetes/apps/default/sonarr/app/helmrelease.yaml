@@ -6,7 +6,7 @@ metadata:
   name: &app sonarr
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,10 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+        configmap.reloader.stakater.com/reload: sonarr-pushover
     image:
       repository: ghcr.io/onedr0p/sonarr-develop
       tag: 4.0.0.559@sha256:62cc0157d673e68691c83c27a13011d416f28734134431bf27cf9b557cb7c2c5
@@ -40,7 +44,7 @@ spec:
       SONARR__LOG_LEVEL: info
     envFrom:
       - secretRef:
-          name: *app
+          name: sonarr-secret
     service:
       main:
         ports:
@@ -97,9 +101,6 @@ spec:
         mountPath: /scripts/pushover-notify.sh
         defaultMode: 0775
         readOnly: true
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: sonarr-pushover
-      secret.reloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 500m

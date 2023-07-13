@@ -27,6 +27,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: dpage/pgadmin4
       tag: "7.4"

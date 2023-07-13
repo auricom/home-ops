@@ -6,7 +6,7 @@ metadata:
   name: &app vikunja
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,15 +27,27 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: &secret vikunja-secret
     controller:
-      replicas: 1
+      annotations:
+        reloader.stakater.com/auto: "true"
       strategy: Recreate
     image:
       repository: caddy
       tag: 2.6.4-alpine
     envFrom:
       - secretRef:
-          name: *app
+          name: vikunja-secret
+    env:
+      VIKUNJA_MAILER_HOST: smtp-relay.default.svc.cluster.local.
+      VIKUNJA_MAILER_PORT: "2525"
+      VIKUNJA_MAILER_FROMEMAIL: Vikunja <vikunja@${SECRET_DOMAIN}>
     service:
       main:
         ports:
@@ -68,7 +80,7 @@ spec:
         type: "custom"
         volumeSpec:
           configMap:
-            name: *app
+            name: vikunja-configmap
       vikunja-config:
         enabled: "true"
         mountPath: /etc/vikunja/config.yml
@@ -76,10 +88,7 @@ spec:
         type: "custom"
         volumeSpec:
           configMap:
-            name: *app
-    podAnnotations:
-      configMap.reloader.stakater.com/reload: *app
-      secret.reloader.stakater.com/reload: *app
+            name: vikunja-configmap
     resources:
       requests:
         cpu: 5m
@@ -91,28 +100,7 @@ spec:
         name: api
         image: vikunja/api:0.21.0
         imagePullPolicy: IfNotPresent
-        env:
-          - name: VIKUNJA_SERVICE_JWTSECRET
-            valueFrom:
-              secretKeyRef:
-                name: vikunja
-                key: VIKUNJA_SERVICE_JWTSECRET
-          - name: VIKUNJA_DATABASE_TYPE
-            value: postgres
-          - name: VIKUNJA_DATABASE_HOST
-            value: ${POSTGRES_HOST}
-          - name: VIKUNJA_DATABASE_DATABASE
-            value: vikunja
-          - name: VIKUNJA_DATABASE_USER
-            valueFrom:
-              secretKeyRef:
-                name: vikunja
-                key: VIKUNJA_DATABASE_USER
-          - name: VIKUNJA_DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: vikunja
-                key: VIKUNJA_DATABASE_PASSWORD
+        envFrom: *envFrom
         volumeMounts:
           - name: vikunja-config
             mountPath: /etc/vikunja/config.yml

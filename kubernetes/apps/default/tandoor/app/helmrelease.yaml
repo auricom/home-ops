@@ -6,7 +6,7 @@ metadata:
   name: &app tandoor
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -33,9 +33,19 @@ spec:
     image:
       repository: vabene1111/recipes
       tag: 1.5.4
-    envFrom:
+    envFrom: &envFrom
       - secretRef:
           name: tandoor-secret
+    env:
+      DEBUG: "0"
+      ALLOWED_HOSTS: "*"
+      DB_ENGINE: django.db.backends.postgresql_psycopg2
+      GUNICORN_MEDIA: "0"
+      TIMEZONE: ${TIMEZONE}
+      TANDOOR_PORT: 8888
+      FRACTION_PREF_DEFAULT: "0"
+      COMMENT_PREF_DEFAULT: "1"
+      SHOPPING_MIN_AUTOSYNC_INTERVAL: "5"
     command:
       - /opt/recipes/venv/bin/gunicorn
       - -b
@@ -88,7 +98,7 @@ spec:
         type: "custom"
         volumeSpec:
           configMap:
-            name: *app
+            name: tandoor-configmap
       django-js-reverse:
         enabled: true
         type: emptyDir
@@ -106,9 +116,6 @@ spec:
       runAsGroup: 568
       fsGroup: 568
       fsGroupChangePolicy: "OnRootMismatch"
-    podAnnotations:
-      configMap.reloader.stakater.com/reload: *app
-      secret.reloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 100m
@@ -116,7 +123,11 @@ spec:
       limits:
         memory: 512Mi
     initContainers:
-      init-migrate:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: *envFrom
+      02-init-migrate:
         image: vabene1111/recipes:1.5.4
         env:
           - name: DB_ENGINE
@@ -145,9 +156,8 @@ spec:
             mountPath: /opt/recipes/cookbook/static/django_js_reverse
           - name: static
             mountPath: /opt/recipes/staticfiles
-    additionalContainers:
+    sidecars:
       nginx:
-        name: nginx
         image: nginxinc/nginx-unprivileged:1.25.1-alpine
         imagePullPolicy: IfNotPresent
         ports:

@@ -6,7 +6,7 @@ metadata:
   name: &app resilio-helene
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/auricom/resilio-sync
       tag: 2.7.3.1381-1@sha256:4f9dab7d50a4046b503686b766da6adbb627ff62f63587617cd46a468c810b11
@@ -62,7 +65,7 @@ spec:
         enabled: true
         type: configMap
         configMap:
-        name: resilio-helene-sync-conf
+        name: resilio-helene-configmap
         mountPath: /config/sync.conf
         subPath: sync.conf
       backups:

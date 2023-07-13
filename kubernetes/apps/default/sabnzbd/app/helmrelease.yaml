@@ -6,7 +6,7 @@ metadata:
   name: &app sabnzbd
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/sabnzbd
       tag: 4.0.3@sha256:aff676e3c234f7a4493c75813e296c347c02b6e5374acd1858f8244ea44f2b4a
@@ -42,7 +45,7 @@ spec:
         sabnzbd.${SECRET_CLUSTER_DOMAIN}
     envFrom:
       - secretRef:
-          name: *app
+          name: sabnzbd-secret
     service:
       main:
         ports:

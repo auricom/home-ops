@@ -6,7 +6,7 @@ metadata:
   name: semaphore
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -28,11 +28,12 @@ spec:
     keepHistory: false
   values:
     initContainers:
-      init-db:
-        image: ghcr.io/onedr0p/postgres-initdb:14.8
-        envFrom:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
           - secretRef:
-              name: semaphore-secret
+              name: &secret semaphore-secret
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
@@ -40,12 +41,11 @@ spec:
       repository: docker.io/semaphoreui/semaphore
       tag: v2.8.91
     env:
+      SEMAPHORE_DB_DIALECT: postgres
       SEMAPHORE_LDAP_ACTIVATED: "no"
       SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
       SEMAPHORE_ADMIN_EMAIL: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
-    envFrom:
-      - secretRef:
-          name: semaphore-secret
+    envFrom: *envFrom
     service:
       main:
         ports:

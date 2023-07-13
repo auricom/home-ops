@@ -4,7 +4,7 @@ PUSHOVER_DEBUG="${PUSHOVER_DEBUG:-"true"}"
 # kubectl port-forward service/radarr -n default 7878:7878
 # export PUSHOVER_STARR_INSTANCE_NAME=Radarr;
 # export PUSHOVER_APP_URL="";
-# export PUSHOVER_TOKEN="";
+# export PUSHOVER_API_TOKEN="";
 # export PUSHOVER_USER_KEY="";
 # export radarr_eventtype=Download;
 # ./notify.sh
@@ -26,7 +26,7 @@ PUSHOVER_STARR_INSTANCE_NAME="$(xmlstarlet sel -t -v "//InstanceName" -nl ${CONF
 # Required
 PUSHOVER_APP_URL="${PUSHOVER_APP_URL:-}" && [[ -z "${PUSHOVER_APP_URL}" ]] && ERRORS+=("PUSHOVER_APP_URL not defined")
 PUSHOVER_USER_KEY="${PUSHOVER_USER_KEY:-}" && [[ -z "${PUSHOVER_USER_KEY}" ]] && ERRORS+=("PUSHOVER_USER_KEY not defined")
-PUSHOVER_TOKEN="${PUSHOVER_TOKEN:-}" && [[ -z "${PUSHOVER_TOKEN}" ]] && ERRORS+=("PUSHOVER_TOKEN not defined")
+PUSHOVER_API_TOKEN="${PUSHOVER_API_TOKEN:-}" && [[ -z "${PUSHOVER_API_TOKEN}" ]] && ERRORS+=("PUSHOVER_API_TOKEN not defined")
 # Optional
 PUSHOVER_DEVICE="${PUSHOVER_DEVICE:-}"
 PUSHOVER_PRIORITY="${PUSHOVER_PRIORITY:-"-2"}"
@@ -76,7 +76,7 @@ if [[ "${radarr_eventtype:-}" == "Download" ]]; then
 fi
 
 notification=$(jq -n \
-    --arg token "${PUSHOVER_TOKEN}" \
+    --arg token "${PUSHOVER_API_TOKEN}" \
     --arg user "${PUSHOVER_USER_KEY}" \
     --arg title "${PUSHOVER_TITLE}" \
     --arg message "${PUSHOVER_MESSAGE:-"Unable to obtain plot summary"}" \

@@ -6,7 +6,7 @@ metadata:
   name: &app radarr
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,17 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: &secret radarr-secret
+    controller:
+      annotations:
+        configmap.reloader.stakater.com/reload: radarr-pushover
+        reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/radarr-develop
       tag: 4.7.0.7588@sha256:2cd821b4ecf67a69ae16e49cc3321e867c274efdd42096d1fef3bd92dfcf2f46
@@ -40,7 +51,7 @@ spec:
       RADARR__LOG_LEVEL: info
     envFrom:
       - secretRef:
-          name: *app
+          name: radarr-secret
     service:
       main:
         ports:
@@ -97,9 +108,6 @@ spec:
         mountPath: /scripts/pushover-notify.sh
         defaultMode: 0775
         readOnly: true
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: radarr-pushover
-      secret.reloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 500m

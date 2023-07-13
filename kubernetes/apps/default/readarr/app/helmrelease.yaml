@@ -6,7 +6,7 @@ metadata:
   name: &app readarr
   namespace: default
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -27,6 +27,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/readarr-nightly
       tag: 0.2.3.1948@sha256:c042ba9164015fd00ea1eacf93ea5ba1c39b0a101666dc52150d4dc1517e4198
@@ -37,7 +40,7 @@ spec:
       READARR__LOG_LEVEL: info
     envFrom:
       - secretRef:
-          name: *app
+          name: readarr-secret
     service:
       main:
         ports:

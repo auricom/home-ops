@@ -10,6 +10,8 @@ metadata:
 spec:
   path: ./kubernetes/apps/default/smtp-relay/app
   prune: true
+  dependsOn:
+    - name: cluster-apps-external-secrets-stores
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
