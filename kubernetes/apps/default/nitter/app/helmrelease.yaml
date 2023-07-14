@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/zedeus/nitter
-      tag: latest@sha256:d5ab72cf643a0741caeb11f857292e2f430ba297c76e5305fc575e5d8ef7654a
+      tag: latest@sha256:513f6376b78bfa4f3fce8451f18279d7a04d88e5b23be3fbe5dd7eba2e68d225
     service:
       main:
         ports:
