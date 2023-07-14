@@ -30,7 +30,7 @@ metadata:
   name: zigbee2mqtt
   namespace: default
 spec:
-  sourcePVC: zigbee2mqtt-images
+  sourcePVC: zigbee2mqtt-config
   trigger:
     schedule: "0 7 * * *"
   restic:

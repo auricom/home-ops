@@ -13,6 +13,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+  dependsOn:
+    - name: cluster-apps-external-secrets-stores
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta1
       kind: HelmRelease

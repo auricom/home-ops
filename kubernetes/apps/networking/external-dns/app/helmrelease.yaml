@@ -6,7 +6,7 @@ metadata:
   name: external-dns
   namespace: networking
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: external-dns
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: external-dns
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -34,18 +34,18 @@ spec:
       - name: OVH_APPLICATION_KEY
         valueFrom:
           secretKeyRef:
-            name: ovh-external-dns-creds
-            key: application-key
+            name: external-dns-secret
+            key: OVH_APPLICATION_KEY
       - name: OVH_APPLICATION_SECRET
         valueFrom:
           secretKeyRef:
-            name: ovh-external-dns-creds
-            key: application-secret
+            name: external-dns-secret
+            key: OVH_APPLICATION_SECRET
       - name: OVH_CONSUMER_KEY
         valueFrom:
           secretKeyRef:
-            name: ovh-external-dns-creds
-            key: consummer-key
+            name: external-dns-secret
+            key: OVH_CONSUMER_KEY
     extraArgs:
       - --annotation-filter=external-dns.home.arpa/enabled in (true)
     policy: sync
