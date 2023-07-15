@@ -46,6 +46,6 @@ spec:
             - *host
   valuesFrom:
     - kind: Secret
-      name: weave-gitops
+      name: weave-gitops-secret
       valuesKey: adminPassword
       targetPath: adminUser.passwordHash
