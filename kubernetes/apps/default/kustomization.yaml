@@ -12,7 +12,6 @@ resources:
   - ./calibre-web/ks.yaml
   - ./changedetection/ks.yaml
   - ./cloudnative-pg/ks.yaml
-  - ./drone/ks.yaml
   - ./emqx/ks.yaml
   - ./firefly-iii/ks.yaml
   - ./flood/ks.yaml

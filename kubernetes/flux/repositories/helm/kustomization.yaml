@@ -13,7 +13,6 @@ resources:
   - ./cloudnative-pg.yaml
   - ./crowdsec.yaml
   - ./descheduler.yaml
-  - ./drone.yaml
   - ./dysnix.yaml
   - ./emxq.yaml
   - ./external-dns.yaml
