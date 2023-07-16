@@ -37,20 +37,27 @@ spec:
         envFrom: &envFrom
           - secretRef:
               name: wallabag-secret
+      02-init-migrate:
+        image: wallabag/wallabag:2.5.4
+        envFrom: *envFrom
+        env: &env
+          SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
+          SYMFONY__ENV__REDIS_HOST: redis-master.default.svc.cluster.local.
+          SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_CLUSTER_DOMAIN}
+          SYMFONY__ENV__SERVER_NAME: Wallabag
+          SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
+          SYMFONY__ENV__FOSUSER_CONFIRMATION: "false"
+          POPULATE_DATABASE: "false"
+        command:
+          - /var/www/wallabag/bin/console
+          - doctrine:migrations:migrate
+          - --env=prod
+          - --no-interaction
     image:
       repository: wallabag/wallabag
       tag: 2.5.4
-    envFrom: &envFrom
-      - secretRef:
-          name: wallabag-secret
-    env:
-      SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
-      SYMFONY__ENV__REDIS_HOST: redis-master.default.svc.cluster.local.
-      SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_CLUSTER_DOMAIN}
-      SYMFONY__ENV__SERVER_NAME: Wallabag
-      SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
-      SYMFONY__ENV__FOSUSER_CONFIRMATION: "false"
-      POPULATE_DATABASE: "false"
+    envFrom: *envFrom
+    env: *env
     enableServiceLinks: false
     service:
       main:
