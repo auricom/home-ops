@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/lidarr-develop
-      tag: 1.3.0.3326@sha256:ae79b2dadbef54803621c285bb13f65198e6c6103b53da38c81a68a81f59e094
+      tag: 1.3.1.3371@sha256:1266c5bec4e79fecc1871d24d79a05dcd25730c0042fec38f4bbea82d8de90cc
     env:
       TZ: "${TIMEZONE}"
       LIDARR__INSTANCE_NAME: Lidarr
