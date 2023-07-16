@@ -30,7 +30,7 @@ metadata:
   name: zwavejs2mqtt
   namespace: default
 spec:
-  sourcePVC: zwavejs2mqtt-images
+  sourcePVC: zwavejs2mqtt-config
   trigger:
     schedule: "0 7 * * *"
   restic:
