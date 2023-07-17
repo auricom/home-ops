@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: gitea
-      version: 8.3.0
+      version: 9.0.0
       sourceRef:
         kind: HelmRepository
         name: gitea
@@ -107,7 +107,7 @@ spec:
       enabled: false
     persistence:
       enabled: true
-      existingClaim: "gitea-config"
+      ClaimName: "gitea-config"
     service:
       ssh:
         type: LoadBalancer
