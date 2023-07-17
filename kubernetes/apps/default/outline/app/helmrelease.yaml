@@ -59,7 +59,7 @@ spec:
       OIDC_USERINFO_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo"
       OIDC_USERNAME_CLAIM: email
       PORT: 8080
-      REDIS_URL: ioredis://eyJkYiI6MTUsInNlbnRpbmVscyI6W3siaG9zdCI6InJlZGlzLW5vZGUtMC5yZWRpcy1oZWFkbGVzcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwicG9ydCI6MjYzNzl9LHsiaG9zdCI6InJlZGlzLW5vZGUtMS5yZWRpcy1oZWFkbGVzcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwicG9ydCI6MjYzNzl9LHsiaG9zdCI6InJlZGlzLW5vZGUtMi5yZWRpcy1oZWFkbGVzcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwicG9ydCI6MjYzNzl9XSwibmFtZSI6InJlZGlzLW1hc3RlciJ9
+      REDIS_URL: redis://redis-master.default.svc.cluster.local.:6379
       SMTP_HOST: smtp-relay.default.svc.cluster.local.
       SMTP_PORT: 2525
       SMTP_FROM_EMAIL: "outline@${SECRET_DOMAIN}"
