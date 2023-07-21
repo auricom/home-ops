@@ -34,7 +34,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/yoryan/mailrise
-      tag: 1.3.0
+      tag: 1.4.0
     env:
       TZ: ${TIMEZONE}
     envFrom:
