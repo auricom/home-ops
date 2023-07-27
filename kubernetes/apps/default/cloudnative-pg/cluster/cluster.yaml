@@ -13,7 +13,7 @@ spec:
     size: 50Gi
     storageClass: rook-ceph-block
   superuserSecret:
-    name: postgres-superuser
+    name: cloudnative-pg-secret
   monitoring:
     enablePodMonitor: true
   backup:
