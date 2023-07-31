@@ -7,7 +7,7 @@ metadata:
   annotations:
     kyverno.io/ignore: "true"
 spec:
-  instances: 2
+  instances: 3
   primaryUpdateStrategy: unsupervised
   storage:
     size: 50Gi
@@ -24,7 +24,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://postgresql/
       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
-      serverName: postgres-v7
+      serverName: postgres-v8
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -35,17 +35,17 @@ spec:
   # bootstrap:
   #   recovery:
   #     source: postgres-v6
-  externalClusters:
-    - name: postgres-v6
-      barmanObjectStore:
-        destinationPath: s3://postgresql/
-        endpointURL: https://truenas.${SECRET_DOMAIN}:51515
-        s3Credentials:
-          accessKeyId:
-            name: postgres-minio
-            key: MINIO_ACCESS_KEY
-          secretAccessKey:
-            name: postgres-minio
-            key: MINIO_SECRET_KEY
-        wal:
-          maxParallel: 8
+  # externalClusters:
+  #   - name: postgres-v6
+  #     barmanObjectStore:
+  #       destinationPath: s3://postgresql/
+  #       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
+  #       s3Credentials:
+  #         accessKeyId:
+  #           name: postgres-minio
+  #           key: MINIO_ACCESS_KEY
+  #         secretAccessKey:
+  #           name: postgres-minio
+  #           key: MINIO_SECRET_KEY
+  #       wal:
+  #         maxParallel: 8
