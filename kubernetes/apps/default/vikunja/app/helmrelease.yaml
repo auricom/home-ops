@@ -40,7 +40,7 @@ spec:
       strategy: Recreate
     image:
       repository: caddy
-      tag: 2.6.4-alpine
+      tag: 2.7.2-alpine
     envFrom:
       - secretRef:
           name: vikunja-secret
