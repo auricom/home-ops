@@ -33,7 +33,7 @@ spec:
         configmap.reloader.stakater.com/reload: sonarr-pushover
     image:
       repository: ghcr.io/onedr0p/sonarr-develop
-      tag: 4.0.0.585@sha256:3eeebf96482e1050ac2cbf0d54a383e52539f089df3b10321af76da6346603f2
+      tag: 4.0.0.602@sha256:fc988b27870f2fb15d0efa56e938369c8c329f24a6e460e678d16f4bb09bbfba
     env:
       TZ: "${TIMEZONE}"
       PUSHOVER_DEBUG: "false"
