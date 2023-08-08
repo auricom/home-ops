@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/filebrowser/filebrowser
-      tag: v2.24.1
+      tag: v2.24.2
     env:
       TZ: "${TIMEZONE}"
       FB_DATABASE: "/config/filebrowser.db"
