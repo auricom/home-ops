@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     initContainers:
       01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.3
+        image: ghcr.io/auricom/postgres-init:15.4
         imagePullPolicy: IfNotPresent
         envFrom: &envFrom
           - secretRef:
