@@ -36,7 +36,7 @@ spec:
               name: &secret paperless-secret
     image:
       repository: ghcr.io/paperless-ngx/paperless-ngx
-      tag: 1.17.0
+      tag: 1.17.1
     env:
       COMPOSE_PROJECT_NAME: paperless
       PAPERLESS_CONSUMER_POLLING: "60"
