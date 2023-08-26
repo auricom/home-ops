@@ -47,7 +47,8 @@ def send_pushover_notification(repo_name, tag_name):
     payload = {
         "token": PUSHOVER_API_TOKEN,
         "user": PUSHOVER_USER_KEY,
-        "message": f"New stable release {tag_name} for repository {repo_name} is available."
+        "html": "1",
+        "message": f'New stable release {tag_name} for repository <a href="https://github.com/{repo_name}">{repo_name}</a> is available.'
     }
     response = requests.post(PUSHOVER_API_URL, data=payload)
     response.raise_for_status()
