@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: kyverno
-      version: 2.7.5
+      version: 3.0.5
       sourceRef:
         kind: HelmRepository
         name: kyverno
@@ -29,14 +29,55 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    installCRDs: true
-    replicaCount: 1
-    serviceMonitor:
+    crds:
+      install: true
+    grafana:
       enabled: true
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/instance: kyverno
+      annotations:
+        grafana_folder: System
+    backgroundController:
+      serviceMonitor:
+        enabled: true
+      rbac:
+        clusterRole:
+          extraResources:
+            - apiGroups:
+                - ""
+              resources:
+                - pods
+              verbs:
+                - create
+                - update
+                - patch
+                - delete
+                - get
+                - list
+    cleanupController:
+      serviceMonitor:
+        enabled: true
+    reportsController:
+      serviceMonitor:
+        enabled: true
+    admissionController:
+      replicas: 3
+      serviceMonitor:
+        enabled: true
+      rbac:
+        clusterRole:
+          extraResources:
+            - apiGroups:
+                - ""
+              resources:
+                - pods
+              verbs:
+                - create
+                - update
+                - delete
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: kyverno
+              app.kubernetes.io/component: kyverno

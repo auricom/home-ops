@@ -7,20 +7,19 @@ metadata:
   annotations:
     policies.kyverno.io/title: Remove CPU limits
     policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: medium
     policies.kyverno.io/subject: Pod
     policies.kyverno.io/description: >-
       This policy removes CPU limits from all Pods.
     pod-policies.kyverno.io/autogen-controllers: none
 spec:
-  mutateExistingOnPolicyUpdate: true
   generateExistingOnPolicyUpdate: true
   rules:
     - name: remove-containers-cpu-limits
       match:
         any:
           - resources:
-              kinds:
-                - Pod
+              kinds: ["Pod"]
       mutate:
         foreach:
           - list: "request.object.spec.containers"
@@ -31,8 +30,7 @@ spec:
       match:
         any:
           - resources:
-              kinds:
-                - Pod
+              kinds: ["Pod"]
       preconditions:
         all:
           - key: "{{ request.object.spec.initContainers[] || `[]` | length(@) }}"
