@@ -84,6 +84,12 @@ spec:
           FROM: "Gitea <gitea@${SECRET_DOMAIN}>"
         webhook:
           ALLOWED_HOST_LIST: drone.default.svc
+        cache:
+          ADAPTER: redis
+          HOST: redis://redis-master.default.svc.cluster.local:6379
+        session:
+          PROVIDER: redis
+          PROVIDER_CONFIG: redis://redis-master.default.svc.cluster.local:6379
       #   openid:
       #     ENABLE_OPENID_SIGNIN: false
       #     ENABLE_OPENID_SIGNUP: true
@@ -103,7 +109,11 @@ spec:
           enabled: true
     postgresql:
       enabled: false
+    postgresql-ha:
+      enabled: false
     memcached:
+      enabled: false
+    redis-cluster:
       enabled: false
     persistence:
       enabled: true
@@ -169,7 +179,7 @@ spec:
   postRenderers:
     - kustomize:
         patchesStrategicMerge:
-          - kind: StatefulSet
+          - kind: Deployment
             apiVersion: apps/v1
             metadata:
               name: gitea
