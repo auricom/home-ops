@@ -24,7 +24,7 @@
   "rebaseWhen": "conflicted",
   "commitBodyTable": true,
   "commitMessagePrefix": "⬆️",
-  "ignorePaths": [],
+  "ignorePaths": ["archive/**"],
   "flux": {
     "fileMatch": ["kubernetes/.+\\.ya?ml$"]
   },
