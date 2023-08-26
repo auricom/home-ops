@@ -6,7 +6,7 @@ metadata:
   name: grafana
   namespace: monitoring
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: grafana
@@ -15,7 +15,6 @@ spec:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
-      interval: 15m
   maxHistory: 3
   install:
     createNamespace: true

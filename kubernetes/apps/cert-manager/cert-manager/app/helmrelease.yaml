@@ -6,7 +6,7 @@ metadata:
   name: cert-manager
   namespace: cert-manager
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: cert-manager
@@ -15,7 +15,6 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
-      interval: 15m
   maxHistory: 3
   install:
     createNamespace: true
