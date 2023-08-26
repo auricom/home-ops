@@ -22,6 +22,11 @@ spec:
               annotations:
                 auth.home.arpa/enabled: "true"
       mutate:
+        targets:
+          - apiVersion: networking.k8s.io/v1
+            kind: Ingress
+            name: "{{request.object.metadata.name}}"
+            namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
           metadata:
             annotations:
@@ -59,6 +64,11 @@ spec:
               annotations:
                 external-dns.home.arpa/enabled: "true"
       mutate:
+        targets:
+          - apiVersion: networking.k8s.io/v1
+            kind: Ingress
+            name: "{{request.object.metadata.name}}"
+            namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
           metadata:
             annotations:
@@ -92,6 +102,11 @@ spec:
               annotations:
                 external-dns.home.arpa/enabled: "true"
       mutate:
+        targets:
+          - apiVersion: networking.k8s.io/v1
+            kind: Ingress
+            name: "{{request.object.metadata.name}}"
+            namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
           metadata:
             annotations:
