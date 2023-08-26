@@ -16,7 +16,7 @@ spec:
         name: prometheus-community
         namespace: flux-system
       interval: 5m
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     crds: CreateReplace
