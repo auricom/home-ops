@@ -46,9 +46,14 @@ spec:
       dnsDiscovery:
         sidecarsService: kube-prometheus-stack-thanos-discovery
         sidecarsNamespace: monitoring
-        stores:
-          - "dnssrv+_grpc._tcp.kube-prometheus-stack-thanos-discovery"
-          - "thanos-store.${SECRET_DOMAIN}:443"
+      resources:
+        requests:
+          cpu: 15m
+          memory: 64M
+        limits:
+          memory: 99M
+    queryFrontend:
+      enabled: true
       ingress:
         enabled: true
         hostname: &host "thanos-query.${SECRET_CLUSTER_DOMAIN}"
@@ -60,35 +65,17 @@ spec:
         extraTls:
           - hosts:
               - *host
-      resources:
-        requests:
-          cpu: 15m
-          memory: 64M
-        limits:
-          memory: 99M
-    queryFrontend:
-      enabled: true
     bucketweb:
       enabled: true
       refresh: "10m"
     compactor:
       enabled: true
       extraFlags:
-        - "--compact.concurrency"
-        - "4"
-      retentionResolutionRaw: 14d
-      retentionResolution5m: 14d
-      retentionResolution1h: 30d
-      ingress:
-        enabled: true
-        hostname: &host "thanos-compactor.${SECRET_CLUSTER_DOMAIN}"
-        ingressClassName: "nginx"
-        annotations:
-          hajimari.io/enable: "false"
-        tls: true
-        extraTls:
-          - hosts:
-              - *host
+        - --compact.concurrency=4
+        - --delete-delay=30m
+      retentionResolutionRaw: 30d
+      retentionResolution5m: 60d
+      retentionResolution1h: 90d
       persistence:
         enabled: true
         storageClass: "rook-ceph-block"
