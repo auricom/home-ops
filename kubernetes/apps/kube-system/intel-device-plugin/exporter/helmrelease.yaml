@@ -51,20 +51,13 @@ spec:
                 targetLabel: node
     securityContext:
       privileged: true
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: feature.node.kubernetes.io/custom-intel-gpu
-                  operator: In
-                  values:
-                    - "true"
+    nodeSelector:
+      intel.feature.node.kubernetes.io/gpu: "true"
     resources:
       requests:
-        gpu.intel.com/i915: 1
-        cpu: 15m
-        memory: 105Mi
+        gpu.intel.com/i915_monitoring: 1
+        cpu: 100m
+        memory: 100Mi
       limits:
-        gpu.intel.com/i915: 1
-        memory: 105Mi
+        gpu.intel.com/i915_monitoring: 1
+        memory: 500Mi
