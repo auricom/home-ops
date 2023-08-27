@@ -85,12 +85,6 @@ spec:
               - *host
     securityContext:
       privileged: true
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /data
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        storageClass: rook-ceph-block
     persistence:
       config-file:
         enabled: true
