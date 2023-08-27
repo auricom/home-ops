@@ -30,5 +30,5 @@ spec:
       namespace: kube-system
   values:
     name: intel-device-plugin-gpu
-    sharedDevNum: 4
-    nodeFeatureRule: true
+    sharedDevNum: 3
+    nodeFeatureRule: false
