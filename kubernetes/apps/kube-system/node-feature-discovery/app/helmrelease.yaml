@@ -70,10 +70,6 @@ spec:
                     class: ["02"]
                     vendor: ["2341"]
                     device: ["0042"]
-            - name: "coral-tpu"
-              matchOn:
-                - usbId:
-                    vendor: ["1a6e", "18d1"]
             - name: "intel-gpu"
               matchOn:
                 - pciId:
