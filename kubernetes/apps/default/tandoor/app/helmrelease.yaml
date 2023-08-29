@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: vabene1111/recipes
-      tag: 1.5.5
+      tag: 1.5.6
     envFrom: &envFrom
       - secretRef:
           name: tandoor-secret
@@ -128,7 +128,7 @@ spec:
         imagePullPolicy: IfNotPresent
         envFrom: *envFrom
       02-init-migrate:
-        image: vabene1111/recipes:1.5.5
+        image: vabene1111/recipes:1.5.6
         env:
           - name: DB_ENGINE
             value: django.db.backends.postgresql_psycopg2
