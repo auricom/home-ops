@@ -39,6 +39,7 @@ spec:
       type: statefulset
       annotations:
         reloader.stakater.com/auto: "true"
+      podManagementPolicy: Parallel
     image:
       repository: ghcr.io/blakeblackshear/frigate
       tag: 0.12.1
@@ -50,6 +51,9 @@ spec:
           name: frigate-secret
     service:
       main:
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        loadBalancerIP: ${CLUSTER_LB_FRIGATE}
         ports:
           http:
             port: &port 5000
@@ -74,7 +78,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        ingressClassName: nginx
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
@@ -102,7 +106,7 @@ spec:
         type: nfs
         server: "${LOCAL_LAN_OPENMEDIAVAULT}"
         path: /export/frigate
-        mountPath: /export/frigate
+        mountPath: /media/frigate
       cache:
         enabled: true
         type: emptyDir
