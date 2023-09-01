@@ -69,7 +69,6 @@ spec:
             key: user_1_password
       ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
       ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
-
       # ZIGBEE2MQTT_CONFIG_DEVICES: devices.yaml
       # ZIGBEE2MQTT_CONFIG_GROUPS: groups.yaml
     service:

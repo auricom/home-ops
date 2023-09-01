@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qbittorrent-gatus-ep
+  namespace: default
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: qbittorrent
+        group: internal
+        url: https://qbittorrent.${SECRET_CLUSTER_DOMAIN}
+        interval: 1m
+        client:
+          insecure: true
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: pushover
+

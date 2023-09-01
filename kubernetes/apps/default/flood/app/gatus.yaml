@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flood-gatus-ep
+  namespace: default
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: flood
+        group: internal
+        url: 192.168.8.1
+        interval: 1m
+        ui:
+          hide-hostname: true
+          hide-url: true
+        dns:
+          query-name: flood.${SECRET_CLUSTER_DOMAIN}
+          query-type: A
+        conditions:
+          - "[BODY] == 192.168.169.101"
+          - "[DNS_RCODE] == NOERROR"
+        alerts:
+          - type: pushover

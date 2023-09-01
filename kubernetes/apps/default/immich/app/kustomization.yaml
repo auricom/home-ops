@@ -6,6 +6,7 @@ namespace: default
 resources:
   - ./configmap.yaml
   - ./externalsecret.yaml
+  - ./gatus.yaml
   - ./microservices
   - ./machine-learning
   - ./server

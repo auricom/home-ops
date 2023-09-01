@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: semaphore-gatus-ep
+  namespace: default
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: semaphore
+        group: internal
+        url: https://semaphore.${SECRET_CLUSTER_DOMAIN}/auth/login
+        interval: 1m
+        client:
+          insecure: true
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: pushover
+

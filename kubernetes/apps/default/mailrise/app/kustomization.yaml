@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: default
 resources:
   - ./externalsecret.yaml
+  - ./gatus.yaml
   - ./helmrelease.yaml
 configMapGenerator:
   - name: mailrise-configmap

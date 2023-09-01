@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: theme-park-gatus-ep
+  namespace: default
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: theme-park
+        group: internal
+        url: https://theme-park.${SECRET_CLUSTER_DOMAIN}
+        interval: 1m
+        client:
+          insecure: true
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: pushover
+

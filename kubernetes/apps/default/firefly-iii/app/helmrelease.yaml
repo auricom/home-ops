@@ -33,7 +33,7 @@ spec:
         imagePullPolicy: IfNotPresent
         envFrom: &envFrom
           - secretRef:
-              name: bazarr-secret
+              name: firefly-iii-secret
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
