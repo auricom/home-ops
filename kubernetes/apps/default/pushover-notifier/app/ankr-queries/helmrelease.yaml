@@ -40,7 +40,7 @@ spec:
               name: pushover-notifier-secret
     image:
       repository: ghcr.io/auricom/python
-      tag: 1.0.0@sha256:53a6b2655625c6de7ef48bfdf90b56e436a6703d908b65d4f076c4b49e22ee69
+      tag: 1.0.0@sha256:28a04d389de352b53fc3abc7e31e201bca272003561de6e524103709d016573d
     command:
       - python3
       - /app/script.py
