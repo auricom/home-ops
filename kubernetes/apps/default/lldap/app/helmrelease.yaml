@@ -61,6 +61,8 @@ spec:
     ingress:
       main:
         enabled: true
+        annotations:
+          hajimari.io/icon: mdi:account-multiple
         ingressClassName: nginx
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"

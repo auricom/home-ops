@@ -41,6 +41,8 @@ spec:
     ingress:
       main:
         enabled: true
+        annotations:
+          hajimari.io/icon: mdi:ideogram-cjk-variant
         ingressClassName: "nginx"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"

@@ -78,6 +78,7 @@ spec:
         ingressClassName: nginx
         annotations:
           external-dns.home.arpa/enabled: "true"
+          hajimari.io/icon: mdi:list-status
         hosts:
           - host: &host "status.${SECRET_CLUSTER_DOMAIN}"
             paths:
