@@ -1,0 +1,87 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app babybuddy
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/auricom/postgres-init:15.4@sha256:903b455bc6aafdca7f4bb5db0c75eefedcb122875ff9c55302614203ef87cd81
+        imagePullPolicy: IfNotPresent
+        envFrom: &envFrom
+          - secretRef:
+              name: babybuddy-secret
+      02-migrations:
+        image: ghcr.io/auricom/babybuddy:2.0.4@sha256:c84c9ebaa61e87b346b127c597ad9c2f42d7867429bd4e855c327d78a7ac1c6f
+        imagePullPolicy: IfNotPresent
+        envFrom: *envFrom
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            #!/bin/bash
+
+            set -o errexit
+            set -o nounset
+
+            python3 www/public/manage.py migrate --noinput
+            python3 www/public/manage.py createcachetable
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: ghcr.io/auricom/babybuddy
+      tag: 2.0.4@sha256:c84c9ebaa61e87b346b127c597ad9c2f42d7867429bd4e855c327d78a7ac1c6f
+    service:
+      main:
+        ports:
+          http:
+            port: 3000
+    env:
+      TZ: ${TIMEZONE}
+    envFrom: *envFrom
+    persistence:
+      config:
+        enabled: true
+        existingClaim: babybuddy-config
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          hajimari.io/icon: mdi:baby-face-outline
+        hosts:
+          - host: &host "babybuddy.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
