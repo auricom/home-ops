@@ -52,9 +52,8 @@ objects:
 
 go2rtc:
   streams:
-    # cam_01_bedroom: ffmpeg:https://cam-01-bedroom.home.arpa:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}#video=copy#audio=copy#audio=opus
-    cam_01_bedroom: rtsp://{FRIGATE_CAMERA_USER}:{FRIGATE_CAMERA_PASSWORD}@cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:554/h265Preview_01_main
-    cam_01_bedroom_sub: ffmpeg:https://cam-01-bedroom.home.arpa:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}
+    cam_01_bedroom: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}#video=copy#audio=copy#audio=opus
+    cam_01_bedroom_sub: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}
 
 cameras:
   cam-01-bedroom:
