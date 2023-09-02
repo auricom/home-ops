@@ -79,6 +79,7 @@ spec:
       main:
         enabled: true
         annotations:
+          auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:cctv
         ingressClassName: nginx
         hosts:
