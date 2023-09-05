@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: stalwartlabs/jmap-server
-      tag: v0.3.5
+      tag: v0.3.7
     service:
       main:
         ports:
