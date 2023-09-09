@@ -1,0 +1,116 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app kresus
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/auricom/postgres-init:15.4
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: kresus-secret
+      02-woob:
+        image: bitnami/git:2.42.0
+        imagePullPolicy: IfNotPresent
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            #!/bin/bash
+
+            set -o errexit
+            set -o nounset
+
+            repo_url="https://gitlab.com/woob/woob.git"
+
+            clone_dir="/mnt/woob/woob"
+
+            if [ ! -e "$clone_dir/README.rst" ]; then
+                echo "Cloning the repository..."
+                git clone "$repo_url" "$clone_dir"
+            else
+                echo "Repository directory already exists."
+            fi
+
+            cd "$clone_dir"
+
+            echo "Updating the repository..."
+            git pull
+
+            echo "Repository update complete."
+        volumeMounts:
+          - { name: woob, mountPath: /mnt/woob }
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: bnjbvr/kresus
+      tag: 0.19.4
+    service:
+      main:
+        ports:
+          http:
+            port: 9876
+    env:
+      HOST: 0.0.0.0
+      PORT: 9876
+      KRESUS_DB_TYPE: postgres
+      KRESUS_EMAIL_HOST: smtp-relay.default.svc.cluster.local.
+      KRESUS_EMAIL_PORT: 2525
+      KRESUS_EMAIL_TRANSPORT: smtp
+      KRESUS_WOOB_DIR: /mnt/woob/woob
+    envFrom:
+      - secretRef:
+          name: kresus-secret
+    persistence:
+      config:
+        enabled: true
+        existingClaim: kresus-config
+        mountPath: /home/user/data
+      woob:
+        enabled: true
+        existingClaim: kresus-woob
+        mountPath: /mnt/woob
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          hajimari.io/icon: mdi:cash
+        hosts:
+          - host: &host "kresus.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi

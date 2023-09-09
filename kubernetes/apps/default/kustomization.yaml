@@ -25,6 +25,7 @@ resources:
   - ./joplin/ks.yaml
   - ./komf/ks.yaml
   - ./komga/ks.yaml
+  - ./kresus/ks.yaml
   - ./kubernetes-schemas/ks.yaml
   - ./lidarr/ks.yaml
   - ./libreddit/ks.yaml
