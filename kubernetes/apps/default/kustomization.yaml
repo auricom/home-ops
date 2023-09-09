@@ -12,7 +12,6 @@ resources:
   - ./calibre/ks.yaml
   - ./cloudnative-pg/ks.yaml
   - ./emqx/ks.yaml
-  - ./firefly-iii/ks.yaml
   - ./flood/ks.yaml
   - ./freshrss/ks.yaml
   - ./frigate/ks.yaml
@@ -25,6 +24,7 @@ resources:
   - ./joplin/ks.yaml
   - ./komf/ks.yaml
   - ./komga/ks.yaml
+  - ./kresus/ks.yaml
   - ./kubernetes-schemas/ks.yaml
   - ./lidarr/ks.yaml
   - ./libreddit/ks.yaml

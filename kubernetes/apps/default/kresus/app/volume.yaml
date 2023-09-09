@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: firefly-iii-config
+  name: kresus-config
   namespace: default
   labels:
-    app.kubernetes.io/name: &name firefly-iii
+    app.kubernetes.io/name: &name kresus
     app.kubernetes.io/instance: *name
     snapshot.home.arpa/enabled: "true"
 spec:

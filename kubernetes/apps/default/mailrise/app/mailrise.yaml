@@ -5,3 +5,8 @@ configs:
       title_template: "TRUENAS"
     urls:
       - !env_var PUSHOVER_TRUENAS
+  kresus@mailrise.home.arpa:
+    mailrise:
+      title_template: "KRESUS"
+    urls:
+      - !env_var PUSHOVER_KRESUS

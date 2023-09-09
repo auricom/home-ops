@@ -3,19 +3,19 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: firefly-iii-restic
+  name: kresus-restic
   namespace: default
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
     name: onepassword-connect
   target:
-    name: firefly-iii-restic-secret
+    name: kresus-restic-secret
     creationPolicy: Owner
     template:
       engineVersion: v2
       data:
-        RESTIC_REPOSITORY: '{{ .REPOSITORY_TEMPLATE }}/firefly-iii'
+        RESTIC_REPOSITORY: '{{ .REPOSITORY_TEMPLATE }}/kresus'
         RESTIC_PASSWORD: '{{ .RESTIC_PASSWORD }}'
         AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
         AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
@@ -27,16 +27,16 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: firefly-iii
+  name: kresus
   namespace: default
 spec:
-  sourcePVC: firefly-iii-config
+  sourcePVC: kresus-config
   trigger:
     schedule: "0 7 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 7
-    repository: firefly-iii-restic-secret
+    repository: kresus-restic-secret
     cacheCapacity: 10Gi
     volumeSnapshotClassName: csi-ceph-blockpool
     storageClassName: rook-ceph-block

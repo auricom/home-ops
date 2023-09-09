@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: firefly-iii-gatus-ep
+  name: kresus-gatus-ep
   namespace: default
   labels:
     gatus.io/enabled: "true"
 data:
   config.yaml: |
     endpoints:
-      - name: firefly-iii
+      - name: kresus
         group: internal
-        url: https://cash.${SECRET_CLUSTER_DOMAIN}/login
+        url: https://cash.${SECRET_CLUSTER_DOMAIN}
         interval: 1m
         client:
           insecure: true

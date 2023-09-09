@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: &app firefly-iii
+  name: &app kresus
   namespace: default
 spec:
   interval: 30m
@@ -31,45 +31,57 @@ spec:
       01-init-db:
         image: ghcr.io/auricom/postgres-init:15.4
         imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
+        envFrom:
           - secretRef:
-              name: firefly-iii-secret
+              name: kresus-secret
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
     image:
-      repository: fireflyiii/core
-      tag: version-6.0.8
+      repository: ghcr.io/auricom/kresus
+      tag: 0.19.4@sha256:42ca12c7d05496051d225b5417956569dfcfe631b1a65865dc122ed3b2c2b3ca
+      imagePullPolicy: IfNotPresent
     service:
       main:
         ports:
           http:
-            port: 8080
+            port: 9876
     env:
-      TZ: ${TIMEZONE}
-      APP_URL: "https://cash.${SECRET_DOMAIN}"
-      DB_CONNECTION: "pgsql"
-      DB_HOST: postgres-rw.default.svc.cluster.local
-      DB_PORT: "5432"
-      DB_DATABASE: *app
-      MAIL_MAILER: log
-      TRUSTED_PROXIES: "**"
-      SEND_REGISTRATION_MAIL: false
-      SEND_ERROR_MESSAGE: false
-      SEND_LOGIN_NEW_IP_WARNING: false
+      HOST: 0.0.0.0
+      PORT: 9876
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+      KRESUS_DB_TYPE: postgres
+      KRESUS_DIR: /config
+      KRESUS_EMAIL_HOST: mailrise.default.svc.cluster.local
+      KRESUS_EMAIL_PORT: 8025
+      KRESUS_EMAIL_TRANSPORT: smtp
+      KRESUS_EMAIL_FROM: kresus@mailrise.home.arpa
+      KRESUS_PYTHON_EXEC: python3
+      NODE_ENV: production
     envFrom:
       - secretRef:
-          name: firefly-iii-secret
+          name: kresus-secret
     persistence:
       config:
         enabled: true
-        existingClaim: firefly-iii-config
-        mountPath: /var/www/html/firefly-iii/storage/upload
+        existingClaim: kresus-config
+        mountPath: /config
+      woob:
+        enabled: true
+        type: emptyDir
+        mountPath: /mnt/woob
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     ingress:
       main:
         enabled: true
         ingressClassName: "nginx"
         annotations:
+          auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:cash
         hosts:
           - host: &host "cash.${SECRET_CLUSTER_DOMAIN}"
