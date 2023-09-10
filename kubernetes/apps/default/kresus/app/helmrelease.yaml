@@ -39,7 +39,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/auricom/kresus
-      tag: 0.19.4@sha256:42ca12c7d05496051d225b5417956569dfcfe631b1a65865dc122ed3b2c2b3ca
+      tag: 0.19.4@sha256:80a340c5cfd511c9e069e187c374a5aeeeb7eaa2c75353c596991bd8e2f9376a
       imagePullPolicy: IfNotPresent
     service:
       main:
