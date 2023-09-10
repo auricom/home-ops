@@ -76,7 +76,7 @@ identity_providers:
         description: Immich
         secret: "${SECRET_IMMICH_OAUTH_CLIENT_SECRET}"
         public: false
-        authorization_policy: two_factor
+        authorization_policy: one_factor
         pre_configured_consent_duration: 1y
         scopes: ["openid", "profile", "email"]
         redirect_uris: ["https://photos.${SECRET_CLUSTER_DOMAIN}/auth/login", "app.immich:/"]
