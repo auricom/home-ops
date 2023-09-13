@@ -62,6 +62,9 @@ spec:
             port: 3000
     env:
       TZ: ${TIMEZONE}
+      EMAIL_HOST: smtp-relay.default.svc.cluster.local.
+      EMAIL_PORT: "2525"
+      EMAIL_USE_TLS: "false"
     envFrom: *envFrom
     persistence:
       config:
