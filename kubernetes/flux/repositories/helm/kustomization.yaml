@@ -32,4 +32,4 @@ resources:
   - ./rook-ceph.yaml
   - ./stakater.yaml
   - ./vector.yaml
-  - ./weave-gitops.yaml
+  - ./weaveworks.yaml

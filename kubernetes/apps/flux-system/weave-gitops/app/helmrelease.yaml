@@ -14,7 +14,8 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: weave-gitops
+        name: weaveworks
+        namespace: flux-system
   maxHistory: 2
   install:
     createNamespace: true
