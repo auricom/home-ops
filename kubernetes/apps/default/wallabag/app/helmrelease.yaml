@@ -42,12 +42,14 @@ spec:
         envFrom: *envFrom
         env: &env
           SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
-          SYMFONY__ENV__REDIS_HOST: redis-master.default.svc.cluster.local.
           SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_CLUSTER_DOMAIN}
-          SYMFONY__ENV__SERVER_NAME: Wallabag
           SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
           SYMFONY__ENV__FOSUSER_CONFIRMATION: "false"
-          POPULATE_DATABASE: "false"
+          SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
+          SYMFONY__ENV__MAILER_HOST: smtp-relay.default.svc.cluster.local.
+          SYMFONY__ENV__MAILER_PORT: "2525"
+          SYMFONY__ENV__REDIS_HOST: redis-master.default.svc.cluster.local.
+          SYMFONY__ENV__SERVER_NAME: Wallabag
         command:
           - /var/www/wallabag/bin/console
           - doctrine:migrations:migrate
