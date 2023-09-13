@@ -43,8 +43,8 @@ spec:
         env: &env
           SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
           SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_CLUSTER_DOMAIN}
-          SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
-          SYMFONY__ENV__FOSUSER_CONFIRMATION: "false"
+          SYMFONY__ENV__FOSUSER_REGISTRATION: "true"
+          SYMFONY__ENV__FOSUSER_CONFIRMATION: "true"
           SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
           SYMFONY__ENV__MAILER_HOST: smtp-relay.default.svc.cluster.local.
           SYMFONY__ENV__MAILER_PORT: "2525"

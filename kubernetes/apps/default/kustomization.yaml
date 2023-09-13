@@ -27,6 +27,7 @@ resources:
   - ./kresus/ks.yaml
   - ./kubernetes-schemas/ks.yaml
   - ./lidarr/ks.yaml
+  - ./linkding/ks.yaml
   - ./libreddit/ks.yaml
   - ./lldap/ks.yaml
   - ./lychee/ks.yaml
