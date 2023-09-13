@@ -58,7 +58,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:ansible
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.kube.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
