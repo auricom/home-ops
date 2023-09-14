@@ -178,7 +178,7 @@ spec:
       valuesKey: GITEA_AWS_S3_SECRET_KEY
   postRenderers:
     - kustomize:
-        patchesStrategicMerge:
+        patches:
           - kind: Deployment
             apiVersion: apps/v1
             metadata:

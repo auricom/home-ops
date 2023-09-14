@@ -1,16 +1,15 @@
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/kustomization.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: monitoring
 resources:
-  - ./secret.sops.yaml
-  - ./helmrelease.yaml
-patchesStrategicMerge:
-  - ./patches/geoip.yaml
+- ./secret.sops.yaml
+- ./helmrelease.yaml
 configMapGenerator:
-  - name: vector-aggregator-configmap
-    files:
-      - vector.yaml=./config/vector.yaml
+- files:
+  - vector.yaml=./config/vector.yaml
+  name: vector-aggregator-configmap
 generatorOptions:
   disableNameSuffixHash: true
+patches:
+- path: ./patches/geoip.yaml
