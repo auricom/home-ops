@@ -36,16 +36,20 @@ spec:
       GF_DATE_FORMATS_FULL_DATE: "DD.MM.YYYY hh:mm:ss"
       GF_SECURITY_ALLOW_EMBEDDING: true
       GF_SECURITY_COOKIE_SAMESITE: grafana
-    admin:
-      existingSecret: grafana-admin-creds
     grafana.ini:
+      analytics:
+        check_for_updates: false
+        check_for_plugin_updates: false
+        reporting_enabled: false
       auth:
         signout_redirect_url: "https://auth.${SECRET_CLUSTER_DOMAIN}/logout"
-        oauth_auto_login: false
+        oauth_auto_login: true
+        oauth_allow_insecure_email_lookup: true
       auth.generic_oauth:
         enabled: true
         name: Authelia
         client_id: grafana
+        icon: signin
         client_secret: "${SECRET_GRAFANA_OAUTH_CLIENT_SECRET}"
         scopes: "openid profile email groups"
         empty_scopes: false
@@ -61,7 +65,7 @@ spec:
           contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'people') && 'Viewer'
         org_id: 1
       auth.basic:
-        disable_login_form: false
+        enabled: false
       auth.anonymous:
         enabled: true
         org_name: HomeOps
@@ -74,8 +78,6 @@ spec:
         logs: /var/log/grafana
         plugins: /var/lib/grafana/plugins
         provisioning: /etc/grafana/provisioning
-      analytics:
-        check_for_updates: false
       log:
         mode: console
       grafana_net:

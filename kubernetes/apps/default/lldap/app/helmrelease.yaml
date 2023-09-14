@@ -41,8 +41,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/lldap/lldap
-      # TODO: Switch to release tag on next release
-      tag: latest-alpine@sha256:261dd6d4e7bc3d7441e939ad57296b45c8c4b5125c0150ba0601352396b7a603
+      tag: v0.5.0
     env:
       TZ: ${TIMEZONE}
       LLDAP_HTTP_PORT: &port 8080
