@@ -54,6 +54,7 @@ spec:
           auth.home.arpa/enabled: "true"
           external-dns.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:youtube
+          hajimari.io/name: invidious
         hosts:
           - host: &host "invidious.${SECRET_CLUSTER_DOMAIN}"
             paths:

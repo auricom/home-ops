@@ -29,12 +29,16 @@ spec:
   values:
     controller:
       strategy: RollingUpdate
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: "hajimari-settings"
     env:
       TZ: ${TIMEZONE}
     hajimari:
       title: Apps
-      darkTheme: espresso
+      lightTheme: tron
+      darkTheme: tron
       alwaysTargetBlank: true
+      showSearch: false
       showGreeting: false
       showAppGroups: false
       showAppStatus: false
@@ -49,12 +53,47 @@ spec:
           - monitoring
           - networking
           - rook-ceph
+      customApps:
+        - group: servers
+          apps:
+            - name: opnsense
+              icon: mdi:router-network
+              url: "https://opnsense.${SECRET_DOMAIN}"
+            - name: truenas
+              icon: mdi:nas
+              url: "https://truenas.${SECRET_DOMAIN}"
+            - name: truenas-remote
+              icon: mdi:nas
+              url: "https://truenas-remote.${SECRET_DOMAIN}"
+            - name: minio
+              icon: mdi:aws
+              url: "https://minio.${SECRET_DOMAIN}:9000"
+            - name: pikvm
+              icon: mdi:ip-network
+              url: "https://pikvm.${SECRET_DOMAIN}"
+      bookmarks:
+        - group: Kubernetes
+          bookmarks:
+            - name: auricom/home-ops
+              icon: ''
+              url: https://github.com/auricom/home-ops
+              targetBlank: false
+            - name: auricom/containers
+              icon: ''
+              url: https://github.com/auricom/containers
+              targetBlank: false
+            - name: k8s-at-home-search
+              icon: ''
+              url: https://whazor.github.io/k8s-at-home-search/
+              targetBlank: false
     ingress:
       main:
         enabled: true
         ingressClassName: nginx
         annotations:
           hajimari.io/enable: "false"
+          hajimari.io/icon: "weather-sunset"
+          hajimari.io/instance: "admin"
         hosts:
           - host: &host apps.${SECRET_CLUSTER_DOMAIN}
             paths:
@@ -63,8 +102,6 @@ spec:
         tls:
           - hosts:
               - *host
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: "hajimari-settings"
     persistence:
       data:
         enabled: true
