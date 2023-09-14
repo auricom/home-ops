@@ -28,6 +28,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    annotations:
+      secret.reloader.stakater.com/reload: &secret weave-gitops-secret
     adminUser:
       create: true
       username: admin
@@ -47,6 +49,6 @@ spec:
             - *host
   valuesFrom:
     - kind: Secret
-      name: weave-gitops-secret
+      name: *secret
       valuesKey: adminPassword
       targetPath: adminUser.passwordHash

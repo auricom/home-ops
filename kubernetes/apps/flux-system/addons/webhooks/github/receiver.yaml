@@ -11,9 +11,9 @@ spec:
     - ping
     - push
   secretRef:
-    name: flux-github-webhook-secret
+    name: github-webhook-token-secret
   resources:
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+    - apiVersion: source.toolkit.fluxcd.io/v1
       kind: GitRepository
       name: home-ops-kubernetes
       namespace: flux-system
