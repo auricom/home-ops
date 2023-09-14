@@ -36,8 +36,6 @@ spec:
       GF_DATE_FORMATS_FULL_DATE: "DD.MM.YYYY hh:mm:ss"
       GF_SECURITY_ALLOW_EMBEDDING: true
       GF_SECURITY_COOKIE_SAMESITE: grafana
-    admin:
-      existingSecret: grafana-admin-creds
     grafana.ini:
       auth:
         signout_redirect_url: "https://auth.${SECRET_CLUSTER_DOMAIN}/logout"
@@ -58,7 +56,7 @@ spec:
         use_pkce: true
       auth.generic_oauth.group_mapping:
         role_attribute_path: |
-          contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'people') && 'Viewer'
+          contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'users') && 'Viewer'
         org_id: 1
       auth.basic:
         disable_login_form: false

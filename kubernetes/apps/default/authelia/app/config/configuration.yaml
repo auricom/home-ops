@@ -29,7 +29,7 @@ access_control:
     - domain:
         - "*.${SECRET_CLUSTER_DOMAIN}"
       policy: one_factor
-      subject: ["group:homelab_admins", "group:homelab_users"]
+      subject: ["group:admins", "group:users"]
       networks:
         - private
     # Deny public resources
