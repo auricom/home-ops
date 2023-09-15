@@ -15,7 +15,7 @@ spec:
           serviceAccountName: jobs
           containers:
             - name: *app
-              image: ghcr.io/auricom/kubectl:1.28.1@sha256:af0bd42480bdc9a0106bef1b90650d523570acd746be8aae6bfb6960ff052195
+              image: ghcr.io/auricom/kubectl:1.28.2@sha256:ac6ffc31b4632cd0c390d2e91a91916b66aee1363d406410b69bcf4f556a1038
               imagePullPolicy: IfNotPresent
               command:
                 - "/bin/bash"
