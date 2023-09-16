@@ -43,8 +43,9 @@ spec:
       tag: 5.0.1.7993@sha256:10a6c584b77dbd447df5f6c3f9fd55466c67b1734ded718b89a38e92bfbae197
     env:
       TZ: "${TIMEZONE}"
-      PUSHOVER_DEBUG: "false"
       PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+      PUSHOVER_DEBUG: "false"
+      PUSHOVER_PRIORITY: "0"
       RADARR__INSTANCE_NAME: Radarr
       RADARR__PORT: &port 8080
       RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"

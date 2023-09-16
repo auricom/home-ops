@@ -36,8 +36,9 @@ spec:
       tag: 4.0.0.671@sha256:2a3eae5853ea3119da098c314111e6d2cff700cd3e517150a76377c34cbf4f70
     env:
       TZ: "${TIMEZONE}"
-      PUSHOVER_DEBUG: "false"
       PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+      PUSHOVER_DEBUG: "false"
+      PUSHOVER_PRIORITY: "0"
       SONARR__INSTANCE_NAME: Sonarr
       SONARR__PORT: &port 8080
       SONARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
