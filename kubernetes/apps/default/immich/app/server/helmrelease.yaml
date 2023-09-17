@@ -28,7 +28,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: immich-typesense
-    - name: redis
+    - name: immich-redis
   values:
     initContainers:
       01-init-db:

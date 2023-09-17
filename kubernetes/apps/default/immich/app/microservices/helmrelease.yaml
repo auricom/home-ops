@@ -28,7 +28,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: immich-typesense
-    - name: redis
+    - name: immich-redis
   values:
     controller:
       replicas: 2

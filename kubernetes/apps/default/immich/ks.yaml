@@ -11,7 +11,6 @@ spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-redis
   path: ./kubernetes/apps/default/immich/app
   prune: true
   sourceRef:
@@ -21,3 +20,18 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-immich-redis
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./kubernetes/cluster-0/apps/media/immich/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: k8s-gitops-kubernetes
+  wait: false # no flux ks dependents
