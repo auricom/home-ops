@@ -82,3 +82,19 @@ spec:
     securityContext:
       privileged: true
     tunnel: disabled
+  #   l7proxy: true
+  #   ingressController:
+  #     enabled: true
+  #     loadbalancerMode: shared
+  #     service:
+  #       loadBalancerIP: "${CLUSTER_LB_CILIUM}"
+  # postRenderers:
+  #   - kustomize:
+  #       patchesStrategicMerge:
+  #         - kind: Service
+  #           apiVersion: v1
+  #           metadata:
+  #             name: cilium-ingress
+  #             namespace: *ns
+  #           spec:
+  #             externalTrafficPolicy: Local

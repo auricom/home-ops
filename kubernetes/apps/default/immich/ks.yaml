@@ -29,9 +29,9 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./kubernetes/cluster-0/apps/media/immich/app
+  path: ./kubernetes/apps/default/immich/redis
   prune: true
   sourceRef:
     kind: GitRepository
-    name: k8s-gitops-kubernetes
+    name: home-ops-kubernetes
   wait: false # no flux ks dependents
