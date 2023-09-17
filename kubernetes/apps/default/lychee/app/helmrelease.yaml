@@ -26,6 +26,8 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: lychee-redis
   values:
     initContainers:
       01-init-db:
@@ -44,7 +46,7 @@ spec:
       TIMEZONE: ${TIMEZONE}
       APP_NAME: Lychee
       DB_CONNECTION: pgsql
-      REDIS_HOST: redis-master.default.svc.cluster.local.
+      REDIS_HOST: lychee-redis.default.svc.cluster.local.
       REDIS_PORT: 6379
     envFrom:
       - secretRef:

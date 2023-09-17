@@ -26,6 +26,8 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: ghostfolio-redis
   values:
     controller:
       strategy: RollingUpdate
@@ -43,7 +45,7 @@ spec:
       tag: 2.2.0
     env:
       NODE_ENV: production
-      REDIS_HOST: redis-master.default.svc.cluster.local
+      REDIS_HOST: ghostfolio-redis.default.svc.cluster.local
       REDIS_PORT: 6379
     envFrom: *envFrom
     service:
