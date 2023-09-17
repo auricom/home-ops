@@ -4,7 +4,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: &app cilium
-  namespace: kube-system
+  namespace: &ns kube-system
 spec:
   interval: 30m
   chart:
@@ -82,12 +82,12 @@ spec:
     securityContext:
       privileged: true
     tunnel: disabled
-  #   l7proxy: true
-  #   ingressController:
-  #     enabled: true
-  #     loadbalancerMode: shared
-  #     service:
-  #       loadBalancerIP: "${CLUSTER_LB_CILIUM}"
+    l7proxy: true
+    ingressController:
+      enabled: true
+      loadbalancerMode: shared
+      service:
+        loadBalancerIP: "${CLUSTER_LB_CILIUM}"
   # postRenderers:
   #   - kustomize:
   #       patchesStrategicMerge:
