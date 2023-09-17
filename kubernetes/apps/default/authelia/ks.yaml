@@ -9,6 +9,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
+    - name: cluster-apps-authelia-redis
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-external-secrets-stores
   path: ./kubernetes/apps/default/authelia/app
@@ -24,3 +25,18 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 3m
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-authelia-redis
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./kubernetes/apps/default/authelia/redis
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  wait: false # no flux ks dependents

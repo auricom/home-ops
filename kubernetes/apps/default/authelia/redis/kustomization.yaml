@@ -5,3 +5,6 @@ kind: Kustomization
 namespace: default
 resources:
   - ./helmrelease.yaml
+commonLabels:
+  app.kubernetes.io/name: authelia-redis
+  app.kubernetes.io/instance: authelia

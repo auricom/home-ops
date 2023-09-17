@@ -60,7 +60,7 @@ spec:
       OIDC_USERNAME_CLAIM: email
       PGSSLMODE: disable
       PORT: 8080
-      REDIS_URL: redis://redis-master.default.svc.cluster.local.:6379
+      REDIS_URL: redis://outline-redis.default.svc.cluster.local.:6379
       SMTP_HOST: smtp-relay.default.svc.cluster.local.
       SMTP_PORT: 2525
       SMTP_FROM_EMAIL: "outline@${SECRET_DOMAIN}"

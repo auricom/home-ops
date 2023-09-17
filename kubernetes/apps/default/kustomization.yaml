@@ -35,7 +35,6 @@ resources:
   - ./media-browser/ks.yaml
   - ./music-transcode/ks.yaml
   - ./navidrome/ks.yaml
-  - ./nitter/ks.yaml
   - ./opnsense/ks.yaml
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
@@ -46,7 +45,6 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
   - ./recyclarr/ks.yaml
-  - ./redis/ks.yaml
   - ./resilio-sync/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./semaphore/ks.yaml
