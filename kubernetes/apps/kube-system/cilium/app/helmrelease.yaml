@@ -85,6 +85,7 @@ spec:
     l7proxy: true
     ingressController:
       enabled: true
+      defaultSecretNamespace: ${SECRET_CLUSTER_DOMAIN//./-}-tls
       loadbalancerMode: shared
       service:
         loadBalancerIP: "${CLUSTER_LB_CILIUM}"
