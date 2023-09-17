@@ -47,8 +47,8 @@ spec:
         hsts-max-age: "31449600"
         keep-alive-requests: 10000
         keep-alive: 120
-        proxy-body-size: "0"
-        proxy-buffer-size: "16k"
+        proxy-body-size: "100M"
+        # proxy-buffer-size: "16k"
         ssl-protocols: "TLSv1.3 TLSv1.2"
         use-forwarded-headers: "true"
         # crowdsec bouncer
