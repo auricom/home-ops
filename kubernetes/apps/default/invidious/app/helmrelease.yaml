@@ -39,7 +39,7 @@ spec:
               name: &secret invidious-secret
     image:
       repository: quay.io/invidious/invidious
-      tag: latest@sha256:f153507394a89ca4c3aa63ded4c41d970958b6a7f779e371cb5348f199142496
+      tag: latest@sha256:9a9c97a85ee8aaee2447898bdb2151482fd372e62a63348eb8dbb62216a8b5bd
     envFrom: *envFrom
     service:
       main:
