@@ -39,7 +39,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/semaphore
-      tag: v2.9.4
+      tag: v2.9.37
     env:
       SEMAPHORE_DB_DIALECT: postgres
       SEMAPHORE_LDAP_ACTIVATED: "no"
