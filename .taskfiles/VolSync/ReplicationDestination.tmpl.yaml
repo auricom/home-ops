@@ -8,7 +8,7 @@ spec:
   trigger:
     manual: restore-once
   restic:
-    repository: "${rsrc}-restic"
+    repository: "${rsrc}-restic-secret"
     destinationPVC: "${claim}"
     copyMethod: Direct
     # IMPORTANT NOTE:
