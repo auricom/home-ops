@@ -11,5 +11,6 @@ resources:
   - ./machine-learning
   - ./server
   - ./typesense
+  - ./volsync.yaml
   - ./volumes.yaml
   - ./web

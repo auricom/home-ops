@@ -56,7 +56,8 @@ spec:
         mountPath: /usr/src/app/upload
       cache:
         enabled: true
-        type: emptyDir
+        existingClaim: immich-machine-learning-cache
+        mountPath: /cache
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
