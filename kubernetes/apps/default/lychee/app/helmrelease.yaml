@@ -41,7 +41,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: lycheeorg/lychee-laravel
-      tag: v4.12.0
+      tag: v4.13.0
     env:
       TIMEZONE: ${TIMEZONE}
       APP_NAME: Lychee
