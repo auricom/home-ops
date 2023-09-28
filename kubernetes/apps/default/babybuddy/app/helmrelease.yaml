@@ -29,7 +29,7 @@ spec:
   values:
     initContainers:
       01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4@sha256:903b455bc6aafdca7f4bb5db0c75eefedcb122875ff9c55302614203ef87cd81
+        image: ghcr.io/auricom/postgres-init:15.4@sha256:e6061831a8ab598ca770f91df21cd37cc87217be2c6314ca415afa0c6986cc39
         imagePullPolicy: IfNotPresent
         envFrom: &envFrom
           - secretRef:
