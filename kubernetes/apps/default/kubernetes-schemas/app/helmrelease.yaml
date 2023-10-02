@@ -32,7 +32,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: ghcr.io/auricom/kubernetes-schemas
-      tag: latest@sha256:9fc68107eadeb4eacbb91151faa82882d70a570ad5490428f87209ebeaed3887
+      tag: latest@sha256:6ad97a46eeafe4a8efe64fe75e96986ba86aabb654fc245ec279b4590f0083d4
     service:
       main:
         ports:
