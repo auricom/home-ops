@@ -40,7 +40,7 @@ spec:
           - secretRef:
               name: wallabag-secret
       02-init-migrate:
-        image: wallabag/wallabag:2.6.6
+        image: wallabag/wallabag:2.6.7
         envFrom: *envFrom
         env: &env
           SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
@@ -59,7 +59,7 @@ spec:
           - --no-interaction
     image:
       repository: wallabag/wallabag
-      tag: 2.6.6
+      tag: 2.6.7
     envFrom: *envFrom
     env: *env
     enableServiceLinks: false
