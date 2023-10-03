@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/auricom/resilio-sync
-      tag: 2.7.3.1381-1@sha256:d5d625010eca890923a928b56e2feac255d04b7c846233d33d28434c022e35d1
+      tag: 2.7.3.1381-1@sha256:560439a4d475dd3efb2629694712ce80c66fdfa8de037bffd998ff1e2c7ab040
       env:
         - name: TZ
           value: "${TIMEZONE}"
