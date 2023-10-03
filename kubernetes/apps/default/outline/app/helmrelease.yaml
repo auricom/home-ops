@@ -42,7 +42,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/outlinewiki/outline
-      tag: 0.71.0
+      tag: 0.72.0
     envFrom: *envFrom
     env:
       AWS_REGION: us-east-1
