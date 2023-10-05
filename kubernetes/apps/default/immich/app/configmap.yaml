@@ -14,6 +14,7 @@ data:
   # REDIS_DBINDEX: "15"
   REDIS_HOSTNAME: immich-redis.default.svc.cluster.local
   REDIS_PORT: "6379"
+  TRANSFORMERS_CACHE: /usr/src/app/.transformers_cache
   TYPESENSE_DATA_DIR: /config
   TYPESENSE_HOST: immich-typesense.default.svc.cluster.local.
   # Below are deprecated and can only be set in the Immich Admin settings
