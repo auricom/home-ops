@@ -40,7 +40,7 @@ spec:
               name: linkding-secret
     image:
       repository: sissbruecker/linkding
-      tag: 1.22.0
+      tag: 1.22.1
     envFrom: *envFrom
     service:
       main:
