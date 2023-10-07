@@ -35,7 +35,7 @@ spec:
           - secretRef:
               name: babybuddy-secret
       02-migrations:
-        image: ghcr.io/auricom/babybuddy:2.0.4@sha256:01061536dffec41198e7d28da9911aa2b6b3bf2917b01d6e19e0e321bfe696fd
+        image: ghcr.io/auricom/babybuddy:2.0.4@sha256:3985feb050fb4a67fd0da3208d0e22357d5f908c421714aecf9416c9757871f4
         imagePullPolicy: IfNotPresent
         envFrom: *envFrom
         command:
@@ -54,7 +54,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/auricom/babybuddy
-      tag: 2.0.4@sha256:01061536dffec41198e7d28da9911aa2b6b3bf2917b01d6e19e0e321bfe696fd
+      tag: 2.0.4@sha256:3985feb050fb4a67fd0da3208d0e22357d5f908c421714aecf9416c9757871f4
     service:
       main:
         ports:
