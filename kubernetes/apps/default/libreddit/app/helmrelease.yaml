@@ -31,7 +31,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: ghcr.io/auricom/libreddit
-      tag: 0.30.1@sha256:5633cd3ac110a69ff5f072fc6ba7f9eeef0fad443ea9696dd1e59d3414562cee
+      tag: 0.30.1@sha256:2f4c5199d330c35608a382878378a70f10822238e5c13d5e5a70053fd557c93a
     service:
       main:
         ports:
