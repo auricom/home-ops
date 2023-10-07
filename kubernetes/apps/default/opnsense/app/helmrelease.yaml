@@ -35,7 +35,7 @@ spec:
     restartPolicy: OnFailure
     image:
       repository: ghcr.io/auricom/kubectl
-      tag: 1.28.2@sha256:a8a7c9ed2116f9133daf5fa0a2fa555fb29b32e7c19cdec17dfa5c33850afdeb
+      tag: 1.28.2@sha256:7c85860be00ecdff755e1486d1c823a902fa8d3c9708914344f8deedac6c7e30
     env:
       OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
       S3_URL: "https://truenas.${SECRET_DOMAIN}:51515"
