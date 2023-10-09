@@ -39,7 +39,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/auricom/kresus
-      tag: 0.19.4@sha256:80a340c5cfd511c9e069e187c374a5aeeeb7eaa2c75353c596991bd8e2f9376a
+      tag: 0.19.4@sha256:00491e6451426729f811003bd46d01713f2fcfecede4c5023daadefe6c1c54de
       imagePullPolicy: IfNotPresent
     service:
       main:
@@ -58,6 +58,7 @@ spec:
       KRESUS_EMAIL_TRANSPORT: smtp
       KRESUS_EMAIL_FROM: kresus@mailrise.home.arpa
       KRESUS_PYTHON_EXEC: python3
+      KRESUS_WOOB_DIR: /woob
       NODE_ENV: production
     envFrom:
       - secretRef:
