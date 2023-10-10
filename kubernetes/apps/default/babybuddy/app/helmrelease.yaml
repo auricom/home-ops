@@ -47,8 +47,9 @@ spec:
             set -o errexit
             set -o nounset
 
-            python3 www/public/manage.py migrate --noinput
-            python3 www/public/manage.py createcachetable
+            cd www/public
+            python3 ./manage.py migrate --noinput
+            python3 ./manage.py createcachetable
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
