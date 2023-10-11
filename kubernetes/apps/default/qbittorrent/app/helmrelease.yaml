@@ -89,6 +89,12 @@ spec:
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/downloads
         mountPath: /mnt/storage/downloads
+      music-qbittorrent:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/music/.qbittorrent
+        mountPath: /mnt/storage/music/.qbittorrent
       video-qbittorrent:
         enabled: true
         type: nfs
