@@ -42,7 +42,7 @@ spec:
               name: ghostfolio-secret
     image:
       repository: docker.io/ghostfolio/ghostfolio
-      tag: 2.10.0
+      tag: 2.11.0
     env:
       NODE_ENV: production
       REDIS_HOST: ghostfolio-redis.default.svc.cluster.local
