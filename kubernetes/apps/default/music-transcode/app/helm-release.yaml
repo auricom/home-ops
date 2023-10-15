@@ -35,7 +35,7 @@ spec:
     restartPolicy: OnFailure
     image:
       repository: ghcr.io/auricom/freac
-      tag: 1.1.7@sha256:97f0fe3063b83828867e67de24b652036e1d6cf2143ee03f0fbc2ffea464774b
+      tag: 1.1.7@sha256:2f7f1997e5437122fe0140601e0fe609777654243b0f2903f3d937794f6e31e0
     command:
       - "/bin/bash"
       - "-c"
