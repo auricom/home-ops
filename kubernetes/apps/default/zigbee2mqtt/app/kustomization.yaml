@@ -5,8 +5,5 @@ namespace: default
 resources:
 - ./gatus.yaml
 - ./helmrelease.yaml
-- ./prometheusrule.yaml
 - ./volsync.yaml
 - ./volume.yaml
-patches:
-- path: ./patches/exporter.yaml

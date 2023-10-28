@@ -6,3 +6,4 @@ namespace: kube-system
 resources:
   - ./aeotec-zwave-device.yaml
   - ./google-coral-device.yaml
+  - ./zzh-zigbee-device.yaml
