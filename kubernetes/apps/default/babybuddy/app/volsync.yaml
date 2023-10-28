@@ -30,7 +30,7 @@ metadata:
   name: babybuddy
   namespace: default
 spec:
-  sourcePVC: babybuddy-config
+  sourcePVC: config-babybuddy-0
   trigger:
     schedule: "0 7 * * *"
   restic:
