@@ -101,19 +101,6 @@ spec:
         tls:
           - hosts:
               - *host
-        pod:
-          nodeSelector:
-            aeotec.feature.node.kubernetes.io/zwave: "true"
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: ceph-block
-              globalMounts:
-                - path: /usr/src/app/store
-    securityContext:
-      privileged: true
     persistence:
       usb:
         type: hostPath
