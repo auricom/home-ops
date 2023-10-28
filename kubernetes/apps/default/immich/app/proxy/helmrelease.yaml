@@ -31,7 +31,7 @@ spec:
         configmap.reloader.stakater.com/reload: &configMap immich-configmap
     image:
       repository: ghcr.io/immich-app/immich-proxy
-      tag: v1.82.1
+      tag: v1.83.0
     service:
       main:
         ports:
