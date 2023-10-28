@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,65 +27,82 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: babybuddy-secret
-      02-migrations:
-        image: ghcr.io/auricom/babybuddy:2.1.2@sha256:f13bcdc435aa51807e6642a8c22563b49bed9c228d809c751881cfe6ef72632d
-        imagePullPolicy: IfNotPresent
-        envFrom: *envFrom
-        command:
-          - "/bin/bash"
-          - "-c"
-          - |
-            #!/bin/bash
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        type: statefulset
+        initContainers:
+          01-init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: babybuddy-secret
+          02-migrations:
+            image:
+              repository: ghcr.io/auricom/babybuddy
+              tag: 2.1.2@sha256:f13bcdc435aa51807e6642a8c22563b49bed9c228d809c751881cfe6ef72632d
+              pullPolicy: IfNotPresent
+            envFrom: *envFrom
+            command:
+              - "/bin/bash"
+              - "-c"
+              - |
+                #!/bin/bash
 
-            set -o errexit
-            set -o nounset
+                set -o errexit
+                set -o nounset
 
-            cd www/public
-            python3 ./manage.py migrate --noinput
-            python3 ./manage.py createcachetable
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/auricom/babybuddy
-      tag: 2.1.2@sha256:f13bcdc435aa51807e6642a8c22563b49bed9c228d809c751881cfe6ef72632d
+                cd www/public
+                python3 ./manage.py migrate --noinput
+                python3 ./manage.py createcachetable
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/babybuddy
+              tag: 2.1.2@sha256:f13bcdc435aa51807e6642a8c22563b49bed9c228d809c751881cfe6ef72632d
+            env:
+              TZ: ${TIMEZONE}
+              EMAIL_HOST: smtp-relay.default.svc.cluster.local.
+              EMAIL_PORT: "2525"
+              EMAIL_USE_TLS: "false"
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
           http:
             port: 3000
-    env:
-      TZ: ${TIMEZONE}
-      EMAIL_HOST: smtp-relay.default.svc.cluster.local.
-      EMAIL_PORT: "2525"
-      EMAIL_USE_TLS: "false"
-    envFrom: *envFrom
-    persistence:
-      config:
+    serviceMonitor:
+      main:
         enabled: true
-        existingClaim: babybuddy-config
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           hajimari.io/icon: mdi:baby-face-outline
         hosts:
-          - host: &host "babybuddy.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: main
         tls:
           - hosts:
               - *host
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
