@@ -52,18 +52,6 @@ spec:
               - vendor
               - device
           custom:
-            - name: "zwave"
-              matchOn:
-                - usbId:
-                    class: ["02"]
-                    vendor: ["0658"]
-                    device: ["0200"]
-            - name: "zigbee"
-              matchOn:
-                - usbId:
-                    class: ["ff"]
-                    vendor: ["1a86"]
-                    device: ["7523"]
             - name: "rflink"
               matchOn:
                 - usbId:
