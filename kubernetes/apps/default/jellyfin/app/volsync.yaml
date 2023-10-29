@@ -30,7 +30,7 @@ metadata:
   name: jellyfin
   namespace: default
 spec:
-  sourcePVC: jellyfin-config
+  sourcePVC: config-jellyfin-0
   trigger:
     schedule: "0 7 * * *"
   restic:
