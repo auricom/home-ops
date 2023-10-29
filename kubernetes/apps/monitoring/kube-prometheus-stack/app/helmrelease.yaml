@@ -146,8 +146,9 @@ spec:
           # renovate: datasource=docker depName=quay.io/thanos/thanos
           version: "v0.32.4"
           objectStorageConfig:
-            name: thanos-objstore-secret
-            key: objstore.yml
+            existingSecret:
+              name: thanos-objstore-secret
+              key: objstore.yml
         additionalScrapeConfigs:
           - job_name: "opnsense"
             scrape_interval: 60s
