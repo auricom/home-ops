@@ -10,14 +10,13 @@ spec:
   chart:
     spec:
       chart: snapshot-controller
-      version: 1.9.2
+      version: 2.0.0
       sourceRef:
         kind: HelmRepository
         name: piraeus
         namespace: flux-system
   maxHistory: 2
   install:
-    createNamespace: true
     crds: CreateReplace
     remediation:
       retries: 3
@@ -28,6 +27,9 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-operator
+      namespace: rook-ceph
   values:
     controller:
       volumeSnapshotClasses:
@@ -38,6 +40,15 @@ spec:
           parameters:
             clusterID: rook-ceph
             csi.storage.k8s.io/snapshotter-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
+          deletionPolicy: Delete
+        - name: csi-ceph-filesystem
+          driver: rook-ceph.cephfs.csi.ceph.com
+          annotations:
+            snapshot.storage.kubernetes.io/is-default-class: "false"
+          parameters:
+            clusterID: rook-ceph
+            csi.storage.k8s.io/snapshotter-secret-name: rook-csi-cephfs-provisioner
             csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
           deletionPolicy: Delete
       serviceMonitor:
