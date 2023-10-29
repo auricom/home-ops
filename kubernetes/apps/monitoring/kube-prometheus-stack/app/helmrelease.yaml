@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: 51.8.0
+      version: 52.1.0
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -146,8 +146,9 @@ spec:
           # renovate: datasource=docker depName=quay.io/thanos/thanos
           version: "v0.32.5"
           objectStorageConfig:
-            name: thanos-objstore-secret
-            key: objstore.yml
+            existingSecret:
+              name: thanos-objstore-secret
+              key: objstore.yml
         additionalScrapeConfigs:
           - job_name: "opnsense"
             scrape_interval: 60s
