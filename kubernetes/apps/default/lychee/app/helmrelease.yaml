@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -29,28 +29,44 @@ spec:
   dependsOn:
     - name: lychee-redis
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: &secret lychee-secret
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: lycheeorg/lychee-laravel
-      tag: v4.13.0
-    env:
-      TIMEZONE: ${TIMEZONE}
-      APP_NAME: Lychee
-      DB_CONNECTION: pgsql
-      REDIS_HOST: lychee-redis.default.svc.cluster.local.
-      REDIS_PORT: 6379
-    envFrom:
-      - secretRef:
-          name: lychee-secret
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        type: statefulset
+        initContainers:
+          01-init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: lychee-secret
+        containers:
+          main:
+            image:
+              repository: lycheeorg/lychee-laravel
+              tag: v4.13.0
+            env:
+              TIMEZONE: ${TIMEZONE}
+              APP_NAME: Lychee
+              DB_CONNECTION: pgsql
+              REDIS_HOST: lychee-redis.default.svc.cluster.local.
+              REDIS_PORT: 6379
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 50Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /uploads
     service:
       main:
         ports:
@@ -59,16 +75,16 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
-          auth.home.arpa/enabled: "true"
           external-dns.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:camera
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
         tls:
           - hosts:
               - *host
@@ -78,13 +94,6 @@ spec:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/photo
-        mountPath: /mnt/storage/photo
         readOnly: true
-      files:
-        enabled: true
-        mountPath: /uploads
-        existingClaim: lychee-files
-    resources:
-      requests:
-        cpu: 15m
-        memory: 256Mi
+        globalMounts:
+          - path: /mnt/storage/photo
