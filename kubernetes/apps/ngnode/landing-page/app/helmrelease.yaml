@@ -48,6 +48,14 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+          - host: "www.ngnode.com"
+            paths:
+              - path: /
+                pathType: Prefix
+          - host: "ngnode.com"
+            paths:
+              - path: /
+                pathType: Prefix
         tls:
           - hosts:
               - *host
