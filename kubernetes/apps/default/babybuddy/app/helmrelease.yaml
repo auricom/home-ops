@@ -87,9 +87,6 @@ spec:
         ports:
           http:
             port: 3000
-    serviceMonitor:
-      main:
-        enabled: true
     ingress:
       main:
         enabled: true
