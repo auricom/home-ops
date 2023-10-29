@@ -30,7 +30,7 @@ metadata:
   name: lychee
   namespace: default
 spec:
-  sourcePVC: lychee-files
+  sourcePVC: config-lychee-0
   trigger:
     schedule: "0 7 * * *"
   restic:
