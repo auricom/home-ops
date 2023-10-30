@@ -39,7 +39,7 @@ spec:
               name: freshrss-secret
     image:
       repository: freshrss/freshrss
-      tag: 1.22.0
+      tag: 1.22.1
     service:
       main:
         ports:
