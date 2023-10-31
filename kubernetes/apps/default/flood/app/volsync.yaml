@@ -30,7 +30,7 @@ metadata:
   name: flood
   namespace: default
 spec:
-  sourcePVC: flood-config
+  sourcePVC: config-flood-0
   trigger:
     schedule: "0 7 * * *"
   restic:

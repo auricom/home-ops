@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,19 +27,43 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: jesec/flood
-      tag: master
-    env:
-      FLOOD_OPTION_RUNDIR: /data
-      FLOOD_OPTION_AUTH: "none"
-      FLOOD_OPTION_QBURL: "http://qbittorrent.default.svc.cluster.local.:8080"
-    envFrom:
-      - secretRef:
-          name: flood-secret
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: jesec/flood
+              tag: master@sha256:f4c7ea00f92904db57df1ff1095f17f58389d6b95fdd733aa8533c65deb9343d
+            env:
+              FLOOD_OPTION_RUNDIR: /data
+              FLOOD_OPTION_AUTH: "none"
+              FLOOD_OPTION_QBURL: "http://qbittorrent.default.svc.cluster.local.:8080"
+            envFrom:
+              - secretRef:
+                  name: flood-secret
+            resources:
+              requests:
+                memory: 250Mi
+                cpu: 15m
+              limits:
+                memory: 512Mi
+        pod:
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+            fsGroup: 1001
+            fsGroupChangePolicy: "OnRootMismatch"
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 50Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /data
     service:
       main:
         ports:
@@ -48,7 +72,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:download
@@ -56,23 +80,9 @@ spec:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 1001
-      runAsGroup: 1001
-      fsGroup: 1001
-      fsGroupChangePolicy: "OnRootMismatch"
-    persistence:
-      data:
-        enabled: true
-        existingClaim: flood-config
-        mountPath: /data
-    resources:
-      requests:
-        memory: 250Mi
-        cpu: 15m
-      limits:
-        memory: 512Mi
