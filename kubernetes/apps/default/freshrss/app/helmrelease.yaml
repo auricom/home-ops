@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,48 +27,59 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom:
-          - secretRef:
-              name: freshrss-secret
-    image:
-      repository: freshrss/freshrss
-      tag: 1.22.1
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: freshrss-secret
+        containers:
+          main:
+            image:
+              repository: freshrss/freshrss
+              tag: 1.22.1
+            env:
+              TZ: ${TIMEZONE}
+              CRON_MIN: "18,48"
+              DOMAIN: "https://freshrss.${SECRET_CLUSTER_DOMAIN}/"
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /var/www/FreshRSS/data
     service:
       main:
         ports:
           http:
             port: 80
-    env:
-      TZ: ${TIMEZONE}
-      CRON_MIN: "18,48"
-      DOMAIN: "https://freshrss.${SECRET_CLUSTER_DOMAIN}/"
-    persistence:
-      config:
-        enabled: true
-        existingClaim: freshrss-config
-        mountPath: /var/www/FreshRSS/data
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           hajimari.io/icon: mdi:rss
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    resources:
-      requests:
-        cpu: 50m
-        memory: 256Mi

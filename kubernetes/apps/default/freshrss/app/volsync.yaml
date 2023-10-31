@@ -30,7 +30,7 @@ metadata:
   name: freshrss
   namespace: default
 spec:
-  sourcePVC: freshrss-config
+  sourcePVC: config-freshrss-0
   trigger:
     schedule: "0 7 * * *"
   restic:
