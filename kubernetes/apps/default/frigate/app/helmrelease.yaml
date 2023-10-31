@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -35,20 +35,59 @@ spec:
     - name: volsync
       namespace: volsync
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
-      podManagementPolicy: Parallel
-    image:
-      repository: ghcr.io/blakeblackshear/frigate
-      tag: 0.12.1
-    env:
-      TZ: ${TIMEZONE}
-      LIBVA_DRIVER_NAME: i965
-    envFrom:
-      - secretRef:
-          name: frigate-secret
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/blakeblackshear/frigate
+              tag: 0.12.1
+            env:
+              TZ: ${TIMEZONE}
+              LIBVA_DRIVER_NAME: i965
+            envFrom:
+              - secretRef:
+                  name: frigate-secret
+            resources:
+              requests:
+                cpu: 10m
+                memory: 1000Mi
+                gpu.intel.com/i915: 1
+              limits:
+                memory: 6000Mi
+                gpu.intel.com/i915: 1
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/version
+                    port: &port 5000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 5Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /data
+        pod:
+          nodeSelector:
+            google.feature.node.kubernetes.io/coral: "true"
+            intel.feature.node.kubernetes.io/gpu: "true"
+        securityContext:
+          privileged: true
     service:
       main:
         type: LoadBalancer
@@ -56,80 +95,51 @@ spec:
         loadBalancerIP: ${CLUSTER_LB_FRIGATE}
         ports:
           http:
-            port: &port 5000
+            port: *port
           rtsp:
             enabled: true
             port: 8554
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /api/version
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
     ingress:
       main:
         enabled: true
         annotations:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:cctv
-        ingressClassName: nginx
+        className: nginx
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    securityContext:
-      privileged: true
     persistence:
       config-file:
-        enabled: true
         type: configMap
         name: frigate-configmap
-        subPath: config.yml
-        mountPath: /config/config.yml
         readOnly: true
-      config:
-        enabled: true
-        existingClaim: frigate-config
-        mountPath: /data
+        globalMounts:
+          - path: /config
       media:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_OPENMEDIAVAULT}"
         path: /export/frigate
-        mountPath: /media/frigate
+        globalMounts:
+          - path: /media/frigate
       cache:
-        enabled: true
         type: emptyDir
         medium: Memory
         sizeLimit: 4Gi
-        mountPath: /dev/shm
+        globalMounts:
+          - path: /dev/shm
       usb:
-        enabled: true
         type: hostPath
         hostPath: /dev/bus/usb
         hostPathType: Directory
-        mountPath: /dev/bus/usb
-    nodeSelector:
-      google.feature.node.kubernetes.io/coral: "true"
-      intel.feature.node.kubernetes.io/gpu: "true"
-    resources:
-      requests:
-        cpu: 10m
-        memory: 1000Mi
-        gpu.intel.com/i915: "1"
-      limits:
-        memory: 6000Mi
-        gpu.intel.com/i915: "1"
+        advancedMounts:
+          main:
+            main:
+              - path: /dev/bus/usb
