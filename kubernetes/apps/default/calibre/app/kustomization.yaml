@@ -6,5 +6,4 @@ namespace: default
 resources:
   - ./gatus.yaml
   - ./helmrelease.yaml
-  - ./volume.yaml
   - ./volsync.yaml

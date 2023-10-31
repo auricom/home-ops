@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,41 +27,41 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: ghcr.io/linuxserver/calibre
-      tag: version-v6.29.0
-    env:
-      TZ: "${TIMEZONE}"
-      PUID: "1026"
-      PGID: "1000"
-    persistence:
-      config:
-        enabled: true
-        existingClaim: calibre-config
-      books:
-        enabled: true
-        type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
-        path: /mnt/storage/home/claude/books
-        mountPath: /mnt/storage/home/claude/books
+    controllers:
+      main:
+        type: statefulset
+        containers:
+          main:
+            image:
+              repository: ghcr.io/linuxserver/calibre
+              tag: version-v6.29.0
+            env:
+              TZ: "${TIMEZONE}"
+              PUID: "1026"
+              PGID: "1000"
+            resources:
+              requests:
+                cpu: 15m
+                memory: 324M
+              limits:
+                memory: 604M
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
           http:
             port: 8080
-      webserver:
-        enabled: true
-        ports:
-          webserver:
-            enabled: true
-            port: 8081
-            protocol: TCP
-            targetPort: 8081
-        type: ClusterIP
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:bookshelf
@@ -69,13 +69,17 @@ spec:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    resources:
-      requests:
-        cpu: 15m
-        memory: 324M
-      limits:
-        memory: 604M
+    persistence:
+      books:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/home/claude/books
+        globalMounts:
+          - path: /mnt/storage/home/claude/books

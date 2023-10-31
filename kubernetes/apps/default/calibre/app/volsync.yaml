@@ -30,7 +30,7 @@ metadata:
   name: calibre
   namespace: default
 spec:
-  sourcePVC: calibre-config
+  sourcePVC: config-calibre-0
   trigger:
     schedule: "0 7 * * *"
   restic:
