@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,38 +26,53 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: komga
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: sndxr/komf
-      tag: "0.31.6"
-    env:
-      KOMF_KOMGA_BASE_URI: http://komga.default.svc.cluster.local:8080
-      KOMF_LOG_LEVEL: INFO
-    envFrom:
-      - secretRef:
-          name: komf-secret
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: sndxr/komf
+              tag: "0.31.6"
+            env:
+              KOMF_KOMGA_BASE_URI: http://komga.default.svc.cluster.local:8080
+              KOMF_LOG_LEVEL: INFO
+            envFrom:
+              - secretRef:
+                  name: komf-secret
+            resources:
+              requests:
+                memory: 4282M
+                cpu: 15m
+              limits:
+                memory: 4282M
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
           http:
-            port: &port 8085
+            port: 8085
     persistence:
-      config:
-        enabled: true
-        existingClaim: komf-config
       configmap:
         enabled: true
         type: configMap
         name: komf-configmap
-        subPath: application.yml
-        mountPath: /config/application.yml
-        readOnly: true
-    resources:
-      requests:
-        memory: 4282M
-        cpu: 15m
-      limits:
-        memory: 4282M
+        advancedMounts:
+          main:
+            main:
+              - path: /config/application.yml
+                readOnly: true
+                subPath: application.yml
+
