@@ -17,11 +17,6 @@ spec:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-outline-redis
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
-      kind: HelmRelease
-      name: outline
-      namespace: default
   interval: 30m
   retryInterval: 1m
   timeout: 3m

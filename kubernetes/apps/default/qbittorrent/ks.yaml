@@ -16,15 +16,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  healthChecks:
-    - apiVersion: batch/v1
-      kind: CronJob
-      name: qbittorrent-upgrade-p2pblocklist
-      namespace: default
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
-      kind: HelmRelease
-      name: qbittorrent
-      namespace: default
   interval: 30m
   retryInterval: 1m
   timeout: 3m
