@@ -35,6 +35,10 @@ spec:
     - name: volsync
       namespace: volsync
   values:
+    defaultPodOptions:
+      nodeSelector:
+        google.feature.node.kubernetes.io/coral: "true"
+        intel.feature.node.kubernetes.io/gpu: "true"
     controllers:
       main:
         type: statefulset
@@ -51,14 +55,6 @@ spec:
             envFrom:
               - secretRef:
                   name: frigate-secret
-            resources:
-              requests:
-                cpu: 10m
-                memory: 1000Mi
-                gpu.intel.com/i915: 1
-              limits:
-                memory: 6000Mi
-                gpu.intel.com/i915: 1
             probes:
               liveness: &probes
                 enabled: true
@@ -74,6 +70,16 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
+            resources:
+              requests:
+                cpu: 10m
+                memory: 1000Mi
+                gpu.intel.com/i915: 1
+              limits:
+                memory: 6000Mi
+                gpu.intel.com/i915: 1
+            securityContext:
+              privileged: true
         statefulset:
           volumeClaimTemplates:
             - name: config
@@ -82,12 +88,6 @@ spec:
               storageClass: rook-ceph-block
               globalMounts:
                 - path: /data
-        pod:
-          nodeSelector:
-            google.feature.node.kubernetes.io/coral: "true"
-            intel.feature.node.kubernetes.io/gpu: "true"
-        securityContext:
-          privileged: true
     service:
       main:
         type: LoadBalancer

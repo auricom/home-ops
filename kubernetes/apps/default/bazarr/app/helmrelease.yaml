@@ -32,6 +32,12 @@ spec:
     - name: volsync
       namespace: volsync
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       main:
         type: statefulset
@@ -70,12 +76,6 @@ spec:
               - --branch=master
               - --wait=86400 # 1 day
               - --root=/add-ons
-        pod:
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         statefulset:
           volumeClaimTemplates:
             - name: config

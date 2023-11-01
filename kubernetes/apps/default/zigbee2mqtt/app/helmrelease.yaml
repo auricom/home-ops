@@ -27,6 +27,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    defaultPodOptions:
+      nodeSelector:
+        zzh.feature.node.kubernetes.io/zigbee: "true"
     controllers:
       main:
         type: statefulset
@@ -86,9 +89,6 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 512Mi
-        pod:
-          nodeSelector:
-            zzh.feature.node.kubernetes.io/zigbee: "true"
         statefulset:
           volumeClaimTemplates:
             - name: config

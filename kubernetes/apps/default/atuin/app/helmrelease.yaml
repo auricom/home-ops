@@ -26,6 +26,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
     controllers:
       main:
         strategy: RollingUpdate
@@ -57,8 +59,6 @@ spec:
                 cpu: 10m
               limits:
                 memory: 512Mi
-        pod:
-          enableServiceLinks: false
     service:
       main:
         ports:

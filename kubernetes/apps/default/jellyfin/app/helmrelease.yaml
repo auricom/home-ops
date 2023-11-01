@@ -27,6 +27,15 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      nodeSelector:
+        intel.feature.node.kubernetes.io/gpu: "true"
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       main:
         type: statefulset
@@ -74,16 +83,6 @@ spec:
               storageClass: rook-ceph-block
               globalMounts:
                 - path: /config
-        pod:
-          enableServiceLinks: false
-          nodeSelector:
-            intel.feature.node.kubernetes.io/gpu: "true"
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups: [44, 105, 10000]
     service:
       main:
         type: LoadBalancer
