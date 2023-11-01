@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,20 +27,30 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: &secret invidious-secret
-    image:
-      repository: quay.io/invidious/invidious
-      tag: latest@sha256:4bf6888e6c199e373aeca7f5753397138fc3e0b789ba10ce1da80a7db0af6a08
-    envFrom: *envFrom
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: invidious-secret
+        containers:
+          main:
+            image:
+              repository: quay.io/invidious/invidious
+              tag: latest@sha256:4bf6888e6c199e373aeca7f5753397138fc3e0b789ba10ce1da80a7db0af6a08
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
     service:
       main:
         ports:
@@ -49,7 +59,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
           external-dns.home.arpa/enabled: "true"
@@ -59,14 +69,9 @@ spec:
           - host: &host "invidious.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    persistence:
-      config:
-        enabled: false
-    resources:
-      requests:
-        cpu: 50m
-        memory: 256Mi
