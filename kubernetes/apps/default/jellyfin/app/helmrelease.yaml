@@ -122,7 +122,7 @@ spec:
         path: /mnt/storage/photo
         mountPath: /mnt/storage/photo
         globalMounts:
-          - path: /mnt/storage/photo``
+          - path: /mnt/storage/photo
       video:
         enabled: true
         type: nfs
