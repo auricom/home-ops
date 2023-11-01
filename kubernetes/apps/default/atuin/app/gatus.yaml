@@ -10,13 +10,17 @@ data:
   config.yaml: |
     endpoints:
       - name: atuin
-        group: external
-        url: https://atuin.${SECRET_CLUSTER_DOMAIN}
+        group: internal
+        url: 192.168.8.1
         interval: 1m
-        client:
-          dns-resolver: tcp://1.1.1.1:53
-          insecure: true
+        ui:
+          hide-hostname: true
+          hide-url: true
+        dns:
+          query-name: sh.${SECRET_CLUSTER_DOMAIN}
+          query-type: A
         conditions:
-          - "[STATUS] == 200"
+          - "[BODY] == 192.168.169.101"
+          - "[DNS_RCODE] == NOERROR"
         alerts:
           - type: pushover
