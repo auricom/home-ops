@@ -10,7 +10,8 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -30,56 +31,63 @@ spec:
     - name: immich-typesense
     - name: immich-redis
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - configMapRef:
-              name: &configMap immich-configmap
-          - secretRef:
-              name: &secret immich-secret
-    controller:
-      strategy: RollingUpdate
-      annotations:
-        configmap.reloader.stakater.com/reload: *configMap
-        secret.reloader.stakater.com/reload: *secret
-    image:
-      repository: ghcr.io/immich-app/immich-server
-      tag: v1.83.0
-    args: ["start-server.sh"]
-    envFrom: *envFrom
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          configmap.reloader.stakater.com/reload: &configMap immich-configmap
+          secret.reloader.stakater.com/reload: &secret immich-secret
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - configMapRef:
+                  name: *configMap
+              - secretRef:
+                  name: *secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.83.0
+            args: ["start-server.sh"]
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 100m
+                memory: 250Mi
     service:
       main:
         ports:
           http:
             port: 3001
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
     persistence:
       library:
-        enabled: true
         existingClaim: immich-nfs
-        mountPath: /usr/src/app/upload
+        globalMounts:
+          - path: /usr/src/app/upload
       geocoding-dump:
-        enabled: true
         type: emptyDir
-        mountPath: /usr/src/app/.reverse-geocoding-dump
+        globalMounts:
+          - path: /usr/src/app/.reverse-geocoding-dump
       transformers-cache:
-        enabled: true
         type: emptyDir
-        mountPath: /usr/src/app/.transformers_cache
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-    resources:
-      requests:
-        cpu: 100m
-        memory: 250Mi
+        globalMounts:
+          - path: /usr/src/app/.transformers_cache

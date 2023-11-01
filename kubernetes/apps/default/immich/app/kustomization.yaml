@@ -8,7 +8,6 @@ resources:
   - ./externalsecret.yaml
   - ./gatus.yaml
   - ./microservices
-  - ./proxy
   - ./machine-learning
   - ./server
   - ./typesense

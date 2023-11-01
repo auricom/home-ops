@@ -10,7 +10,8 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,63 +28,69 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: immich-typesense
     - name: immich-redis
+    - name: immich-server
+    - name: immich-typesense
   values:
-    controller:
-      strategy: RollingUpdate
-      annotations:
-        configmap.reloader.stakater.com/reload: &configMap immich-configmap
-        secret.reloader.stakater.com/reload: &secret immich-secret
-    image:
-      repository: ghcr.io/immich-app/immich-server
-      tag: v1.83.0
-    args: ["start-microservices.sh"]
-    envFrom:
-      - configMapRef:
-          name: *configMap
-      - secretRef:
-          name: *secret
+    defaultPodOptions:
+      enableServiceLinks: false
+      nodeSelector:
+        intel.feature.node.kubernetes.io/gpu: "true"
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          configmap.reloader.stakater.com/reload: &configMap immich-configmap
+          secret.reloader.stakater.com/reload: &secret immich-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.83.0
+            args:
+              - start-microservices.sh
+            envFrom:
+              - configMapRef:
+                  name: *configMap
+              - secretRef:
+                  name: *secret
+            resources:
+              requests:
+                gpu.intel.com/i915: 1
+                cpu: 100m
+                memory: 1000Mi
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 6000Mi
     service:
       main:
         enabled: false
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [44, 105]
     persistence:
       library:
-        enabled: true
         existingClaim: immich-nfs
-        mountPath: /usr/src/app/upload
+        globalMounts:
+          - path: /usr/src/app/upload
       geocoding-dump:
-        enabled: true
         type: emptyDir
-        mountPath: /usr/src/app/.reverse-geocoding-dump
+        globalMounts:
+          - path: /usr/src/app/.reverse-geocoding-dump
       geoname-dump:
-        enabled: true
         type: emptyDir
-        mountPath: /usr/src/app/node_modules/local-reverse-geocoder/geonames_dump
+        globalMounts:
+          - path: /usr/src/app/node_modules/local-reverse-geocoder/geonames_dump
       transformers-cache:
-        enabled: true
         type: emptyDir
-        mountPath: /usr/src/app/.transformers_cache
-    nodeSelector:
-      intel.feature.node.kubernetes.io/gpu: "true"
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-    resources:
-      requests:
-        gpu.intel.com/i915: 1
-        cpu: 100m
-        memory: 1000Mi
-      limits:
-        gpu.intel.com/i915: 1
-        memory: 6000Mi
+        globalMounts:
+          - path: /usr/src/app/.transformers_cache
