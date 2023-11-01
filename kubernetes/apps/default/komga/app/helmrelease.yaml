@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,12 +27,31 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: gotson/komga
-      tag: "1.7.0"
-    env:
-      TZ: "${TIMEZONE}"
-      SERVER_PORT: &port 8080
+    controllers:
+      main:
+        type: statefulset
+        containers:
+          main:
+            image:
+              repository: gotson/komga
+              tag: "1.7.0"
+            env:
+              TZ: "${TIMEZONE}"
+              SERVER_PORT: &port 8080
+            resources:
+              requests:
+                memory: 4282M
+                cpu: 15m
+              limits:
+                memory: 4282M
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 20Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
@@ -43,35 +62,21 @@ spec:
         enabled: true
         annotations:
           hajimari.io/icon: mdi:ideogram-cjk-variant
-        ingressClassName: "nginx"
+        className: "nginx"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 100
     persistence:
-      config:
-        enabled: true
-        existingClaim: komga-config
       comics:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/home/claude/comics
-        mountPath: /mnt/storage/home/claude/comics
-    resources:
-      requests:
-        memory: 4282M
-        cpu: 15m
-      limits:
-        memory: 4282M
+        globalMounts:
+          - path: /mnt/storage/home/claude/comics

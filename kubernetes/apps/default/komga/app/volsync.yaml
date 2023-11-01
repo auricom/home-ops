@@ -30,7 +30,7 @@ metadata:
   name: komga
   namespace: default
 spec:
-  sourcePVC: komga-config
+  sourcePVC: config-komga-0
   trigger:
     schedule: "0 7 * * *"
   restic:
