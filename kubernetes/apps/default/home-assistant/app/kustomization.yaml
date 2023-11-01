@@ -8,6 +8,3 @@ resources:
 - ./helmrelease.yaml
 - ./podmonitor.yaml
 - ./volsync.yaml
-- ./volume.yaml
-patches:
-- path: ./patches/addons.yaml
