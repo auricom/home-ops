@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,20 +27,44 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/onedr0p/lidarr-develop
-      tag: 1.4.5.3639@sha256:8afcbef8d7867849cecfe7a4b3e9db3f02231b0351c73edb2af7c09b892dee23
-    env:
-      TZ: "${TIMEZONE}"
-      LIDARR__INSTANCE_NAME: Lidarr
-      LIDARR__PORT: &port 8080
-      LIDARR__LOG_LEVEL: info
-    envFrom:
-      - secretRef:
-          name: lidarr-secret
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/lidarr-develop
+              tag: 1.4.5.3639@sha256:8afcbef8d7867849cecfe7a4b3e9db3f02231b0351c73edb2af7c09b892dee23
+            env:
+              TZ: "${TIMEZONE}"
+              LIDARR__INSTANCE_NAME: Lidarr
+              LIDARR__PORT: &port 8080
+              LIDARR__LOG_LEVEL: info
+            envFrom:
+              - secretRef:
+                  name: lidarr-secret
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2000Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 20Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
@@ -49,51 +73,32 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_CLUSTER_DOMAIN}/css/base/lidarr/nord.css"></head>';
-            sub_filter_once on;
           hajimari.io/icon: mdi:headphones
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 100
     persistence:
-      config:
-        enabled: true
-        existingClaim: lidarr-config
-        mountPath: /config
       music:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/music
-        mountPath: /mnt/storage/music
+        globalMounts:
+          - path: /mnt/storage/music
       downloads:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/downloads
-        mountPath: /mnt/storage/downloads
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2000Mi
+        globalMounts:
+          - path: /mnt/storage/downloads

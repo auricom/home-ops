@@ -30,7 +30,7 @@ metadata:
   name: kresus
   namespace: default
 spec:
-  sourcePVC: kresus-config
+  sourcePVC: config-kresus-0
   trigger:
     schedule: "0 7 * * *"
   restic:
