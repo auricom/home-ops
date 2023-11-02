@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -29,52 +29,63 @@ spec:
   dependsOn:
     - name: outline-redis
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: &secret outline-secret
-    controller:
-      strategy: RollingUpdate
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: docker.io/outlinewiki/outline
-      tag: 0.72.2
-    envFrom: *envFrom
-    env:
-      AWS_REGION: us-east-1
-      AWS_S3_ACL: private
-      AWS_S3_FORCE_PATH_STYLE: "true"
-      AWS_S3_UPLOAD_BUCKET_NAME: outline
-      AWS_S3_UPLOAD_BUCKET_URL: "https://truenas.${SECRET_DOMAIN}:51515"
-      AWS_S3_UPLOAD_MAX_SIZE: "26214400"
-      ENABLE_UPDATES: "false"
-      OIDC_AUTH_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization"
-      OIDC_CLIENT_ID: outline
-      OIDC_CLIENT_SECRET: "${SECRET_OUTLINE_OAUTH_CLIENT_SECRET}"
-      OIDC_DISPLAY_NAME: Authelia
-      OIDC_SCOPES: "openid profile email offline_access"
-      OIDC_TOKEN_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/token"
-      OIDC_USERINFO_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo"
-      OIDC_USERNAME_CLAIM: email
-      PGSSLMODE: disable
-      PORT: 8080
-      REDIS_URL: redis://outline-redis.default.svc.cluster.local.:6379
-      SMTP_HOST: smtp-relay.default.svc.cluster.local.
-      SMTP_PORT: 2525
-      SMTP_FROM_EMAIL: "outline@${SECRET_DOMAIN}"
-      SMTP_SECURE: "false"
-      URL: "https://docs.${SECRET_CLUSTER_DOMAIN}"
-      WEB_CONCURRENCY: 10
-    command:
-      [
-        "/bin/sh",
-        "-c",
-        "yarn db:migrate --env=production-ssl-disabled && yarn start --env=production-ssl-disabled",
-      ]
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: outline-secret
+        containers:
+          main:
+            image:
+              repository: docker.io/outlinewiki/outline
+              tag: 0.72.2
+            envFrom: *envFrom
+            env:
+              AWS_REGION: us-east-1
+              AWS_S3_ACL: private
+              AWS_S3_FORCE_PATH_STYLE: "true"
+              AWS_S3_UPLOAD_BUCKET_NAME: outline
+              AWS_S3_UPLOAD_BUCKET_URL: "https://truenas.${SECRET_DOMAIN}:51515"
+              AWS_S3_UPLOAD_MAX_SIZE: "26214400"
+              ENABLE_UPDATES: "false"
+              OIDC_AUTH_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization"
+              OIDC_CLIENT_ID: outline
+              OIDC_CLIENT_SECRET: "${SECRET_OUTLINE_OAUTH_CLIENT_SECRET}"
+              OIDC_DISPLAY_NAME: Authelia
+              OIDC_SCOPES: "openid profile email offline_access"
+              OIDC_TOKEN_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/token"
+              OIDC_USERINFO_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo"
+              OIDC_USERNAME_CLAIM: email
+              PGSSLMODE: disable
+              PORT: 8080
+              REDIS_URL: redis://outline-redis.default.svc.cluster.local.:6379
+              SMTP_HOST: smtp-relay.default.svc.cluster.local.
+              SMTP_PORT: 2525
+              SMTP_FROM_EMAIL: "outline@${SECRET_DOMAIN}"
+              SMTP_SECURE: "false"
+              URL: "https://docs.${SECRET_CLUSTER_DOMAIN}"
+              WEB_CONCURRENCY: 10
+            command:
+              [
+                "/bin/sh",
+                "-c",
+                "yarn db:migrate --env=production-ssl-disabled && yarn start --env=production-ssl-disabled",
+              ]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 750Mi
     service:
       main:
         ports:
@@ -83,27 +94,16 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           hajimari.io/icon: mdi:text-box-multiple
         hosts:
           - host: &host "docs.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 750Mi
