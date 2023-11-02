@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -29,32 +29,47 @@ spec:
   dependsOn:
     - name: paperless-redis
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: &secret paperless-secret
-    image:
-      repository: ghcr.io/paperless-ngx/paperless-ngx
-      tag: 1.17.4
-    env:
-      COMPOSE_PROJECT_NAME: paperless
-      PAPERLESS_CONSUMER_POLLING: "60"
-      PAPERLESS_CONSUMER_RECURSIVE: "true"
-      PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
-      PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
-      PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME: HTTP_X_AUTH_REQUEST_EMAIL
-      PAPERLESS_OCR_LANGUAGES: fra
-      PAPERLESS_OCR_LANGUAGE: fra
-      PAPERLESS_PORT: 8000
-      PAPERLESS_DBNAME: paperless
-      PAPERLESS_REDIS: redis://paperless-redis.default.svc.cluster.local:6379
-      PAPERLESS_TASK_WORKERS: 2
-      PAPERLESS_TIME_ZONE: "Europe/Paris"
-      PAPERLESS_URL: https://paperless.${SECRET_CLUSTER_DOMAIN}
-    envFrom: *envFrom
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: paperless-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 1.17.4
+            env:
+              COMPOSE_PROJECT_NAME: paperless
+              PAPERLESS_CONSUMER_POLLING: "60"
+              PAPERLESS_CONSUMER_RECURSIVE: "true"
+              PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
+              PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
+              PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME: HTTP_X_AUTH_REQUEST_EMAIL
+              PAPERLESS_OCR_LANGUAGES: fra
+              PAPERLESS_OCR_LANGUAGE: fra
+              PAPERLESS_PORT: 8000
+              PAPERLESS_DBNAME: paperless
+              PAPERLESS_REDIS: redis://paperless-redis.default.svc.cluster.local:6379
+              PAPERLESS_TASK_WORKERS: 2
+              PAPERLESS_TIME_ZONE: "Europe/Paris"
+              PAPERLESS_URL: https://paperless.${SECRET_CLUSTER_DOMAIN}
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 25m
+                memory: 3Gi
+              limits:
+                memory: 7Gi
     service:
       main:
         ports:
@@ -63,7 +78,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           external-dns.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:barcode-scan
@@ -71,38 +86,38 @@ spec:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
     persistence:
       data:
         enabled: true
-        mountPath: /usr/src/paperless/data
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/shared-documents/paperless/data
+        globalMounts:
+          - path: /usr/src/paperless/data
       media:
         enabled: true
-        mountPath: /usr/src/paperless/media
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/shared-documents/paperless/media
+        globalMounts:
+          - path: /usr/src/paperless/media
       consume:
         enabled: true
-        mountPath: /usr/src/paperless/consume
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/shared-documents/paperless/watch
+        globalMounts:
+          - path: /usr/src/paperless/consume
       export:
         enabled: true
-        mountPath: /usr/src/paperless/export
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/shared-documents/paperless/export
-    resources:
-      requests:
-        cpu: 25m
-        memory: 3Gi
-      limits:
-        memory: 7Gi
+        globalMounts:
+          - path: /usr/src/paperless/export
