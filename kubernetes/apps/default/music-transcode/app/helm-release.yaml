@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,61 +27,63 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      type: cronjob
-      cronjob:
-        concurrencyPolicy: Forbid
-        schedule: "@daily"
-    restartPolicy: OnFailure
-    image:
-      repository: ghcr.io/auricom/freac
-      tag: 1.1.7@sha256:2f7f1997e5437122fe0140601e0fe609777654243b0f2903f3d937794f6e31e0
-    command:
-      - "/bin/bash"
-      - "-c"
-      - |
-        #!/bin/bash
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/freac
+              tag: 1.1.7@sha256:2f7f1997e5437122fe0140601e0fe609777654243b0f2903f3d937794f6e31e0
+            command:
+              - "/bin/bash"
+              - "-c"
+              - |
+                #!/bin/bash
 
-        set -o errexit
-        set -o nounset
+                set -o errexit
+                set -o nounset
 
-        cd /app
+                cd /app
 
-        /app/transcode.sh -c
-        /app/transcode.sh -r
-    env:
-      TRANSCODE_INPUT_DIR: /mnt/music/
-      TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded/
-      TRANSCODE_FREAC_BIN: /app/freaccmd
+                /app/transcode.sh -c
+                /app/transcode.sh -r
+            env:
+              TRANSCODE_INPUT_DIR: /mnt/music/
+              TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded/
+              TRANSCODE_FREAC_BIN: /app/freaccmd
     service:
       main:
         enabled: false
     persistence:
       scripts:
-        enabled: true
         type: configMap
         name: music-transcode-configmap
-        subPath: transcode.sh
-        mountPath: /app/transcode.sh
         defaultMode: 0775
-        readOnly: true
+        globalMounts:
+          - path: /app/transcode.sh
+            subPath: transcode.sh
+            readOnly: true
       exclude:
-        enabled: true
         type: configMap
         name: music-transcode-configmap
-        subPath: transcode_exclude.cfg
-        mountPath: /app/transcode_exclude.cfg
         defaultMode: 0775
-        readOnly: true
+        globalMounts:
+          - path: /app/transcode_exclude.cfg
+            subPath: transcode_exclude.cfg
+            readOnly: true
       music:
-        enabled: true
         type: nfs
-        mountPath: /mnt/music
         path: /mnt/storage/music
         server: ${LOCAL_LAN_TRUENAS}
+        globalMounts:
+          - path: /mnt/music
       music-transcoded:
-        enabled: true
         type: nfs
-        mountPath: /mnt/music_transcoded
         path: /mnt/storage/music_transcoded
         server: ${LOCAL_LAN_TRUENAS}
+        globalMounts:
+          - path: /mnt/music_transcoded
