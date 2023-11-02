@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,21 +27,23 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      type: cronjob
-      cronjob:
-        concurrencyPolicy: Forbid
-        schedule: "@daily"
-    restartPolicy: OnFailure
-    image:
-      repository: ghcr.io/auricom/kubectl
-      tag: 1.28.2@sha256:c501dc41a29b62346cc791b83e1f0d6755dcc1776b89d506f4c4a8e3fb63be41
-    env:
-      OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
-      S3_URL: "https://truenas.${SECRET_DOMAIN}:51515"
-    envFrom:
-      - secretRef:
-          name: opnsense-backup-secret
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/kubectl
+              tag: 1.28.2@sha256:c501dc41a29b62346cc791b83e1f0d6755dcc1776b89d506f4c4a8e3fb63be41
+            env:
+              OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
+              S3_URL: "https://truenas.${SECRET_DOMAIN}:51515"
+            envFrom:
+              - secretRef:
+                  name: opnsense-backup-secret
     service:
       main:
         enabled: false
@@ -50,7 +52,8 @@ spec:
         enabled: true
         type: configMap
         name: opnsense-backup-configmap
-        subPath: opnsense-backup.sh
-        mountPath: /app/opnsense-backup.sh
         defaultMode: 0775
-        readOnly: true
+        globalMounts:
+          - path: /app/opnsense-backup.sh
+            subPath: opnsense-backup.sh
+            readOnly: true

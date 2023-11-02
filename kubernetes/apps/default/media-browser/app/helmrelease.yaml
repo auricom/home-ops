@@ -108,11 +108,11 @@ spec:
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/photo
         globalMounts:
-                - path: /mnt/storage/photo
+          - path: /mnt/storage/photo
       video:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/video
         globalMounts:
-                - path: /mnt/storage/video
+          - path: /mnt/storage/video
