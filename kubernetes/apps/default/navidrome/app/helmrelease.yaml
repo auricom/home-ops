@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,21 +27,45 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: ghcr.io/navidrome/navidrome
-      tag: 0.49.3
-    env:
-      TZ: "${TIMEZONE}"
-      ND_DATAFOLDER: /config
-      ND_ENABLEGRAVATAR: "true"
-      ND_LOGLEVEL: info
-      ND_MUSICFOLDER: /mnt/storage/music/Artistes
-      ND_PORT: &port 8080
-      ND_PROMETHEUS_ENABLED: "true"
-      ND_REVERSEPROXYUSERHEADER: "Remote-User"
-      ND_REVERSEPROXYWHITELIST: "0.0.0.0/0"
-      ND_SCANSCHEDULE: "@every 1h"
-      ND_SESSIONTIMEOUT: 24h
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+    controllers:
+      main:
+        type: statefulset
+        containers:
+          main:
+            image:
+              repository: ghcr.io/navidrome/navidrome
+              tag: 0.49.3
+            env:
+              TZ: "${TIMEZONE}"
+              ND_DATAFOLDER: /config
+              ND_ENABLEGRAVATAR: "true"
+              ND_LOGLEVEL: info
+              ND_MUSICFOLDER: /mnt/storage/music/Artistes
+              ND_PORT: &port 8080
+              ND_PROMETHEUS_ENABLED: "true"
+              ND_REVERSEPROXYUSERHEADER: "Remote-User"
+              ND_REVERSEPROXYWHITELIST: "0.0.0.0/0"
+              ND_SCANSCHEDULE: "@every 1h"
+              ND_SESSIONTIMEOUT: 24h
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 750Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
@@ -53,7 +77,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
           external-dns.home.arpa/enabled: "true"
@@ -62,31 +86,17 @@ spec:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 100
     persistence:
-      config:
-        enabled: true
-        existingClaim: navidrome-config
       music:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/music
-        mountPath: /mnt/storage/music
-        readOnly: true
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 750Mi
+        globalMounts:
+          - path: /mnt/storage/music
+            readOnly: true

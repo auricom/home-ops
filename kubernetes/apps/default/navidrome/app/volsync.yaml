@@ -30,7 +30,7 @@ metadata:
   name: navidrome
   namespace: default
 spec:
-  sourcePVC: navidrome-config
+  sourcePVC: config-navidrome-0
   trigger:
     schedule: "0 7 * * *"
   restic:
