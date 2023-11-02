@@ -7,4 +7,3 @@ resources:
   - ./gatus.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-  - ./volume.yaml
