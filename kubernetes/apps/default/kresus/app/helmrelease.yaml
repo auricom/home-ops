@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,60 +27,68 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom:
-          - secretRef:
-              name: kresus-secret
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/auricom/kresus
-      tag: 0.19.4@sha256:c5a298a36a7467e731120781916fb27ff8ebbfeefddbaf33723483c15787bf5a
-      imagePullPolicy: IfNotPresent
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: kresus-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/kresus
+              tag: 0.19.4@sha256:c5a298a36a7467e731120781916fb27ff8ebbfeefddbaf33723483c15787bf5a
+              imagePullPolicy: IfNotPresent
+            env:
+              HOST: 0.0.0.0
+              PORT: 9876
+              LC_ALL: C.UTF-8
+              LANG: C.UTF-8
+              KRESUS_DB_TYPE: postgres
+              KRESUS_DIR: /config
+              KRESUS_EMAIL_HOST: mailrise.default.svc.cluster.local
+              KRESUS_EMAIL_PORT: 8025
+              KRESUS_EMAIL_TRANSPORT: smtp
+              KRESUS_EMAIL_FROM: kresus@mailrise.home.arpa
+              KRESUS_PYTHON_EXEC: python3
+              KRESUS_WOOB_DIR: /woob
+              NODE_ENV: production
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
           http:
             port: 9876
-    env:
-      HOST: 0.0.0.0
-      PORT: 9876
-      LC_ALL: C.UTF-8
-      LANG: C.UTF-8
-      KRESUS_DB_TYPE: postgres
-      KRESUS_DIR: /config
-      KRESUS_EMAIL_HOST: mailrise.default.svc.cluster.local
-      KRESUS_EMAIL_PORT: 8025
-      KRESUS_EMAIL_TRANSPORT: smtp
-      KRESUS_EMAIL_FROM: kresus@mailrise.home.arpa
-      KRESUS_PYTHON_EXEC: python3
-      KRESUS_WOOB_DIR: /woob
-      NODE_ENV: production
-    envFrom:
-      - secretRef:
-          name: kresus-secret
-    persistence:
-      config:
-        enabled: true
-        existingClaim: kresus-config
-        mountPath: /config
-      woob:
-        enabled: true
-        type: emptyDir
-        mountPath: /mnt/woob
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:cash
@@ -88,11 +96,15 @@ spec:
           - host: &host "cash.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
+    persistence:
+      woob:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /mnt/woob
