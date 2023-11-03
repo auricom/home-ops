@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,25 +27,38 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: &secret prowlarr-secret
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/onedr0p/prowlarr-nightly
-      tag: 1.10.2.4061@sha256:2bacf2a1cd8ff23d50db9711bb42fcbafa90b96eb42f30d4e783b8e7882e162f
-    env:
-      TZ: "${TIMEZONE}"
-      PROWLARR__INSTANCE_NAME: Prowlarr
-      PROWLARR__PORT: &port 8080
-      PROWLARR__LOG_LEVEL: info
-    envFrom: *envFrom
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: prowlarr-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/prowlarr-nightly
+              tag: 1.10.2.4061@sha256:2bacf2a1cd8ff23d50db9711bb42fcbafa90b96eb42f30d4e783b8e7882e162f
+            env:
+              TZ: "${TIMEZONE}"
+              PROWLARR__INSTANCE_NAME: Prowlarr
+              PROWLARR__PORT: &port 8080
+              PROWLARR__LOG_LEVEL: info
+              PROWLARR__AUTHENTICATION_METHOD: External
+              PROWLARR__THEME: dark
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 500Mi
     service:
       main:
         ports:
@@ -54,34 +67,21 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
-          # nginx.ingress.kubernetes.io/configuration-snippet: |
-          #   proxy_set_header Accept-Encoding "";
-          #   sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_CLUSTER_DOMAIN}/css/base/prowlarr/nord.css"></head>';
-          #   sub_filter_once on;
           hajimari.io/icon: mdi:movie-search
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
     persistence:
       config:
         enabled: true
-        existingClaim: prowlarr-config
-    resources:
-      requests:
-        cpu: 100m
-        memory: 100Mi
-      limits:
-        memory: 500Mi
+        type: emptyDir
