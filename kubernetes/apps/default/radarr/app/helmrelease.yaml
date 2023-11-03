@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,32 +27,48 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: &secret radarr-secret
-    controller:
-      annotations:
-        configmap.reloader.stakater.com/reload: radarr-pushover
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/onedr0p/radarr-develop
-      tag: 5.1.2.8207@sha256:7e026aae3fa4ac9d4066a0533fdbfaa35a0ccdc41033bc4f2460aa9401ecfb46
-    env:
-      TZ: "${TIMEZONE}"
-      PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
-      PUSHOVER_DEBUG: "false"
-      PUSHOVER_PRIORITY: "0"
-      RADARR__INSTANCE_NAME: Radarr
-      RADARR__PORT: &port 8080
-      RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
-      RADARR__LOG_LEVEL: info
-    envFrom:
-      - secretRef:
-          name: radarr-secret
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          configmap.reloader.stakater.com/reload: radarr-pushover
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: radarr-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.1.2.8207@sha256:7e026aae3fa4ac9d4066a0533fdbfaa35a0ccdc41033bc4f2460aa9401ecfb46
+            env:
+              TZ: "${TIMEZONE}"
+              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+              PUSHOVER_DEBUG: "false"
+              PUSHOVER_PRIORITY: "0"
+              RADARR__INSTANCE_NAME: Radarr
+              RADARR__PORT: &port 8080
+              RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+              RADARR__LOG_LEVEL: info
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 500m
+                memory: 500Mi
+              limits:
+                memory: 2000Mi
     service:
       main:
         ports:
@@ -61,57 +77,46 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           auth.home.arpa/enabled: "true"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_CLUSTER_DOMAIN}/css/base/radarr/nord.css"></head>';
-            sub_filter_once on;
           hajimari.io/icon: mdi:filmstrip
         hosts:
           - host: *host
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 100
     persistence:
       config:
         enabled: true
         existingClaim: radarr-config
-        mountPath: /config
+        globalMounts:
+          - path: /config
       downloads:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/downloads
-        mountPath: /mnt/storage/downloads
+        globalMounts:
+          - path: /mnt/storage/downloads
       video:
         enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/video
-        mountPath: /mnt/storage/video
+        globalMounts:
+          - path: /mnt/storage/video
       scripts:
         enabled: true
         type: configMap
         name: radarr-pushover
-        subPath: pushover-notify.sh
-        mountPath: /scripts/pushover-notify.sh
         defaultMode: 0775
-        readOnly: true
-    resources:
-      requests:
-        cpu: 500m
-        memory: 500Mi
-      limits:
-        memory: 2000Mi
+        globalMounts:
+          - path: /scripts/pushover-notify.sh
+            subPath: pushover-notify.sh
+            readOnly: true
