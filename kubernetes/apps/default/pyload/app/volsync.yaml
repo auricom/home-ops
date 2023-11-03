@@ -30,7 +30,7 @@ metadata:
   name: pyload
   namespace: default
 spec:
-  sourcePVC: pyload-config
+  sourcePVC: config-pyload-0
   trigger:
     schedule: "0 7 * * *"
   restic:
