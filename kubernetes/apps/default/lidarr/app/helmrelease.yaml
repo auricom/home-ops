@@ -35,9 +35,18 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: "lidarr-pushover"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: lidarr-secret
         containers:
           main:
             image:
@@ -48,6 +57,7 @@ spec:
               LIDARR__INSTANCE_NAME: Lidarr
               LIDARR__PORT: &port 8080
               LIDARR__LOG_LEVEL: info
+              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             envFrom:
               - secretRef:
                   name: lidarr-secret
@@ -57,14 +67,6 @@ spec:
                 memory: 250Mi
               limits:
                 memory: 2000Mi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 20Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -78,7 +80,7 @@ spec:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:headphones
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: *host
             paths:
               - path: /
                 service:
@@ -88,17 +90,26 @@ spec:
           - hosts:
               - *host
     persistence:
-      music:
+      config:
         enabled: true
+        type: emptyDir
+      music:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/music
         globalMounts:
           - path: /mnt/storage/music
       downloads:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/downloads
         globalMounts:
           - path: /mnt/storage/downloads
+      scripts:
+        type: configMap
+        name: lidarr-pushover
+        defaultMode: 0775
+        globalMounts:
+          - path: /scripts/pushover-notify.sh
+            subPath: pushover-notify.sh
+            readOnly: true

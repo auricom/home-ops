@@ -7,4 +7,11 @@ resources:
   - ./externalsecret.yaml
   - ./gatus.yaml
   - ./helmrelease.yaml
-  - ./volsync.yaml
+configMapGenerator:
+  - name: lidarr-pushover
+    files:
+      - ./scripts/pushover-notify.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
