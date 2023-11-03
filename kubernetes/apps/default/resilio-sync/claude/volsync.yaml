@@ -30,7 +30,7 @@ metadata:
   name: resilio-claude
   namespace: default
 spec:
-  sourcePVC: resilio-claude-config
+  sourcePVC: config-resilio-claude-0
   trigger:
     schedule: "0 7 * * *"
   restic:

@@ -30,7 +30,7 @@ metadata:
   name: resilio-helene
   namespace: default
 spec:
-  sourcePVC: resilio-helene-config
+  sourcePVC: config-resilio-helene-0
   trigger:
     schedule: "0 7 * * *"
   restic:

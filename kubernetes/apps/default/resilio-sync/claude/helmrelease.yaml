@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,15 +27,36 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/auricom/resilio-sync
-      tag: 2.7.3.1381-1@sha256:82c861bccac8f159e5b92723dda922d4aec71a461c233760a63bfc51d7a1bb1a
-      env:
-        - name: TZ
-          value: "${TIMEZONE}"
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 0
+    controllers:
+      main:
+        type:  statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/resilio-sync
+              tag: 2.7.3.1381-1@sha256:82c861bccac8f159e5b92723dda922d4aec71a461c233760a63bfc51d7a1bb1a
+            env:
+              - name: TZ
+                value: "${TIMEZONE}"
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
@@ -46,69 +67,60 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           hajimari.io/icon: mdi:file-arrow-up-down
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
     persistence:
-      config:
-        enabled: true
-        existingClaim: resilio-claude-config
       sync-conf:
-        enabled: true
         type: configMap
-        configMap:
         name: resilio-claude-configmap
-        mountPath: /config/sync.conf
-        subPath: sync.conf
+        globalMounts:
+          - path: /config/sync.conf
+            subPath: sync.conf
       backups:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/backups
-        mountPath: /sync/backup
+        globalMounts:
+          - path: /sync/backup
       home-claude:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/home/claude
-        mountPath: /sync/home/claude
+        globalMounts:
+          - path: /sync/home/claude
       music-transcoded:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/music_transcoded
-        mountPath: /sync/music_transcoded
+        globalMounts:
+          - path: /sync/music_transcoded
       photo:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/photo
-        mountPath: /sync/photo
+        globalMounts:
+          - path: /sync/photo
       shared-documents:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/shared-documents
-        mountPath: /sync/shared-documents
+        globalMounts:
+          - path: /sync/shared-documents
       video:
-        enabled: true
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/video
-        mountPath: /sync/video
-    podSecurityContext:
-      runAsUser: 0
-    resources:
-      requests:
-        cpu: 250m
-        memory: 512Mi
-      limits:
-        memory: 2Gi
+        globalMounts:
+          - path: /sync/video
+
