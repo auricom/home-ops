@@ -7,8 +7,6 @@ resources:
   - ./externalsecret.yaml
   - ./gatus.yaml
   - ./helmrelease.yaml
-  - ./volsync.yaml
-  - ./volume.yaml
 configMapGenerator:
   - name: radarr-pushover
     files:

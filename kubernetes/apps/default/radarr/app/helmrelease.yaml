@@ -62,6 +62,7 @@ spec:
               RADARR__PORT: &port 8080
               RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
               RADARR__LOG_LEVEL: info
+              RADARR__THEME: dark
             envFrom: *envFrom
             resources:
               requests:
@@ -92,11 +93,6 @@ spec:
           - hosts:
               - *host
     persistence:
-      config:
-        enabled: true
-        existingClaim: radarr-config
-        globalMounts:
-          - path: /config
       downloads:
         enabled: true
         type: nfs
