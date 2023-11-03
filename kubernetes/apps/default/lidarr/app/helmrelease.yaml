@@ -58,6 +58,7 @@ spec:
               LIDARR__PORT: &port 8080
               LIDARR__LOG_LEVEL: info
               PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+              PUSHOVER_PRIORITY: "0"
             envFrom:
               - secretRef:
                   name: lidarr-secret
