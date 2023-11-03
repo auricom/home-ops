@@ -30,7 +30,7 @@ metadata:
   name: qbittorrent
   namespace: default
 spec:
-  sourcePVC: qbittorrent-config
+  sourcePVC: config-qbittorrent-0
   trigger:
     schedule: "0 7 * * *"
   restic:
