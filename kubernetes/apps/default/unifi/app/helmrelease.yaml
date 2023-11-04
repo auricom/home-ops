@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,17 +27,36 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: jacobalberty/unifi
-      tag: v7.5.176
-      pullPolicy: IfNotPresent
-    env:
-      RUNAS_UID0: "false"
-      UNIFI_UID: "999"
-      UNIFI_GID: "999"
-      UNIFI_STDOUT: "true"
-      JVM_INIT_HEAP_SIZE:
-      JVM_MAX_HEAP_SIZE: 1024M
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: jacobalberty/unifi
+              tag: v7.5.176
+              pullPolicy: IfNotPresent
+            env:
+              RUNAS_UID0: "false"
+              UNIFI_UID: "999"
+              UNIFI_GID: "999"
+              UNIFI_STDOUT: "true"
+              JVM_INIT_HEAP_SIZE:
+              JVM_MAX_HEAP_SIZE: 1024M
+            resources:
+              requests:
+                memory: 2Gi
+                cpu: 50m
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 10Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /unifi
     service:
       main:
         type: LoadBalancer
@@ -78,7 +97,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           hajimari.io/icon: mdi:lan
@@ -86,15 +105,9 @@ spec:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    persistence:
-      config:
-        enabled: true
-        existingClaim: unifi-config
-        mountPath: /unifi
-    resources:
-      requests:
-        memory: 2Gi
-        cpu: 50m

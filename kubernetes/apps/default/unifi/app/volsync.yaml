@@ -30,7 +30,7 @@ metadata:
   name: unifi
   namespace: default
 spec:
-  sourcePVC: unifi-config
+  sourcePVC: config-unifi-0
   trigger:
     schedule: "0 7 * * *"
   restic:
