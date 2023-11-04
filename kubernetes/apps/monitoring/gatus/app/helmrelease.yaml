@@ -41,7 +41,7 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: gatus-secret
-          config-sync:
+          init-config:
             order: 2
             image: &configSyncImage
               repository: ghcr.io/kiwigrid/k8s-sidecar
@@ -69,6 +69,7 @@ spec:
               GATUS_CONFIG_PATH: /config
               CUSTOM_WEB_PORT: &port 8080
               SECRET_CLUSTER_DOMAIN: ${SECRET_CLUSTER_DOMAIN}
+            envFrom: *envFrom
             resources:
               requests:
                 cpu: 10m
