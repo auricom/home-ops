@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,52 +27,55 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    global:
-      nameOverride: *app
-    image:
-      repository: rook/ceph
-      tag: v1.12.7
-    command: ["/usr/local/bin/toolbox.sh"]
-    env:
-      ROOK_CEPH_USERNAME:
-        valueFrom:
-          secretKeyRef:
-            name: rook-ceph-mon
-            key: ceph-username
-      ROOK_CEPH_SECRET:
-        valueFrom:
-          secretKeyRef:
-            name: rook-ceph-mon
-            key: ceph-secret
-    hostNetwork: true
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-    securityContext:
-      privileged: true
-    persistence:
-      dev:
-        enabled: true
-        type: hostPath
-        hostPath: /dev
-        mountPath: /dev
-      libmodules:
-        enabled: true
-        type: hostPath
-        hostPath: /lib/modules
-        mountPath: /lib/modules
-      mon-endpoint-volume:
-        enabled: true
-        type: configMap
-        name: rook-ceph-mon-endpoints
-        subPath: data
-        mountPath: /etc/rook/mon-endpoints
-        readOnly: true
-      sysbus:
-        enabled: true
-        type: hostPath
-        hostPath: /sys/bus
-        mountPath: /sys/bus
+    defaultPodOptions:
+      hostNetwork: true
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: rook/ceph
+              tag: v1.12.7
+            command: ["/usr/local/bin/toolbox.sh"]
+            env:
+              ROOK_CEPH_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: rook-ceph-mon
+                    key: ceph-username
+              ROOK_CEPH_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: rook-ceph-mon
+                    key: ceph-secret
+            securityContext:
+              privileged: true
     service:
       main:
         enabled: false
+    persistence:
+      dev:
+        type: hostPath
+        hostPath: /dev
+        globalMounts:
+          - path: /dev
+      libmodules:
+        type: hostPath
+        hostPath: /lib/modules
+        globalMounts:
+          - path: /lib/modules
+      mon-endpoint-volume:
+        type: configMap
+        name: rook-ceph-mon-endpoints
+        globalMounts:
+          - path: /etc/rook/mon-endpoints
+            subPath: data
+            readOnly: true
+      sysbus:
+        type: hostPath
+        hostPath: /sys/bus
+        globalMounts:
+          - path: /sys/bus
