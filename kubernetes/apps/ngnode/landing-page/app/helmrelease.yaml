@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,11 +27,19 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      replicas: 1
-    image:
-      repository: ghcr.io/ngnodehq/landing-page
-      tag: v0.1.1
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/ngnodehq/landing-page
+              tag: v0.1.1
+            resources:
+              requests:
+                cpu: 5m
+                memory: 10Mi
+              limits:
+                memory: 400Mi
     service:
       main:
         ports:
@@ -40,28 +48,28 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           external-dns.home.arpa/enabled: "true"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
           - host: "www.ngnode.com"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
           - host: "ngnode.com"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    resources:
-      requests:
-        cpu: 5m
-        memory: 10Mi
-      limits:
-        memory: 400Mi
