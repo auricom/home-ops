@@ -8,7 +8,7 @@ metadata:
     kyverno.io/ignore: "true"
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:15.4-18
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.0-10
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
   storage:
@@ -26,7 +26,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://postgresql/
       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
-      serverName: postgres-v8
+      serverName: postgres-v9
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -34,20 +34,21 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: aws-secret-access-key
-  # bootstrap:
-  #   recovery:
-  #     source: postgres-v6
-  # externalClusters:
-  #   - name: postgres-v6
-  #     barmanObjectStore:
-  #       destinationPath: s3://postgresql/
-  #       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
-  #       s3Credentials:
-  #         accessKeyId:
-  #           name: postgres-minio
-  #           key: MINIO_ACCESS_KEY
-  #         secretAccessKey:
-  #           name: postgres-minio
-  #           key: MINIO_SECRET_KEY
-  #       wal:
-  #         maxParallel: 8
+  bootstrap:
+    recovery:
+      source: postgres-v8
+  externalClusters:
+    - name: postgres-v8
+      barmanObjectStore:
+        destinationPath: s3://postgresql/
+        endpointURL: https://truenas.${SECRET_DOMAIN}:51515
+        s3Credentials:
+          accessKeyId:
+            name: postgres-minio
+            key: MINIO_ACCESS_KEY
+          secretAccessKey:
+            name: postgres-minio
+            key: MINIO_SECRET_KEY
+        wal:
+          maxParallel: 8
+
