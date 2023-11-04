@@ -30,7 +30,7 @@ metadata:
   name: wallabag
   namespace: default
 spec:
-  sourcePVC: wallabag-images
+  sourcePVC: config-wallabag-0
   trigger:
     schedule: "0 7 * * *"
   restic:
