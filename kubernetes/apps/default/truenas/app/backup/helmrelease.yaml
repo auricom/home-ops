@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,21 +27,32 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      type: cronjob
-      cronjob:
-        concurrencyPolicy: Forbid
-        schedule: "@daily"
-    restartPolicy: OnFailure
-    image:
-      repository: ghcr.io/auricom/kubectl
-      tag: 1.28.2@sha256:c501dc41a29b62346cc791b83e1f0d6755dcc1776b89d506f4c4a8e3fb63be41
-    command: ["/bin/bash", "/app/truenas-backup.sh"]
-    env:
-      HOSTNAME: truenas
-    envFrom:
-      - secretRef:
-          name: truenas-secret
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/kubectl
+              tag: 1.28.2@sha256:c501dc41a29b62346cc791b83e1f0d6755dcc1776b89d506f4c4a8e3fb63be41
+            command: ["/bin/bash", "/app/truenas-backup.sh"]
+            env:
+              HOSTNAME: truenas
+            envFrom: &envFrom
+              - secretRef:
+                  name: truenas-secret
+          truenas-remote-backup:
+            name: truenas-remote-backup
+            image:
+              repository: ghcr.io/auricom/kubectl
+              tag: 1.28.2@sha256:c501dc41a29b62346cc791b83e1f0d6755dcc1776b89d506f4c4a8e3fb63be41
+            command: ["/bin/bash", "/app/truenas-backup.sh"]
+            env:
+              HOSTNAME: truenas-remote
+            envFrom: *envFrom
     service:
       main:
         enabled: false
@@ -50,35 +61,17 @@ spec:
         enabled: true
         type: configMap
         name: truenas-backup-configmap
-        subPath: truenas-backup.sh
-        mountPath: /app/truenas-backup.sh
         defaultMode: 0775
-        readOnly: true
+        globalMounts:
+          - path: /app/truenas-backup.sh
+            subPath: truenas-backup.sh
+            readOnly: true
       ssh:
-        enabled: true
         type: secret
         name: truenas-secret
-        subPath: TRUENAS_SSH_KEY
-        mountPath: /opt/id_rsa
         defaultMode: 0775
-        readOnly: true
-    additionalContainers:
-      truenas-remote-backup:
-        name: truenas-remote-backup
-        image: ghcr.io/auricom/kubectl:1.28.2@sha256:c501dc41a29b62346cc791b83e1f0d6755dcc1776b89d506f4c4a8e3fb63be41
-        command: ["/bin/bash", "/app/truenas-backup.sh"]
-        env:
-          - name: HOSTNAME
-            value: truenas-remote
-        envFrom:
-          - secretRef:
-              name: truenas-secret
-        volumeMounts:
-          - name: config
-            readOnly: true
-            mountPath: /app/truenas-backup.sh
-            subPath: truenas-backup.sh
-          - name: ssh
-            readOnly: true
-            mountPath: /opt/id_rsa
+        globalMounts:
+          - path: /opt/id_rsa
             subPath: TRUENAS_SSH_KEY
+            readOnly: true
+

@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,16 +27,21 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      type: cronjob
-      cronjob:
-        concurrencyPolicy: Forbid
-        schedule: "15 0 * * *"
-    restartPolicy: OnFailure
-    image:
-      repository: ghcr.io/auricom/rclone
-      tag: 1.62.2@sha256:8d3ae01ed5295974be1b229f7398ce93a03c77a3fdaf301ea35bf929bb19389a
-    command: ["/bin/bash", "/app/minio-rclone.sh"]
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/rclone
+              tag: 1.62.2@sha256:8d3ae01ed5295974be1b229f7398ce93a03c77a3fdaf301ea35bf929bb19389a
+            command: ["/bin/bash", "/app/minio-rclone.sh"]
+            service:
+              main:
+                enabled: false
     service:
       main:
         enabled: false
@@ -45,14 +50,16 @@ spec:
         enabled: true
         type: configMap
         name: truenas-minio-rclone-configmap
-        subPath: minio-rclone.sh
-        mountPath: /app/minio-rclone.sh
         defaultMode: 0775
-        readOnly: true
+        globalMounts:
+          - path: /app/minio-rclone.sh
+            subPath: minio-rclone.sh
+            readOnly: true
       age:
         enabled: true
         type: secret
         name: truenas-secret
-        subPath: SOPS_AGE_KEY
-        mountPath: /app/age_key
-        readOnly: true
+        globalMounts:
+          - path: /app/age_key
+            subPath: SOPS_AGE_KEY
+            readOnly: true
