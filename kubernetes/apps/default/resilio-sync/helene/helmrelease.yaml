@@ -83,7 +83,6 @@ spec:
     persistence:
       sync-conf:
         type: configMap
-        configMap:
         name: resilio-helene-configmap
         globalMounts:
           - path: /config/sync.conf
