@@ -29,14 +29,12 @@ spec:
   values:
     controllers:
       main:
-        replicas: 2
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
           init-db:
             order: 1
-            image: &image
+            image:
               repository: ghcr.io/auricom/postgres-init
               tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
               pullPolicy: IfNotPresent
@@ -45,7 +43,9 @@ spec:
                   name: gatus-secret
           config-sync:
             order: 2
-            image: *image
+            image: &configSyncImage
+              repository: ghcr.io/kiwigrid/k8s-sidecar
+              tag: 1.25.2
             env:
               FOLDER: /config
               LABEL: gatus.io/enabled
@@ -69,6 +69,21 @@ spec:
               GATUS_CONFIG_PATH: /config
               CUSTOM_WEB_PORT: &port 8080
               SECRET_CLUSTER_DOMAIN: ${SECRET_CLUSTER_DOMAIN}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256M
+              limits:
+                memory: 512M
+          config-sync:
+            image: *configSyncImage
+            env:
+              FOLDER: /config
+              LABEL: gatus.io/enabled
+              NAMESPACE: ALL
+              RESOURCE: both
+              UNIQUE_FILENAMES: true
+              METHOD: WATCH
             envFrom: *envFrom
             resources: *configSyncResources
     service:
