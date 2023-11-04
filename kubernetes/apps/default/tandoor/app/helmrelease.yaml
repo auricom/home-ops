@@ -4,13 +4,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: &app tandoor
-  namespace: default
+  namespace: &ns default
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -27,150 +27,161 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: vabene1111/recipes
-      tag: 1.5.6
-    envFrom: &envFrom
-      - secretRef:
-          name: tandoor-secret
-    env:
-      DEBUG: "0"
-      ALLOWED_HOSTS: "*"
-      DB_ENGINE: django.db.backends.postgresql_psycopg2
-      GUNICORN_MEDIA: "0"
-      TIMEZONE: ${TIMEZONE}
-      TANDOOR_PORT: 8888
-      FRACTION_PREF_DEFAULT: "0"
-      COMMENT_PREF_DEFAULT: "1"
-      SHOPPING_MIN_AUTOSYNC_INTERVAL: "5"
-    command:
-      - /opt/recipes/venv/bin/gunicorn
-      - -b
-      - :8888
-      - --access-logfile
-      - "-"
-      - --error-logfile
-      - "-"
-      - --log-level
-      - INFO
-      - recipes.wsgi
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          01-init-db:
+            image:
+              repository: ghcr.io/auricom/postgres-init
+              tag: 15.4@sha256:83e1abf06be5741bdfb8cb53fc03a1ade6e6b5ec7b92a8aac0c69ba5dc7e51f0
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: tandoor-secret
+          02-init-migrate:
+            image:
+              repository: vabene1111/recipes
+              tag: 1.5.6
+            envFrom: *envFrom
+            command:
+            - sh
+            - -c
+            - |
+              set -e
+              source /opt/recipes/venv/bin/activate
+              echo "Updating database"
+              python3 /opt/recipes/manage.py migrate
+              python3 /opt/recipes/manage.py collectstatic_js_reverse
+              python3 /opt/recipes/manage.py collectstatic --noinput
+        containers:
+          main:
+            image:
+              repository: vabene1111/recipes
+              tag: 1.5.6
+            envFrom: *envFrom
+            env:
+              DEBUG: "0"
+              ALLOWED_HOSTS: "*"
+              GUNICORN_MEDIA: "0"
+              TIMEZONE: ${TIMEZONE}
+              TANDOOR_PORT: &port 8888
+              FRACTION_PREF_DEFAULT: "0"
+              COMMENT_PREF_DEFAULT: "1"
+              SHOPPING_MIN_AUTOSYNC_INTERVAL: "5"
+            command:
+              - /opt/recipes/venv/bin/gunicorn
+              - -b
+              - :8888
+              - --access-logfile
+              - "-"
+              - --error-logfile
+              - "-"
+              - --log-level
+              - INFO
+              - recipes.wsgi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+          nginx:
+            image:
+              repository: nginxinc/nginx-unprivileged
+              tag: 1.25.2-alpine
     service:
       main:
         ports:
           http:
-            port: &port 8888
+            port: *port
           nginx:
             port: &port2 8080
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           hajimari.io/icon: mdi:chef-hat
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
-            paths: &paths
+            paths:
               - path: /
+                service:
+                  name: main
+                  port: http
               - path: /media
                 service:
+                  name: main
                   port: *port2
               - path: /static
                 service:
+                  name: main
                   port: *port2
-          - host: &host2 "recipes.${SECRET_CLUSTER_DOMAIN}"
-            paths: *paths
         tls:
           - hosts:
               - *host
-              - *host2
     persistence:
-      files:
-        enabled: true
+      config:
+        type: persistentvolumeclaim
+        name: tandoor-configmap
         existingClaim: tandoor-files
-        mountPath: /opt/recipes/mediafiles
+        advancedMounts:
+          main:
+            main:
+              - path: /opt/recipes/mediafiles
+            nginx:
+              - path: /media
       nginx-config:
-        enabled: "true"
-        mountPath: /etc/nginx/nginx.conf
-        subPath: nginx-config
-        type: "custom"
-        volumeSpec:
-          configMap:
-            name: tandoor-configmap
+        type: configMap
+        name: tandoor-configmap
+        advancedMounts:
+          main:
+            nginx:
+              - path: /etc/nginx/nginx.conf
+                subPath: nginx-config
       django-js-reverse:
-        enabled: true
         type: emptyDir
-        mountPath: /opt/recipes/cookbook/static/django_js_reverse
+        advancedMounts:
+          main:
+            main:
+              - path: /opt/recipes/cookbook/static/django_js_reverse
       static:
-        enabled: true
-        mountPath: /opt/recipes/staticfiles
         type: emptyDir
+        advancedMounts:
+          main:
+            main:
+              - path: /opt/recipes/staticfiles
+            nginx:
+              - path: /static
       cache:
-        enabled: true
-        mountPath: /mnt/cache
         type: emptyDir
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        memory: 512Mi
-    initContainers:
-      01-init-db:
-        image: ghcr.io/auricom/postgres-init:15.4
-        imagePullPolicy: IfNotPresent
-        envFrom: *envFrom
-      02-init-migrate:
-        image: vabene1111/recipes:1.5.6
-        env:
-          - name: DB_ENGINE
-            value: django.db.backends.postgresql_psycopg2
-          - name: POSTGRES_HOST
-            value: ${POSTGRES_HOST}
-          - name: POSTGRES_PORT
-            value: ${POSTGRES_PORT}
-          - name: POSTGRES_DB
-            value: tandoor
-        envFrom:
-          - secretRef:
-              name: tandoor-secret
-        command:
-        - sh
-        - -c
-        - |
-          set -e
-          source /opt/recipes/venv/bin/activate
-          echo "Updating database"
-          python3 /opt/recipes/manage.py migrate
-          python3 /opt/recipes/manage.py collectstatic_js_reverse
-          python3 /opt/recipes/manage.py collectstatic --noinput
-        volumeMounts:
-          - name: django-js-reverse
-            mountPath: /opt/recipes/cookbook/static/django_js_reverse
-          - name: static
-            mountPath: /opt/recipes/staticfiles
-    sidecars:
-      nginx:
-        image: nginxinc/nginx-unprivileged:1.25.2-alpine
-        imagePullPolicy: IfNotPresent
-        ports:
-          - name: nginx
-            containerPort: *port2
-        volumeMounts:
-          - name: nginx-config
-            readOnly: true
-            mountPath: /etc/nginx/nginx.conf
-            subPath: nginx-config
-          - name: files
-            mountPath: /media
-          - name: static
-            mountPath: /static
-          - name: cache
-            mountPath: /var/cache/nginx
+        advancedMounts:
+          main:
+            nginx:
+              - path: /var/cache/nginx
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: StatefulSet
+            apiVersion: apps/v1
+            metadata:
+              name: tandoor
+              namespace: *ns
+            spec:
+              template:
+                spec:
+                  initContainers:
+                    - name: 02-init-migrate
+                      volumeMounts:
+                        - name: django-js-reverse
+                          mountPath: /opt/recipes/cookbook/static/django_js_reverse
+                        - name: static
+                          mountPath: /opt/recipes/staticfiles
