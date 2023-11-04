@@ -53,7 +53,6 @@ resources:
   - ./sonarr/ks.yaml
   - ./smtp-relay/ks.yaml
   - ./tandoor/ks.yaml
-  - ./theme-park/ks.yaml
   - ./truenas/ks.yaml
   - ./unifi/ks.yaml
   - ./vaultwarden/ks.yaml
