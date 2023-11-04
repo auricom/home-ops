@@ -6,5 +6,5 @@ namespace: default
 resources:
   - ./gatus.yaml
   - ./helmrelease.yaml
-  - ./jobs
+  - ./upgrade-p2pblocklist
   - ./volsync.yaml
