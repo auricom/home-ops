@@ -81,9 +81,9 @@ spec:
           sync:
             image:
               repository: docker.io/1password/connect-sync
-              image: 1.7.2
+              tag: 1.7.2
             env:
-              OP_HTTP_PORT: &port 8081 }
+              OP_HTTP_PORT: &port 8081
               OP_BUS_PORT: 11221
               OP_BUS_PEERS: localhost:11220
               OP_SESSION:
