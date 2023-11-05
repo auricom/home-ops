@@ -44,6 +44,8 @@ spec:
               TRUENAS_HOME: /mnt/storage/home/homelab
               CERTS_DEPLOY_S3_ENABLED: "True"
             envFrom: &envFrom
+              - secretRef:
+                  name: truenas-secret
           truenas-remote-certs-deploy:
             image:
               repository: ghcr.io/auricom/kubectl
