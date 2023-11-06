@@ -1,9 +1,19 @@
 ---
 clusterName: cluster-0
 
-talosVersion: v1.4.0
-kubernetesVersion: v1.27.1
+talosVersion: v1.5.4
+kubernetesVersion: v1.28.3
 endpoint: https://cluster-0.${domainName}:6443
+
+# Image URL rendered on https://factory.talos.dev
+# customization:
+#     extraKernelArgs:
+#         - net.ifnames=0
+#     systemExtensions:
+#         officialExtensions:
+#             - siderolabs/i915-ucode
+#             - siderolabs/intel-ucode
+talosImageURL: factory.talos.dev/installer/22b1d04da881ef7c57edb0f24d1f3ba2c78a8e22cbe3fa9af4f42d487b2863f7
 
 cniConfig:
   name: none
@@ -16,10 +26,10 @@ additionalMachineCertSans:
   - cluster-0.${domainName}
 
 nodes:
-  - hostname: talos-node-1
-    ipAddress: 192.168.9.101
-    controlPlane: true
-    installDisk: /dev/sda
+  # - hostname: talos-node-1
+  #   ipAddress: 192.168.9.101
+  #   controlPlane: true
+  #   installDisk: /dev/sda
   - hostname: talos-node-2
     ipAddress: 192.168.9.102
     controlPlane: true
@@ -35,55 +45,85 @@ nodes:
 
 controlPlane:
   patches:
+    # Disable search domain everywhere
     - |-
-      cluster:
-        allowSchedulingOnMasters: true
-        apiServer:
-          extraArgs:
-            feature-gates: MixedProtocolLBService=true
-        controllerManager:
-          extraArgs:
-            feature-gates: MixedProtocolLBService=true
-        discovery:
-          registries:
-            service:
-              disabled: true
-        proxy:
-          disabled: true
-          extraArgs:
-            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
-        scheduler:
-          extraArgs:
-            feature-gates: MixedProtocolLBService=true,EphemeralContainers=True
-
       machine:
-        files:
-          - content: |
-              [plugins."io.containerd.grpc.v1.cri"]
-                enable_unprivileged_ports = true
-                enable_unprivileged_icmp = true
-            path: /var/cri/conf.d/allow-unpriv-ports.toml
-            op: create
-        kubelet:
-          extraArgs:
-            feature-gates: GracefulNodeShutdown=true,MixedProtocolLBService=true
-            rotate-server-certificates: "true"
-        install:
-          extraKernelArgs:
-            - "talos.logging.kernel=udp://192.168.169.108:6050/"
-        logging:
-          destinations:
-            - endpoint: "udp://192.168.169.108:6051/"
-              format: json_lines
+        network:
+          disableSearchDomain: true
+
+    # Configure NTP
+    - |-
+      machine:
+        time:
+          disabled: false
+          servers:
+            - 192.168.8.1
+
+    # Enable KubePrism
+    - |-
+      machine:
+        features:
+          kubePrism:
+            enabled: true
+            port: 7445
+
+    # Configure cluster loopback
+    - |-
+      machine:
         network:
           extraHostEntries:
             - ip: ${clusterEndpointIP}
               aliases:
                 - cluster-0.${domainName}
+
+    # Cluster configuration
+    - |-
+      cluster:
+        allowSchedulingOnMasters: true
+        proxy:
+          disabled: true
+
+    # Configure containerd
+    - |-
+      machine:
+        files:
+          - op: create
+            path: /etc/cri/conf.d/20-customization.part
+            content: |
+              [plugins]
+                [plugins."io.containerd.grpc.v1.cri"]
+                  enable_unprivileged_ports = true
+                  enable_unprivileged_icmp = true
+
+    # Disable default API server admission plugins.
+    - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl
+
+    # Kubelet configuration
+    - |-
+      machine:
+        kubelet:
+          extraArgs:
+            feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
+            rotate-server-certificates: "true"
+          extraConfig:
+            maxPods: 150
+
+    # Custom sysctls
+    - |-
+      machine:
         sysctls:
           fs.inotify.max_user_watches: "1048576"
           fs.inotify.max_user_instances: "8192"
-        time:
-          disabled: false
-          servers:
-            - 192.168.8.1
+
+    # # Redirect logs
+    # - |-
+    #   machine:
+    #     install:
+    #       extraKernelArgs:
+    #         - "talos.logging.kernel=udp://192.168.169.108:6050/"
+    #     logging:
+    #       destinations:
+    #         - endpoint: "udp://192.168.169.108:6051/"
+    #           format: json_lines
