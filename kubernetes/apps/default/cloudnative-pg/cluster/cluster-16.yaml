@@ -1,0 +1,53 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-16
+  namespace: default
+  annotations:
+    kyverno.io/ignore: "true"
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.0-10
+  primaryUpdateStrategy: unsupervised
+  enableSuperuserAccess: true
+  storage:
+    size: 50Gi
+    storageClass: rook-ceph-block
+  superuserSecret:
+    name: cloudnative-pg-secret
+  monitoring:
+    enablePodMonitor: true
+  backup:
+    retentionPolicy: 7d
+    barmanObjectStore:
+      wal:
+        compression: bzip2
+        maxParallel: 8
+      destinationPath: s3://postgresql/
+      endpointURL: https://truenas.${SECRET_DOMAIN}:51515
+      serverName: postgres-v9
+      s3Credentials:
+        accessKeyId:
+          name: cloudnative-pg-secret
+          key: aws-access-key-id
+        secretAccessKey:
+          name: cloudnative-pg-secret
+          key: aws-secret-access-key
+  # bootstrap:
+  #   recovery:
+  #     source: postgres-v8
+  # externalClusters:
+  #   - name: postgres-v8
+  #     barmanObjectStore:
+  #       destinationPath: s3://postgresql/
+  #       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
+  #       s3Credentials:
+  #         accessKeyId:
+  #           name: cloudnative-pg-secret
+  #           key: aws-access-key-id
+  #         secretAccessKey:
+  #           name: cloudnative-pg-secret
+  #           key: aws-secret-access-key
+  #       wal:
+  #         maxParallel: 8
