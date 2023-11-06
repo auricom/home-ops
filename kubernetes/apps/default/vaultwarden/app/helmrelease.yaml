@@ -45,7 +45,7 @@ spec:
           main:
             image:
               repository: vaultwarden/server
-              tag: 1.29.2
+              tag: 1.30.0
             env:
               DATA_FOLDER: "data"
               ICON_CACHE_FOLDER: "data/icon_cache"
@@ -81,9 +81,6 @@ spec:
         ports:
           http:
             port: &port 80
-          websocket:
-            enabled: true
-            port: &websocket-port 3012
     ingress:
       main:
         enabled: true
@@ -98,14 +95,6 @@ spec:
                 service:
                   name: main
                   port: *port
-              - path: /notifications/hub/negotiate
-                service:
-                  name: main
-                  port: *port
-              - path: /notifications/hub
-                service:
-                  name: main
-                  port: *websocket-port
         tls:
           - hosts:
               - *host
