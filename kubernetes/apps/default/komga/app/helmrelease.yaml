@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: gotson/komga
-              tag: "1.7.1"
+              tag: "1.7.2"
             env:
               TZ: "${TIMEZONE}"
               SERVER_PORT: &port 8080
