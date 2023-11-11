@@ -1,0 +1,15 @@
+debug = false
+source_code = "https://github.com/realaravinth/libmedium"
+#cache = "/var/lib/libmedium"
+
+[server]
+# The port at which you want authentication to listen to
+# takes a number, choose from 1000-10000 if you dont know what you are doing
+port = 7000
+#IP address. Enter 0.0.0.0 to listen on all availale addresses
+ip= "0.0.0.0"
+# enter your hostname, eg: example.com
+domain = "${SECRET_CLUSTER_DOMAIN}"
+allow_registration = false
+proxy_has_tls = false
+#workers = 2
