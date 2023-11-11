@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name={{ item.name }}
-StartupWMClass={{ item.name }}
-Comment={{ item.comment }}
-Exec={{ item.path }}/{{ item.command }}
-Type=Application
-Categories={{ item.categories }}
-Path={{ item.path }}
-X-Desktop-File-Install-Version=0.26
