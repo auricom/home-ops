@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: truenas-backup
+  name: homelab-truenas-backup
   namespace: default
 spec:
   interval: 30m
@@ -43,7 +43,7 @@ spec:
               HOSTNAME: truenas
             envFrom: &envFrom
               - secretRef:
-                  name: truenas-secret
+                  name: &secret homelab-truenas-secret
           truenas-remote-backup:
             name: truenas-remote-backup
             image:
@@ -60,7 +60,7 @@ spec:
       config:
         enabled: true
         type: configMap
-        name: truenas-backup-configmap
+        name: homelab-truenas-backup-configmap
         defaultMode: 0775
         globalMounts:
           - path: /app/truenas-backup.sh
@@ -68,7 +68,7 @@ spec:
             readOnly: true
       ssh:
         type: secret
-        name: truenas-secret
+        name: *secret
         defaultMode: 0775
         globalMounts:
           - path: /opt/id_rsa

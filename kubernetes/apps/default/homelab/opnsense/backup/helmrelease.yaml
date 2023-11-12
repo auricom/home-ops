@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: truenas-minio-rclone
+  name: homelab-opnsense-backup
   namespace: default
 spec:
   interval: 30m
@@ -36,12 +36,15 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/auricom/rclone
-              tag: 1.62.2@sha256:8d3ae01ed5295974be1b229f7398ce93a03c77a3fdaf301ea35bf929bb19389a
-            command: ["/bin/bash", "/app/minio-rclone.sh"]
-            service:
-              main:
-                enabled: false
+              repository: ghcr.io/auricom/kubectl
+              tag: 1.28.3@sha256:536e3a2a8222d56637208c207a5b77a7d656175a29b899383d5a1bb1d1e48438
+            command: ["/bin/bash", "/app/opnsense-backup.sh"]
+            env:
+              OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
+              S3_URL: "https://truenas.${SECRET_DOMAIN}:51515"
+            envFrom:
+              - secretRef:
+                  name: homelab-opnsense-secret
     service:
       main:
         enabled: false
@@ -49,17 +52,9 @@ spec:
       config:
         enabled: true
         type: configMap
-        name: truenas-minio-rclone-configmap
+        name: homelab-opnsense-backup-configmap
         defaultMode: 0775
         globalMounts:
-          - path: /app/minio-rclone.sh
-            subPath: minio-rclone.sh
-            readOnly: true
-      age:
-        enabled: true
-        type: secret
-        name: truenas-secret
-        globalMounts:
-          - path: /app/age_key
-            subPath: SOPS_AGE_KEY
+          - path: /app/opnsense-backup.sh
+            subPath: opnsense-backup.sh
             readOnly: true

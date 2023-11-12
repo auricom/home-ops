@@ -7,4 +7,3 @@ resources:
   - ./backup
   - ./certs-deploy
   - ./externalsecret.yaml
-  - ./minio-rclone

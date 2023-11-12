@@ -20,6 +20,7 @@ resources:
   - ./hajimari/ks.yaml
   - ./home-assistant/ks.yaml
   - ./homebox/ks.yaml
+  - ./homelab/ks.yaml
   - ./immich/ks.yaml
   - ./invidious/ks.yaml
   - ./jellyfin/ks.yaml
@@ -38,7 +39,6 @@ resources:
   - ./media-browser/ks.yaml
   - ./music-transcode/ks.yaml
   - ./navidrome/ks.yaml
-  - ./opnsense/ks.yaml
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
   - ./pgadmin/ks.yaml
@@ -54,7 +54,6 @@ resources:
   - ./sonarr/ks.yaml
   - ./smtp-relay/ks.yaml
   - ./tandoor/ks.yaml
-  - ./truenas/ks.yaml
   - ./unifi/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./vikunja/ks.yaml

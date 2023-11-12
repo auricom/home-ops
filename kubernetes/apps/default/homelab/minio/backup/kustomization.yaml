@@ -6,10 +6,10 @@ namespace: default
 resources:
   - ./helmrelease.yaml
 configMapGenerator:
-  - name: truenas-minio-rclone-configmap
+  - name: homelab-minio-configmap
     files:
       - ./minio-rclone.sh
+      - ./rclone.conf
 generatorOptions:
   disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
+

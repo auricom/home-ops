@@ -4,12 +4,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 resources:
-  - ./helmrelease.yaml
+  - ./backup
+  - ./externalsecret.yaml
 configMapGenerator:
-  - name: truenas-backup-configmap
+  - name: opnsense-dashboard
     files:
-      - ./truenas-backup.sh
+      - opnsense-dashboard.json=./dashboard.json
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
+  labels:
+    grafana_dashboard: "true"

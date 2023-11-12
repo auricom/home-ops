@@ -6,7 +6,7 @@ namespace: default
 resources:
   - ./helmrelease.yaml
 configMapGenerator:
-  - name: truenas-certs-deploy-configmap
+  - name: homelab-truenas-certs-deploy-configmap
     files:
       - ./truenas-certs-deploy.sh
       - ./truenas-certs-deploy.py
