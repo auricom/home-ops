@@ -47,7 +47,7 @@ spec:
           main:
             image:
               repository: docker.io/outlinewiki/outline
-              tag: 0.72.2
+              tag: 0.73.0
             envFrom: *envFrom
             env:
               AWS_REGION: us-east-1
