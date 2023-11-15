@@ -99,18 +99,26 @@ spec:
         apiVersion: 1
         # list of datasources that should be deleted from the database
         deleteDatasources:
-          - name: Loki
-            orgId: 1
+          - { name: Alertmanager, orgId: 1 }
+          - { name: Loki, orgId: 1 }
+          - { name: Prometheus, orgId: 1 }
         datasources:
           - name: Prometheus
             type: prometheus
             access: proxy
             url: http://thanos-query-frontend.monitoring.svc.cluster.local.:9090
             isDefault: true
-          # - name: Loki
-          #   type: loki
-          #   access: proxy
-          #   url: http://loki-gateway.monitoring.svc.cluster.local.:80
+          - name: Loki
+            type: loki
+            access: proxy
+            url: http://loki-gateway.monitoring.svc.cluster.local.:80
+          - name: Alertmanager
+            type: alertmanager
+            uid: alertmanager
+            access: proxy
+            url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
+            jsonData:
+              implementation: prometheus
     dashboards:
       default:
         home-assistant:
