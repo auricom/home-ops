@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app vector-aggregator
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-geoip:
+            image:
+              repository: ghcr.io/maxmind/geoipupdate
+              tag: v6.0.0
+              pullPolicy: IfNotPresent
+            env:
+              GEOIPUPDATE_EDITION_IDS: GeoLite2-City
+              GEOIPUPDATE_FREQUENCY: "0"
+              GEOIPUPDATE_VERBOSE: "true"
+            envFrom:
+              - secretRef:
+                  name: vector-aggregator-secret
+        containers:
+          main:
+            image:
+              repository: docker.io/timberio/vector
+              tag: 0.34.0-debian
+            args: ["--config", "/etc/vector/vector.yaml"]
+        pod:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: *app
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: 192.168.169.108
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 8686
+          kubernetes-logs:
+            enabled: true
+            port: 6000
+          opnsense-logs:
+            enabled: true
+            port: 6001
+          journald-logs:
+            enabled: true
+            port: 6002
+          talos-kernel:
+            enabled: true
+            port: 6050
+            protocol: UDP
+          talos-service:
+            enabled: true
+            port: 6051
+            protocol: UDP
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: vector-aggregator-configmap # overriden by kustomizeconfig
+        globalMounts:
+          - path: /etc/vector/vector.yaml
+            subPath: vector.yaml
+            readOnly: true
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /vector-data-dir
+      geoip:
+        type: emptyDir
+        globalMounts:
+          - path: /usr/share/GeoIP
