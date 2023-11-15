@@ -24,6 +24,7 @@ resources:
   - ./intel.yaml
   - ./jetstack.yaml
   - ./kyverno.yaml
+  - ./local-path-provisioner.yaml
   - ./metrics-server.yaml
   - ./node-feature-discovery.yaml
   - ./piraeus.yaml
