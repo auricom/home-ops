@@ -1,7 +1,7 @@
 ---
 clusterName: cluster-0
 
-talosVersion: v1.5.4
+talosVersion: v1.5.5
 kubernetesVersion: v1.28.3
 endpoint: https://cluster-0.${domainName}:6443
 
