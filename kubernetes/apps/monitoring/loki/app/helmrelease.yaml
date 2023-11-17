@@ -80,7 +80,7 @@ spec:
             type: local
             local:
               directory: /rules
-          rule_path: /tmp/scratch
+          rule_path: /rules
           ring:
             kvstore:
               store: memberlist
@@ -105,15 +105,26 @@ spec:
           reporting_enabled: false
     gateway:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.gatewaySelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
       image:
         registry: ghcr.io
+        repository: nginxinc/nginx-unprivileged
+        tag: 1.25-alpine
       ingress:
         enabled: true
         ingressClassName: "nginx"
         annotations:
           hajimari.io/enable: "false"
         hosts:
-          - host: &host loki.devbu.io
+          - host: &host loki.${SECRET_CLUSTER_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
@@ -122,8 +133,17 @@ spec:
               - *host
     read:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.writeSelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
       persistence:
-        storageClass: local-path
+        storageClass: rook-ceph-block
       extraVolumeMounts:
         - name: rules
           mountPath: /rules
@@ -132,12 +152,31 @@ spec:
           emptyDir: {}
     write:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.writeSelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
       persistence:
-        storageClass: local-path
+        size: 20Gi
+        storageClass: rook-ceph-block
     backend:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.writeSelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
       persistence:
-        storageClass: local-path
+        storageClass: rook-ceph-block
       extraVolumeMounts:
         - name: rules
           mountPath: /rules/fake
