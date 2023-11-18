@@ -31,3 +31,8 @@ Feel free to open a [Github issue](https://github.com/budimanjojo/home-cluster/i
 7. Copy the generated `./clusterconfig/talosconfig` to your `~/.talos/config`.
 8. Run `talosctl -n <node-ip> apply-config --insecure --file ./clusterconfig/<clustername>-<hostname>.yaml` on each of your node. Don't forget to run `talosctl -n <node-ip> bootstrap` on one of your controlplane node.
 9. Push your current directory to your git repository of choice. :wink:
+
+## Upgrading talos
+
+1. Get image hash from [Talos Factory](https://factory.talos.dev)
+2. Execute `talosctl upgrade -n <IP> --image=factory.talos.dev/installer/<image_hash>:<semver>`
