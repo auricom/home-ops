@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/kubernetes-schemas
-              tag: latest@sha256:9fd2d3ba69f88fb1b12198ebdd7b0692b986849a17d89e39aa7ec6cf8d5fc8b0
+              tag: latest@sha256:220a1ea09479cb05a34ca7ccf7d4303dd5ed947b4980826d5ecb68bc4a606fb0
             resources:
               requests:
                 cpu: 10m
