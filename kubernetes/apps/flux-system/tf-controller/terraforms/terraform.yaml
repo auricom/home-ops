@@ -8,15 +8,11 @@ spec:
   suspend: false
   approvePlan: auto
   interval: 12h
-  path: ./storage/apps
+  path: ./storage/minio
   sourceRef:
     kind: OCIRepository
     name: terraform
     namespace: flux-system
-  backendConfig:
-    disable: true
-  cliConfigSecretRef:
-    name: tf-controller-tfrc-secret
   runnerPodTemplate:
     spec:
       env:
