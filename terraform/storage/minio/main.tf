@@ -19,10 +19,14 @@ terraform {
       source  = "hashicorp/time"
       version = "0.9.1"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"  # Replace with your desired version constraint
+    }
   }
   required_version = ">= 1.3.0"
 }
 
 data "sops_file" "secrets" {
-  source_file = "secrets.sops.yaml"
+  source_file = "./secrets.sops.yaml"
 }

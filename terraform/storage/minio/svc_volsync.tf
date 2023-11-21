@@ -33,5 +33,5 @@ resource "aws_iam_policy" "volsync_private" {
 
 resource "aws_iam_user_policy_attachment" "volsync_user_policy_attachment" {
   user       = aws_iam_user.volsync_user.name
-  policy_arn = aws_iam_policy.volsync_private.arn
+  policy_arn = aws_iam_policy.volsync_private
 }
