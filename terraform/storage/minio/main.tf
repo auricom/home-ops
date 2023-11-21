@@ -21,7 +21,7 @@ terraform {
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"  # Replace with your desired version constraint
+      version = "~> 5.0"  # Replace with your desired version constraint
     }
   }
   required_version = ">= 1.3.0"
