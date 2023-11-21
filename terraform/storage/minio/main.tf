@@ -7,10 +7,6 @@ terraform {
     }
   }
   required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "2.23.0"
-    }
     sops = {
       source  = "carlpett/sops"
       version = "1.0.0"
@@ -19,10 +15,14 @@ terraform {
       source  = "hashicorp/time"
       version = "0.9.1"
     }
+    minio = {
+      source  = "aminueza/minio"
+      version = "~> 2.0"  # Replace with your desired version constraint
+    }
   }
   required_version = ">= 1.3.0"
 }
 
 data "sops_file" "secrets" {
-  source_file = "secrets.sops.yaml"
+  source_file = "./secrets.sops.yaml"
 }

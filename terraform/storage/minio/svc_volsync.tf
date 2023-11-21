@@ -1,15 +1,14 @@
-resource "aws_s3_bucket" "volsync" {
+resource "minio_s3_bucket" "volsync" {
   bucket = "volsync"
   acl    = "private"
 }
 
-resource "aws_iam_user" "volsync_user" {
+resource "minio_iam_user" "volsync_user" {
   name = "volsync"
 }
 
-resource "aws_iam_policy" "volsync_private" {
+resource "minio_iam_policy" "volsync_private" {
   name        = "volsync_private"
-  description = "Policy for volsync user to access volsync bucket"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -31,7 +30,7 @@ resource "aws_iam_policy" "volsync_private" {
   })
 }
 
-resource "aws_iam_user_policy_attachment" "volsync_user_policy_attachment" {
-  user       = aws_iam_user.volsync_user.name
-  policy_arn = aws_iam_policy.volsync_private.arn
+resource "minio_iam_user_policy_attachment" "volsync_user_policy_attachment" {
+  user_name   = minio_iam_user.volsync_user.name
+  policy_name = minio_iam_policy.volsync_private.name
 }
