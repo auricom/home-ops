@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: cert-manager-webhook-ovh
-      version: 0.5.1
+      version: 0.5.2
       sourceRef:
         kind: HelmRepository
         name: cert-manager-webhook-ovh
