@@ -13,4 +13,3 @@ resources:
   - ./typesense
   - ./volsync.yaml
   - ./volumes.yaml
-  - ./web

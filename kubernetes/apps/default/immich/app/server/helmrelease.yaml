@@ -49,6 +49,7 @@ spec:
       main:
         strategy: RollingUpdate
         annotations:
+          reloader.stakater.com/auto: "true"
           configmap.reloader.stakater.com/reload: &configMap immich-configmap
           secret.reloader.stakater.com/reload: &secret immich-secret
         initContainers:
@@ -69,6 +70,11 @@ spec:
               tag: v1.88.2
             args: ["start-server.sh"]
             envFrom: *envFrom
+            env:
+              LOG_LEVEL: log
+              # IMMICH_CONFIG_FILE: /config/immich-config.json
+              IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
+              SERVER_PORT: &port 3001
             resources:
               requests:
                 cpu: 100m
@@ -77,12 +83,38 @@ spec:
       main:
         ports:
           http:
-            port: 3001
+            port: *port
+    ingress:
+      main:
+        enabled: true
+        className: nginx
+        annotations:
+          external-dns.home.arpa/enabled: "true"
+          hajimari.io/appName: Immich
+          nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
+        hosts:
+          - host: &host photos.${SECRET_CLUSTER_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
     persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: immich-server-config
+        globalMounts:
+          - path: /config
       library:
         existingClaim: immich-nfs
         globalMounts:
-          - path: /usr/src/app/upload
+          - path: *mediaLocation
       geocoding-dump:
         type: emptyDir
         globalMounts:
