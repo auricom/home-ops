@@ -13,8 +13,8 @@ hubble:
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.69.0.0/16
-k8sServiceHost: 192.168.9.100
-k8sServicePort: 6443
+k8sServiceHost: localhost
+k8sServicePort: 7445
 kubeProxyReplacement: strict
 loadBalancer:
   algorithm: maglev
@@ -24,5 +24,25 @@ operator:
   rollOutPods: true
 rollOutCiliumPods: true
 securityContext:
-  privileged: true
+  capabilities:
+    ciliumAgent:
+      - CHOWN
+      - KILL
+      - NET_ADMIN
+      - NET_RAW
+      - IPC_LOCK
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    cleanCiliumState:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_RESOURCE
+    cgroup:
+      autoMount:
+        enabled: false
+      hostRoot: /sys/fs/cgroup
 tunnel: disabled

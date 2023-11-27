@@ -59,6 +59,7 @@ spec:
         enabled: true
         ingress:
           enabled: true
+          className: nginx
           hosts:
             - &host "cilium.${SECRET_CLUSTER_DOMAIN}"
           tls:
@@ -68,8 +69,8 @@ spec:
     ipam:
       mode: kubernetes
     ipv4NativeRoutingCIDR: ${CILIUM_POD_CIDR}
-    k8sServiceHost: cluster-0.${SECRET_DOMAIN}
-    k8sServicePort: 6443
+    k8sServiceHost: localhost
+    k8sServicePort: 7445
     kubeProxyReplacement: strict
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     loadBalancer:
@@ -80,7 +81,27 @@ spec:
       rollOutPods: true
     rollOutCiliumPods: true
     securityContext:
-      privileged: true
+      capabilities:
+        ciliumAgent:
+          - CHOWN
+          - KILL
+          - NET_ADMIN
+          - NET_RAW
+          - IPC_LOCK
+          - SYS_ADMIN
+          - SYS_RESOURCE
+          - DAC_OVERRIDE
+          - FOWNER
+          - SETGID
+          - SETUID
+        cleanCiliumState:
+          - NET_ADMIN
+          - SYS_ADMIN
+          - SYS_RESOURCE
+    cgroup:
+      autoMount:
+        enabled: false
+      hostRoot: /sys/fs/cgroup
     tunnel: disabled
     l7proxy: true
     ingressController:
@@ -90,13 +111,13 @@ spec:
       loadbalancerMode: shared
       service:
         loadBalancerIP: "${CLUSTER_LB_CILIUM}"
-  # postRenderers:
-  #   - kustomize:
-  #       patchesStrategicMerge:
-  #         - kind: Service
-  #           apiVersion: v1
-  #           metadata:
-  #             name: cilium-ingress
-  #             namespace: *ns
-  #           spec:
-  #             externalTrafficPolicy: Local
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Service
+            apiVersion: v1
+            metadata:
+              name: cilium-ingress
+              namespace: *ns
+            spec:
+              externalTrafficPolicy: Local
