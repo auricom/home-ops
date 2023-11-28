@@ -5,8 +5,7 @@ on:
   pull_request:
     branches: ['*']
     paths:
-      - kubernetes/apps/**.yaml
-      - kubernetes/flux/**.yaml
+      - kubernetes/**.yaml
 
 jobs:
   flux-diff:
@@ -16,7 +15,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        path: ["cluster"]
+        path: ["kubernetes"]
         resource: ["helmrelease", "kustomization"]
     steps:
       - name: Generate token
