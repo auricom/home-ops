@@ -1,29 +1,29 @@
 {
   "extends": [
-    "config:base",
+    "config:recommended",
     "docker:enableMajor",
     ":disableRateLimiting",
     ":dependencyDashboard",
     ":semanticCommits",
-    ":enablePreCommit",
+    ":automergeDigest",
+    ":automergeBranch",
     "github>auricom/home-ops//.github/renovate/allowedVersions.json5",
     "github>auricom/home-ops//.github/renovate/autoMerge.json5",
     "github>auricom/home-ops//.github/renovate/commitMessage.json5",
+    "github>auricom/home-ops//.github/renovate/customDatasources.json5",
+    "github>auricom/home-ops//.github/renovate/customManagers.json5",
     "github>auricom/home-ops//.github/renovate/groups.json5",
-    "github>auricom/home-ops//.github/renovate/labels.json5"
+    "github>auricom/home-ops//.github/renovate/labels.json5",
+    "github>auricom/home-ops//.github/renovate/packageRules.json5",
+    "helpers:pinGitHubActionDigests"
   ],
   "platform": "github",
-  "username": "feisar-bot[bot]",
-  "repositories": ["auricom/home-ops"],
-  "assignees": ["auricom"],
+  "platformCommit": true,
   "onboarding": false,
   "requireConfig": "optional",
-  "gitAuthor": "feisar-bot <feisar-bot[bot]@users.noreply.github.com>",
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prIgnoreNotification"],
-  "rebaseWhen": "conflicted",
-  "commitBodyTable": true,
-  "commitMessagePrefix": "⬆️",
+  "ignorePaths": ["**/archive/**"],
   "flux": {
     "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"]
   },
@@ -36,62 +36,5 @@
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
       "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
     ]
-  },
-  "regexManagers": [
-    {
-      "description": "Process custom dependencies",
-      "fileMatch": [
-        "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
-        "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
-      ],
-      "matchStrings": [
-        // Example: `k3s_release_version: "v1.27.3+k3s1"`
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?\"(?<currentValue>.*)\"\n",
-        // Example: `- https://github.com/rancher/system-upgrade-controller/releases/download/v0.11.0/crd.yaml`
-        //          `- https://github.com/argoproj/argo-cd/raw/v2.7.10/manifests/install.yaml`
-        //          `- https://github.com/argoproj/argo-cd/raw/v2.7.10/manifests/ha/install.yaml`
-        //          `- https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/21.1.1/kubernetes/kubernetes.yml`
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?-\\s(.*?)\/(?<currentValue>(v|\\d)[^/]+)\/\\S+\n",
-        // Example: apiVersion=helm.cattle.io/v1 kind=HelmChart
-        "datasource=(?<datasource>\\S+)\n.*?repo: (?<registryUrl>\\S+)\n.*?chart: (?<depName>\\S+)\n.*?version: (?<currentValue>\\S+)\n"
-      ],
-      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
-    },
-    {
-      "description": "Process CloudnativePG Postgresql version",
-      "fileMatch": [
-        "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
-      ],
-      "matchStrings": [
-        "imageName: (?<depName>\\S+):(?<currentValue>.*\\-.*)"
-      ],
-      "datasourceTemplate": "docker",
-      "versioningTemplate": "redhat"
-    }
-  ],
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
-    // setup datasources
-    {
-      "matchDatasources": ["helm"],
-      "ignoreDeprecated": true
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "commitMessageExtra": "to {{newVersion}}"
-    },
-    // custom versioning
-    {
-      "matchDatasources": ["docker"],
-      "versioning": "loose",
-      "matchPackagePatterns": ["changedetection", "qbittorrent"]
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/linuxserver/calibre"],
-      "versioning": "regex:^version-v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
-    }
-  ]
+  }
 }

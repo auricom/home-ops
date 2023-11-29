@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
+  "commitMessagePrefix": "⬆️",
   "commitMessageSuffix": "",
   "packageRules": [
     {
@@ -11,6 +12,11 @@
     {
       "matchDatasources": ["docker"],
       "commitMessageTopic": "image {{depName}}"
+    },
+    {
+      "matchDatasources": ["custom.grafana-dashboards"],
+      "commitMessageTopic": "dashboard {{depName}}",
+      "commitMessageExtra": "to revision {{newVersion}}"
     }
   ]
 }
