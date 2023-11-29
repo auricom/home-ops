@@ -42,7 +42,7 @@ spec:
         secret.reloader.stakater.com/reload: *secret
     image:
       repository: ghcr.io/zhaofengli/attic
-      tag: latest@sha256:06d9ca943cfe38ef954cbe2dd453dac0788f55661f84c31254a3a8044aa3100f
+      tag: latest@sha256:8a823f6add968152958f14845c22e337090c125fe3b252de0b2afaa3fd7ceabf
     args: ["-f", "/config/server.toml", "--mode", "api-server" ]
     envFrom: *envFrom
     service:
