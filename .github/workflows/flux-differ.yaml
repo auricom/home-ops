@@ -1,15 +1,14 @@
 ---
-name: Flux diff
+name: Flux differ
 
 on:
   pull_request:
     branches: ['*']
-    paths:
-      - kubernetes/**.yaml
+    paths: ['kubernetes/**.yaml']
 
 jobs:
-  flux-diff:
-    name: Flux diff
+  flux-differ:
+    name: Flux differ
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -29,7 +28,7 @@ jobs:
         uses: allenporter/flux-local/action/diff@3.2.0
         id: diff
         with:
-          sources: flux-system
+          live-branch: main
           path: "${{ matrix.path }}"
           resource: "${{ matrix.resource }}"
 
