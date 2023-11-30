@@ -35,7 +35,6 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-ingress-nginx-certificates
-    - name: cluster-apps-kyverno
   path: ./kubernetes/apps/networking/ingress-nginx/app
   postBuild:
     substituteFrom:
