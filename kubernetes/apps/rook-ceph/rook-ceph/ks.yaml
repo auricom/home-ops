@@ -5,10 +5,16 @@ kind: Kustomization
 metadata:
   name: cluster-apps-rook-ceph-app
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/apps/rook-ceph/rook-ceph/app
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -23,12 +29,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-rook-ceph-cluster
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-app
   path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -43,12 +55,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-rook-ceph-toolbox
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
   path: ./kubernetes/apps/rook-ceph/rook-ceph/toolbox
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

@@ -5,12 +5,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-cloudnative-pg-app
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-external-secrets-stores
   path: ./kubernetes/apps/default/cloudnative-pg/app
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -25,12 +31,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-cloudnative-pg-cluster
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-app
   path: ./kubernetes/apps/default/cloudnative-pg/cluster
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

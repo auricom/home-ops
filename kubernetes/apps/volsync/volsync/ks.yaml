@@ -5,12 +5,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-volsync-app
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-snapshot-controller
   path: ./kubernetes/apps/volsync/volsync/app
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

@@ -5,12 +5,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-ingress-nginx-certificates
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-cert-manager-webhook-ovh
   path: ./kubernetes/apps/networking/ingress-nginx/certificates
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -26,13 +32,19 @@ kind: Kustomization
 metadata:
   name: cluster-apps-ingress-nginx
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-ingress-nginx-certificates
     - name: cluster-apps-kyverno
   path: ./kubernetes/apps/networking/ingress-nginx/app
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

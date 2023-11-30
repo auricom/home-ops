@@ -5,10 +5,16 @@ kind: Kustomization
 metadata:
   name: cluster-apps-cert-manager
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/apps/cert-manager/cert-manager/app
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -23,13 +29,19 @@ kind: Kustomization
 metadata:
   name: cluster-apps-cert-manager-webhook-ovh
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-cert-manager
     - name: cluster-apps-external-secrets-stores
   path: ./kubernetes/apps/cert-manager/cert-manager/webhook-ovh
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

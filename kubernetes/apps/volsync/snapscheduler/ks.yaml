@@ -5,12 +5,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-snapscheduler
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-snapshot-controller
   path: ./kubernetes/apps/volsync/snapscheduler/app
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -25,12 +31,18 @@ kind: Kustomization
 metadata:
   name: cluster-apps-snapscheduler-schedules
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-snapscheduler
   path: ./kubernetes/apps/volsync/snapscheduler/schedules
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

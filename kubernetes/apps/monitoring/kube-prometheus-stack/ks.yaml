@@ -5,13 +5,19 @@ kind: Kustomization
 metadata:
   name: cluster-apps-kube-prometheus-stack-app
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
     - name: cluster-apps-thanos-app
   path: ./kubernetes/apps/monitoring/kube-prometheus-stack/app
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
