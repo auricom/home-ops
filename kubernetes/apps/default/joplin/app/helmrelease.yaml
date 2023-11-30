@@ -71,7 +71,7 @@ spec:
         enabled: true
         className: "nginx"
         annotations:
-          external-dns.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:text
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
