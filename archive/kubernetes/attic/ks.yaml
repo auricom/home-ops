@@ -10,14 +10,6 @@ spec:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-external-secrets-stores
   path: ./kubernetes/apps/default/attic/apiserver
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -36,14 +28,6 @@ spec:
   dependsOn:
     - name: cluster-apps-attic-appiserver
   path: ./kubernetes/apps/default/attic/garbage-collector
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

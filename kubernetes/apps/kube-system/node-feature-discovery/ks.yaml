@@ -7,14 +7,6 @@ metadata:
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/kube-system/node-feature-discovery/app
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -33,14 +25,6 @@ spec:
   dependsOn:
     - name: cluster-apps-node-feature-discovery
   path: ./kubernetes/apps/kube-system/node-feature-discovery/rules
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

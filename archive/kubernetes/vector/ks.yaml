@@ -9,14 +9,6 @@ spec:
   dependsOn:
     - name: cluster-apps-loki-app
   path: ./kubernetes/apps/monitoring/vector/aggregator
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -35,14 +27,6 @@ spec:
   dependsOn:
     - name: cluster-apps-vector-aggregator
   path: ./kubernetes/apps/monitoring/vector/agent
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

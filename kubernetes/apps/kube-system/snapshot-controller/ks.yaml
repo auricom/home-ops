@@ -7,14 +7,6 @@ metadata:
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/kube-system/snapshot-controller/app
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

@@ -9,14 +9,6 @@ spec:
   dependsOn:
     - name: cluster-apps-cert-manager-webhook-ovh
   path: ./kubernetes/apps/networking/ingress-nginx/certificates
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -36,14 +28,6 @@ spec:
   dependsOn:
     - name: cluster-apps-ingress-nginx-certificates
   path: ./kubernetes/apps/networking/ingress-nginx/app
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

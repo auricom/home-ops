@@ -7,14 +7,6 @@ metadata:
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/flux-system/addons/monitoring
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -32,14 +24,6 @@ metadata:
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/flux-system/addons/notifications
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -57,14 +41,6 @@ metadata:
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/flux-system/addons/webhooks
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

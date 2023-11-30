@@ -9,14 +9,6 @@ spec:
   dependsOn:
     - name: cluster-apps-snapshot-controller
   path: ./kubernetes/apps/volsync/snapscheduler/app
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -35,14 +27,6 @@ spec:
   dependsOn:
     - name: cluster-apps-snapscheduler
   path: ./kubernetes/apps/volsync/snapscheduler/schedules
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

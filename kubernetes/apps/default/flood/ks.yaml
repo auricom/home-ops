@@ -11,14 +11,6 @@ spec:
     - name: cluster-apps-qbittorrent-app
     - name: cluster-apps-volsync-app
   path: ./kubernetes/apps/default/flood/app
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository

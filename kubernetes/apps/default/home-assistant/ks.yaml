@@ -11,14 +11,6 @@ spec:
     - name: cluster-apps-external-secrets-stores
     - name: cluster-apps-volsync-app
   path: ./kubernetes/apps/default/home-assistant/app
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
@@ -36,14 +28,6 @@ metadata:
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/default/home-assistant/code
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: false
   prune: true
   sourceRef:
     kind: GitRepository
