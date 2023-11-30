@@ -89,6 +89,7 @@ spec:
         enabled: true
         className: nginx
         annotations:
+          external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/appName: Immich
           nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
