@@ -8,7 +8,6 @@ resources:
   - ./default
   - ./flux-system
   - ./kube-system
-  - ./kyverno
   - ./monitoring
   - ./ngnode
   - ./networking
