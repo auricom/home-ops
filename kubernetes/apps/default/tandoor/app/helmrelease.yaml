@@ -49,7 +49,7 @@ spec:
           02-init-migrate:
             image:
               repository: vabene1111/recipes
-              tag: 1.5.9
+              tag: 1.5.10
             envFrom: *envFrom
             command:
             - sh
@@ -65,7 +65,7 @@ spec:
           main:
             image:
               repository: vabene1111/recipes
-              tag: 1.5.9
+              tag: 1.5.10
             envFrom: *envFrom
             env:
               DEBUG: "0"
