@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.28.4@sha256:9c0ab9dcd7ee9da71c0f3d5089a5768fb22e58c118091d034e45b2cc7ef0abb4
+              tag: 1.28.4@sha256:0c2db12f99e9b0dd0327a1f8a97a9cd79de63e0de15230da2cc5d3797291becb
             command: ["/bin/bash", "/app/truenas-certs-deploy.sh"]
             env:
               HOSTNAME: truenas
@@ -49,7 +49,7 @@ spec:
           truenas-remote-certs-deploy:
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.28.4@sha256:9c0ab9dcd7ee9da71c0f3d5089a5768fb22e58c118091d034e45b2cc7ef0abb4
+              tag: 1.28.4@sha256:0c2db12f99e9b0dd0327a1f8a97a9cd79de63e0de15230da2cc5d3797291becb
             command: ["/bin/bash", "/app/truenas-certs-deploy.sh"]
             env:
               HOSTNAME: truenas-remote
