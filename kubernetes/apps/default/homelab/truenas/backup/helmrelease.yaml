@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.28.4@sha256:0c2db12f99e9b0dd0327a1f8a97a9cd79de63e0de15230da2cc5d3797291becb
+              tag: 1.28.4@sha256:508597635a0fb5cd3922e2cc28c030f3a3a58f380634cc854fca2a4f1807ea93
             command: ["/bin/bash", "/app/truenas-backup.sh"]
             env:
               HOSTNAME: truenas
@@ -48,7 +48,7 @@ spec:
             name: truenas-remote-backup
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.28.4@sha256:0c2db12f99e9b0dd0327a1f8a97a9cd79de63e0de15230da2cc5d3797291becb
+              tag: 1.28.4@sha256:508597635a0fb5cd3922e2cc28c030f3a3a58f380634cc854fca2a4f1807ea93
             command: ["/bin/bash", "/app/truenas-backup.sh"]
             env:
               HOSTNAME: truenas-remote
