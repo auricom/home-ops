@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/libreddit
-              tag: 0.30.1@sha256:fe6880f30d9cfdc6f61387bb9f9f0a39464f1128c3fff653ff54d0fc5cfd6ab1
+              tag: 0.30.1@sha256:c89c2b98ab0eb08f4677d24a3a7577661ed4325c797b042023ce959195534c4f
             probes:
               liveness: &probes
                 enabled: true
