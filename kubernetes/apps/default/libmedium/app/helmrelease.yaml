@@ -36,7 +36,7 @@ spec:
           main:
             image:
               repository: realaravinth/libmedium
-              tag: master@sha256:579ecf40892bf03362080fe15dcbba1d6e378f05c12f14957720d57e888e8409
+              tag: master@sha256:0408c72fad8f4be5a3bd1593258fca6bc3d81acf2db8fc7442a8d438c31921a1
             resources:
               requests:
                 cpu: 50m
