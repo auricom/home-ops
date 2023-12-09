@@ -45,7 +45,7 @@ spec:
           main:
             image:
               repository: sissbruecker/linkding
-              tag: 1.23.0
+              tag: 1.23.1
             envFrom: *envFrom
             probes:
               liveness: &probes
