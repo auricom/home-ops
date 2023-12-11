@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.90.2
+              tag: v1.90.2@sha256:db29ac9e6c1205912df176b81c5c605a98ee18220e438b17151e84c5c5becfa1
             envFrom:
               - configMapRef:
                   name: *configMap
