@@ -46,7 +46,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/python
-              tag: 1.0.0@sha256:d1cb533494fe67d0b82b4dc512b72d15758b53cfe4c725e215771e3ff66b0e4a
+              tag: 1.0.0@sha256:50b3ba5b24bade1723d825135d49cc9e5ee5a352e2d3bfd772e9821b44ee98f4
             command:
               - python3
               - /app/script.py
