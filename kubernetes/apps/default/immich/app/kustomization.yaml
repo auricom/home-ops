@@ -10,6 +10,5 @@ resources:
   - ./microservices
   - ./machine-learning
   - ./server
-  - ./typesense
   - ./volsync.yaml
   - ./volumes.yaml
