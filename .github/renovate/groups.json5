@@ -12,26 +12,31 @@
       "separateMinorPatch": true
     },
     {
-      "description": "External Snapshotter charts",
-      "groupName": "External Snapshotter",
-      "matchPackageNames": ["snapshot-controller", "snapshot-validation-webhook"],
-      "matchDatasources": ["helm"],
+      "description": "Actions Runner Controller Group",
+      "groupName": "Actions Runner Controller",
+      "matchPackageNames": [
+        "actions-runner-controller-charts/gha-runner-scale-set-controller",
+        "actions-runner-controller-charts/gha-runner-scale-set"
+      ],
+      "matchDatasources": ["helm", "docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
     },
     {
-      "description": "Flux Helm Chart",
+      "description": "Flux Group",
       "groupName": "Flux",
-      "matchPackagePatterns": ["fluxcd/flux2", "flux-installation"],
-      "matchDatasources": ["helm", "kustomization", "docker"],
+      "matchPackagePatterns": ["fluxcd"],
+      "matchDatasources": ["docker", "github-tags"],
       "versioning": "semver",
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": true
     },
     {
-      "description": "Immich images",
+      "description": "Immich Group",
       "groupName": "Immich",
       "matchPackagePatterns": ["immich"],
       "matchDatasources": ["docker"],
@@ -41,7 +46,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Rook-Ceph image and chart",
+      "description": "Rook-Ceph Group",
       "groupName": "Rook-Ceph",
       "matchPackagePatterns": ["rook.ceph"],
       "matchDatasources": ["docker", "helm"],
@@ -49,7 +54,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Thanos image and chart - mismatched versions",
+      "description": "Thanos Group",
       "groupName": "Thanos",
       "matchPackagePatterns": ["thanos"],
       "matchDatasources": ["docker", "github-releases", "helm"],
