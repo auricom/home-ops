@@ -6,7 +6,7 @@ metadata:
   namespace: default
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:15.5-11
+  imageName: ghcr.io/bo0tzz/cnpgvecto.rs:15.5@sha256:a02838b9531af52dea5f8978bc0961640eea7ff2ad1b090978c561e6c52f1394
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
   storage:
