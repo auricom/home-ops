@@ -51,7 +51,9 @@ spec:
             env:
               TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
+              APP_URL: https://lychee.${SECRET_CLUSTER_DOMAIN}
               DB_CONNECTION: pgsql
+              PHP_TZ: ${TIMEZONE}
               REDIS_HOST: lychee-redis.default.svc.cluster.local.
               REDIS_PORT: 6379
             envFrom: *envFrom
