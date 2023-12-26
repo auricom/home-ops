@@ -6,17 +6,14 @@
   "commitMessageSuffix": "",
   "packageRules": [
     {
-      "matchDatasources": ["helm"],
-      "commitMessageTopic": "chart {{depName}}"
+      "matchDatasources": ["docker", "helm", "galaxy", "galaxy-collection", "github-releases", "github-tags"],
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )"
     },
     {
-      "matchDatasources": ["docker"],
-      "commitMessageTopic": "image {{depName}}"
-    },
-    {
-      "matchDatasources": ["custom.grafana-dashboards"],
-      "commitMessageTopic": "dashboard {{depName}}",
-      "commitMessageExtra": "to revision {{newVersion}}"
+      "matchManagers": ["github-actions"],
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )"
     }
   ]
 }
