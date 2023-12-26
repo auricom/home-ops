@@ -30,7 +30,6 @@ spec:
   dependsOn:
     - name: immich-redis
     - name: immich-server
-    - name: immich-typesense
   values:
     defaultPodOptions:
       enableServiceLinks: false
