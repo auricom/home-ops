@@ -36,7 +36,7 @@ spec:
           main:
             image:
               repository: jacobalberty/unifi
-              tag: v7.5.176
+              tag: v8.0.24@sha256:23d3114328fcb21fd7a0ae37a38d7b65b4e21adc653b58aeadc1e3aecc4b30d6
               pullPolicy: IfNotPresent
             env:
               RUNAS_UID0: "false"
