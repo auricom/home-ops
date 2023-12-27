@@ -1,0 +1,105 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app lms
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: toertel/logitech-media-server
+              tag: v8.3.1-1@sha256:141115c96237c36d4960b4ea2f607b8a5503933ba648cd24249d92fa61685970
+            env:
+              AUDIO_DIR: &music /mnt/storage/music
+              PLAYLIST_DIR: &playlist /mnt/storage/apps/lms
+            resources:
+              requests:
+                memory: 250Mi
+                cpu: 15m
+              limits:
+                memory: 4096Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 10Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /srv/squeezebox
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: ${CLUSTER_LB_LMS}
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 9000
+          cli:
+            enabled: true
+            port: 9090
+            protocol: TCP
+          slimproto:
+            enabled: true
+            port: 3483
+            protocol: TCP
+          slimproto-udp:
+            enabled: true
+            port: 3483
+            protocol: UDP
+    ingress:
+      main:
+        enabled: true
+        className: "nginx"
+        annotations:
+          hajimari.io/icon: mdi:file-music
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      music:
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: *music
+        globalMounts:
+          - path: *music
+      playlists:
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: *playlist
+        globalMounts:
+          - path: *playlist

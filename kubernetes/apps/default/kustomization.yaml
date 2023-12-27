@@ -33,6 +33,7 @@ resources:
   - ./linkding/ks.yaml
   - ./libreddit/ks.yaml
   - ./lldap/ks.yaml
+  - ./lms/ks.yaml
   - ./lychee/ks.yaml
   - ./mailrise/ks.yaml
   - ./media-browser/ks.yaml
