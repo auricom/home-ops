@@ -43,7 +43,7 @@ spec:
               tag: 4.20.0@sha256:945c1c6452a3ac798283a6f43fb0c815e4c0e9418bceec37eac6d6bd378b5e99
             env:
               TZ: ${TIMEZONE}
-              GIT_SSH_COMMAND: "ssh -i /config/.ssh/id_rsa -o IdentitiesOnly=yes"
+              GIT_SSH_COMMAND: "ssh -i /config/.ssh/id_ed25519 -o IdentitiesOnly=yes"
             args:
               - --auth
               - "none"
