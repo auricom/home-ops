@@ -129,8 +129,8 @@ spec:
           - path: /config
       media:
         type: nfs
-        server: "${LOCAL_LAN_OPENMEDIAVAULT}"
-        path: /export/frigate
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/apps/frigate
         globalMounts:
           - path: /media/frigate
       cache:
