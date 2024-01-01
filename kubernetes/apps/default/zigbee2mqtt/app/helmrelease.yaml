@@ -39,7 +39,7 @@ spec:
           main:
             image:
               repository: ghcr.io/koenkk/zigbee2mqtt
-              tag: 1.34.0
+              tag: 1.35.0@sha256:2b5cea0c2b10c47efa6c98816c8702787bff01fa29690ac5ddcf61a27ae6b8d8
               pullPolicy: IfNotPresent
             env:
               TZ: "${TIMEZONE}"
