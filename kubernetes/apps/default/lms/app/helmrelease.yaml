@@ -97,6 +97,12 @@ spec:
         path: *music
         globalMounts:
           - path: *music
+      music-helene:
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/home/helene/Musique
+        globalMounts:
+          - path: /mnt/storage/home/helene/Musique
       playlists:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
