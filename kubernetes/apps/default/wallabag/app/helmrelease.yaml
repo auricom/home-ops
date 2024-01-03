@@ -51,7 +51,7 @@ spec:
           02-init-migrate:
             image:
               repository: wallabag/wallabag
-              tag: 2.6.7
+              tag: 2.6.8@sha256:85b31297ec0dbfc5db32f9b8c0d5b598846469ff664e9e1c41b770aeca395a87
             envFrom: *envFrom
             env: &env
               SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
@@ -80,7 +80,7 @@ spec:
           main:
             image:
               repository: wallabag/wallabag
-              tag: 2.6.7
+              tag: 2.6.8@sha256:85b31297ec0dbfc5db32f9b8c0d5b598846469ff664e9e1c41b770aeca395a87
             envFrom: *envFrom
             env: *env
             resources:
