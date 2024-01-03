@@ -41,7 +41,7 @@ spec:
           main:
             image:
               repository: docker.io/typesense/typesense
-              tag: 0.25.1
+              tag: 0.25.2@sha256:1ddbb28a52b0b8be31237ec718df1c9bc895c5626b26c10fa3f340f684e81488
             envFrom:
               - configMapRef:
                   name: *configMap
