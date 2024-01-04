@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: ghcr.io/hay-kot/homebox
-              tag: v0.10.2
+              tag: v0.10.3@sha256:b1fbca6fc1ad2bd3634d13056d1bc0242cf92e9bad4ca21ce57589be3fe4987e
             env:
               TZ: "${TIMEZONE}"
               HBOX_LOG_LEVEL: info
