@@ -9,16 +9,15 @@
 - name: nfs | create system.d services
   ansible.builtin.template:
     src: "storage-nfs.mount"
-    dest: "/storage/.config/system.d/storage-mnt-{{ item }}.mount"
+    dest: "/storage/.config/system.d/storage-mnt-{{ item | replace('/','-') }}.mount"
     mode: 0775
   loop: "{{ nfs_shares }}"
   register: services
 
 - name: nfs | activate system.d services
   ansible.builtin.systemd:
-    name: storage-mnt-{{ item }}.mount
-    state: restarted
+    name: storage-mnt-{{ item | replace('/','-') }}.mount
+    state: started
     enabled: true
     daemon_reload: true
   loop: "{{ nfs_shares }}"
-  when: services.changed
