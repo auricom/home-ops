@@ -176,7 +176,7 @@ convert_covers()
                 FILENAME="$TRANSCODE_OUTPUT_DIR$(dirname "$val")/$(basename "$val" .$ext).jpg"
                 MD5_FILENAME="$TRANSCODE_DB/$(dirname "$val")/$(basename "$val").md5"
                 # Check if a MD5 checksum already exists
-                RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
+                RESULT=$($TRANSCODE_FD_BIN --quiet . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
                 if [ $? -ne 0 ] ; then
                     FLAG=true
                 # Check if an existing MD5 checksum is different
