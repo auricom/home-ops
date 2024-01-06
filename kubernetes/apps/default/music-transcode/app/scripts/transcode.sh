@@ -264,7 +264,7 @@ remove_absent_from_source()
         for val in "${StringArray[@]}"; do
             if [ ! -z "$val" ]; then
                 FILENAME=$(dirname "$val")/$(basename "$val" .$ext)
-                RESULT=$($TRANSCODE_FD_BIN . "$TRANSCODE_INPUT_DIR/$(dirname "$FILENAME")" | grep -F "$(basename "$FILENAME" .$ext)")
+                RESULT=$($TRANSCODE_FD_BIN --quiet . "$TRANSCODE_INPUT_DIR/$(dirname "$FILENAME")" | grep -F "$(basename "$FILENAME" .$ext)")
                 # Transcoded file don't have a source file : delete
                 if [ $? -ne 0 ]; then
                     echo "INFO: Transcoded file $FILENAME don't have a source file : delete"
