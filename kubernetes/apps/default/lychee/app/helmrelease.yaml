@@ -56,6 +56,7 @@ spec:
               PHP_TZ: ${TIMEZONE}
               REDIS_HOST: lychee-redis.default.svc.cluster.local.
               REDIS_PORT: 6379
+              TRUSTED_PROXIES: "*"
             envFrom: *envFrom
             resources:
               requests:
