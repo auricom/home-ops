@@ -58,7 +58,7 @@ spec:
     persistence:
       enabled: true
       storageClass: rook-ceph-block
-      size: 100Mi
+      size: 400Mi
     affinity:
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
