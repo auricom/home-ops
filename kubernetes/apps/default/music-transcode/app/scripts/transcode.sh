@@ -176,7 +176,7 @@ convert_covers()
                 FILENAME="$TRANSCODE_OUTPUT_DIR$(dirname "$val")/$(basename "$val" .$ext).jpg"
                 MD5_FILENAME="$TRANSCODE_DB/$(dirname "$val")/$(basename "$val").md5"
                 # Check if a MD5 checksum already exists
-                RESULT=$($TRANSCODE_FD_BIN --quiet . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
+                RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" 2> /dev/null | grep -F "$(basename "$MD5_FILENAME")")
                 if [ $? -ne 0 ] ; then
                     FLAG=true
                 # Check if an existing MD5 checksum is different
@@ -208,7 +208,7 @@ convert_music()
                 FILENAME="$FILEBASENAME.opus"
                 MD5_FILENAME="$TRANSCODE_DB/$(dirname "$val")/$(basename "$val" .$ext).md5"
                 # Check if a MD5 checksum already exists
-                RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
+                RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" 2> /dev/null | grep -F "$(basename "$MD5_FILENAME")")
                 if [ $? -ne 0 ] ; then
                     FLAG=true
                 # Check if an existing MD5 checksum is different
@@ -236,7 +236,7 @@ fix_cuefiles()
             MD5_FILENAME="$TRANSCODE_DB/$val.md5"
             REPLACEMENT_TEXT_STRING="FILE \"$(basename "$val" .cue).opus\" MP3"
             # Check if a MD5 checksum already exists
-            RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" | grep -F "$(basename "$MD5_FILENAME")")
+            RESULT=$($TRANSCODE_FD_BIN . "$(dirname "$MD5_FILENAME")" 2> /dev/null| grep -F "$(basename "$MD5_FILENAME")")
             if [ $? -ne 0 ] ; then
                 cp -pr "$val" "$TRANSCODE_OUTPUT_DIR/$val"
                 FLAG=true
@@ -264,7 +264,7 @@ remove_absent_from_source()
         for val in "${StringArray[@]}"; do
             if [ ! -z "$val" ]; then
                 FILENAME=$(dirname "$val")/$(basename "$val" .$ext)
-                RESULT=$($TRANSCODE_FD_BIN --quiet . "$TRANSCODE_INPUT_DIR/$(dirname "$FILENAME")" | grep -F "$(basename "$FILENAME" .$ext)")
+                RESULT=$($TRANSCODE_FD_BIN . "$TRANSCODE_INPUT_DIR/$(dirname "$FILENAME")" 2> /dev/null | grep -F "$(basename "$FILENAME" .$ext)")
                 # Transcoded file don't have a source file : delete
                 if [ $? -ne 0 ]; then
                     echo "INFO: Transcoded file $FILENAME don't have a source file : delete"
