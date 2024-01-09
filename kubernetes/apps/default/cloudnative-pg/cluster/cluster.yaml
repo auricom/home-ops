@@ -23,7 +23,7 @@ spec:
         compression: bzip2
         maxParallel: 8
       destinationPath: s3://postgresql/
-      endpointURL: https://truenas.${SECRET_DOMAIN}:51515
+      endpointURL: https://.${SECRET_DOMAIN}:9000
       serverName: postgres-v8
       s3Credentials:
         accessKeyId:
@@ -39,7 +39,7 @@ spec:
   #   - name: postgres-v6
   #     barmanObjectStore:
   #       destinationPath: s3://postgresql/
-  #       endpointURL: https://truenas.${SECRET_DOMAIN}:51515
+  #       endpointURL: http://minio.${SECRET_DOMAIN}:9000
   #       s3Credentials:
   #         accessKeyId:
   #           name: postgres-minio

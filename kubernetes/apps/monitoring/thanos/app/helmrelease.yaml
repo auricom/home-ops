@@ -35,8 +35,9 @@ spec:
       type: s3
       config:
         bucket: thanos
-        endpoint: "truenas.${SECRET_DOMAIN}:51515"
+        endpoint: "minio.${SECRET_DOMAIN}:9000"
         region: ""
+        insecure: true
     query:
       enabled: true
       replicaCount: 2

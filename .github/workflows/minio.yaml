@@ -1,0 +1,39 @@
+name: Minio configuration & upgrade
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths: [".github/workflows/minio.yaml", "ansible/**minio**"]
+  schedule:
+    - cron: '33 7 * * 2'
+
+jobs:
+  run-ansible-playbook:
+    runs-on: ["arc-runner-set-home-ops"]
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Run Ansible Playbook
+        run: cd ./ansible ; ansible-playbook ./playbooks/minio.yml
