@@ -42,7 +42,8 @@ spec:
             env:
               HOSTNAME: truenas
               TRUENAS_HOME: /mnt/storage/home/homelab
-              CERTS_DEPLOY_S3_ENABLED: "True"
+              CERTS_DEPLOY_MINIO_ENABLED: "True"
+              CERTS_DEPLOY_POSTGRESQL_ENABLED: "True"
             envFrom: &envFrom
               - secretRef:
                   name: &secret homelab-truenas-secret
@@ -54,7 +55,8 @@ spec:
             env:
               HOSTNAME: truenas-remote
               TRUENAS_HOME: /mnt/vol1/home/homelab
-              CERTS_DEPLOY_S3_ENABLED: "False"
+              CERTS_DEPLOY_MINIO_ENABLED: "False"
+              CERTS_DEPLOY_POSTGRESQL_ENABLED: "False"
             envFrom: *envFrom
     service:
       main:

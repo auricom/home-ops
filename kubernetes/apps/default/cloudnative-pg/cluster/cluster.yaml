@@ -39,7 +39,7 @@ spec:
   #   - name: postgres-v6
   #     barmanObjectStore:
   #       destinationPath: s3://postgresql/
-  #       endpointURL: http://minio.${SECRET_DOMAIN}:9000
+  #       endpointURL: https://minio.${SECRET_DOMAIN}:9000
   #       s3Credentials:
   #         accessKeyId:
   #           name: postgres-minio

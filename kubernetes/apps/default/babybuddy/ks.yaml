@@ -12,9 +12,8 @@ spec:
     kind: GitRepository
     name: home-ops-kubernetes
   dependsOn:
-    - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-volsync-app
+    # - name: cluster-apps-volsync-app
   interval: 30m
   retryInterval: 1m
   timeout: 3m

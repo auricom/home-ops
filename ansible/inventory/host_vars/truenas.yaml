@@ -1,5 +1,6 @@
 main_nas: true
 pool_name: storage
-service_s3: true
+iocage_pool_name: apps
+postgresql_pool_name: apps
+minio_pool_name: storage
 snapshots_interval: "daily:14,weekly:12,monthly:3"
-uptime_kuma_id_truenas_cert: f8nAZOHoQb

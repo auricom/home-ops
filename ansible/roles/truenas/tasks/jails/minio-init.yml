@@ -1,0 +1,32 @@
+---
+- block:
+    - name: jail-minio_v2_v2 | create zfs pools
+      community.general.zfs:
+        name: "{{ minio_pool_name }}/minio_v2"
+        state: present
+        extra_zfs_properties:
+          atime: off
+          setuid: off
+
+    - name: jail-minio_v2 | create empty data dir
+      ansible.builtin.shell:
+        cmd: iocage exec minio_v2 mkdir -p /mnt/data
+
+    - name: jail-minio_v2 | mount data
+      ansible.builtin.shell:
+        cmd: iocage fstab -a minio /mnt/{{ minio_pool_name }}/minio /mnt/data nullfs rw 0 0
+
+    - name: jail-minio_v2 | change create minio user
+      ansible.builtin.shell:
+        cmd: iocage exec minio_v2 'pw useradd minio -u 1002 -g 1002 -d /home/minio -m'
+
+    - name: jail-minio_v2 | change owner on data dir
+      ansible.builtin.shell:
+        cmd: iocage exec minio_v2 'chown 1002:1002 /mnt/data'
+
+    - name: jail-minio_v2 | create certificates folder
+      ansible.builtin.file:
+        path: /mnt/{{ iocage_pool_name }}/iocage/jails/minio_v2/root/home/minio/certs
+        owner: 1002
+        group: 1002
+  become: true

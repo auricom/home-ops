@@ -30,5 +30,3 @@ data:
   LOCAL_LAN_TRUENAS_REMOTE: 10.10.0.2
   LOCAL_LAN_OPENMEDIAVAULT: 192.168.9.13
   TIMEZONE: "Europe/Paris"
-  POSTGRES_HOST: "postgres-rw.default.svc.cluster.local."
-  POSTGRES_PORT: "5432"

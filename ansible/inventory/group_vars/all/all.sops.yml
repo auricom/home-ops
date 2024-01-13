@@ -1,5 +1,9 @@
 kind: Secret
 secret_domain: ENC[AES256_GCM,data:SjdnR9pDjveodvo=,iv:GKvdD7c3bmaQN+CAYoKwAy78em9vYljGyl6VfGmJk9E=,tag:hz92J7d1NokEeyB6vxr3Uw==,type:str]
+public_ssh_keys:
+    - ENC[AES256_GCM,data:/J9ejzvJHV5wdz9Dj0jUmAaVtIkgVpEoIRJocNGhszY2bmu5mruwWSz6E+XkcAGE0zQMo/9N8imIZoXfq0UQSyfCCitrA09x1z0Hf0s3iSA=,iv:jzA3bIQw+pL4tjNASNMwMcdHW+vSxgVo4Czo/ja0AO8=,tag:iTEDjARfH96oXATQu8VR8Q==,type:str]
+    - ENC[AES256_GCM,data:c105qLvE6iHoBQl4X0qEFDPXOsiA+YGUVK4gl7O0pqHZ6IIs3m1Z28PKl84GuaPL1pV7I55KccQdAnqjQw0XSZ/lWI+IC2BXj3dJ6paLZNU=,iv:lQod/AwDquA22zJLmvpiuQvaPXo1JFSOV+9yybVjMZc=,tag:Z2eArvfrP8YN3irG45wMRw==,type:str]
+    - ENC[AES256_GCM,data:pMYg+hNpYCl5fwvNbz0bjm0KaEuIGMeBXXblTGpbur17Nxulnn5DQ5H3k8Wash1F9BJeBfQOTGXDx1XEfp2CDlymuLHdjP6xU7+daD0/JbA=,iv:49Mh9zGN5AJgTXGb8lF38jyme46nd7RqKil3PI13ww8=,tag:2c6jSEZImNEWvM3Asc2jhw==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -15,8 +19,8 @@ sops:
             c3JkOFZzYnpINjQ5QnNkaE9IYUdXL3MKsBelDv/z5nTYC6/1Zm8kmzqEoLBVPnhy
             v0v/6n1GksmzslbNdKhy+xtxHYrqouhc2P4hNi0R8p8u76RXERN5fg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-11-11T15:03:36Z"
-    mac: ENC[AES256_GCM,data:PYjJ/WxF8UXZPnccFdjtwsS+W2N1TQmNFtTIHazFLFiSxC4b6li7TcOEpQL2HClWeXwJXkUnWGUfH9YLEPVxlAqBygaDBdghPN0uTrKaV4ZaiAQ1EhtKfGDkIGvb+aDpbRuNH77nXzDv4ws3ObSdTCsHp2LOepi4NVSuEw6MlOY=,iv:Bk+VTEsAyeRQkf9wbcBpANeXvIvGn6JzOuHRM0ilF/s=,tag:6MT3xUDX/o3e1zu8WrGm/A==,type:str]
+    lastmodified: "2024-01-13T09:43:41Z"
+    mac: ENC[AES256_GCM,data:R7gzINLxiaqSh4JgP9jhMTG1GaM5WnUA24Uv5OMVB3cHIjgE65o3ybjbmPGpAejpfQ+lKSKKXxeWRpissn9h6DVr1RLi5jnXlngMt5REDiNSsxRI7j3aktTvd2wJQUcGObrhngp+lhFPsufZuOg7hFdvcgCP3SM7sDwrxBaOjgk=,iv:XqaEQtFhBkm1qV7khzhftE2Sxy5xUH/I4/CBqKW9R+w=,tag:FRbncSBOFqVrFTEXmZf+uw==,type:str]
     pgp: []
     unencrypted_regex: ^(kind)$
     version: 3.8.1

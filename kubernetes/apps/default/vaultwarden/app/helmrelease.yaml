@@ -35,9 +35,8 @@ spec:
         initContainers:
           init-db:
             image:
-              repository: ghcr.io/auricom/postgres-init
-              tag: 15.5@sha256:9b1b80d8101d3f1c73ef13b90dff2ab3bc855bd79ebcd334cba57db391ce6db0
-              pullPolicy: IfNotPresent
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
             envFrom: &envFrom
               - secretRef:
                   name: vaultwarden-secret
@@ -68,14 +67,14 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 2Gi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 10Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /data
+        # statefulset:
+        #   volumeClaimTemplates:
+        #     - name: config
+        #       accessMode: ReadWriteOnce
+        #       size: 10Gi
+        #       storageClass: rook-ceph-block
+        #       globalMounts:
+        #         - path: /data
     service:
       main:
         ports:

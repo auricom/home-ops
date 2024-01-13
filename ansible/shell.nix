@@ -3,5 +3,6 @@ with pkgs;
   mkShell {
     buildInputs = [
       ansible
+      sshpass
     ];
   }

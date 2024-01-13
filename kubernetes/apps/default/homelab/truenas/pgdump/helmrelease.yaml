@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: homelab-truenas-pgdump
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            env:
+              EXCLUDE_DBS: "home_assistant radarr_log sonarr_log prowlarr_log postgres template0 template1"
+            envFrom: &envFrom
+              - secretRef:
+                  name: homelab-truenas-pgdump-secret
+            command:
+              - "/bin/bash"
+              - "-c"
+              - |
+                #!/bin/bash
+
+                set -o nounset
+                set -o errexit
+
+                # File to store the list of databases
+                OUTPUT_FILE="/config/db_list"
+
+                # Export PG password to avoid password prompt
+                export PGPASSWORD=$POSTGRES_PASSWORD
+
+                # Generate a regex pattern for exclusion
+                EXCLUDE_PATTERN=$(echo $EXCLUDE_DBS | sed 's/ /\\|/g')
+
+                # List all databases, exclude the ones in EXCLUDE_DBS, and write to the file
+                psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -lqt | \
+                cut -d \| -f 1 | \
+                grep -Ev "^\s*($EXCLUDE_PATTERN)\s*$" > "$OUTPUT_FILE"
+
+                # Unset PG password
+                unset PGPASSWORD
+
+                echo "Database list saved to $OUTPUT_FILE"
+
+                cat $OUTPUT_FILE
+        containers:
+          main:
+            image:
+              repository: prodrigestivill/postgres-backup-local
+              tag: 16-alpine
+            command: ["/backup.sh"]
+            env:
+              POSTGRES_DB_FILE: /config/db_list
+              POSTGRES_EXTRA_OPTS: "-Z9 --schema=public --blobs"
+              BACKUP_KEEP_DAYS: "7"
+              BACKUP_KEEP_WEEKS: "4"
+              BACKUP_KEEP_MONTHS: "3"
+              HEALTHCHECK_PORT: "8080"
+            envFrom: *envFrom
+    service:
+      main:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /config
+      backups:
+        enabled: true
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/backups/postgresql
+        globalMounts:
+          - path: /backups

@@ -11,6 +11,7 @@ POOL_NAME="{{ pool_name }}"
 # Prune
 
 ${SCRIPT_PATH}/snapshots_prune.py --recursive --intervals ${INTERVAL} ${POOL_NAME}
-${SCRIPT_PATH}/snapshots_prune.py --recursive --intervals daily:14 ${POOL_NAME}{% if not main_nas %}/replication/storage{% endif %}/minio
+${SCRIPT_PATH}/snapshots_prune.py --recursive --intervals daily:14 ${POOL_NAME}{% if not main_nas %}/replication/storage{% endif %}/minio_v2
 {% if main_nas %}${SCRIPT_PATH}/snapshots_prune.py --recursive --intervals daily:7 ${POOL_NAME}/video{% endif %}
+
 ${SCRIPT_PATH}/snapshots_clearempty.py --recursive ${POOL_NAME}

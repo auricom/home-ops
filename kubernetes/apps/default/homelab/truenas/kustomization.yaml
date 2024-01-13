@@ -7,3 +7,4 @@ resources:
   - ./backup
   - ./certs-deploy
   - ./externalsecret.yaml
+  - ./pgdump

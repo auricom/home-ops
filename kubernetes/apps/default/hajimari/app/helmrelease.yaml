@@ -67,7 +67,7 @@ spec:
               url: "https://truenas-remote.${SECRET_DOMAIN}"
             - name: minio
               icon: mdi:aws
-              url: "http://minio.${SECRET_DOMAIN}:9000"
+              url: "https://minio.${SECRET_DOMAIN}:9000"
             - name: pikvm
               icon: mdi:ip-network
               url: "https://pikvm.${SECRET_DOMAIN}"

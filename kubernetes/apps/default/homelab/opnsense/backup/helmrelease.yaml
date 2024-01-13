@@ -41,7 +41,7 @@ spec:
             command: ["/bin/bash", "/app/opnsense-backup.sh"]
             env:
               OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
-              S3_URL: "http://minio.${SECRET_DOMAIN}:9000"
+              S3_URL: "https://minio.${SECRET_DOMAIN}:9000"
             envFrom:
               - secretRef:
                   name: homelab-opnsense-secret

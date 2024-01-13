@@ -31,30 +31,30 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/auricom/postgres-init
-              tag: 15.5@sha256:9b1b80d8101d3f1c73ef13b90dff2ab3bc855bd79ebcd334cba57db391ce6db0
-              pullPolicy: IfNotPresent
-            envFrom: &envFrom
-              - secretRef:
-                  name: outline-secret
+          # init-db:
+          #   image:
+          #     repository: ghcr.io/onedr0p/postgres-init
+          #     tag: 16
+          #   envFrom: &envFrom
+          #     - secretRef:
+          #         name: outline-secret
         containers:
           main:
             image:
               repository: docker.io/outlinewiki/outline
               tag: 0.74.0
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: outline-secret
             env:
               AWS_REGION: us-east-1
               AWS_S3_ACL: private
               AWS_S3_FORCE_PATH_STYLE: "true"
               AWS_S3_UPLOAD_BUCKET_NAME: outline
-              AWS_S3_UPLOAD_BUCKET_URL: "http://minio.${SECRET_DOMAIN}:9000"
+              AWS_S3_UPLOAD_BUCKET_URL: "https://minio.${SECRET_DOMAIN}:9000"
               ENABLE_UPDATES: "false"
               FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
               OIDC_AUTH_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization"
@@ -65,7 +65,6 @@ spec:
               OIDC_TOKEN_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/token"
               OIDC_USERINFO_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo"
               OIDC_USERNAME_CLAIM: email
-              PGSSLMODE: disable
               PORT: 8080
               REDIS_URL: redis://outline-redis.default.svc.cluster.local.:6379
               SMTP_HOST: smtp-relay.default.svc.cluster.local.

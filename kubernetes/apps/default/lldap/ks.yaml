@@ -6,8 +6,6 @@ metadata:
   name: cluster-apps-lldap
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: cluster-apps-cloudnative-pg-cluster
   path: ./kubernetes/apps/default/lldap/app
   prune: true
   sourceRef:

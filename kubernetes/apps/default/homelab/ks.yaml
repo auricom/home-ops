@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-homnelab-minio
+  name: cluster-apps-homelab-minio
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/default/homelab/minio
@@ -21,7 +21,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-homnelab-opnsense
+  name: cluster-apps-homelab-opnsense
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/default/homelab/opnsense
@@ -39,7 +39,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-homnelab-truenas
+  name: cluster-apps-homelab-truenas
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/default/homelab/truenas
