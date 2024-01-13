@@ -33,15 +33,16 @@ spec:
           reloader.stakater.com/auto: "true"
         type: statefulset
         initContainers:
-          01-init-db:
+          init-db:
+            order: 1
             image:
-              repository: ghcr.io/auricom/postgres-init
-              tag: 15.5@sha256:9b1b80d8101d3f1c73ef13b90dff2ab3bc855bd79ebcd334cba57db391ce6db0
-              pullPolicy: IfNotPresent
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
             envFrom: &envFrom
               - secretRef:
                   name: babybuddy-secret
-          02-migrations:
+          migrations:
+            order: 2
             image:
               repository: ghcr.io/auricom/babybuddy
               tag: 2.1.2@sha256:c5529ddb13b5e704ba997c3f555f5e4dcf9f83080370bbb00eef22a10b2c2915
@@ -74,14 +75,14 @@ spec:
               requests:
                 cpu: 100m
                 memory: 256Mi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
+        # statefulset:
+        #   volumeClaimTemplates:
+        #     - name: config
+        #       accessMode: ReadWriteOnce
+        #       size: 1Gi
+        #       storageClass: rook-ceph-block
+        #       globalMounts:
+        #         - path: /config
     service:
       main:
         ports:

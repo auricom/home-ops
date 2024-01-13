@@ -51,10 +51,10 @@ spec:
           reloader.stakater.com/auto: "true"
         initContainers:
           init-db:
+            order: 1
             image:
-              repository: ghcr.io/auricom/postgres-init
-              tag: 15.5@sha256:9b1b80d8101d3f1c73ef13b90dff2ab3bc855bd79ebcd334cba57db391ce6db0
-              pullPolicy: IfNotPresent
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
             envFrom: &envFrom
               - secretRef:
                   name: authelia-secret
@@ -94,8 +94,6 @@ spec:
               AUTHELIA_SESSION_NAME: authelia-home-ops
               AUTHELIA_SESSION_REDIS_HOST: authelia-redis.default.svc.cluster.local.
               AUTHELIA_SESSION_REDIS_PORT: 6379
-              AUTHELIA_STORAGE_POSTGRES_DATABASE: authelia
-              AUTHELIA_STORAGE_POSTGRES_HOST: ${POSTGRES_HOST}
               AUTHELIA_TELEMETRY_METRICS_ADDRESS: tcp://0.0.0.0:8080
               AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
               AUTHELIA_THEME: dark

@@ -11,8 +11,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  dependsOn:
-    - name: cluster-apps-cloudnative-pg-cluster
   interval: 30m
   retryInterval: 1m
   timeout: 3m
