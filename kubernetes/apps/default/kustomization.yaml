@@ -11,7 +11,6 @@ resources:
   - ./babybuddy/ks.yaml
   - ./bazarr/ks.yaml
   - ./calibre/ks.yaml
-  - ./cloudnative-pg/ks.yaml
   - ./emqx/ks.yaml
   - ./flood/ks.yaml
   - ./freshrss/ks.yaml
