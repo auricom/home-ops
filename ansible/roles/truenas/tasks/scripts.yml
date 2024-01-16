@@ -15,4 +15,5 @@
     dest: "{{ scripts_dir }}/{{ item.name }}"
     mode: "{{ item.mode }}"
   loop:
+    - { name: "jails_update.sh", mode: "0775" }
     - { name: "snapshots_prune.sh", mode: "0775" }

@@ -64,10 +64,10 @@ spec:
               - name: "nvme0n1"
           - name: "talos-node-3"
             devices:
-              - name: "nvme0n1"
+              - name: "sda"
           - name: "talos-node-4"
             devices:
-              - name: "nvme0n1"
+              - name: "sda"
       resources:
         mgr:
           requests:
