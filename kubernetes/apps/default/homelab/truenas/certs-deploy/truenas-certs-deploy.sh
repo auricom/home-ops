@@ -41,11 +41,11 @@ export CERTS_DEPLOY_FULLCHAIN_PATH=${CERTIFICATE_PATH}/fullchain.pem
 if [ "$2" == "True" ]; then
     export CERTS_DEPLOY_MINIO_ENABLED=$2
 fi
-CERTS_DEPLOY_MINIO_CERT_PATH=/mnt/{{ iocage_pool_name }}/iocage/jails/minio_v2/root/home/minio/certs
+CERTS_DEPLOY_MINIO_CERT_PATH=/mnt/storage/iocage/jails/minio_v2/root/home/minio/certs
 if [ "$3" == "True" ]; then
     export CERTS_DEPLOY_POSTGRESQL_ENABLED=$3
 fi
-CERTS_DEPLOY_POSTGRESQL_PATH=/mnt/{{ postgresql_pool_name }}/postgresql
+CERTS_DEPLOY_POSTGRESQL_PATH=/mnt/apps/postgresql
 
 # Check if cert is older than 69 days
 result=$(find ${CERTS_DEPLOY_PRIVATE_KEY_PATH} -mtime +69)
@@ -90,7 +90,7 @@ else
             https://api.pushover.net/1/messages.json
 
     else
-        echo "INFO - Certificate expires in more than $DAYS"
+        echo "INFO - Certificate expires in more than $DAYS days"
     fi
 fi
 
