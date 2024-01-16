@@ -1,19 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "commitMessageTopic": "{{depName}}",
-  "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )",
+  "commitMessageExtra": "to {{newVersion}}",
   "commitMessagePrefix": "⬆️",
   "commitMessageSuffix": "",
   "packageRules": [
     {
-      "matchDatasources": ["docker", "helm", "galaxy", "galaxy-collection", "github-releases", "github-tags"],
-      "commitMessageTopic": "{{depName}}",
-      "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )"
+      "matchDatasources": ["helm"],
+      "commitMessageTopic": "chart {{depName}}"
     },
     {
-      "matchManagers": ["github-actions"],
-      "commitMessageTopic": "{{depName}}",
-      "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )"
+      "matchDatasources": ["docker"],
+      "commitMessageTopic": "image {{depName}}"
     }
   ]
 }
