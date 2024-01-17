@@ -4,6 +4,7 @@ import yaml
 import psycopg2
 from psycopg2 import sql
 from datetime import datetime
+from requests.exceptions import HTTPError
 
 # Load configuration file
 with open("config.yaml", "r") as config_file:
@@ -37,10 +38,43 @@ def create_table():
 
 # Check for new release
 def check_new_release(repo_name):
-    response = requests.get(f"https://api.github.com/repos/{repo_name}/releases/latest")
+    try:
+        response = requests.get(f"https://api.github.com/repos/{repo_name}/releases/latest")
+        response.raise_for_status()
+        release_data = response.json()
+        return release_data["tag_name"], release_data["published_at"]
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            # Handle the case where the release is not found
+            # For example, return None or check for tags instead
+            return None, None
+        else:
+            raise
+
+# Function to check if tag should be ignored
+def should_ignore_tag(tag_name, ignore_list):
+    return any(ignore_str in tag_name for ignore_str in ignore_list)
+
+# Modified function to check for latest tag
+def check_latest_tag(repo_name, ignore_list):
+    response = requests.get(f"https://api.github.com/repos/{repo_name}/tags")
     response.raise_for_status()
-    release_data = response.json()
-    return release_data["tag_name"], release_data["published_at"]
+    tags = response.json()
+
+    for tag in tags:
+        tag_name = tag["name"]
+        if should_ignore_tag(tag_name, ignore_list):
+            continue  # Skip this tag as it's in the ignore list
+
+        commit_url = tag["commit"]["url"]
+        commit_response = requests.get(commit_url)
+        commit_response.raise_for_status()
+        commit_data = commit_response.json()
+        commit_date = commit_data["commit"]["committer"]["date"]
+
+        return tag_name, commit_date
+
+    return None, None  # No valid tags found
 
 # Send pushover notification
 def send_pushover_notification(repo_name, tag_name):
@@ -56,11 +90,28 @@ def send_pushover_notification(repo_name, tag_name):
 # Main function
 def main():
     create_table()
-    for repo_name in config["repositories"]:
-        latest_tag, release_date = check_new_release(repo_name)
+
+    for repo_config in config["repositories"]:
+        repo_name = repo_config["name"]
+        print(f"Checking releases for repository: {repo_name}")
+        ignore_list = repo_config.get("ignore_tags_containing", [])
+
+        try:
+            latest_tag, release_date = check_new_release(repo_name)
+            if latest_tag is None or release_date is None:
+                print(f"No release found for {repo_name}, checking for tags.")
+                raise ValueError("No release found, checking for tags.")
+        except ValueError:
+            latest_tag, release_date = check_latest_tag(repo_name, ignore_list)
+            if latest_tag is None or release_date is None:
+                print(f"No valid tags found for {repo_name}, moving to next repository.")
+                continue
+
+        print(f"Latest tag for {repo_name}: {latest_tag}, published at: {release_date}")
         release_date = datetime.strptime(release_date, "%Y-%m-%dT%H:%M:%SZ")
 
         with conn.cursor() as cursor:
+            print(f"Updating database for {repo_name}...")
             cursor.execute("""
             INSERT INTO github_releases (repo_name, latest_release, release_date)
             VALUES (%s, %s, %s)
@@ -74,7 +125,10 @@ def main():
             conn.commit()
 
             if result:
+                print(f"New release for {repo_name} found, sending notification.")
                 send_pushover_notification(repo_name, latest_tag)
+            else:
+                print(f"No new release to update for {repo_name}.")
 
 if __name__ == "__main__":
     main()

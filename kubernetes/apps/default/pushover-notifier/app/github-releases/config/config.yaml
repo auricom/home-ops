@@ -1,3 +1,8 @@
 repositories:
-  - fluxcd/flux2
-  - siderolabs/talos
+  - name: fluxcd/flux2
+  - name: opnsense/core
+    ignore_tags_containing:
+      - a
+      - b
+      - r
+  - name: siderolabs/talos
