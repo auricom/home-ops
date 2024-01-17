@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/freac
-              tag: 1.1.7@sha256:ed43f143cbc3517aa8ab34eeff485bc064e26d8651206b4773ce6df202422f7d
+              tag: 1.1.7@sha256:2b3fe1838e00f4e14ef0db71115136760d4f61db96e3da1153f599331567ed99
             command:
               - "/bin/bash"
               - "-c"
