@@ -45,6 +45,19 @@
       - { name: 'ssl_cert_file', value: 'server.crt' }
       - { name: 'ssl_key_file', value: 'server.key' }
       - { name: 'ssl_prefer_server_ciphers', value: 'on' }
+      # https://pgtune.leopard.in.ua - Web application / 12GB
+      - { name: 'max_connections', value: '200' }
+      - { name: 'shared_buffers', value: '3GB' }
+      - { name: 'effective_cache_size', value: '9GB' }
+      - { name: 'maintenance_work_mem', value: '768MB' }
+      - { name: 'checkpoint_completion_target', value: '0.9' }
+      - { name: 'wal_buffers', value: '16MB' }
+      - { name: 'random_page_cost', value: '1.1' }
+      - { name: 'effective_io_concurrency', value: '200' }
+      - { name: 'work_mem', value: '7864kB' }
+      - { name: 'huge_pages', value: 'off' }
+      - { name: 'min_wal_size', value: '1GB' }
+      - { name: 'max_wal_size', value: '4GB' }
     loop_control:
       loop_var: item
     become: true
@@ -55,7 +68,7 @@
   - name: restart postgresql
     ansible.builtin.service:
       name: postgresql
-      state: reloaded
+      state: restart
     when: certificates.changed or pg_hba.changed or pg_conf.changed
     tags:
       - certificates
