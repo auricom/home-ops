@@ -1,8 +1,16 @@
 repositories:
   - name: fluxcd/flux2
+    check: "releases"
   - name: opnsense/core
+    check: "tags"
     ignore_tags_containing:
       - a
       - b
       - r
   - name: siderolabs/talos
+    check: "releases"
+  - name: truenas/core-build
+    check: "tags"
+    ignore_tags_containing:
+      - TrueNAS
+      - FN

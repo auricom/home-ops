@@ -93,19 +93,24 @@ def main():
 
     for repo_config in config["repositories"]:
         repo_name = repo_config["name"]
-        print(f"Checking releases for repository: {repo_name}")
+        check_type = repo_config.get("check", "releases")
         ignore_list = repo_config.get("ignore_tags_containing", [])
 
-        try:
+        print(f"Checking {check_type} for repository: {repo_name}")
+
+        if check_type == "releases":
             latest_tag, release_date = check_new_release(repo_name)
             if latest_tag is None or release_date is None:
-                print(f"No release found for {repo_name}, checking for tags.")
-                raise ValueError("No release found, checking for tags.")
-        except ValueError:
+                print(f"No release found for {repo_name}")
+                continue
+        elif check_type == "tags":
             latest_tag, release_date = check_latest_tag(repo_name, ignore_list)
             if latest_tag is None or release_date is None:
                 print(f"No valid tags found for {repo_name}, moving to next repository.")
                 continue
+        else:
+            print(f"Invalid check type for {repo_name}: {check_type}")
+            continue
 
         print(f"Latest tag for {repo_name}: {latest_tag}, published at: {release_date}")
         release_date = datetime.strptime(release_date, "%Y-%m-%dT%H:%M:%SZ")
