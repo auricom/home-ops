@@ -4,8 +4,8 @@
 
 clusterName: cluster-0
 
-talosVersion: v1.6.1
-kubernetesVersion: v1.29.0
+talosVersion: v1.6.2
+kubernetesVersion: v1.29.1
 endpoint: https://cluster-0.${domainName}:6443
 
 cniConfig:
