@@ -43,7 +43,7 @@ spec:
           main:
             image:
               repository: eikek0/sharry
-              tag: v1.13.0@sha256:2c78521e201f53617a89e8ddd47b1c14ee286fca227a36faa665d1828c9bac14
+              tag: v1.13.1@sha256:66250337958ca79d6ccab76fa46c48b319e3a64bcad7706409f303582c3ba414
             args:
               - "/opt/sharry.conf"
             resources:
