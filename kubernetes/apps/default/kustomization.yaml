@@ -27,6 +27,7 @@ resources:
   - ./komf/ks.yaml
   - ./komga/ks.yaml
   - ./kresus/ks.yaml
+  - ./kromgo/ks.yaml
   - ./libmedium/ks.yaml
   - ./lidarr/ks.yaml
   - ./linkding/ks.yaml
