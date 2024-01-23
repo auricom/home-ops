@@ -29,7 +29,6 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
           configmap.reloader.stakater.com/reload: "lidarr-pushover"
@@ -65,14 +64,6 @@ spec:
             image:
               repository: caddy
               tag: 2.7.6-alpine
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /app/vikunja/files
     service:
       main:
         ports:
@@ -97,6 +88,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /app/vikunja/files
       caddy-config:
         type: configMap
         name: vikunja-configmap

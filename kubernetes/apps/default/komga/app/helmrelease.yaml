@@ -29,7 +29,6 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         containers:
           main:
             image:
@@ -44,14 +43,6 @@ spec:
                 cpu: 15m
               limits:
                 memory: 4282M
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 20Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -74,6 +65,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       comics:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"

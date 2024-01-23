@@ -38,7 +38,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -75,14 +74,6 @@ spec:
               limits:
                 gpu.intel.com/i915: 1
                 memory: 4Gi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 50Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         type: LoadBalancer
@@ -108,6 +99,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       music:
         enabled: true
         type: nfs

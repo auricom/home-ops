@@ -3,35 +3,50 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-ingress-nginx-certificates
+  name: ingress-nginx-certificates
   namespace: flux-system
 spec:
+  targetNamespace: networking
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app ingress-nginx
   dependsOn:
-    - name: cluster-apps-cert-manager-webhook-ovh
+    - name: cert-manager-webhook-ovh
   path: ./kubernetes/apps/networking/ingress-nginx/certificates
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 3m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-ingress-nginx
+  name: &app ingress-nginx
   namespace: flux-system
 spec:
+  targetNamespace: networking
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   dependsOn:
-    - name: cluster-apps-ingress-nginx-certificates
+    - name: ingress-nginx-certificates
   path: ./kubernetes/apps/networking/ingress-nginx/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+  wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 3m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app

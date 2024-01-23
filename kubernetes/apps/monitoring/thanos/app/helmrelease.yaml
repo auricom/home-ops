@@ -37,7 +37,7 @@ spec:
         bucket: thanos
         endpoint: "minio.${SECRET_DOMAIN}:9000"
         region: ""
-        insecure: true
+        # insecure: true
     query:
       enabled: true
       replicaCount: 2

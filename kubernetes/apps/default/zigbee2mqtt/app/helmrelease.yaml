@@ -32,7 +32,6 @@ spec:
         zzh.feature.node.kubernetes.io/zigbee: "true"
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -89,14 +88,6 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 512Mi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -124,6 +115,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       usb:
         enabled: true
         type: hostPath

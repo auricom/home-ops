@@ -31,7 +31,6 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -51,27 +50,22 @@ spec:
                 cpu: 15m
               limits:
                 memory: 4282M
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
           http:
             port: 8085
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       configmap:
         enabled: true
         type: configMap
         name: komf-configmap
-        advancedMounts:
-          main:
-            main:
-              - path: /config/application.yml
-                readOnly: true
-                subPath: application.yml
+        globalMounts:
+          - path: /config/application.yml
+            readOnly: true
+            subPath: application.yml

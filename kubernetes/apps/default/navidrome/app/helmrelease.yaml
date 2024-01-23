@@ -34,7 +34,6 @@ spec:
         runAsGroup: 568
     controllers:
       main:
-        type: statefulset
         containers:
           main:
             image:
@@ -58,14 +57,6 @@ spec:
                 memory: 250Mi
               limits:
                 memory: 750Mi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -98,6 +89,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       music:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"

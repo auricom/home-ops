@@ -68,7 +68,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:cash-multiple
         hosts:
-          - host: &host "portfolio.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
               - path: /
                 service:

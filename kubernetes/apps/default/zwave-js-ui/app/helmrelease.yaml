@@ -32,7 +32,6 @@ spec:
         aeotec.feature.node.kubernetes.io/zwave: "true"
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -65,14 +64,6 @@ spec:
                 memory: 64Mi
               limits:
                 memory: 512Mi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /usr/src/app/store
     service:
       main:
         ports:
@@ -106,6 +97,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /usr/src/app/store
       usb:
         type: hostPath
         hostPath: /dev/serial/by-id/usb-0658_0200-if00

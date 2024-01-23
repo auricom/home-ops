@@ -31,22 +31,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: immich-config
-  namespace: default
-  labels:
-    app.kubernetes.io/name: &name immich
-    app.kubernetes.io/instance: *name
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: rook-ceph-block
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: immich-machine-learning-cache
   namespace: default
   labels:

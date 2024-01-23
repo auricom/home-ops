@@ -32,7 +32,6 @@ spec:
       enableServiceLinks: false
     controllers:
       main:
-        type: statefulset
         strategy: RollingUpdate
         annotations:
           configmap.reloader.stakater.com/reload: &configMap immich-configmap
@@ -84,6 +83,6 @@ spec:
       config:
         enabled: true
         type: persistentVolumeClaim
-        existingClaim: immich-config
+        existingClaim: immich
         globalMounts:
           - path: /config

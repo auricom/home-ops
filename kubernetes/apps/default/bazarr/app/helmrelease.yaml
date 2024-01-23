@@ -40,7 +40,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
@@ -51,7 +50,7 @@ spec:
               tag: 16
             envFrom: &envFrom
               - secretRef:
-                  name: atuin-secret
+                  name: bazarr-secret
         containers:
           main:
             image:
@@ -76,14 +75,6 @@ spec:
               - --branch=master
               - --wait=86400 # 1 day
               - --root=/add-ons
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -111,6 +102,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       add-ons:
         enabled: true
         type: emptyDir

@@ -32,7 +32,6 @@ spec:
         runAsUser: 0
     controllers:
       main:
-        type:  statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -49,14 +48,6 @@ spec:
                 memory: 512Mi
               limits:
                 memory: 2Gi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -81,6 +72,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       sync-conf:
         type: configMap
         name: resilio-claude-configmap

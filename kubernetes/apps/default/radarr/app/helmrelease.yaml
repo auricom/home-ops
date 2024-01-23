@@ -35,7 +35,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       main:
-        type: statefulset
         annotations:
           configmap.reloader.stakater.com/reload: radarr-pushover
           reloader.stakater.com/auto: "true"
@@ -96,6 +95,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       downloads:
         enabled: true
         type: nfs

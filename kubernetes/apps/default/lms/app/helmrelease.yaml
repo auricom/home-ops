@@ -29,7 +29,6 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -46,14 +45,6 @@ spec:
                 cpu: 15m
               limits:
                 memory: 4096Mi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 10Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /srv/squeezebox
     service:
       main:
         type: LoadBalancer
@@ -91,6 +82,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /srv/squeezebox
       music:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"

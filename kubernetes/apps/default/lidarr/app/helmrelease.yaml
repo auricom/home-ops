@@ -97,7 +97,9 @@ spec:
     persistence:
       config:
         enabled: true
-        type: emptyDir
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       music:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"

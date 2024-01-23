@@ -33,7 +33,6 @@ spec:
       main:
         annotations:
           reloader.stakater.com/auto: "true"
-        type: statefulset
         initContainers:
           init-db:
             image:
@@ -61,14 +60,6 @@ spec:
               requests:
                 cpu: 100m
                 memory: 256Mi
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 50Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /uploads
     service:
       main:
         ports:
@@ -92,6 +83,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /uploads
       photo:
         enabled: true
         type: nfs

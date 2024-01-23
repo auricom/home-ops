@@ -3,33 +3,49 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-cert-manager
+  name: &app cert-manager
   namespace: flux-system
 spec:
+  targetNamespace: cert-manager
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/cert-manager/cert-manager/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+  wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 3m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-cert-manager-webhook-ovh
+  name: cert-manager-webhook-ovh
   namespace: flux-system
 spec:
+  targetNamespace: cert-manager
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app cert-manager
   dependsOn:
-    - name: cluster-apps-cert-manager
-    - name: cluster-apps-external-secrets-stores
+    - name: cert-manager
+    - name: external-secrets-stores
   path: ./kubernetes/apps/cert-manager/cert-manager/webhook-ovh
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+  wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 3m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app

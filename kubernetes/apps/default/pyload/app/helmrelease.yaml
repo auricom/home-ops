@@ -35,7 +35,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       main:
-        type:  statefulset
         containers:
           main:
             image:
@@ -63,14 +62,6 @@ spec:
                   timeoutSeconds: 10
               readiness: *probe
               startup: *probe
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -98,6 +89,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       downloads:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"

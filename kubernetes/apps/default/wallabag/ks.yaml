@@ -3,34 +3,51 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-wallabag
+  name: &app wallabag
   namespace: flux-system
 spec:
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/wallabag/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
   dependsOn:
-    - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-rook-ceph-cluster
-    - name: cluster-apps-volsync-app
-    - name: cluster-apps-wallabag-redis
+    - name: external-secrets-stores
+    - name: rook-ceph-cluster
+    - name: volsync
+  wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 3m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 2Gi
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-wallabag-redis
+  name: wallabag-redis
   namespace: flux-system
 spec:
-  interval: 10m
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app wallabag
   path: ./kubernetes/apps/default/wallabag/redis
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  wait: false # no flux ks dependents
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app

@@ -34,7 +34,6 @@ spec:
         runAsUser: 0
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
@@ -69,14 +68,6 @@ spec:
               - doctrine:migrations:migrate
               - --env=prod
               - --no-interaction
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 2Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /images
         containers:
           main:
             image:
@@ -113,3 +104,9 @@ spec:
         tls:
           - hosts:
               - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /images

@@ -29,7 +29,6 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         containers:
           main:
             image:
@@ -46,14 +45,6 @@ spec:
                 memory: 52M
               limits:
                 memory: 256M
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /config
     service:
       main:
         ports:
@@ -79,3 +70,9 @@ spec:
         tls:
           - hosts:
               - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config

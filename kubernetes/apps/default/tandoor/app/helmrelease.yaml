@@ -34,7 +34,6 @@ spec:
         runAsGroup: 568
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
@@ -132,8 +131,7 @@ spec:
     persistence:
       config:
         type: persistentvolumeclaim
-        name: tandoor-configmap
-        existingClaim: tandoor-files
+        existingClaim: *app
         advancedMounts:
           main:
             main:

@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: frigate
+  name: &app frigate
   namespace: default
 spec:
   interval: 30m
@@ -41,7 +41,6 @@ spec:
         intel.feature.node.kubernetes.io/gpu: "true"
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -80,14 +79,6 @@ spec:
                 gpu.intel.com/i915: 1
             securityContext:
               privileged: true
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 5Gi
-              storageClass: rook-ceph-block
-              globalMounts:
-                - path: /data
     service:
       main:
         type: LoadBalancer
@@ -121,12 +112,19 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /data
       config-file:
         type: configMap
         name: frigate-configmap
         readOnly: true
         globalMounts:
-          - path: /config
+          - path: /config/config.yml
+            subPath: config.yml
+            readOnly: true
       media:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
