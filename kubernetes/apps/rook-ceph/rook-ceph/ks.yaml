@@ -37,12 +37,12 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-rook-ceph-toolbox
+  name: cluster-apps-rook-ceph-tools
   namespace: flux-system
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
-  path: ./kubernetes/apps/rook-ceph/rook-ceph/toolbox
+  path: ./kubernetes/apps/rook-ceph/rook-ceph/tools
   prune: true
   sourceRef:
     kind: GitRepository

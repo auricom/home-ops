@@ -8,7 +8,6 @@ resources:
   - ./gatus.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-  - ./volume.yaml
 configMapGenerator:
   - name: vikunja-configmap
     files:

@@ -61,7 +61,7 @@ spec:
         nodes:
           - name: "talos-node-2"
             devices:
-              - name: "nvme0n1"
+              - name: "sda"
           - name: "talos-node-3"
             devices:
               - name: "sda"

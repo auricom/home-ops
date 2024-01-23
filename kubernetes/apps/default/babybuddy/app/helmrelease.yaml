@@ -75,14 +75,14 @@ spec:
               requests:
                 cpu: 100m
                 memory: 256Mi
-        # statefulset:
-        #   volumeClaimTemplates:
-        #     - name: config
-        #       accessMode: ReadWriteOnce
-        #       size: 1Gi
-        #       storageClass: rook-ceph-block
-        #       globalMounts:
-        #         - path: /config
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              storageClass: rook-ceph-block
+              globalMounts:
+                - path: /config
     service:
       main:
         ports:
