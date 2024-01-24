@@ -68,7 +68,7 @@
   - name: restart postgresql
     ansible.builtin.service:
       name: postgresql
-      state: restart
+      state: restarted
     when: certificates.changed or pg_hba.changed or pg_conf.changed
     tags:
       - certificates
