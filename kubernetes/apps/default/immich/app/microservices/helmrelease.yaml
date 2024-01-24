@@ -79,7 +79,9 @@ spec:
         enabled: false
     persistence:
       library:
-        existingClaim: immich-nfs
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/apps/immich
         globalMounts:
           - path: /usr/src/app/upload
       geocoding-dump:

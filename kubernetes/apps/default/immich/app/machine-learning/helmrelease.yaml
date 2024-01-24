@@ -63,8 +63,9 @@ spec:
             port: 3003
     persistence:
       library:
-        type: persistentVolumeClaim
-        existingClaim: immich-nfs
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/apps/immich
         globalMounts:
           - path: /usr/src/app/upload
       cache:

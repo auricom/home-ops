@@ -71,7 +71,7 @@ spec:
               DEBUG: "0"
               ALLOWED_HOSTS: "*"
               GUNICORN_MEDIA: "0"
-              TIMEZONE: ${TIMEZONE}
+              TZ: ${TIMEZONE}
               TANDOOR_PORT: &port 8888
               FRACTION_PREF_DEFAULT: "0"
               COMMENT_PREF_DEFAULT: "1"
@@ -169,7 +169,7 @@ spec:
   postRenderers:
     - kustomize:
         patchesStrategicMerge:
-          - kind: StatefulSet
+          - kind: Deployment
             apiVersion: apps/v1
             metadata:
               name: tandoor
@@ -178,7 +178,7 @@ spec:
               template:
                 spec:
                   initContainers:
-                    - name: 02-init-migrate
+                    - name: migrations
                       volumeMounts:
                         - name: django-js-reverse
                           mountPath: /opt/recipes/cookbook/static/django_js_reverse

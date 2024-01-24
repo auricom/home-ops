@@ -112,7 +112,9 @@ spec:
         globalMounts:
           - path: /config
       library:
-        existingClaim: immich-nfs
+        type: nfs
+        server: "${LOCAL_LAN_TRUENAS}"
+        path: /mnt/storage/apps/immich
         globalMounts:
           - path: *mediaLocation
       geocoding-dump:
