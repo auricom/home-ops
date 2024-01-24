@@ -12,7 +12,6 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-stores
-    - name: rook-ceph-cluster
   path: ./kubernetes/apps/default/prowlarr/app
   prune: true
   sourceRef:
@@ -25,4 +24,3 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 2Gi
