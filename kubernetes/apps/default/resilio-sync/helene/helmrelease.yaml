@@ -95,3 +95,9 @@ spec:
         path: /mnt/storage/home/helene
         globalMounts:
           - path: /sync/home
+      photo:
+        type: nfs
+        server: "192.168.9.10"
+        path: /mnt/storage/photo
+        globalMounts:
+          - path: /sync/photo
