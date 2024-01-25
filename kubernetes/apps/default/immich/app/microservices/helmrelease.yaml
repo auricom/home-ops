@@ -30,6 +30,7 @@ spec:
   dependsOn:
     - name: immich-server
     - name: redis
+      namespace: database
   values:
     defaultPodOptions:
       enableServiceLinks: false

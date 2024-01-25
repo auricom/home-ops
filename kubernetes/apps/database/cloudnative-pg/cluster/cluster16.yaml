@@ -5,7 +5,7 @@ metadata:
   name: postgres16
 spec:
   instances: 3
-  imageName: ghcr.io/bo0tzz/cnpgvecto.rs:16.1
+  imageName: ghcr.io/bo0tzz/cnpgvecto.rs:16.1-v0.1.11
   primaryUpdateStrategy: unsupervised
   storage:
     size: 50Gi
@@ -19,6 +19,7 @@ spec:
     limits:
       memory: 4Gi
   postgresql:
+    shared_preload_libraries: ["vectors.so"]
     parameters:
       max_connections: "600"
       max_slot_wal_keep_size: 10GB

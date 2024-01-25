@@ -29,6 +29,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: redis
+      namespace: database
   values:
     defaultPodOptions:
       enableServiceLinks: false
