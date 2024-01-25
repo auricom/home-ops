@@ -8,3 +8,4 @@ resources:
   - ./certs-deploy
   - ./externalsecret.yaml
   - ./pgdump
+  - ./photo-sort

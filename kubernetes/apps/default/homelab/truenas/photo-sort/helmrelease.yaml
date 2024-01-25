@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: homelab-truenas-photo-sort
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "23 */3 * * *"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/auricom/kubectl
+              tag: 1.29.1@sha256:f0b75eedfe63bcbe232b632238b69fed63ef7f886f229027ace69c19c4f77f5f
+            command:
+              - "/bin/bash"
+              - "-c"
+              - |
+                #!/bin/bash
+
+                set -o errexit
+                set -o nounset
+
+                /app/sort.sh
+            env:
+              SORT_SOURCE_DIR: /mnt/storage/photo/mobile
+              SORT_DEST_DIR: /mnt/storage/photo
+    service:
+      main:
+        enabled: false
+    persistence:
+      scripts:
+        type: configMap
+        name: homelab-truenas-photo-sort-configmap
+        defaultMode: 0775
+        globalMounts:
+          - path: /app/sort.sh
+            subPath: sort.sh
+            readOnly: true
+      photo:
+        type: nfs
+        path: /mnt/storage/photo
+        server: 192.168.9.10
+        globalMounts:
+          - path: /mnt/storage/photo
