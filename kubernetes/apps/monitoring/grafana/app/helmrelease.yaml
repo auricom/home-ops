@@ -30,6 +30,10 @@ spec:
     rbac:
       pspEnabled: false
     env:
+      GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/token
       GF_EXPLORE_ENABLED: true
       GF_PANELS_DISABLE_SANITIZE_HTML: true
       GF_LOG_FILTERS: rendering:debug
@@ -48,14 +52,9 @@ spec:
       auth.generic_oauth:
         enabled: true
         name: Authelia
-        client_id: grafana
         icon: signin
-        client_secret: "${SECRET_GRAFANA_OAUTH_CLIENT_SECRET}"
         scopes: "openid profile email groups"
         empty_scopes: false
-        auth_url: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization"
-        token_url: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/token"
-        api_url: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo"
         login_attribute_path: preferred_username
         groups_attribute_path: groups
         name_attribute_path: name

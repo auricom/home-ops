@@ -23,17 +23,17 @@ access_control:
   rules:
     # bypass Authelia WAN + LAN
     - domain:
-        - auth.${SECRET_CLUSTER_DOMAIN}
+        - auth.${SECRET_PUBLIC_DOMAIN}
       policy: bypass
     # One factor auth for LAN
     - domain:
-        - "*.${SECRET_CLUSTER_DOMAIN}"
+        - "*.${SECRET_PUBLIC_DOMAIN}"
       policy: one_factor
       subject: ["group:admins", "group:users"]
       networks:
         - private
     # Deny public resources
-    - domain: ["navidrome.${SECRET_CLUSTER_DOMAIN}"]
+    - domain: ["navidrome.${SECRET_PUBLIC_DOMAIN}"]
       resources: ["^/metrics.*$"]
       policy: deny
 identity_providers:
@@ -43,41 +43,49 @@ identity_providers:
       allowed_origins_from_client_redirect_uris: true
     clients:
       - id: gitea
-        secret: "${SECRET_GITEA_OAUTH_CLIENT_SECRET}"
+        secret: "${GITEA_OAUTH_CLIENT_SECRET}"
         public: false
         authorization_policy: two_factor
         scopes: ["openid", "profile", "groups", "email"]
         redirect_uris:
           [
-            "https://gitea.${SECRET_CLUSTER_DOMAIN}/user/oauth2/authelia/callback",
+            "https://gitea.${SECRET_PUBLIC_DOMAIN}/user/oauth2/authelia/callback",
           ]
         userinfo_signing_algorithm: none
       - id: grafana
         description: Grafana
-        secret: "${SECRET_GRAFANA_OAUTH_CLIENT_SECRET}"
+        secret: "${GRAFANA_OAUTH_CLIENT_SECRET}"
         public: false
         authorization_policy: two_factor
         pre_configured_consent_duration: 1y
         scopes: ["openid", "profile", "groups", "email"]
         redirect_uris:
-          ["https://grafana.${SECRET_CLUSTER_DOMAIN}/login/generic_oauth"]
+          ["https://grafana.${SECRET_PUBLIC_DOMAIN}/login/generic_oauth"]
         userinfo_signing_algorithm: none
       - id: outline
         description: Outline
-        secret: "${SECRET_OUTLINE_OAUTH_CLIENT_SECRET}"
+        secret: "${OUTLINE_OAUTH_CLIENT_SECRET}"
         public: false
         authorization_policy: two_factor
         pre_configured_consent_duration: 1y
         scopes: ["openid", "profile", "email", "offline_access"]
         redirect_uris:
-          ["https://docs.${SECRET_CLUSTER_DOMAIN}/auth/oidc.callback"]
+          ["https://docs.${SECRET_PUBLIC_DOMAIN}/auth/oidc.callback"]
         userinfo_signing_algorithm: none
       - id: immich
         description: Immich
-        secret: "${SECRET_IMMICH_OAUTH_CLIENT_SECRET}"
+        secret: "${IMMICH_OAUTH_CLIENT_SECRET}"
         public: false
         authorization_policy: one_factor
         pre_configured_consent_duration: 1y
         scopes: ["openid", "profile", "email"]
-        redirect_uris: ["https://photos.${SECRET_CLUSTER_DOMAIN}/auth/login", "app.immich:/"]
+        redirect_uris: ["https://photos.${SECRET_PUBLIC_DOMAIN}/auth/login", "app.immich:/"]
         userinfo_signing_algorithm: none
+      - id: jellyfin
+        description: jellyfin
+        public: false
+        secret: "${JELLYFIN_OAUTH_CLIENT_SECRET}"
+        authorization_policy: two_factor
+        pre_configured_consent_duration: 1y
+        scopes: ["openid", "profile", "groups", "email"]
+        redirect_uris: [ "https://jellyfin.${SECRET_PUBLIC_DOMAIN}/sso/OID/redirect/authelia" ]
