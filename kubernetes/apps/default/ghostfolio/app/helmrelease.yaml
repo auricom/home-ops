@@ -46,7 +46,7 @@ spec:
           main:
             image:
               repository: docker.io/ghostfolio/ghostfolio
-              tag: 2.42.0@sha256:5d44412fedf140bf63912d6388a236be9d8b1459036e37d632d82831731c1a31
+              tag: 2.44.0@sha256:a5f541aa56ceeba8c2755b2b794c5b3a1bf8bae9bf7694576a32f80e05cc8565
             env:
               NODE_ENV: production
               REDIS_HOST: ghostfolio-redis.default.svc.cluster.local
