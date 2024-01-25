@@ -12,6 +12,7 @@ resources:
   - ./cilium.yaml
   - ./cloudnative-pg.yaml
   - ./crowdsec.yaml
+  - ./democratic-csi.yaml
   - ./descheduler.yaml
   - ./dysnix.yaml
   - ./emxq.yaml
