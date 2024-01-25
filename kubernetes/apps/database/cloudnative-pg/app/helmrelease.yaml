@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: cloudnative-pg
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -15,19 +14,21 @@ spec:
         kind: HelmRepository
         name: cloudnative-pg
         namespace: flux-system
-  maxHistory: 2
   install:
-    createNamespace: true
-    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: CreateReplace
     remediation:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: local-path-provisioner
+      namespace: kube-system
   values:
     crds:
       create: true
+    config:
+      data:
+        INHERITED_ANNOTATIONS: kyverno.io/ignore

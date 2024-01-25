@@ -2,29 +2,46 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: postgres
-  namespace: default
+  name: postgres16
 spec:
   instances: 3
-  imageName: ghcr.io/bo0tzz/cnpgvecto.rs:15.5@sha256:a02838b9531af52dea5f8978bc0961640eea7ff2ad1b090978c561e6c52f1394
+  imageName: ghcr.io/bo0tzz/cnpgvecto.rs:16.1
   primaryUpdateStrategy: unsupervised
-  enableSuperuserAccess: true
   storage:
     size: 50Gi
-    storageClass: rook-ceph-block
+    storageClass: local-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
+  enableSuperuserAccess: true
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      memory: 4Gi
+  postgresql:
+    parameters:
+      max_connections: "600"
+      max_slot_wal_keep_size: 10GB
+      shared_buffers: 512MB
   monitoring:
     enablePodMonitor: true
+    # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
+    podMonitorMetricRelabelings:
+      - { sourceLabels: ["cluster"], targetLabel: cnpg_cluster, action: replace }
+      - { regex: cluster, action: labeldrop }
   backup:
-    retentionPolicy: 7d
+    retentionPolicy: 30d
     barmanObjectStore:
+      data:
+        compression: bzip2
       wal:
         compression: bzip2
         maxParallel: 8
       destinationPath: s3://postgresql/
-      endpointURL: https://.${SECRET_DOMAIN}:9000
-      serverName: postgres-v8
+      endpointURL: https://minio.${SECRET_DOMAIN}:9000
+      # Note: serverName version needs to be inclemented
+      # when recovering from an existing cnpg cluster
+      serverName: postgres16-v1
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -32,6 +49,8 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: aws-secret-access-key
+  # # Note: previousCluster needs to be set to the name of the previous
+  # # cluster when recovering from an existing cnpg cluster
   # bootstrap:
   #   recovery:
   #     source: postgres-v6

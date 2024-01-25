@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./actions-runner-system
   - ./cert-manager
+  - ./database
   - ./default
   - ./flux-system
   - ./kube-system
