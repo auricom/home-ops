@@ -5,8 +5,8 @@ metadata:
   name: immich-configmap
   namespace: default
 data:
-  IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local.:3003
-  IMMICH_SERVER_URL: http://immich-server.default.svc.cluster.local.:3001
+  IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local:3003
+  IMMICH_SERVER_URL: http://immich-server.default.svc.cluster.local:3001
   LOG_LEVEL: verbose
   REDIS_DBINDEX: "15"
   REDIS_HOSTNAME: redis.database.svc.cluster.local.

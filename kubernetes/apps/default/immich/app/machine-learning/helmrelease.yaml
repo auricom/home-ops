@@ -18,8 +18,6 @@ spec:
         namespace: flux-system
   dependsOn:
     - name: immich-server
-    - name: redis
-      namespace: database
   values:
     controllers:
       main:
@@ -32,17 +30,33 @@ spec:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
               tag: v1.93.3
-            envFrom:
-              - configMapRef:
-                  name: *configMap
-              - secretRef:
-                  name: *secret
+            env:
+              IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
+              MACHINE_LEARNING_HOST: 0.0.0.0
+              MACHINE_LEARNING_PORT: &port 3003
+              MACHINE_LEARNING_CACHE_FOLDER: /cache
+              TRANSFORMERS_CACHE: /cache
             resources:
               requests:
                 cpu: 100m
                 memory: 274M
               limits:
                 memory: 3949M
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 5
+              readiness: *probes
+              startup:
+                enabled: false
         pod:
           enableServiceLinks: false
           securityContext:
@@ -61,14 +75,14 @@ spec:
       main:
         ports:
           http:
-            port: 3003
+            port: *port
     persistence:
       library:
         type: nfs
         server: "${LOCAL_LAN_TRUENAS}"
         path: /mnt/storage/apps/immich
         globalMounts:
-          - path: /usr/src/app/upload
+          - path: *mediaLocation
       cache:
         type: persistentVolumeClaim
         existingClaim: immich-machine-learning-cache

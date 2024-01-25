@@ -29,8 +29,6 @@ spec:
     keepHistory: false
   dependsOn:
     - name: immich-server
-    - name: redis
-      namespace: database
   values:
     defaultPodOptions:
       enableServiceLinks: false
@@ -74,6 +72,22 @@ spec:
               limits:
                 gpu.intel.com/i915: 1
                 memory: 6000Mi
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: *app
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
     service:
       main:
         enabled: false
