@@ -9,7 +9,6 @@ resources:
   - ./microservices
   - ./machine-learning
   - ./server
-  - ./typesense
   - ./volumes.yaml
   - ../../../../templates/gatus/external
   - ../../../../templates/volsync
