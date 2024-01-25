@@ -85,13 +85,13 @@ spec:
             subPath: sync.conf
       backups:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/backups
         globalMounts:
           - path: /sync/backup
       home-helene:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/home/helene
         globalMounts:
           - path: /sync/home

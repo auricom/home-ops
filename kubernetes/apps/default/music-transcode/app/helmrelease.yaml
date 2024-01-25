@@ -78,12 +78,12 @@ spec:
       music:
         type: nfs
         path: /mnt/storage/music
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         globalMounts:
           - path: /mnt/music
       music-transcoded:
         type: nfs
         path: /mnt/storage/music_transcoded
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         globalMounts:
           - path: /mnt/music_transcoded

@@ -85,37 +85,37 @@ spec:
             subPath: sync.conf
       backups:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/backups
         globalMounts:
           - path: /sync/backup
       home-claude:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/home/claude
         globalMounts:
           - path: /sync/home/claude
       music-transcoded:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/music_transcoded
         globalMounts:
           - path: /sync/music_transcoded
       photo:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/photo
         globalMounts:
           - path: /sync/photo
       shared-documents:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/shared-documents
         globalMounts:
           - path: /sync/shared-documents
       video:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/video
         globalMounts:
           - path: /sync/video

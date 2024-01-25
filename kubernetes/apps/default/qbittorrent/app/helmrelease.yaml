@@ -91,19 +91,19 @@ spec:
           - path: /config
       downloads:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       music-qbittorrent:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/music/.qbittorrent
         globalMounts:
           - path: /mnt/storage/music/.qbittorrent
       video-qbittorrent:
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/video/.qbittorrent
         globalMounts:
           - path: /mnt/storage/video/.qbittorrent

@@ -91,7 +91,7 @@ spec:
       photo:
         enabled: true
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/photo
         readOnly: true
         globalMounts:

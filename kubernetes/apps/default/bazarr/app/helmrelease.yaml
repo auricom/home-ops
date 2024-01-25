@@ -115,7 +115,7 @@ spec:
       video:
         enabled: true
         type: nfs
-        server: "${LOCAL_LAN_TRUENAS}"
+        server: "192.168.9.10"
         path: /mnt/storage/video
         globalMounts:
           - path: /mnt/storage/video

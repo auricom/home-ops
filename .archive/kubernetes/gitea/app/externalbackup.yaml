@@ -29,7 +29,7 @@ spec:
                   cp /opt/id_rsa ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
 
-                  ssh -o StrictHostKeyChecking=no homelab@${LOCAL_LAN_TRUENAS} << 'EOF'
+                  ssh -o StrictHostKeyChecking=no homelab@192.168.9.10 << 'EOF'
 
                     set -o nounset
                     set -o errexit
