@@ -4,7 +4,7 @@
     {
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(container)!: ",
+      // "commitMessagePrefix": "feat(container)!: ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )"
     },
@@ -35,7 +35,7 @@
     {
       "matchDatasources": ["helm"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(helm)!: ",
+      // "commitMessagePrefix": "feat(helm)!: ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
     },
@@ -59,7 +59,7 @@
     {
       "matchDatasources": ["galaxy", "galaxy-collection"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(ansible)!: ",
+      // "commitMessagePrefix": "feat(ansible)!: ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
     },
@@ -83,7 +83,7 @@
     {
       "matchDatasources": ["terraform-provider"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(terraform)!: ",
+      // "commitMessagePrefix": "feat(terraform)!: ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
     },
@@ -106,7 +106,7 @@
     {
       "matchDatasources": ["github-releases", "github-tags"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(github-release)!: ",
+      // "commitMessagePrefix": "feat(github-release)!: ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
     },
@@ -129,7 +129,7 @@
     {
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "feat(github-action)!: ",
+      // "commitMessagePrefix": "feat(github-action)!: ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
     },
