@@ -9,7 +9,7 @@ spec:
   interval: 10m
   url: oci://ghcr.io/fluxcd/flux-manifests
   ref:
-    tag: v2.2.2@sha256:3d370462597cf8d660b2b05b3ec62523d9799d0f86fbf781551d5b5ae884beb1
+    tag: v2.2.2
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
