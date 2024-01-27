@@ -2,16 +2,18 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  name: "${rsrc}-${claim}-${ts}"
-  namespace: "${namespace}"
+  name: "${app}-${ts}"
+  namespace: "${ns}"
 spec:
   trigger:
     manual: restore-once
   restic:
-    repository: "${rsrc}-restic-secret"
+    repository: "${app}-volsync-secret"
     destinationPVC: "${claim}"
     copyMethod: Direct
     storageClassName: rook-ceph-block
+    # storageClassName: ceph-filesystem
+    # accessModes: ["ReadWriteMany"]
     # IMPORTANT NOTE:
     #   Set to the last X number of snapshots to restore from
     previous: ${previous}
@@ -23,9 +25,7 @@ spec:
     #   Do not restore snapshots made after the following RFC3339 Timestamp.
     #   date --rfc-3339=seconds (--utc)
     # restoreAsOf: "2022-12-10T16:00:00-05:00"
-    #
-    # MIGHT BE NEEDED
-    # moverSecurityContext:
-    #   runAsUser: 568
-    #   runAsGroup: 568
-    #   fsGroup: 568
+    moverSecurityContext:
+      runAsUser: ${puid}
+      runAsGroup: ${pgid}
+      fsGroup: ${pgid}
