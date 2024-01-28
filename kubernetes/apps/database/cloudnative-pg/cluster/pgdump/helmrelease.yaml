@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: homelab-truenas-pgdump
+  name: cloudnative-pg-postgres16-pgdump
   namespace: default
 spec:
   interval: 30m
@@ -39,10 +39,10 @@ spec:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16
             env:
-              EXCLUDE_DBS: "home_assistant radarr_log sonarr_log prowlarr_log postgres template0 template1"
+              EXCLUDE_DBS: "home_assistant lidarr_log radarr_log sonarr_log prowlarr_log postgres template0 template1"
             envFrom: &envFrom
               - secretRef:
-                  name: homelab-truenas-pgdump-secret
+                  name: cloudnative-pg-postgres16-pgdump-secret
             command:
               - "/bin/bash"
               - "-c"

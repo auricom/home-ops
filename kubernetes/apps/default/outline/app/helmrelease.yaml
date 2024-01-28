@@ -34,13 +34,13 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          # init-db:
-          #   image:
-          #     repository: ghcr.io/onedr0p/postgres-init
-          #     tag: 16
-          #   envFrom: &envFrom
-          #     - secretRef:
-          #         name: outline-secret
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: outline-secret
         containers:
           main:
             image:
