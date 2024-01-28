@@ -36,7 +36,7 @@ spec:
             args:
               - -c
               - >-
-                redis-server --requirepass $REDIS_PASSWORD
+                redis-server
             probes:
               liveness:
                 enabled: true
@@ -74,11 +74,6 @@ spec:
                 memory: 241Mi
             env:
               REDIS_PORT: "6379"
-              REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: redis-secret
-                    key: REDIS_PASSWORD
     service:
       main:
         ports:

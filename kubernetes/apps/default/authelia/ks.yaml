@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: authelia-redis
+    - name: redis
     - name: external-secrets-stores
   path: ./kubernetes/apps/default/authelia/app
   prune: true
@@ -26,27 +26,3 @@ spec:
     substitute:
       APP: *app
       GATUS_SUBDOMAIN: auth
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: authelia-redis
-  namespace: flux-system
-spec:
-  targetNamespace: default
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: &app authelia
-  path: ./kubernetes/apps/default/authelia/redis
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
-  postBuild:
-    substitute:
-      APP: *app

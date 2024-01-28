@@ -27,7 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: paperless-redis
+    - name: redis
+      namespace: database
   values:
     controllers:
       main:
@@ -58,7 +59,7 @@ spec:
               PAPERLESS_OCR_LANGUAGE: fra
               PAPERLESS_PORT: 8000
               PAPERLESS_DBNAME: paperless
-              PAPERLESS_REDIS: redis://paperless-redis.default.svc.cluster.local:6379
+              PAPERLESS_REDIS: redis://redis.database.svc.cluster.local.:6379
               PAPERLESS_TASK_WORKERS: 2
               PAPERLESS_TIME_ZONE: "Europe/Paris"
               PAPERLESS_URL: https://paperless.${SECRET_CLUSTER_DOMAIN}

@@ -27,7 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: lychee-redis
+    - name: redis
+      namespace: database
   values:
     controllers:
       main:
@@ -52,7 +53,7 @@ spec:
               APP_URL: https://lychee.${SECRET_CLUSTER_DOMAIN}
               DB_CONNECTION: pgsql
               PHP_TZ: ${TIMEZONE}
-              REDIS_HOST: lychee-redis.default.svc.cluster.local.
+              REDIS_HOST: redis.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
             envFrom: *envFrom

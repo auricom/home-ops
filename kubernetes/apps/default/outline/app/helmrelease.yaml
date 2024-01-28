@@ -27,7 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: outline-redis
+    - name: redis
+      namespace: database
   values:
     controllers:
       main:
@@ -65,7 +66,6 @@ spec:
               OIDC_USERINFO_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo"
               OIDC_USERNAME_CLAIM: email
               PORT: 8080
-              REDIS_URL: redis://outline-redis.default.svc.cluster.local.:6379
               SMTP_HOST: smtp-relay.default.svc.cluster.local.
               SMTP_PORT: 2525
               SMTP_FROM_EMAIL: "outline@${SECRET_DOMAIN}"

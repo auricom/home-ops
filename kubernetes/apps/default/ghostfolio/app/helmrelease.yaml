@@ -27,7 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: ghostfolio-redis
+    - name: redis
+      namespace: database
   values:
     controllers:
       main:
@@ -49,7 +50,7 @@ spec:
               tag: 2.46.0@sha256:d7f94879d1f08afa2a3ed642b83b67cedc4dd6a9f72428dd8cfa12002fbc2d36
             env:
               NODE_ENV: production
-              REDIS_HOST: ghostfolio-redis.default.svc.cluster.local
+              REDIS_HOST: redis.database.svc.cluster.local.
               REDIS_PORT: 6379
             envFrom: *envFrom
             resources:

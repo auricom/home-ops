@@ -28,7 +28,8 @@ spec:
     keepHistory: false
   dependsOn:
     - name: lldap
-    - name: authelia-redis
+    - name: redis
+      namespace: database
     - name: smtp-relay
   values:
     defaultPodOptions:
@@ -92,7 +93,7 @@ spec:
               AUTHELIA_SERVER_ADDRESS: tcp://0.0.0.0:8888
               AUTHELIA_SESSION_DOMAIN: ${SECRET_CLUSTER_DOMAIN}
               AUTHELIA_SESSION_NAME: authelia-home-ops
-              AUTHELIA_SESSION_REDIS_HOST: authelia-redis.default.svc.cluster.local.
+              AUTHELIA_SESSION_REDIS_HOST: redis.database.svc.cluster.local.
               AUTHELIA_SESSION_REDIS_PORT: 6379
               AUTHELIA_TELEMETRY_METRICS_ADDRESS: tcp://0.0.0.0:8080
               AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
