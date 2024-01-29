@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: influx
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: docker.io/library/influxdb
+              tag: 2.7-alpine
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128M
+              limits:
+                memory: 384M
+        probes:
+          liveness: &health
+            enabled: true
+            custom: true
+            spec:
+              initialDelaySeconds: 30
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+              httpGet:
+                path: /health
+                port: 8086
+          readiness: *health
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              initialDelaySeconds: 0
+              timeoutSeconds: 1
+              periodSeconds: 5
+              failureThreshold: 30
+              httpGet:
+                path: /health
+                port: 8086
+    service:
+      main:
+        ports:
+          http:
+            enabled: false
+          influx:
+            enabled: true
+            port: 8086
+    ingress:
+      main:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        existingClaim: influx
+        globalMounts:
+          - path: /var/lib/influxdb2

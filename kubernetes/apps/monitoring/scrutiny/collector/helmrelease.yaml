@@ -1,0 +1,73 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app scrutiny-collector
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: scrutiny
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        privileged: true
+        # capabilities:
+        #   add: ["SYS_RAWIO"] # allow access to smartctl
+    controllers:
+      main:
+        type: daemonset
+        containers:
+          main:
+            image:
+              repository: ghcr.io/analogj/scrutiny
+              tag: master-collector
+            env:
+              COLLECTOR_API_ENDPOINT: http://scrutiny.monitoring.svc.cluster.local:8080
+              COLLECTOR_HOST_ID:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: spec.nodeName
+              TZ: ${TIMEZONE}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+    service:
+      main:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /opt/scrutiny/config
+      udev:
+        enabled: true
+        type: hostPath
+        hostPath: /run/udev
+        readOnly: true
+        globalMounts:
+          - path: /run/udev
