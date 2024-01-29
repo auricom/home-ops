@@ -6,7 +6,7 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../templates/gatus/guarded
+  - ../../../../templates/gatus/external
 configMapGenerator:
   - name: sharry-configmap
     files:

@@ -6,5 +6,5 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../templates/gatus/external
+  - ../../../../templates/gatus/guarded
   - ../../../../templates/volsync

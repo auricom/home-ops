@@ -25,4 +25,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_PATH: /i/
       VOLSYNC_CAPACITY: 2Gi

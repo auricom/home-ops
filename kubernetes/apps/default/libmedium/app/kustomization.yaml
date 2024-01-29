@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: default
 resources:
   - ./helmrelease.yaml
-  - ../../../../templates/gatus/guarded
+  - ../../../../templates/gatus/external
 configMapGenerator:
   - name: libmedium-configmap
     files:

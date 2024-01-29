@@ -6,7 +6,6 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../templates/gatus/guarded
 configMapGenerator:
   - name: mailrise-configmap
     files:
