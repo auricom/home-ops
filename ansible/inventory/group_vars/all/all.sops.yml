@@ -1,4 +1,5 @@
 kind: Secret
+secret_cluster_domain: ENC[AES256_GCM,data:V+KhvpQZ0bxjMDNZq4vYXg==,iv:WP0hlWvDEL0fu1aFR0UQW31nQKWxkkfgoXbfdV4WZ9w=,tag:e3Ky3kenlL71zyQBOXclsQ==,type:str]
 secret_domain: ENC[AES256_GCM,data:SjdnR9pDjveodvo=,iv:GKvdD7c3bmaQN+CAYoKwAy78em9vYljGyl6VfGmJk9E=,tag:hz92J7d1NokEeyB6vxr3Uw==,type:str]
 public_ssh_keys:
     - ENC[AES256_GCM,data:/J9ejzvJHV5wdz9Dj0jUmAaVtIkgVpEoIRJocNGhszY2bmu5mruwWSz6E+XkcAGE0zQMo/9N8imIZoXfq0UQSyfCCitrA09x1z0Hf0s3iSA=,iv:jzA3bIQw+pL4tjNASNMwMcdHW+vSxgVo4Czo/ja0AO8=,tag:iTEDjARfH96oXATQu8VR8Q==,type:str]
@@ -19,8 +20,8 @@ sops:
             c3JkOFZzYnpINjQ5QnNkaE9IYUdXL3MKsBelDv/z5nTYC6/1Zm8kmzqEoLBVPnhy
             v0v/6n1GksmzslbNdKhy+xtxHYrqouhc2P4hNi0R8p8u76RXERN5fg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-01-13T09:43:41Z"
-    mac: ENC[AES256_GCM,data:R7gzINLxiaqSh4JgP9jhMTG1GaM5WnUA24Uv5OMVB3cHIjgE65o3ybjbmPGpAejpfQ+lKSKKXxeWRpissn9h6DVr1RLi5jnXlngMt5REDiNSsxRI7j3aktTvd2wJQUcGObrhngp+lhFPsufZuOg7hFdvcgCP3SM7sDwrxBaOjgk=,iv:XqaEQtFhBkm1qV7khzhftE2Sxy5xUH/I4/CBqKW9R+w=,tag:FRbncSBOFqVrFTEXmZf+uw==,type:str]
+    lastmodified: "2024-01-30T13:11:23Z"
+    mac: ENC[AES256_GCM,data:vbkpM6DptiFun826iT8NBTJs0bD4WhGEjfCOsdnOODvWR4dKwmV3lmmYHHMKhSpQLcfg6PASqh6Co8QyKIkiV9Z5ryQG/YIP1Mgj9deJ4aVB42DsJc3qlnhaNbfDZLRC+skH8tEwoJRC/pOW2h/5tIVMSAvcLFDOBnCjhQSmwnA=,iv:LoR/QruGdzbpOjhvyYgNiBZHZHq2KPIIZqVFMsyNenQ=,tag:gtv4NGP6+kbw7Yd5dPy1og==,type:str]
     pgp: []
     unencrypted_regex: ^(kind)$
     version: 3.8.1

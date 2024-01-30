@@ -9,6 +9,7 @@
     - "{{ telegraf_dir }}"
     - "{{ backups_dir }}servers/{{ ansible_facts['nodename'] }}"
     - "{{ scripts_dir }}"
+    - "{{ scrutiny_dir }}"
 
 - name: directories | truenas
   ansible.builtin.file:

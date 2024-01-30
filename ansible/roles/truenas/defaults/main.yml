@@ -3,6 +3,8 @@ homelab_homedir: "/mnt/{{ pool_name }}/home/homelab"
 backups_dir: "/mnt/{{ pool_name }}/backups/"
 telegraf_dir: "{{ homelab_homedir }}/telegraf"
 scripts_dir: "{{ homelab_homedir }}/scripts"
+scrutiny_bin: scrutiny-collector-metrics
+scrutiny_dir: "{{ homelab_homedir }}/scrutiny"
 certificates_dir: "{{ homelab_homedir }}/letsencrypt/{{ secret_domain }}"
 
 ping_ip: 192.168.8.1
