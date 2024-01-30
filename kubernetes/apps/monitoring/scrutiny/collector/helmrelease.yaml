@@ -30,8 +30,6 @@ spec:
   values:
     defaultPodOptions:
       automountServiceAccountToken: false
-      securityContext:
-        privileged: true
         # capabilities:
         #   add: ["SYS_RAWIO"] # allow access to smartctl
     controllers:
@@ -49,6 +47,8 @@ spec:
                   fieldRef:
                     fieldPath: spec.nodeName
               TZ: ${TIMEZONE}
+            securityContext:
+              privileged: true
             resources:
               requests:
                 cpu: 100m
@@ -71,3 +71,17 @@ spec:
         readOnly: true
         globalMounts:
           - path: /run/udev
+      nvme0n1:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/nvme0n1
+        readOnly: true
+        globalMounts:
+          - path: /dev/nvme0n1
+      sda:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/sda
+        readOnly: true
+        globalMounts:
+          - path: /dev/sda
