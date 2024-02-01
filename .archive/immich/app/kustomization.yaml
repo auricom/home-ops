@@ -11,4 +11,3 @@ resources:
   - ./server
   - ./volumes.yaml
   - ../../../../templates/gatus/external
-  - ../../../../templates/volsync
