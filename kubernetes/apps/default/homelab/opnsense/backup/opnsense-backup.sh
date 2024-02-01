@@ -19,7 +19,7 @@ echo "Download Opnsense config file ..."
 curl -fsSL \
     --user "${OPNSENSE_KEY}:${OPNSENSE_SECRET}" \
     --output "/tmp/${config_filename}" \
-    "${OPNSENSE_URL}/api/backup/backup/download"
+    "${OPNSENSE_URL}/api/core/backup/download/this"
 
 echo "Upload backup to s3 bucket ..."
 curl -fsSL \
