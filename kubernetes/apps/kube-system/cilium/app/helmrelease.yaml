@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: cilium
-      version: 1.14.6
+      version: 1.15.0
       sourceRef:
         kind: HelmRepository
         name: cilium
@@ -37,6 +37,7 @@ spec:
       name: cluster-0
     containerRuntime:
       integration: containerd
+    enableRuntimeDeviceDetection: true
     endpointRoutes:
       enabled: true
     hubble:
@@ -71,8 +72,10 @@ spec:
     ipv4NativeRoutingCIDR: ${CILIUM_POD_CIDR}
     k8sServiceHost: localhost
     k8sServicePort: 7445
-    kubeProxyReplacement: strict
+    kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
+    l2announcements:
+      enabled: true
     loadBalancer:
       algorithm: maglev
       mode: dsr
@@ -104,6 +107,7 @@ spec:
       hostRoot: /sys/fs/cgroup
     tunnel: disabled
     l7proxy: true
+    routingMode: native
     ingressController:
       enabled: true
       defaultSecretNamespace: networking
