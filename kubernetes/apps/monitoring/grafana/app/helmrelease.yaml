@@ -27,6 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    annotations:
+      reloader.stakater.com/auto: "true"
     rbac:
       pspEnabled: false
     env:
@@ -40,6 +42,8 @@ spec:
       GF_DATE_FORMATS_FULL_DATE: "DD.MM.YYYY hh:mm:ss"
       GF_SECURITY_ALLOW_EMBEDDING: true
       GF_SECURITY_COOKIE_SAMESITE: grafana
+    envFromSecrets:
+      - name: grafana-secret
     grafana.ini:
       analytics:
         check_for_updates: false
