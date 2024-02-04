@@ -39,7 +39,7 @@ spec:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16
             env:
-              EXCLUDE_DBS: "home_assistant lidarr_log radarr_log sonarr_log prowlarr_log postgres template0 template1"
+              EXCLUDE_DBS: "app home_assistant lidarr_log radarr_log sonarr_log prowlarr_log postgres template0 template1"
             envFrom: &envFrom
               - secretRef:
                   name: cloudnative-pg-postgres16-pgdump-secret
