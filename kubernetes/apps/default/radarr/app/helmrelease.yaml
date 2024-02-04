@@ -50,7 +50,7 @@ spec:
           main:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
-              tag: 5.3.2.8504@sha256:d87bccdcac992e5d43f93f355ee714e137b21b77df21e250bc9b3ac4d14708db
+              tag: 5.3.4.8567@sha256:b6b977db4a68b54ea159ab1a84faab0da856cdd1b03bb078dffc0eb35bc3c470
             env:
               TZ: "${TIMEZONE}"
               PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
