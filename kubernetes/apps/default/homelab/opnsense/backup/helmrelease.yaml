@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.29.1@sha256:fb732755039305d01cc996f539a42860924a877728ac9bfaec076538b49ee1c4
+              tag: 1.29.1@sha256:22b31ee533fc6bbc75767241a2ce80d23fc3788cd38bbd6bcf2c4d21cf1d842c
             command: ["/bin/bash", "/app/opnsense-backup.sh"]
             env:
               OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
