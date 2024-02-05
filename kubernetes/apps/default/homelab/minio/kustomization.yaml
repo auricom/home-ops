@@ -6,3 +6,4 @@ namespace: default
 resources:
   - ./backup
   - ./externalsecret.yaml
+  - ../../../../templates/gatus/guarded

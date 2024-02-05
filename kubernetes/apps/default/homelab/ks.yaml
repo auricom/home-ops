@@ -24,6 +24,9 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_SUBDOMAIN: minio
+      GATUS_DOMAIN: ${SECRET_DOMAIN}
+      GATUS_PATH: :9001
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -76,3 +79,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_SUBDOMAIN: truenas
+      GATUS_DOMAIN: ${SECRET_DOMAIN}
