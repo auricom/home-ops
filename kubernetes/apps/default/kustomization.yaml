@@ -40,6 +40,7 @@ resources:
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
   - ./pgadmin/ks.yaml
+  - ./photoprism/ks.yaml
   - ./prowlarr/ks.yaml
   - ./pushover-notifier/ks.yaml
   - ./pyload/ks.yaml
