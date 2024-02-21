@@ -28,7 +28,7 @@
     "**/*.sops.*",
     "**/.archive/**",
     "**/resources/**",
-    "**staging**"
+    "**/*staging*/**"
   ],
   "flux": {
     "fileMatch": [
