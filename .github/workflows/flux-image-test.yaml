@@ -27,18 +27,12 @@ jobs:
           app-id: "${{ secrets.BOT_APP_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
-      - name: Setup System Tools
-        shell: bash
-        run: sudo apt-get -qq update && sudo apt-get -qq install --no-install-recommends -y curl git jo
+      - name: Setup Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
 
       - name: Setup Workflow Tools
-        uses: jdx/rtx-action@v1
-        with:
-          install: true
-          rtx_toml: |
-            [tools]
-            flux2 = "latest"
-            yq = "latest"
+        shell: bash
+        run: brew install jo yq
 
       - name: Checkout Default Branch
         uses: actions/checkout@v4
@@ -54,7 +48,7 @@ jobs:
           path: pull
 
       - name: Gather Images in Default Branch
-        uses: docker://ghcr.io/allenporter/flux-local:pr-472
+        uses: docker://ghcr.io/allenporter/flux-local:main
         with:
           args: >-
             get cluster
@@ -64,7 +58,7 @@ jobs:
             --output-file default.yaml
 
       - name: Gather Images in Pull Request Branch
-        uses: docker://ghcr.io/allenporter/flux-local:pr-472
+        uses: docker://ghcr.io/allenporter/flux-local:main
         with:
           args: >-
             get cluster
