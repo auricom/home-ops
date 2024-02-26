@@ -96,7 +96,7 @@ spec:
           nginx:
             image:
               repository: nginxinc/nginx-unprivileged
-              tag: 1.25.4-alpine@sha256:87a01a6177ccfe0b883c67809ae0857b1f5589070bd4d07beade3562ad8e14ce
+              tag: 1.25.4-alpine@sha256:c50bd1116f195ac5c10a84c008ced70afec201508433701967e35e565cfb0a6b
     service:
       main:
         ports:
