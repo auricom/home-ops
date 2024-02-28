@@ -42,7 +42,7 @@ spec:
       endpointURL: https://minio.${SECRET_DOMAIN}:9000
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: postgres16-v2
+      serverName: postgres16-v3
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -54,9 +54,9 @@ spec:
   # # cluster when recovering from an existing cnpg cluster
   # bootstrap:
   #   recovery:
-  #     source: postgres16-v1
+  #     source: postgres16-v2
   # externalClusters:
-  #   - name: postgres16-v1
+  #   - name: postgres16-v2
   #     barmanObjectStore:
   #       destinationPath: s3://postgresql/
   #       endpointURL: https://minio.${SECRET_DOMAIN}:9000
