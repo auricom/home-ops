@@ -49,7 +49,7 @@ spec:
           main:
             image:
               repository: ghcr.io/auricom/kresus
-              tag: 0.20.1@sha256:e3e4cbb6e9a5f9daeff972a33535f372a7fd9a3580446c2a0e159805dee236fe
+              tag: 0.20.1@sha256:9f61307621752ed7af0de1935766b5cd3093a56a6a2589545d80c5b6e7b48472
               imagePullPolicy: IfNotPresent
             env:
               HOST: 0.0.0.0
