@@ -9,7 +9,7 @@ clusterName: cluster-0
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker extractVersion=^(?<version>.*)$
 talosVersion: v1.6.5
 # renovate: depName=kubernetes/kubernetes datasource=github-releases extractVersion=^v(?<version>.*)$
-kubernetesVersion: v1.29.1
+kubernetesVersion: v1.29.2
 endpoint: https://cluster-0.${domainName}:6443
 
 cniConfig:
@@ -23,10 +23,10 @@ additionalApiServerCertSans: &san
 additionalMachineCertSans: *san
 
 nodes:
-  # - hostname: talos-node-1
-  #   ipAddress: 192.168.9.101
-  #   controlPlane: true
-  #   installDisk: /dev/nvme0n1
+  - hostname: talos-node-1
+    ipAddress: 192.168.9.101
+    controlPlane: false
+    installDisk: /dev/nvme0n1
   - hostname: talos-node-2
     ipAddress: 192.168.9.102
     controlPlane: true
