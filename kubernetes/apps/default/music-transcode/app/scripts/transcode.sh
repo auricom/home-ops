@@ -100,7 +100,7 @@ transcode()
 
     echo "##: Processing file $1..."
     if [ $MODE_DRY_RUN == false ]; then
-        output=$($TRANSCODE_FREAC_BIN --encoder=opus --bitrate 64 "$input_file" -o "$output_file")
+        output=$($TRANSCODE_FREAC_BIN --encoder=opus --bitrate 96 "$input_file" -o "$output_file")
         result=$(echo "$output" | grep -c "Could not process")
         if [ $result -eq 1 ]; then
             echo -e "$output"
