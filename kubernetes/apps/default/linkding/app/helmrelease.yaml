@@ -44,7 +44,7 @@ spec:
           main:
             image:
               repository: sissbruecker/linkding
-              tag: 1.24.1@sha256:58ff4856384c0f79d7f09cc236e762ec6f1fb71a222a251169f51674bb8d8f66
+              tag: 1.24.2@sha256:b246499ac44b89be09075817a5eb8b78fd4358d265ad9ba4b2378acbe36ea432
             envFrom: *envFrom
             probes:
               liveness: &probes
