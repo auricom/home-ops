@@ -63,7 +63,7 @@ spec:
             mountPropagation: Bidirectional
       driverRegistrar:
         enabled: true
-        image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
+        image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1@sha256:f25af73ee708ff9c82595ae99493cdef9295bd96953366cddf36305f82555dac
       extraVolumes:
         - name: local-hostpath
           hostPath:
