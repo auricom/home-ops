@@ -1,16 +1,16 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: homelab-opnsense-backup
+  name: &app homelab-opnsense-backup
   namespace: default
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,22 +23,23 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     controllers:
-      main:
+      homelab-opnsense-backup:
         type: cronjob
         cronjob:
           concurrencyPolicy: Forbid
           schedule: "@daily"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/auricom/kubectl
               tag: 1.29.2@sha256:693ced2697bb7c7349419d4035a62bd474fc41710675b344f71773d8a687dfc3
-            command: ["/bin/bash", "/app/opnsense-backup.sh"]
+            command: [/bin/bash, /app/opnsense-backup.sh]
             env:
               OPNSENSE_URL: "https://opnsense.${SECRET_DOMAIN}"
               S3_URL: "https://minio.${SECRET_DOMAIN}:9000"
@@ -46,7 +47,8 @@ spec:
               - secretRef:
                   name: homelab-opnsense-secret
     service:
-      main:
+      app:
+        controller: *app
         enabled: false
     persistence:
       config:

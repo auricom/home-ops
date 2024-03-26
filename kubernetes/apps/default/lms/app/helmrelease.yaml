@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -28,11 +28,11 @@ spec:
     keepHistory: false
   values:
     controllers:
-      main:
+      lms:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: toertel/logitech-media-server
               tag: v8.4.0-1@sha256:07dde462237c0618034c9d2db33967f5bc0db34544558e8edaac32ef0614555a
@@ -46,7 +46,8 @@ spec:
               limits:
                 memory: 4096Mi
     service:
-      main:
+      app:
+        controller: *app
         type: LoadBalancer
         loadBalancerIP: ${CLUSTER_LB_LMS}
         externalTrafficPolicy: Local
@@ -66,9 +67,9 @@ spec:
             port: 3483
             protocol: UDP
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:file-music
         hosts:
@@ -76,7 +77,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -89,19 +90,19 @@ spec:
           - path: /srv/squeezebox
       music:
         type: nfs
-        server: "192.168.9.10"
+        server: ${LOCAL_LAN_TRUENAS}
         path: *music
         globalMounts:
           - path: *music
       music-helene:
         type: nfs
-        server: "192.168.9.10"
+        server: ${LOCAL_LAN_TRUENAS}
         path: /mnt/storage/home/helene/Musique
         globalMounts:
           - path: /mnt/storage/home/helene/Musique
       playlists:
         type: nfs
-        server: "192.168.9.10"
+        server: ${LOCAL_LAN_TRUENAS}
         path: *playlist
         globalMounts:
           - path: *playlist

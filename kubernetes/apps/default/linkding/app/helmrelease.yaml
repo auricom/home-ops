@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,12 +23,13 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     controllers:
-      main:
+      linkding:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
@@ -41,7 +42,7 @@ spec:
               - secretRef:
                   name: linkding-secret
         containers:
-          main:
+          app:
             image:
               repository: sissbruecker/linkding
               tag: 1.25.0@sha256:32ec417b6ddb92ca20ff71a07c524b68ad2853e99258acfae1d3cef2de03f3cc
@@ -66,14 +67,15 @@ spec:
                 cpu: 10m
                 memory: 256Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: link
         hosts:
@@ -81,7 +83,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:

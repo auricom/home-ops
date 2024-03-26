@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -34,7 +35,7 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
     controllers:
-      main:
+      kresus:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
@@ -46,11 +47,10 @@ spec:
               - secretRef:
                   name: kresus-secret
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/auricom/kresus
               tag: 0.20.1@sha256:85b4d8c11da8ebe95adce529d55e003ec50fba645ac7094e84468fb37ea42811
-              imagePullPolicy: IfNotPresent
             env:
               HOST: 0.0.0.0
               PORT: 9876
@@ -71,14 +71,15 @@ spec:
                 cpu: 100m
                 memory: 256Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 9876
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
@@ -91,7 +92,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
