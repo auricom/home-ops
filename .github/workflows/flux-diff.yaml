@@ -1,11 +1,11 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Flux Diff"
+name: Flux Diff
 
 on:
   pull_request:
-    branches: ["main"]
-    paths: ["kubernetes/**"]
+    branches: [main]
+    paths: [kubernetes/**]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -19,7 +19,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        resources: ["helmrelease", "kustomization"]
+        resources: [helmrelease, kustomization]
       max-parallel: 4
       fail-fast: false
     steps:
@@ -48,7 +48,7 @@ jobs:
           path: pull
 
       - name: Diff Resources
-        uses: docker://ghcr.io/allenporter/flux-local:main
+        uses: docker://ghcr.io/allenporter/flux-local:v4.3.1
         with:
           args: >-
             --log-level DEBUG
@@ -85,7 +85,7 @@ jobs:
   # Summarize matrix https://github.community/t/status-check-for-a-matrix-jobs/127354/7
   flux-diff-success:
     if: ${{ always() }}
-    needs: ["flux-diff"]
+    needs: [flux-diff]
     name: Flux Diff Successful
     runs-on: ubuntu-latest
     steps:
