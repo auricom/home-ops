@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,20 +33,20 @@ spec:
         runAsUser: 1001
         runAsGroup: 1001
         fsGroup: 1001
-        fsGroupChangePolicy: "OnRootMismatch"
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
-      main:
+      flood:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: jesec/flood
               tag: master@sha256:67203d2838eed158b469ed2a66edfe28df90eb530e2649852d575aedf00c7821
             env:
               FLOOD_OPTION_RUNDIR: /data
-              FLOOD_OPTION_AUTH: "none"
-              FLOOD_OPTION_QBURL: "http://qbittorrent.default.svc.cluster.local.:8080"
+              FLOOD_OPTION_AUTH: none
+              FLOOD_OPTION_QBURL: http://qbittorrent.default.svc.cluster.local.:8080
             envFrom:
               - secretRef:
                   name: flood-secret
@@ -56,14 +57,15 @@ spec:
               limits:
                 memory: 512Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 3000
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
@@ -76,7 +78,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:

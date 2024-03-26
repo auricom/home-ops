@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -45,14 +46,13 @@ spec:
             matchLabels:
               app.kubernetes.io/name: *app
     controllers:
-      main:
+      authelia:
         replicas: 2
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
           init-db:
-            order: 1
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16
@@ -60,7 +60,7 @@ spec:
               - secretRef:
                   name: authelia-secret
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/authelia/authelia
               tag: v4.38.0-beta3@sha256:b48ae4d0ed9d1eee76efe382df60928bae550ec19e5663858dde6dc5f41cf285
@@ -101,7 +101,7 @@ spec:
               AUTHELIA_TOTP_ISSUER: authelia.com
               AUTHELIA_WEBAUTHN_DISABLE: "true"
             envFrom: *envFrom
-            args: ["--config", "/config/configuration.yaml", "--config.experimental.filters", "expand-env"]
+            args: [--config, /config/configuration.yaml, --config.experimental.filters, expand-env]
             probes:
               liveness: &probes
                 enabled: true
@@ -124,14 +124,16 @@ spec:
               limits:
                 memory: 128Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
           metrics:
             port: 8080
     serviceMonitor:
-      main:
+      app:
+        serviceName: *app
         enabled: true
         endpoints:
           - port: metrics
@@ -157,7 +159,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:

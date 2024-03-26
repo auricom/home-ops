@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -31,7 +32,7 @@ spec:
       namespace: database
   values:
     controllers:
-      main:
+      ghostfolio:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
@@ -44,7 +45,7 @@ spec:
               - secretRef:
                   name: ghostfolio-secret
         containers:
-          main:
+          app:
             image:
               repository: docker.io/ghostfolio/ghostfolio
               tag: 2.66.3@sha256:cbd0cfaa200fc3b180b6880041268cc7c35197ff34a8ee5d9ca5448ce518a181
@@ -58,14 +59,15 @@ spec:
                 cpu: 100m
                 memory: 256Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 3333
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:cash-multiple
         hosts:
@@ -73,7 +75,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:

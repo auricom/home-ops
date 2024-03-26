@@ -1,16 +1,16 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: home-assistant-code
+  name: &app home-assistant-code
   namespace: default
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -22,6 +22,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -33,25 +34,25 @@ spec:
       nodeSelector:
         nodo.feature.node.kubernetes.io/rflink: "true"
     controllers:
-      main:
+      home-assistant-code:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/coder/code-server
               tag: 4.22.1@sha256:62e1d2596d564f2f44c0ca710c8790cf4267fdfb183c9c761d272778ad51b217
             env:
               TZ: ${TIMEZONE}
-              GIT_SSH_COMMAND: "ssh -i /config/.ssh/id_ed25519 -o IdentitiesOnly=yes"
+              GIT_SSH_COMMAND: ssh -i /config/.ssh/id_ed25519 -o IdentitiesOnly=yes
             args:
               - --auth
-              - "none"
+              - none
               - --user-data-dir
-              - "/config/.vscode"
+              - /config/.vscode
               - --extensions-dir
-              - "/config/.vscode"
-              - "--port"
+              - /config/.vscode
+              - --port
               - "8888"
               - /config
             resources:
@@ -67,7 +68,8 @@ spec:
             fsGroup: 0
             fsGroupChangePolicy: OnRootMismatch
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 8888
@@ -80,7 +82,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
