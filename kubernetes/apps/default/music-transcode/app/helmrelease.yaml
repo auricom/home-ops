@@ -1,16 +1,16 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: music-transcode
+  name: &app music-transcode
   namespace: default
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,24 +23,25 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     controllers:
-      main:
+      music-transcode:
         type: cronjob
         cronjob:
           concurrencyPolicy: Forbid
           schedule: "@daily"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/auricom/freac
               tag: 1.1.7@sha256:702e00632a740ac6c9213c6898f6f2e94be0663b2c06d10035e2f7acc95da849
             command:
-              - "/bin/bash"
-              - "-c"
+              - /bin/bash
+              - -c
               - |
                 #!/bin/bash
 
@@ -56,7 +57,8 @@ spec:
               TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded/
               TRANSCODE_FREAC_BIN: /app/freaccmd
     service:
-      main:
+      app:
+        controller: *app
         enabled: false
     persistence:
       scripts:

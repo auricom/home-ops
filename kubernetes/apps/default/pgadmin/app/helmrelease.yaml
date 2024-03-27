@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,30 +23,28 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     controllers:
-      main:
+      pgadmin:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
           volume-permissions:
             image:
               repository: dpage/pgadmin4
-              tag: "8.4@sha256:18cd5711fc9a7ed633a5c4b2b1a8f3e969d9262a94b8166c79fe0bba52697788"
-            command: ["/bin/chown", "-R", "5050:5050", "/var/lib/pgadmin"]
-            volumeMounts:
-              - name: config
-                mountPath: /var/lib/pgadmin
+              tag: 8.4@sha256:18cd5711fc9a7ed633a5c4b2b1a8f3e969d9262a94b8166c79fe0bba52697788
+            command: [/bin/chown, -R, 5050:5050, /var/lib/pgadmin]
             securityContext:
               runAsUser: 0
         containers:
-          main:
+          app:
             image:
               repository: dpage/pgadmin4
-              tag: "8.4@sha256:18cd5711fc9a7ed633a5c4b2b1a8f3e969d9262a94b8166c79fe0bba52697788"
+              tag: 8.4@sha256:18cd5711fc9a7ed633a5c4b2b1a8f3e969d9262a94b8166c79fe0bba52697788
             env:
               PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
             envFrom:
@@ -59,14 +57,15 @@ spec:
               limits:
                 memory: 500Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 80
     ingress:
-      main:
+      app:
         enabled: true
-        cClassName: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:database
         hosts:
@@ -74,7 +73,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:

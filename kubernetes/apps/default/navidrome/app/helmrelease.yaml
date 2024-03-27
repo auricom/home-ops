@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -33,9 +34,9 @@ spec:
         runAsUser: 568
         runAsGroup: 568
     controllers:
-      main:
+      navidrome:
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/navidrome/navidrome
               tag: 0.51.1@sha256:ea426987cc4a148eb6a9fcea60ab44cc0dca4d7f0f1e12a4b48f5937454da4d9
@@ -47,8 +48,8 @@ spec:
               ND_MUSICFOLDER: /mnt/storage/music/Artistes
               ND_PORT: &port 8080
               ND_PROMETHEUS_ENABLED: "true"
-              ND_REVERSEPROXYUSERHEADER: "Remote-User"
-              ND_REVERSEPROXYWHITELIST: "0.0.0.0/0"
+              ND_REVERSEPROXYUSERHEADER: Remote-User
+              ND_REVERSEPROXYWHITELIST: 0.0.0.0/0
               ND_SCANSCHEDULE: "@every 1h"
               ND_SESSIONTIMEOUT: 24h
             resources:
@@ -58,17 +59,15 @@ spec:
               limits:
                 memory: 750Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
-    serviceMonitor:
-      main:
-        enabled: true
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
@@ -83,7 +82,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -96,7 +95,7 @@ spec:
           - path: /config
       music:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/music
         globalMounts:
           - path: /mnt/storage/music

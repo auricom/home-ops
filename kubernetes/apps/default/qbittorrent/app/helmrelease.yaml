@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -34,9 +35,9 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
     controllers:
-      main:
+      qbittorrent:
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 4.6.4@sha256:85f185207a81ec03e84b8302db06f1694c533c99e0efdb2acf0316d554d332e3
@@ -51,13 +52,14 @@ spec:
               limits:
                 memory: 8Gi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
       bittorent:
         enabled: true
-        controller: main
+        controller: *app
         type: LoadBalancer
         loadBalancerIP: "${CLUSTER_LB_QBITTORRENT}"
         ports:
@@ -68,9 +70,9 @@ spec:
             targetPort: *port-bt
         externalTrafficPolicy: Local
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:download
         hosts:
@@ -78,7 +80,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -91,19 +93,19 @@ spec:
           - path: /config
       downloads:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       music-qbittorrent:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/music/.qbittorrent
         globalMounts:
           - path: /mnt/storage/music/.qbittorrent
       video-qbittorrent:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/video/.qbittorrent
         globalMounts:
           - path: /mnt/storage/video/.qbittorrent

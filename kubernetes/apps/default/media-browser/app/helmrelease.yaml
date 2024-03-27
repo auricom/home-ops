@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,24 +23,25 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     controllers:
-      main:
+      media-browser:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: docker.io/filebrowser/filebrowser
               tag: v2.27.0@sha256:00b75afd52a92e4525e3bcaf61caa2a31b8d878a5b371380686b1145cb0424fd
             env:
               TZ: "${TIMEZONE}"
-              FB_DATABASE: "/config/filebrowser.db"
-              FB_ROOT: "/mnt/storage"
-              FB_LOG: "stdout"
+              FB_DATABASE: /config/filebrowser.db
+              FB_ROOT: /mnt/storage
+              FB_LOG: stdout
               FB_NOAUTH: "true"
             probes:
               liveness: &probes
@@ -64,14 +65,15 @@ spec:
               limits:
                 memory: 500Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
@@ -84,7 +86,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -98,21 +100,21 @@ spec:
       music:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/music
         globalMounts:
                 - path: /mnt/storage/music
       photo:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/photo
         globalMounts:
           - path: /mnt/storage/photo
       video:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/video
         globalMounts:
           - path: /mnt/storage/video

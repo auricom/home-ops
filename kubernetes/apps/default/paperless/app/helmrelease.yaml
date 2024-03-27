@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -31,7 +32,7 @@ spec:
       namespace: database
   values:
     controllers:
-      main:
+      paperless:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
@@ -44,7 +45,7 @@ spec:
               - secretRef:
                   name: paperless-secret
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
               tag: 2.6.3@sha256:101f3cbfd1e15f9dc3303f2eeb64dd4a9489f121accb31612c9ff8be93ba8094
@@ -61,7 +62,7 @@ spec:
               PAPERLESS_DBNAME: paperless
               PAPERLESS_REDIS: redis://redis.database.svc.cluster.local.:6379
               PAPERLESS_TASK_WORKERS: 2
-              PAPERLESS_TIME_ZONE: "Europe/Paris"
+              PAPERLESS_TIME_ZONE: Europe/Paris
               PAPERLESS_URL: https://paperless.${SECRET_CLUSTER_DOMAIN}
             envFrom: *envFrom
             resources:
@@ -71,14 +72,15 @@ spec:
               limits:
                 memory: 7Gi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 8000
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:barcode-scan
         hosts:
@@ -86,7 +88,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -95,28 +97,28 @@ spec:
       data:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/shared-documents/paperless/data
         globalMounts:
           - path: /usr/src/paperless/data
       media:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/shared-documents/paperless/media
         globalMounts:
           - path: /usr/src/paperless/media
       consume:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/shared-documents/paperless/watch
         globalMounts:
           - path: /usr/src/paperless/consume
       export:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/shared-documents/paperless/export
         globalMounts:
           - path: /usr/src/paperless/export

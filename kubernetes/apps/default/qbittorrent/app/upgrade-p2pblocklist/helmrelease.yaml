@@ -1,16 +1,16 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: qbittorrent-upgrade-p2pblocklist
+  name: &app qbittorrent-upgrade-p2pblocklist
   namespace: default
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -28,19 +28,19 @@ spec:
     keepHistory: false
   values:
     controllers:
-      main:
+      qbittorrent-upgrade-p2pblocklist:
         type: cronjob
         cronjob:
           concurrencyPolicy: Forbid
           schedule: "@daily"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/auricom/kubectl
               tag: 1.29.2@sha256:693ced2697bb7c7349419d4035a62bd474fc41710675b344f71773d8a687dfc3
             command:
-              - "/bin/bash"
-              - "-c"
+              - /bin/bash
+              - -c
               - |
                 #!/bin/bash
 
@@ -59,8 +59,9 @@ spec:
                   exit 1
                 fi
     service:
-      main:
+      app:
+        controller: *app
         enabled: false
     serviceAccount:
       create: false
-      name: "jobs"
+      name: jobs
