@@ -165,7 +165,7 @@ spec:
             scrape_interval: 60s
             metrics_path: "/metrics"
             static_configs:
-              - targets: ["${LOCAL_LAN_TRUENAS}:9273"]
+              - targets: ["192.168.9.10:9273"]
                 labels:
                   app: "truenas"
           - job_name: "truenas-remote"

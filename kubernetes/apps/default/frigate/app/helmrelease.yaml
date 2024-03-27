@@ -128,7 +128,7 @@ spec:
             readOnly: true
       media:
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: /mnt/storage/apps/frigate
         globalMounts:
           - path: /media/frigate

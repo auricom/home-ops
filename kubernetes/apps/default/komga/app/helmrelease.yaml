@@ -74,7 +74,7 @@ spec:
           - path: /config
       comics:
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: /mnt/storage/home/claude/comics
         globalMounts:
           - path: /mnt/storage/home/claude/comics

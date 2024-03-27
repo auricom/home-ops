@@ -90,19 +90,19 @@ spec:
           - path: /srv/squeezebox
       music:
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: *music
         globalMounts:
           - path: *music
       music-helene:
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: /mnt/storage/home/helene/Musique
         globalMounts:
           - path: /mnt/storage/home/helene/Musique
       playlists:
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: *playlist
         globalMounts:
           - path: *playlist

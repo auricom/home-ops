@@ -111,21 +111,21 @@ spec:
       music:
         enabled: true
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: /mnt/storage/music
         globalMounts:
           - path: /mnt/storage/music
       photo:
         enabled: true
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: /mnt/storage/photo
         globalMounts:
           - path: /mnt/storage/photo
       video:
         enabled: true
         type: nfs
-        server: ${LOCAL_LAN_TRUENAS}
+        server: 192.168.9.10
         path: /mnt/storage/video
         globalMounts:
           - path: /mnt/storage/video
