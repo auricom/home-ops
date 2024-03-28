@@ -37,7 +37,7 @@ spec:
       EMQX_DASHBOARD__DEFAULT_USERNAME: admin
     service:
       type: LoadBalancer
-      loadBalancerIP: ${CLUSTER_LB_EMQX}
+      loadBalancerIP: 192.168.169.109
       externalTrafficPolicy: Local
     ingress:
       dashboard:

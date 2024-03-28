@@ -49,7 +49,7 @@ spec:
       app:
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: ${CLUSTER_LB_LMS}
+        loadBalancerIP: 192.168.169.116
         externalTrafficPolicy: Local
         ports:
           http:

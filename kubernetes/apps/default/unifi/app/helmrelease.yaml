@@ -52,7 +52,7 @@ spec:
       main:
         type: LoadBalancer
         externalTrafficPolicy: Local
-        loadBalancerIP: ${CLUSTER_LB_UNIFI}
+        loadBalancerIP: 192.168.169.103
         ports:
           http:
             port: 8443

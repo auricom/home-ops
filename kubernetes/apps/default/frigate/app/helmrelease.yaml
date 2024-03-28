@@ -85,7 +85,7 @@ spec:
         controller: *app
         type: LoadBalancer
         externalTrafficPolicy: Local
-        loadBalancerIP: ${CLUSTER_LB_FRIGATE}
+        loadBalancerIP: 192.168.169.114
         ports:
           http:
             port: *port
