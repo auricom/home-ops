@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -31,11 +32,11 @@ spec:
       securityContext:
         runAsUser: 0
     controllers:
-      main:
+      resilio-claude:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/auricom/resilio-sync
               tag: 2.7.3.1381-1@sha256:42d0553deba43429df0371ca00128b17e166a0282bd3375cb4ea6a54c8e3097c
@@ -49,16 +50,17 @@ spec:
               limits:
                 memory: 2Gi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 8888
           com:
             port: 55555
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:file-arrow-up-down
         hosts:
@@ -66,7 +68,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -85,37 +87,37 @@ spec:
             subPath: sync.conf
       backups:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/backups
         globalMounts:
           - path: /sync/backup
       home-claude:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/home/claude
         globalMounts:
           - path: /sync/home/claude
       music-transcoded:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/music_transcoded
         globalMounts:
           - path: /sync/music_transcoded
       photo:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/photo
         globalMounts:
           - path: /sync/photo
       shared-documents:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/shared-documents
         globalMounts:
           - path: /sync/shared-documents
       video:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/video
         globalMounts:
           - path: /sync/video

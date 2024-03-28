@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -33,12 +33,11 @@ spec:
         runAsUser: 568
         runAsGroup: 568
     controllers:
-      main:
+      tandoor:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
           init-db:
-            order: 1
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16
@@ -46,7 +45,6 @@ spec:
               - secretRef:
                   name: tandoor-secret
           migrations:
-            order: 2
             image:
               repository: vabene1111/recipes
               tag: 1.5.15@sha256:9fb486148cc1a2f35216c8212e12edac3888ec18d41ed569df6b5dd5e39d9354
@@ -62,7 +60,7 @@ spec:
               python3 /opt/recipes/manage.py collectstatic_js_reverse
               python3 /opt/recipes/manage.py collectstatic --noinput
         containers:
-          main:
+          app:
             image:
               repository: vabene1111/recipes
               tag: 1.5.15@sha256:9fb486148cc1a2f35216c8212e12edac3888ec18d41ed569df6b5dd5e39d9354
@@ -98,16 +96,17 @@ spec:
               repository: nginxinc/nginx-unprivileged
               tag: 1.25.4-alpine@sha256:7c1d415090a45370177a2c35283e8fc99c557c9cdcddc66d53ce6610a7eb9827
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
           nginx:
             port: &port2 8080
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:chef-hat
         hosts:
@@ -115,26 +114,25 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
               - path: /media
                 service:
-                  name: main
+                  identifier: app
                   port: *port2
               - path: /static
                 service:
-                  name: main
+                  identifier: app
                   port: *port2
         tls:
           - hosts:
               - *host
     persistence:
       config:
-        type: persistentvolumeclaim
         existingClaim: *app
         advancedMounts:
-          main:
-            main:
+          tandoor:
+            app:
               - path: /opt/recipes/mediafiles
             nginx:
               - path: /media
@@ -142,28 +140,28 @@ spec:
         type: configMap
         name: tandoor-configmap
         advancedMounts:
-          main:
+          tandoor:
             nginx:
               - path: /etc/nginx/nginx.conf
                 subPath: nginx-config
       django-js-reverse:
         type: emptyDir
         advancedMounts:
-          main:
-            main:
+          tandoor:
+            app:
               - path: /opt/recipes/cookbook/static/django_js_reverse
       static:
         type: emptyDir
         advancedMounts:
-          main:
-            main:
+          tandoor:
+            app:
               - path: /opt/recipes/staticfiles
             nginx:
               - path: /static
       cache:
         type: emptyDir
         advancedMounts:
-          main:
+          tandoor:
             nginx:
               - path: /var/cache/nginx
   postRenderers:

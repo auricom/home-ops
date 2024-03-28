@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -34,14 +35,13 @@ spec:
       securityContext:
         runAsUser: 0
     controllers:
-      main:
+      wallabag:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
           enableServiceLinks: false
         initContainers:
           init-db:
-            order: 1
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16
@@ -49,7 +49,6 @@ spec:
               - secretRef:
                   name: wallabag-secret
           migrations:
-            order: 2
             image:
               repository: wallabag/wallabag
               tag: 2.6.8@sha256:85b31297ec0dbfc5db32f9b8c0d5b598846469ff664e9e1c41b770aeca395a87
@@ -70,7 +69,7 @@ spec:
               - --env=prod
               - --no-interaction
         containers:
-          main:
+          app:
             image:
               repository: wallabag/wallabag
               tag: 2.6.8@sha256:85b31297ec0dbfc5db32f9b8c0d5b598846469ff664e9e1c41b770aeca395a87
@@ -83,14 +82,15 @@ spec:
               limits:
                 memory: 512Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 80
     ingress:
       main:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
@@ -100,7 +100,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:

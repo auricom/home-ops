@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -31,11 +32,11 @@ spec:
       nodeSelector:
         aeotec.feature.node.kubernetes.io/zwave: "true"
     controllers:
-      main:
+      zwave-js-ui:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/zwave-js/zwave-js-ui
               tag: 9.9.1@sha256:ce5278bd998ad8ea2422a6f6c2ec606fcde0d065f6c8e2ae5300a196b4fcf1bb
@@ -65,19 +66,27 @@ spec:
               limits:
                 memory: 512Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
           websocket:
             port: 3000
     serviceMonitor:
-      main:
+      app:
+        serviceName: *app
         enabled: true # requires https://github.com/kvaster/zwavejs-prom
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
@@ -91,7 +100,7 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:

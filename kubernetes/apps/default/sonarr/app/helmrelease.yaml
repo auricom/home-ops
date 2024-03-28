@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -34,10 +35,10 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
     controllers:
-      main:
+      sonarr:
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: "sonarr-pushover"
+          configmap.reloader.stakater.com/reload: sonarr-pushover
         initContainers:
           init-db:
             image:
@@ -47,7 +48,7 @@ spec:
               - secretRef:
                   name: sonarr-secret
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/sonarr-develop
               tag: 4.0.2.1367@sha256:9b5b9fa01709fca02bbc7fe3ccb97fb54df88fff64913747fdaf29d3d5cad608
@@ -86,14 +87,15 @@ spec:
               limits:
                 memory: 1Gi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
@@ -106,7 +108,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -119,13 +121,13 @@ spec:
           - path: /config
       downloads:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       video:
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/video
         globalMounts:
           - path: /mnt/storage/video

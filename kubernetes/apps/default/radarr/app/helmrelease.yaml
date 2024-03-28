@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,6 +23,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -34,7 +35,7 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
     controllers:
-      main:
+      radarr:
         annotations:
           configmap.reloader.stakater.com/reload: radarr-pushover
           reloader.stakater.com/auto: "true"
@@ -47,7 +48,7 @@ spec:
               - secretRef:
                   name: radarr-secret
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
               tag: 5.4.3.8677@sha256:5af64ec397048c9c86a306b18072aa4c1ce60cd7ce6674c111ef59517ea96ea0
@@ -69,14 +70,15 @@ spec:
               limits:
                 memory: 2000Mi
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
-        className: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
@@ -89,7 +91,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -103,14 +105,14 @@ spec:
       downloads:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       video:
         enabled: true
         type: nfs
-        server: "192.168.9.10"
+        server: 192.168.9.10
         path: /mnt/storage/video
         globalMounts:
           - path: /mnt/storage/video
