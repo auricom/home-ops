@@ -82,7 +82,7 @@ spec:
           http:
             port: 6767
     ingress:
-      main:
+      app:
         enabled: true
         className: nginx
         annotations:

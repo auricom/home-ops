@@ -96,7 +96,7 @@ spec:
           http:
             port: &port 8080
     ingress:
-      main:
+      app:
         enabled: true
         className: nginx
         annotations:

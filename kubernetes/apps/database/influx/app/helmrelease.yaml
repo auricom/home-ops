@@ -1,15 +1,15 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: influx
+  name: &app influx
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -20,6 +20,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -27,11 +28,11 @@ spec:
     defaultPodOptions:
       automountServiceAccountToken: false
     controllers:
-      main:
+      influx:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: docker.io/library/influxdb
               tag: 2.7-alpine
@@ -41,41 +42,40 @@ spec:
                 memory: 128M
               limits:
                 memory: 384M
-        probes:
-          liveness: &health
-            enabled: true
-            custom: true
-            spec:
-              initialDelaySeconds: 30
-              periodSeconds: 10
-              timeoutSeconds: 1
-              failureThreshold: 3
-              httpGet:
-                path: /health
-                port: 8086
-          readiness: *health
-          startup:
-            enabled: true
-            custom: true
-            spec:
-              initialDelaySeconds: 0
-              timeoutSeconds: 1
-              periodSeconds: 5
-              failureThreshold: 30
-              httpGet:
-                path: /health
-                port: 8086
+            probes:
+              liveness: &health
+                enabled: true
+                custom: true
+                spec:
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+                  httpGet:
+                    path: /health
+                    port: 8086
+              readiness: *health
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  initialDelaySeconds: 0
+                  timeoutSeconds: 1
+                  periodSeconds: 5
+                  failureThreshold: 30
+                  httpGet:
+                    path: /health
+                    port: 8086
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             enabled: false
+            port: 8080
           influx:
             enabled: true
             port: 8086
-    ingress:
-      main:
-        enabled: false
     persistence:
       config:
         enabled: true

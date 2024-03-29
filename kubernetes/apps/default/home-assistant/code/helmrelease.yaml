@@ -74,7 +74,7 @@ spec:
           http:
             port: 8888
     ingress:
-      main:
+      app:
         enabled: true
         className: nginx
         hosts:

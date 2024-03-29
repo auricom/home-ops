@@ -87,7 +87,7 @@ spec:
               url: https://whazor.github.io/k8s-at-home-search/
               targetBlank: false
     ingress:
-      main:
+      app:
         enabled: true
         ingressClassName: nginx
         annotations:

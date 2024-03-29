@@ -65,7 +65,7 @@ spec:
           http:
             port: 5000
     ingress:
-      main:
+      app:
         enabled: true
         className: nginx
         annotations:

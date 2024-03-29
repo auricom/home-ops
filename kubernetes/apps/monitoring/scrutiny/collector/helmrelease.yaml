@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -22,6 +22,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -33,10 +34,10 @@ spec:
         # capabilities:
         #   add: ["SYS_RAWIO"] # allow access to smartctl
     controllers:
-      main:
+      scrutiny-collector:
         type: daemonset
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/analogj/scrutiny
               tag: master-collector
@@ -56,7 +57,8 @@ spec:
               limits:
                 memory: 128Mi
     service:
-      main:
+      app:
+        controller: *app
         enabled: false
     persistence:
       config:
@@ -68,20 +70,17 @@ spec:
         enabled: true
         type: hostPath
         hostPath: /run/udev
-        readOnly: true
         globalMounts:
           - path: /run/udev
       nvme0n1:
         enabled: true
         type: hostPath
         hostPath: /dev/nvme0n1
-        readOnly: true
         globalMounts:
           - path: /dev/nvme0n1
       sda:
         enabled: true
         type: hostPath
         hostPath: /dev/sda
-        readOnly: true
         globalMounts:
           - path: /dev/sda
