@@ -61,7 +61,7 @@ spec:
         enabled: true
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: "${CLUSTER_LB_QBITTORRENT}"
+        loadBalancerIP: 192.168.169.105
         ports:
           bittorrent:
             enabled: true

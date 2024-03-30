@@ -31,7 +31,7 @@ spec:
       replicaCount: 2
       service:
         type: LoadBalancer
-        loadBalancerIP: "${CLUSTER_LB_NGINX}"
+        loadBalancerIP: 192.168.169.101
         externalTrafficPolicy: Local
       publishService:
         enabled: true

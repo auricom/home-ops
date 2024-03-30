@@ -62,7 +62,7 @@ spec:
       app:
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: "${CLUSTER_LB_MAILRISE}"
+        loadBalancerIP: 192.168.169.112
         externalTrafficPolicy: Local
         ports:
           http:
