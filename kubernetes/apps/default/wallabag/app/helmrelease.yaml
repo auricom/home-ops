@@ -51,7 +51,7 @@ spec:
           migrations:
             image:
               repository: wallabag/wallabag
-              tag: 2.6.8@sha256:85b31297ec0dbfc5db32f9b8c0d5b598846469ff664e9e1c41b770aeca395a87
+              tag: 2.6.9@sha256:d482b139bab164afef0e8bbfbeb7c55cd3e10e848b95d7d167e4ffcbc847f4b9
             envFrom: *envFrom
             env: &env
               SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
@@ -72,7 +72,7 @@ spec:
           app:
             image:
               repository: wallabag/wallabag
-              tag: 2.6.8@sha256:85b31297ec0dbfc5db32f9b8c0d5b598846469ff664e9e1c41b770aeca395a87
+              tag: 2.6.9@sha256:d482b139bab164afef0e8bbfbeb7c55cd3e10e848b95d7d167e4ffcbc847f4b9
             envFrom: *envFrom
             env: *env
             resources:
