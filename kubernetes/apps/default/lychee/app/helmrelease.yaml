@@ -54,7 +54,7 @@ spec:
               APP_URL: https://lychee.${SECRET_CLUSTER_DOMAIN}
               DB_CONNECTION: pgsql
               PHP_TZ: ${TIMEZONE}
-              REDIS_HOST: redis.database.svc.cluster.local.
+              REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
             envFrom: *envFrom

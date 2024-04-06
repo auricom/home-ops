@@ -61,7 +61,7 @@ spec:
               SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
               SYMFONY__ENV__MAILER_HOST: smtp-relay.default.svc.cluster.local.
               SYMFONY__ENV__MAILER_PORT: "2525"
-              SYMFONY__ENV__REDIS_HOST: redis.database.svc.cluster.local.
+              SYMFONY__ENV__REDIS_HOST: dragonfly.database.svc.cluster.local.
               SYMFONY__ENV__SERVER_NAME: Wallabag
             command:
               - /var/www/wallabag/bin/console
