@@ -26,3 +26,5 @@ spec:
     manageCRDs: true
     metrics:
       disableAuth: true
+    image:
+      tag: "latest"
