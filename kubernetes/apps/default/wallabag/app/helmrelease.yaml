@@ -27,9 +27,6 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: redis
-      namespace: database
   values:
     defaultPodOptions:
       securityContext:

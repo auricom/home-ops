@@ -29,8 +29,6 @@ spec:
     keepHistory: false
   dependsOn:
     - name: lldap
-    - name: redis
-      namespace: database
     - name: smtp-relay
   values:
     defaultPodOptions:
