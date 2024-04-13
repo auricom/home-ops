@@ -29,7 +29,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: lldap
-    - name: redis
+    - name: dragonfly
       namespace: database
     - name: smtp-relay
   values:

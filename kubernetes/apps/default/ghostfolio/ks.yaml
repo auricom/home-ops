@@ -17,7 +17,7 @@ spec:
     name: home-ops-kubernetes
   dependsOn:
     - name: external-secrets-stores
-    - name: redis
+    - name: dragonfly
   wait: false
   interval: 30m
   retryInterval: 1m

@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: redis
+    - name: dragonfly
     - name: external-secrets-stores
   path: ./kubernetes/apps/default/authelia/app
   prune: true
