@@ -43,7 +43,7 @@ spec:
           migrations:
             image:
               repository: ghcr.io/auricom/babybuddy
-              tag: 2.2.1@sha256:3a6b8966e3109b659e9ded4118237d72e2fc2413993fd0379aad6b576f255365
+              tag: 2.3.0@sha256:4e3d00d157d94e9b60334236142fcf278b732e112d671ae2fef19dc983e8317f
               pullPolicy: IfNotPresent
             envFrom: *envFrom
             command:
@@ -62,7 +62,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/babybuddy
-              tag: 2.2.1@sha256:3a6b8966e3109b659e9ded4118237d72e2fc2413993fd0379aad6b576f255365
+              tag: 2.3.0@sha256:4e3d00d157d94e9b60334236142fcf278b732e112d671ae2fef19dc983e8317f
             env:
               TZ: ${TIMEZONE}
               EMAIL_HOST: smtp-relay.default.svc.cluster.local.
