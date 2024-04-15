@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/gimlet-io/capacitor
-              tag: v0.4.1@sha256:d072f3b3aad799e44fc397fb3bc0db21d89e10546775d819f9f4419c6fbecc07
+              tag: v0.4.2@sha256:55e77511d674733708e001f594e7180826de9385e2ed0a34397dc2b9694f378c
             resources:
               requests:
                 cpu: 50m
