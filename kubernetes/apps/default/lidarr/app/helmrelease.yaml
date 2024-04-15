@@ -52,7 +52,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/lidarr-develop
-              tag: 2.2.5.4141@sha256:8f6f461b937fa54bfb4dd364a7a34b1a3ff1406a6ee0baf6820f26724193c93a
+              tag: 2.2.5.4141@sha256:e706cb518eed32a850bdddd67084056c47bd1ce2cc93970ed62ffbd118d70fb4
             env:
               TZ: "${TIMEZONE}"
               LIDARR__INSTANCE_NAME: Lidarr
