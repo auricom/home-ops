@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/resilio-sync
-              tag: 2.7.3.1381-1@sha256:42d0553deba43429df0371ca00128b17e166a0282bd3375cb4ea6a54c8e3097c
+              tag: 2.7.3@sha256:4b750e4b9f3a2c8a40eb2a8b2475b52e9301dcd1c7317e49e3cbc73f72d34d20
             env:
               - name: TZ
                 value: "${TIMEZONE}"
@@ -83,7 +83,7 @@ spec:
         type: configMap
         name: resilio-helene-configmap
         globalMounts:
-          - path: /config/sync.conf
+          - path: /app/sync.conf
             subPath: sync.conf
       backups:
         type: nfs
