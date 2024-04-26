@@ -43,7 +43,6 @@ resources:
   - ./photoprism/ks.yaml
   - ./prowlarr/ks.yaml
   - ./pushover-notifier/ks.yaml
-  - ./pyload/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
   - ./recyclarr/ks.yaml
