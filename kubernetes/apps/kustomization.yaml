@@ -11,6 +11,7 @@ resources:
   - ./kube-system
   - ./monitoring
   - ./ngnode
+  - ./openebs-system
   - ./networking
   - ./rook-ceph
   - ./volsync
