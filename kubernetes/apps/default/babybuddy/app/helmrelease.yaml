@@ -86,10 +86,6 @@ spec:
                 enabled: false
             resources:
               requests:
-                cpu: 10m
-                memory: 256Mi
-            resources:
-              requests:
                 cpu: 100m
                 memory: 256Mi
     service:
@@ -97,7 +93,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: &port
+            port: *port
     ingress:
       app:
         enabled: true
