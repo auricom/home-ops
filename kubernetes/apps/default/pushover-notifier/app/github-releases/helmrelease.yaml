@@ -44,11 +44,22 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/auricom/python
-              tag: 1.0.0@sha256:31210a11e180f24fb2f1450a724168ea339c3819b5a3500924f2a7d7ea27f01d
+              repository: cgr.dev/chainguard/python
+              tag: latest-dev@sha256:041295387410c312bf49d3638cb44c8f27eb6f2d35367eee24fc8d97557649e1
             command:
-              - python3
-              - /app/script.py
+              - /bin/bash
+              - -c
+              - |
+                #!/bin/bash
+
+                set -o errexit
+                set -o nounset
+
+                pip install requests PyYAML psycopg2-binary
+
+                cd /app
+
+                python /app/script.py
             envFrom: *envFrom
             resources:
               requests:
