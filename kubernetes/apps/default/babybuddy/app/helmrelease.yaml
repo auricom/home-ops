@@ -69,6 +69,25 @@ spec:
               EMAIL_PORT: "2525"
               EMAIL_USE_TLS: "false"
             envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 3000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
             resources:
               requests:
                 cpu: 100m
@@ -78,7 +97,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 3000
+            port: &port
     ingress:
       app:
         enabled: true
