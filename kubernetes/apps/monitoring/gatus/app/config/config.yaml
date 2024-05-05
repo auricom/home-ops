@@ -21,7 +21,7 @@ alerting:
       success-threshold: 2
 connectivity:
   checker:
-    target: 1.1.1.1:53
+    target: 192.168.8.1:53
     interval: 1m
 endpoints:
   - name: status
@@ -29,7 +29,7 @@ endpoints:
     url: https://status.${SECRET_CLUSTER_DOMAIN}
     interval: 1m
     client:
-      dns-resolver: tcp://1.1.1.1:53
+      dns-resolver: tcp://192.168.8.1:53
       insecure: true
     conditions:
       - "[STATUS] == 200"
