@@ -42,7 +42,7 @@ spec:
           app:
             image:
               repository: jesec/flood
-              tag: master@sha256:57997a2d011aef64c2ef21d8407c4ee41a942af32a0f092b4b7414da9f9b3a2c
+              tag: master@sha256:882f134585d39eb29fd62bdad0fd63080832598ad605eec075138fa0c4f65291
             env:
               FLOOD_OPTION_RUNDIR: /data
               FLOOD_OPTION_AUTH: none
