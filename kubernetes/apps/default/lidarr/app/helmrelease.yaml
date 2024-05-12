@@ -105,13 +105,13 @@ spec:
       music:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/music
+        path: /var/mnt/vol1/music
         globalMounts:
           - path: /mnt/storage/music
       downloads:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/downloads
+        path: /var/mnt/vol1/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       scripts:

@@ -50,8 +50,8 @@ spec:
 
                 /app/sort.sh
             env:
-              SORT_SOURCE_DIR: /mnt/storage/photo/mobile
-              SORT_DEST_DIR: /mnt/storage/photo
+              SORT_SOURCE_DIR: /var/mnt/vol1/photo/mobile
+              SORT_DEST_DIR: /var/mnt/vol1/photo
     service:
       app:
         controller: *app
@@ -67,7 +67,7 @@ spec:
             readOnly: true
       photo:
         type: nfs
-        path: /mnt/storage/photo
+        path: /var/mnt/vol1/photo
         server: 192.168.9.10
         globalMounts:
-          - path: /mnt/storage/photo
+          - path: /var/mnt/vol1/photo

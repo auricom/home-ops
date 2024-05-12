@@ -122,13 +122,13 @@ spec:
       downloads:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/downloads
+        path: /var/mnt/vol1/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       video:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/video
+        path: /var/mnt/vol1/video
         globalMounts:
           - path: /mnt/storage/video
       scripts:

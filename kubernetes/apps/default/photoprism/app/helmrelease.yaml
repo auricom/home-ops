@@ -40,7 +40,7 @@ spec:
               tag: latest@sha256:92c0fb0775e2fa5ac681aef71ccfe3d8de578f659f2e577e2c540eaf56374a88
             env:
               PHOTOPRISM_STORAGE_PATH: &storage /config
-              PHOTOPRISM_ORIGINALS_PATH: &originals /mnt/storage/photo/Gallery
+              PHOTOPRISM_ORIGINALS_PATH: &originals /var/mnt/vol1/photo/Gallery
               PHOTOPRISM_DEBUG: "false"
               PHOTOPRISM_PUBLIC: "true"
               PHOTOPRISM_SITE_URL: "https://photos.${SECRET_CLUSTER_DOMAIN}/"

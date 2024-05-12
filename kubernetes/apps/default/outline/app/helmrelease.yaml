@@ -53,7 +53,7 @@ spec:
               AWS_S3_ACL: private
               AWS_S3_FORCE_PATH_STYLE: "true"
               AWS_S3_UPLOAD_BUCKET_NAME: outline
-              AWS_S3_UPLOAD_BUCKET_URL: "https://minio.${SECRET_DOMAIN}:9000"
+              AWS_S3_UPLOAD_BUCKET_URL: "https://s3.feisar.ovh"
               ENABLE_UPDATES: "false"
               FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
               OIDC_AUTH_URI: "https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization"

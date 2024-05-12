@@ -129,7 +129,7 @@ spec:
       media:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/apps/frigate
+        path: /var/mnt/vol1/apps/frigate
         globalMounts:
           - path: /media/frigate
       cache:

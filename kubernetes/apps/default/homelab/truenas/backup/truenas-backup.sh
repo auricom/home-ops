@@ -44,7 +44,7 @@ curl -fsSL \
     -H "Date: ${http_request_date}" \
     -H "Content-Type: ${http_content_type}" \
     -H "Authorization: AWS ${AWS_ACCESS_KEY_ID}:${http_signature}" \
-    "https://minio.${SECRET_DOMAIN}:9000/${http_filepath}"
+    "https://s3.feisar.ovh/${http_filepath}"
 
 rm /tmp/backup-*.tar
 

@@ -88,18 +88,18 @@ spec:
       backups:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/backups
+        path: /var/mnt/vol1/backups
         globalMounts:
           - path: /sync/backup
       home-helene:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/home/helene
+        path: /var/mnt/vol1/home/helene
         globalMounts:
           - path: /sync/home
       photo:
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/photo
+        path: /var/mnt/vol1/photo
         globalMounts:
           - path: /sync/photo

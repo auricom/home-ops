@@ -101,6 +101,6 @@ spec:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/backups/postgresql
+        path: /var/mnt/vol1/backups/postgresql
         globalMounts:
           - path: /backups

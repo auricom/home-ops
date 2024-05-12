@@ -35,7 +35,7 @@ spec:
       type: s3
       config:
         bucket: thanos
-        endpoint: "minio.${SECRET_DOMAIN}:9000"
+        endpoint: "s3.feisar.ovh"
         region: ""
         # insecure: true
     query:

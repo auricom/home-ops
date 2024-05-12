@@ -82,6 +82,6 @@ spec:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/storage/home/claude/books
+        path: /var/mnt/vol1/home/claude/books
         globalMounts:
           - path: /mnt/storage/home/claude/books

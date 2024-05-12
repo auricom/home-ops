@@ -33,7 +33,6 @@ resources:
   - ./lms/ks.yaml
   - ./lychee/ks.yaml
   - ./mailrise/ks.yaml
-  - ./media-browser/ks.yaml
   - ./music-transcode/ks.yaml
   - ./navidrome/ks.yaml
   - ./outline/ks.yaml
