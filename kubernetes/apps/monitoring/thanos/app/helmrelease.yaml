@@ -98,6 +98,7 @@ spec:
         enabled: true
         storageClass: "rook-ceph-block"
         size: 15Gi
+      resourcesPreset: small
     storegateway:
       enabled: true
       resources:

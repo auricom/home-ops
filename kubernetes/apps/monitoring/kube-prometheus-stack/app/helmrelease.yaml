@@ -130,12 +130,14 @@ spec:
               - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
         replicas: 1
-        replicaExternalLabelName: "replica"
+        replicaExternalLabelName: replica
+        scrapeInterval: 1m # Must match interval in Grafana Helm chart
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
-        retention: 6h
+        scrapeConfigSelectorNilUsesHelmValues: false
+        retention: 2d
         enableAdminAPI: true
         walCompression: true
         storageSpec:
