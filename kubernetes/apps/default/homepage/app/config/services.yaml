@@ -1,0 +1,51 @@
+---
+- Home:
+    - HomeAssistant:
+        href: https://hass.${SECRET_EXTERNAL_DOMAIN}
+        icon: home-assistant.png
+        description: Home Assistant
+        widget:
+          type: homeassistant
+          url: https://hass.${SECRET_EXTERNAL_DOMAIN}
+          key: "{{HOMEPAGE_VAR_HASS_TOKEN}}"
+    - Media:
+        - Sonarr:
+            href: https://sonarr.${SECRET_EXTERNAL_DOMAIN}
+            siteMonitor: https://sonarr.${SECRET_EXTERNAL_DOMAIN}
+            icon: sonarr.png
+            description: TV Shows
+            widget:
+              type: sonarr
+              url: http://sonarr.default.svc.cluster.local.:8080
+              key: {{HOMEPAGE_VAR_SONARR_TOKEN}}
+        - Radarr:
+            href: https://radarr.${SECRET_EXTERNAL_DOMAIN}
+            siteMonitor: https://radarr.${SECRET_EXTERNAL_DOMAIN}
+            icon: radarr.png
+            description: Movies
+            widget:
+              type: radarr
+              url: http://radarr.default.svc.cluster.local.:8080
+              key: {{HOMEPAGE_VAR_RADARR_TOKEN}}
+        - Lidarr:
+            href: https://lidarr.${SECRET_EXTERNAL_DOMAIN}
+            siteMonitor: https://lidarr.${SECRET_EXTERNAL_DOMAIN}
+            icon: lidarr.png
+            description: Music
+            widget:
+              type: lidarr
+              url: http://lidarr.default.svc.cluster.local.:8080
+              key: {{HOMEPAGE_VAR_LIDARR_TOKEN}}
+- Calendar:
+    - Agenda:
+        widget:
+          type: calendar
+          view: agenda # optional - possible values monthly, agenda
+          maxEvents: 5 # optional - defaults to 10
+          integrations: # optional
+            - type: sonarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr>
+              service_group: Media # group name where widget exists
+              service_name: Sonarr # service name for that widget
+            - type: radarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr>
+              service_group: Media # group name where widget exists
+              service_name: Radarr # service name for that widget

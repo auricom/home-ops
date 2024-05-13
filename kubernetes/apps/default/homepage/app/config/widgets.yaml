@@ -1,0 +1,35 @@
+---
+#- logo:
+#    icon: https://raw.githubusercontent.com/LilDrunkenSmurf/k3s-home-cluster/main/icons/lds-transparent.png
+- search:
+    provider: [duckduckgo, google]
+    focus: false
+    target: _blank
+- greeting:
+    text_size: xl
+    text: "Greetings, Citizen."
+- kubernetes:
+    cluster:
+      cpu: true
+      label: cluster
+      memory: true
+      show: true
+      showLabel: true
+    nodes:
+      cpu: true
+      memory: true
+      show: false
+      showLabel: true
+- openmeteo:
+    label: Home
+    latitude: ${LATITUDE}
+    longitude: ${LONGITUDE}
+    timezone: America/Toronto
+    units: metric
+    cache: 5
+- datetime:
+    text_size: l
+    format:
+      dateStyle: long
+      timeStyle: short
+      hourCycle: h23

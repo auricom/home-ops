@@ -1,0 +1,27 @@
+- Communitcate:
+    - Discord:
+        - icon: discord.png
+          href: 'https://discord.com/app'
+    - Mail:
+        - icon: gmail.png
+          href: 'https://www.fastmail.com/mail/inbox'
+    - GoogleCalendar:
+        - icon: google-calendar.png
+          href: 'https://www.fastmail.com/calendar'
+    - Outlook:
+        - icon: 'https://raw.githubusercontent.com/LilDrunkenSmurf/k3s-home-cluster/main/icons/outlook.png'
+          href: 'https://outlook.com'
+- Media:
+    - YouTube:
+        - icon: youtube.png
+          href: 'https://youtube.com/feed/subscriptions'
+    - Spotify:
+        - icon: spotify.png
+          href: 'http://open.spotify.com'
+- Git:
+    - kubesearch:
+        - icon: kubernetes-dashboard.png
+          href: 'https://kubesearch.dev/'
+    - k3s-home-cluster:
+        - icon: github.png
+          href: 'https://github.com/haraldkoch/kochhaus-home'

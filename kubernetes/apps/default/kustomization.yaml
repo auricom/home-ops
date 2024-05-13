@@ -20,6 +20,7 @@ resources:
   - ./home-assistant/ks.yaml
   - ./homebox/ks.yaml
   - ./homelab/ks.yaml
+  - ./homepage/ks.yaml
   - ./invidious/ks.yaml
   - ./jellyfin/ks.yaml
   - ./joplin/ks.yaml
