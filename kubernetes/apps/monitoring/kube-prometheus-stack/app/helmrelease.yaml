@@ -129,7 +129,7 @@ spec:
           - hosts:
               - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
-        replicas: 1
+        replicas: 2
         replicaExternalLabelName: replica
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         ruleSelectorNilUsesHelmValues: false
