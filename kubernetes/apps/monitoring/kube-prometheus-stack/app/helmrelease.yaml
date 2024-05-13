@@ -29,6 +29,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: openebs
+      namespace: openebs-system
+    - name: thanos
+      namespace: monitoring
   values:
     ###
     ### Component values
@@ -129,6 +134,9 @@ spec:
           - hosts:
               - "prometheus.${SECRET_CLUSTER_DOMAIN}"
       prometheusSpec:
+        podMetadata:
+          annotations:
+            secret.reloader.stakater.com/reload: &secret thanos-objstore-config
         replicas: 2
         replicaExternalLabelName: replica
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
@@ -138,6 +146,7 @@ spec:
         probeSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
         retention: 2d
+        retentionSize: 15GB
         enableAdminAPI: true
         walCompression: true
         storageSpec:
@@ -148,30 +157,16 @@ spec:
                 requests:
                   storage: 20Gi
         thanos:
-          image: quay.io/thanos/thanos:v0.35.0@sha256:fa1d28718df00b68d6ad85d7c7d4703bd9f59e5cd8be8da6540ea398cf701a1f
-          # renovate: datasource=docker depName=quay.io/thanos/thanos
-          version: "v0.35.0"
+          image: quay.io/thanos/thanos:${THANOS_VERSION}
+          version: "${THANOS_VERSION#v}"
           objectStorageConfig:
             existingSecret:
-              name: thanos-objstore-secret
-              key: objstore.yml
+              name: *secret
+              key: config
       thanosService:
         enabled: true
       thanosServiceMonitor:
         enabled: true
-      thanosIngress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/ssl-redirect: "true"
-          nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-          hajimari.io/enable: "false"
-        hosts:
-          - &thanosHost "thanos-sidecar.${SECRET_DOMAIN}"
-        tls:
-          - hosts:
-              - *thanosHost
     alertmanager:
       config:
         global:

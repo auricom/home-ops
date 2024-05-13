@@ -6,7 +6,6 @@ resources:
   - ./actions-runner-controller.yaml
   - ./aqua.yaml
   - ./backube.yaml
-  - ./bitnami.yaml
   - ./bjw-s.yaml
   - ./cert-manager-webhook-ovh.yaml
   - ./cilium.yaml
@@ -33,6 +32,7 @@ resources:
   - ./prometheus-community.yaml
   - ./rook-ceph.yaml
   - ./stakater.yaml
+  - ./stevehipwell.yaml
   - ./vector.yaml
   - ./weaveworks.yaml
   - ./xenitab.yaml
