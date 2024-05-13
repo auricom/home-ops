@@ -41,8 +41,8 @@ spec:
               tag: 1.29.2@sha256:693ced2697bb7c7349419d4035a62bd474fc41710675b344f71773d8a687dfc3
             command: [/bin/bash, /app/opnsense-backup.sh]
             env:
-              OPNSENSE_URL: "https://opnsense.feisar.ovh"
-              S3_URL: "https://s3.feisar.ovh"
+              OPNSENSE_URL: "https://opnsense.${SECRET_INTERNAL_DOMAIN}"
+              S3_URL: "https://s3.${SECRET_INTERNAL_DOMAIN}"
             envFrom:
               - secretRef:
                   name: homelab-opnsense-secret

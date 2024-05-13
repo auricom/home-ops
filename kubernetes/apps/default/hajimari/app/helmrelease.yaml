@@ -67,7 +67,7 @@ spec:
               url: "https://truenas-remote.${SECRET_DOMAIN}"
             - name: minio
               icon: mdi:aws
-              url: "https://s3.feisar.ovh"
+              url: "https://s3.${SECRET_INTERNAL_DOMAIN}"
             - name: pikvm
               icon: mdi:ip-network
               url: "https://pikvm.${SECRET_DOMAIN}"
