@@ -91,7 +91,7 @@ spec:
         enabled: true
         ingressClassName: internal
         hosts:
-          - thanos.devbu.io
+          - thanos.${SECRET_CLUSTER_DOMAIN}
       podAnnotations: &podAnnotations
         configmap.reloader.stakater.com/reload: *configMap
     rule:
