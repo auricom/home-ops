@@ -89,7 +89,7 @@ spec:
       extraArgs: ["--query-range.response-cache-config=$(THANOS_CACHE_CONFIG)"]
       ingress:
         enabled: true
-        ingressClassName: internal
+        ingressClassName: nginx
         hosts:
           - thanos.${SECRET_CLUSTER_DOMAIN}
       podAnnotations: &podAnnotations
