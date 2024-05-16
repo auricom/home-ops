@@ -18,9 +18,23 @@ cniConfig:
 additionalApiServerCertSans: &san
   - ${clusterEndpointIP}
   - https://cluster-0.${domainName}:6443
-  - "127.0.0.1" # KubePrism
+  - https://cluster-0.${internalDomain}:6443
+  - 127.0.0.1 # KubePrism
 
 additionalMachineCertSans: *san
+
+patches:
+  - |-
+    machine:
+      kubelet:
+        extraMounts:
+          - destination: /var/openebs/local
+            type: bind
+            source: /var/openebs/local
+            options:
+              - rbind
+              - rshared
+              - rw
 
 nodes:
   - hostname: talos-node-1
