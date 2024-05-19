@@ -50,7 +50,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/kresus
-              tag: 0.20.1@sha256:85b4d8c11da8ebe95adce529d55e003ec50fba645ac7094e84468fb37ea42811
+              tag: 0.21.2@sha256:74f5e2e9d82aea283ec719090a23e4f04fcceddf81da19b35efb2e14c63ea452
             env:
               HOST: 0.0.0.0
               PORT: 9876
