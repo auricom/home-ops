@@ -25,8 +25,8 @@
       showLabel: true
 - openmeteo:
     label: Home
-    latitude: ${LATITUDE}
-    longitude: ${LONGITUDE}
+    latitude: "{{HOMEPAGE_VAR_LATITUDE}}"
+    longitude: "{{HOMEPAGE_VAR_LONGITUDE}}"
     timezone: Europe/Paris
     units: metric
     cache: 5
