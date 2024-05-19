@@ -7,4 +7,3 @@ resources:
   - ./backup
   - ./externalsecret.yaml
   - ./photo-sort
-  - ../../../../templates/gatus/guarded

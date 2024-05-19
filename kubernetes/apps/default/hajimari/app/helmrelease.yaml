@@ -59,9 +59,6 @@ spec:
             - name: opnsense
               icon: mdi:router-network
               url: "https://opnsense.${SECRET_DOMAIN}"
-            - name: truenas
-              icon: mdi:nas
-              url: "https://truenas.${SECRET_DOMAIN}"
             - name: truenas-remote
               icon: mdi:nas
               url: "https://truenas-remote.${SECRET_DOMAIN}"
