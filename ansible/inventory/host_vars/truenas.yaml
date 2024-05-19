@@ -1,6 +1,0 @@
-main_nas: true
-pool_name: storage
-iocage_pool_name: apps
-postgresql_pool_name: apps
-minio_pool_name: storage
-snapshots_interval: "daily:14,weekly:12,monthly:3"

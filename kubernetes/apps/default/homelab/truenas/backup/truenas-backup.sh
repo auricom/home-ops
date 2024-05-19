@@ -9,21 +9,19 @@ chmod 600 ~/.ssh/id_rsa
 
 printf -v aws_access_key_id_str %q "$TRUENAS_AWS_ACCESS_KEY_ID"
 printf -v aws_secret_access_key_str %q "$TRUENAS_AWS_SECRET_ACCESS_KEY"
-printf -v secret_domain_str %q "$SECRET_DOMAIN"
 
 
-ssh -o StrictHostKeyChecking=no root@${HOSTNAME}.${SECRET_DOMAIN} "/bin/bash -s $aws_access_key_id_str $aws_secret_access_key_str $secret_domain_str" << 'EOF'
+ssh -o StrictHostKeyChecking=no root@${HOSTNAME}.feisar.ovh "/bin/bash -s $aws_access_key_id_str $aws_secret_access_key_str" << 'EOF'
 
 set -o nounset
 set -o errexit
 
 AWS_ACCESS_KEY_ID=$1
 AWS_SECRET_ACCESS_KEY=$2
-SECRET_DOMAIN=$3
 
 config_filename="$(date "+%Y%m%d-%H%M%S").tar"
 
-http_host=truenas.${SECRET_DOMAIN}
+http_host=s3.feisar.ovh
 http_request_date=$(date -R)
 http_content_type="application/x-tar"
 http_filepath="truenas/$(hostname)/${config_filename}"
@@ -44,7 +42,7 @@ curl -fsSL \
     -H "Date: ${http_request_date}" \
     -H "Content-Type: ${http_content_type}" \
     -H "Authorization: AWS ${AWS_ACCESS_KEY_ID}:${http_signature}" \
-    "https://s3.${SECRET_INTERNAL_DOMAIN}/${http_filepath}"
+    "https://s3.feisar.ovh/${http_filepath}"
 
 rm /tmp/backup-*.tar
 

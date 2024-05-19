@@ -2,12 +2,15 @@
 #- logo:
 #    icon: https://raw.githubusercontent.com/LilDrunkenSmurf/k3s-home-cluster/main/icons/lds-transparent.png
 - search:
-    provider: [duckduckgo, google]
+    provider: custom
+    url: https://kagi.com/search?q=
     focus: false
     target: _blank
+    suggestionUrl: https://kagi.com/api/autosuggest?q=
+    showSearchSuggestions: true
 - greeting:
     text_size: xl
-    text: "Greetings, Citizen."
+    text: Greetings, Citizen.
 - kubernetes:
     cluster:
       cpu: true
@@ -24,7 +27,7 @@
     label: Home
     latitude: ${LATITUDE}
     longitude: ${LONGITUDE}
-    timezone: America/Toronto
+    timezone: Europe/Paris
     units: metric
     cache: 5
 - datetime:

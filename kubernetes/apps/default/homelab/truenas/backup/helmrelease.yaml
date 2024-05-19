@@ -35,16 +35,6 @@ spec:
           concurrencyPolicy: Forbid
           schedule: "@daily"
         containers:
-          app:
-            image:
-              repository: ghcr.io/auricom/kubectl
-              tag: 1.29.2@sha256:693ced2697bb7c7349419d4035a62bd474fc41710675b344f71773d8a687dfc3
-            command: [/bin/bash, /app/truenas-backup.sh]
-            env:
-              HOSTNAME: truenas
-            envFrom: &envFrom
-              - secretRef:
-                  name: &secret homelab-truenas-secret
           truenas-remote-backup:
             image:
               repository: ghcr.io/auricom/kubectl
@@ -52,7 +42,9 @@ spec:
             command: [/bin/bash, /app/truenas-backup.sh]
             env:
               HOSTNAME: truenas-remote
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: &secret homelab-truenas-secret
     service:
       app:
         controller: *app

@@ -155,7 +155,7 @@ spec:
             type: prometheus
             uid: prometheus
             access: proxy
-            url: http://thanos-query-frontend.monitoring.svc.cluster.local.:9090
+            url: http://thanos-query-frontend.monitoring.svc.cluster.local.:10902
             isDefault: true
           # - name: Loki
           #   type: loki
@@ -177,14 +177,17 @@ spec:
         homelab-temperatures:
           url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/monitoring/grafana/dashboards/homelab-temperatures.json
           datasource: Prometheus
-        truenas:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/monitoring/grafana/dashboards/truenas.json
-          datasource: Prometheus
         external-dns:
           # renovate: depName="External-dns"
           gnetId: 15038
           revision: 3
           datasource: Prometheus
+        minio:
+          # renovate: depName="MinIO Dashboard"
+          gnetId: 13502
+          revision: 26
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
@@ -196,8 +199,16 @@ spec:
           revision: 1
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
+        zfs:
+          # renovate: depName="ZFS"
+          gnetId: 7845
+          revision: 4
+          datasource: Prometheus
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
+          datasource: Prometheus
+        dragonfly:
+          url: https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
           datasource: Prometheus
         external-secrets:
           url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
