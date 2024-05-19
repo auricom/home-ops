@@ -52,7 +52,7 @@ jobs:
         with:
           args: >-
             get cluster
-            --path /github/workspace/default/kubernetes
+            --path /github/workspace/default/kubernetes/flux
             --enable-images
             --output yaml
             --output-file default.yaml
@@ -62,7 +62,7 @@ jobs:
         with:
           args: >-
             get cluster
-            --path /github/workspace/pull/kubernetes
+            --path /github/workspace/pull/kubernetes/flux
             --enable-images
             --output yaml
             --output-file pull.yaml
