@@ -61,6 +61,9 @@ spec:
         ports:
           http:
             port: 3000
+    serviceAccount:
+      create: true
+      name: *app
     ingress:
       app:
         enabled: true

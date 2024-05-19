@@ -13,7 +13,7 @@ spec:
     template:
       engineVersion: v2
       data:
-        RESTIC_REPOSITORY: s3:https://s3.${SECRET_INTERNAL_DOMAIN}/volsync
+        RESTIC_REPOSITORY: s3:https://s3.${SECRET_INTERNAL_DOMAIN}/volsync/${APP}
         RESTIC_PASSWORD: "{{ .RESTIC_PASSWORD }}"
         AWS_ACCESS_KEY_ID: "{{ .AWS_ACCESS_KEY_ID }}"
         AWS_SECRET_ACCESS_KEY: "{{ .AWS_SECRET_ACCESS_KEY }}"
@@ -29,7 +29,7 @@ metadata:
 spec:
   sourcePVC: "${APP}"
   trigger:
-    schedule: "0 7 * * *"
+    schedule: 0 7 * * *
   restic:
     copyMethod: "${VOLSYNC_COPYMETHOD:-Snapshot}"
     pruneIntervalDays: 7
