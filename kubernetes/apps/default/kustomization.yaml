@@ -46,7 +46,6 @@ resources:
   - ./radarr/ks.yaml
   - ./recyclarr/ks.yaml
   - ./redlib/ks.yaml
-  - ./resilio-sync/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./sharry/ks.yaml
   - ./sonarr/ks.yaml
