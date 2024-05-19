@@ -57,7 +57,7 @@ spec:
         ports:
           http:
             port: *port
-      bittorent:
+      bittorrent:
         enabled: true
         controller: *app
         type: LoadBalancer

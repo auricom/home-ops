@@ -6,21 +6,33 @@
 
 clusterName: cluster-0
 
-# renovate: depName=ghcr.io/siderolabs/installer datasource=docker extractVersion=^(?<version>.*)$
-talosVersion: v1.6.5
-# renovate: depName=kubernetes/kubernetes datasource=github-releases extractVersion=^v(?<version>.*)$
-kubernetesVersion: v1.29.2
+talosVersion: v1.7.2
+kubernetesVersion: v1.30.1
 endpoint: https://cluster-0.${domainName}:6443
-
+allowSchedulingOnMasters: true
 cniConfig:
   name: none
 
 additionalApiServerCertSans: &san
   - ${clusterEndpointIP}
   - https://cluster-0.${domainName}:6443
-  - "127.0.0.1" # KubePrism
+  - https://cluster-0.${internalDomain}:6443
+  - 127.0.0.1 # KubePrism
 
 additionalMachineCertSans: *san
+
+patches:
+  - |-
+    machine:
+      kubelet:
+        extraMounts:
+          - destination: /var/openebs/local
+            type: bind
+            source: /var/openebs/local
+            options:
+              - rbind
+              - rshared
+              - rw
 
 nodes:
   - hostname: talos-node-1
@@ -111,7 +123,6 @@ controlPlane:
       machine:
         kubelet:
           extraArgs:
-            feature-gates: GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
             rotate-server-certificates: "true"
           extraConfig:
             maxPods: 150
@@ -124,12 +135,12 @@ controlPlane:
           fs.inotify.max_user_instances: "8192"
 
     # Redirect logs
-    - |-
-      machine:
-        install:
-          extraKernelArgs:
-            - "talos.logging.kernel=udp://192.168.169.108:6050/"
-        logging:
-          destinations:
-            - endpoint: "udp://192.168.169.108:6051/"
-              format: json_lines
+    # - |-
+    #   machine:
+    #     install:
+    #       extraKernelArgs:
+    #         - "talos.logging.kernel=udp://192.168.169.108:6050/"
+    #     logging:
+    #       destinations:
+    #         - endpoint: "udp://192.168.169.108:6051/"
+    #           format: json_lines

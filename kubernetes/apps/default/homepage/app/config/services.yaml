@@ -1,41 +1,55 @@
 ---
 - Home:
     - HomeAssistant:
-        href: https://hass.${SECRET_EXTERNAL_DOMAIN}
+        href: https://hass.${SECRET_CLUSTER_DOMAIN}
         icon: home-assistant.png
         description: Home Assistant
         widget:
-          type: homeassistant
-          url: https://hass.${SECRET_EXTERNAL_DOMAIN}
-          key: "{{HOMEPAGE_VAR_HASS_TOKEN}}"
-    - Media:
-        - Sonarr:
-            href: https://sonarr.${SECRET_EXTERNAL_DOMAIN}
-            siteMonitor: https://sonarr.${SECRET_EXTERNAL_DOMAIN}
-            icon: sonarr.png
-            description: TV Shows
-            widget:
-              type: sonarr
-              url: http://sonarr.default.svc.cluster.local.:8080
-              key: {{HOMEPAGE_VAR_SONARR_TOKEN}}
-        - Radarr:
-            href: https://radarr.${SECRET_EXTERNAL_DOMAIN}
-            siteMonitor: https://radarr.${SECRET_EXTERNAL_DOMAIN}
-            icon: radarr.png
-            description: Movies
-            widget:
-              type: radarr
-              url: http://radarr.default.svc.cluster.local.:8080
-              key: {{HOMEPAGE_VAR_RADARR_TOKEN}}
-        - Lidarr:
-            href: https://lidarr.${SECRET_EXTERNAL_DOMAIN}
-            siteMonitor: https://lidarr.${SECRET_EXTERNAL_DOMAIN}
-            icon: lidarr.png
-            description: Music
-            widget:
-              type: lidarr
-              url: http://lidarr.default.svc.cluster.local.:8080
-              key: {{HOMEPAGE_VAR_LIDARR_TOKEN}}
+            type: homeassistant
+            url: http://home-assistant.default.svc.cluster.local.:8123
+            key: {{HOMEPAGE_VAR_HASS_TOKEN}}
+- Media:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: https://jellyfin.${SECRET_CLUSTER_DOMAIN}
+        description: Media Server
+        widget:
+            type: jellyfin
+            url: http://jellyfin.default.svc.cluster.local.:8096
+            key: {{HOMEPAGE_VAR_JELLYFIN_TOKEN}}
+            enableNowPlaying: true
+    - Sonarr:
+        href: https://sonarr.${SECRET_EXTERNAL_DOMAIN}
+        icon: sonarr.png
+        description: TV Shows
+        widget:
+            type: sonarr
+            url: http://sonarr.default.svc.cluster.local.:8080
+            key: {{HOMEPAGE_VAR_SONARR_TOKEN}}
+    - Radarr:
+        href: https://radarr.${SECRET_EXTERNAL_DOMAIN}
+        icon: radarr.png
+        description: Movies
+        widget:
+            type: radarr
+            url: http://radarr.default.svc.cluster.local.:8080
+            key: {{HOMEPAGE_VAR_RADARR_TOKEN}}
+    - Lidarr:
+        href: https://lidarr.${SECRET_EXTERNAL_DOMAIN}
+        icon: lidarr.png
+        description: Music
+        widget:
+            type: lidarr
+            url: http://lidarr.default.svc.cluster.local.:8080
+            key: {{HOMEPAGE_VAR_LIDARR_TOKEN}}
+    - Bazarr:
+        icon: bazarr.png
+        href: https://bazarr.${SECRET_EXTERNAL_DOMAIN}
+        description: Subtitles Management
+        widget:
+            type: bazarr
+            url: http://bazarr.default.svc.cluster.local.:6767
+            key: {{HOMEPAGE_VAR_BAZARR_TOKEN}}
 - Calendar:
     - Agenda:
         widget:

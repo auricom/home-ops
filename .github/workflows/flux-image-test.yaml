@@ -48,21 +48,21 @@ jobs:
           path: pull
 
       - name: Gather Images in Default Branch
-        uses: docker://ghcr.io/allenporter/flux-local:v5.2.0@sha256:8f82bdfefe139f36e425d66e06e75f5160fd8a4c5003e0e9746db71255a7d149
+        uses: docker://ghcr.io/allenporter/flux-local:v5.3.1@sha256:4718197c94c10ec175b1ff1e4e0e56a9e1894294d2a7ee760739f687332a11d7
         with:
           args: >-
             get cluster
-            --path /github/workspace/default/kubernetes
+            --path /github/workspace/default/kubernetes/flux
             --enable-images
             --output yaml
             --output-file default.yaml
 
       - name: Gather Images in Pull Request Branch
-        uses: docker://ghcr.io/allenporter/flux-local:v5.2.0@sha256:8f82bdfefe139f36e425d66e06e75f5160fd8a4c5003e0e9746db71255a7d149
+        uses: docker://ghcr.io/allenporter/flux-local:v5.3.1@sha256:4718197c94c10ec175b1ff1e4e0e56a9e1894294d2a7ee760739f687332a11d7
         with:
           args: >-
             get cluster
-            --path /github/workspace/pull/kubernetes
+            --path /github/workspace/pull/kubernetes/flux
             --enable-images
             --output yaml
             --output-file pull.yaml
