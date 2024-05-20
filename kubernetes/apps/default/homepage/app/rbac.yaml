@@ -25,13 +25,6 @@ rules:
       - get
       - list
   - apiGroups:
-      - traefik.containo.us
-    resources:
-      - ingressroutes
-    verbs:
-      - get
-      - list
-  - apiGroups:
       - metrics.k8s.io
     resources:
       - nodes
@@ -45,6 +38,7 @@ rules:
       - customresourcedefinitions/status
     verbs:
       - get
+      - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -60,4 +54,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: *app
-    namespace: self-hosted # keep
+    namespace: default # keep

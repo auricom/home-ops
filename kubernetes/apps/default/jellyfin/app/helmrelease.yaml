@@ -44,8 +44,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/jellyfin
-              tag: 10.8.11@sha256:926e2a9f6677a0c7b12feba29f36c954154869318d6a52df72f72ff9c74cf494
+              repository: ghcr.io/jellyfin/jellyfin
+              tag: 10.9.2@sha256:21e49baac0a05efd4822269e3d8ba2f693e741006a2f81aa397cf5f8445e48a9
             env:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_FFmpeg__probesize: 50000000

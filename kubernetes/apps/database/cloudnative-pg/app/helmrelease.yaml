@@ -24,8 +24,8 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: local-path-provisioner
-      namespace: kube-system
+    - name: openebs
+      namespace: openebs-system
   values:
     crds:
       create: true

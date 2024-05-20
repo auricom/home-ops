@@ -48,14 +48,13 @@ jobs:
           path: pull
 
       - name: Diff Resources
-        uses: docker://ghcr.io/allenporter/flux-local:v5.2.0@sha256:8f82bdfefe139f36e425d66e06e75f5160fd8a4c5003e0e9746db71255a7d149
+        uses: docker://ghcr.io/allenporter/flux-local:v5.3.1@sha256:4718197c94c10ec175b1ff1e4e0e56a9e1894294d2a7ee760739f687332a11d7
         with:
           args: >-
-            --log-level DEBUG
             diff ${{ matrix.resources }}
             --unified 6
-            --path-orig /github/workspace/default/kubernetes
-            --path /github/workspace/pull/kubernetes
+            --path /github/workspace/pull/kubernetes/flux
+            --path-orig /github/workspace/default/kubernetes/flux
             --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
             --limit-bytes 10000
             --all-namespaces
@@ -65,14 +64,17 @@ jobs:
       - name: Generate Diff
         id: diff
         run: |
-          cat diff.patch
           echo "diff<<EOF" >> $GITHUB_OUTPUT
           cat diff.patch >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "### Diff" >> $GITHUB_STEP_SUMMARY
+          echo '```diff' >> $GITHUB_STEP_SUMMARY
+          cat diff.patch >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       - if: ${{ steps.diff.outputs.diff != '' }}
         name: Add comment
-        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2.8.2
+        uses: mshick/add-pr-comment@v2
         with:
           repo-token: "${{ steps.app-token.outputs.token }}"
           message-id: "${{ github.event.pull_request.number }}/${{ matrix.paths }}/${{ matrix.resources }}"
@@ -85,7 +87,7 @@ jobs:
   # Summarize matrix https://github.community/t/status-check-for-a-matrix-jobs/127354/7
   flux-diff-success:
     if: ${{ always() }}
-    needs: [flux-diff]
+    needs: ["flux-diff"]
     name: Flux Diff Successful
     runs-on: ubuntu-latest
     steps:
