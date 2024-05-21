@@ -216,6 +216,9 @@ spec:
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: Prometheus
+        zrepl:
+          url: https://raw.githubusercontent.com/zrepl/zrepl/master/dist/grafana/grafana-prometheus-zrepl.json
+          datasource: Prometheus
       ceph:
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
