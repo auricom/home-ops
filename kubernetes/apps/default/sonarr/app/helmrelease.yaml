@@ -85,7 +85,7 @@ spec:
                 cpu: 10m
                 memory: 256M
               limits:
-                memory: 1Gi
+                memory: 2Gi
     service:
       app:
         controller: *app
@@ -134,7 +134,7 @@ spec:
       scripts:
         type: configMap
         name: sonarr-pushover
-        defaultMode: 0775
+        defaultMode: "0775"
         globalMounts:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh
