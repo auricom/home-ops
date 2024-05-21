@@ -76,7 +76,7 @@ spec:
     query:
       replicas: 3
       extraArgs: ["--alert.query-url=https://thanos.${SECRET_CLUSTER_DOMAIN}"]
-      additionalStores: ["thanos.turbo.ac:10901"]
+      # additionalStores: ["thanos.turbo.ac:10901"]
     queryFrontend:
       enabled: true
       replicas: 3
