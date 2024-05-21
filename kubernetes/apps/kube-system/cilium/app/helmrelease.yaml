@@ -109,19 +109,9 @@ spec:
     l7proxy: true
     routingMode: native
     ingressController:
-      enabled: true
+      enabled: false
       defaultSecretNamespace: networking
       defaultSecretName: ${SECRET_CLUSTER_DOMAIN//./-}-tls
       loadbalancerMode: shared
       service:
         loadBalancerIP: 192.168.169.115
-  postRenderers:
-    - kustomize:
-        patchesStrategicMerge:
-          - kind: Service
-            apiVersion: v1
-            metadata:
-              name: cilium-ingress
-              namespace: *ns
-            spec:
-              externalTrafficPolicy: Local
