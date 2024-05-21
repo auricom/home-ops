@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "zamerick.vscode-caddyfile-syntax"
+        "signageos.signageos-vscode-sops",
+        "redhat.vscode-yaml"
     ]
 }
