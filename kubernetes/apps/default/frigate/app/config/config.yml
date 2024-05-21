@@ -20,8 +20,8 @@ detectors:
     device: usb
 
 ffmpeg:
-  global_args: ["-hide_banner", "-loglevel", "warning"]
-  hwaccel_args: ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "yuv420p"]
+  global_args: [-hide_banner, -loglevel, warning]
+  hwaccel_args: [-hwaccel, vaapi, -hwaccel_device, /dev/dri/renderD128, -hwaccel_output_format, yuv420p]
   output_args:
     record: preset-record-generic-audio-aac
 
@@ -43,7 +43,7 @@ record:
       mode: active_objects
 
 objects:
-  track: ["person"]
+  track: [person]
   filters:
     person:
       min_area: 5000
@@ -61,10 +61,10 @@ cameras:
       inputs:
         - path: rtsp://localhost:8554/cam_01_bedroom?video=copy&audio=aac
           input_args: preset-rtsp-restream
-          roles: ["record"]
+          roles: [record]
         - path: rtsp://localhost:8554/cam_01_bedroom_sub?video=copy
           input_args: preset-rtsp-restream
-          roles: ["detect"]
+          roles: [detect]
     detect:
       width: 640
       height: 480
