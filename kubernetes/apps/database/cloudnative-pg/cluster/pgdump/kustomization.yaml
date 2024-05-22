@@ -6,3 +6,11 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: cloudnative-pg-postgres16-pgdump-scripts
+    files:
+      - list_dbs.sh=./scripts/list_dbs.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
