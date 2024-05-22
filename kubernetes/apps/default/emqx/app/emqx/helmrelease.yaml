@@ -46,6 +46,10 @@ spec:
         annotations:
           hajimari.io/appName: "EMQX"
           hajimari.io/icon: simple-icons:eclipsemosquitto
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Media
+          gethomepage.dev/name: EMQX
+          gethomepage.dev/icon: emqx.png
         path: /
         pathType: Prefix
         hosts:

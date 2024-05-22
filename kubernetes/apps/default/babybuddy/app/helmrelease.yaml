@@ -100,6 +100,10 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:baby-face-outline
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Home
+          gethomepage.dev/name: Babybuddy
+          gethomepage.dev/icon: babybuddy.png
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
             paths:
