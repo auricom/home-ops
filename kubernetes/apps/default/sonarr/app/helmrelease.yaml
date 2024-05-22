@@ -134,7 +134,7 @@ spec:
       scripts:
         type: configMap
         name: sonarr-pushover
-        defaultMode: "0775"
+        defaultMode: 0775
         globalMounts:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh
