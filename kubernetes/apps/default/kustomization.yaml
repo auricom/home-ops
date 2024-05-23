@@ -51,6 +51,7 @@ resources:
   - ./sonarr/ks.yaml
   - ./smtp-relay/ks.yaml
   - ./tandoor/ks.yaml
+  - ./tdarr/ks.yaml
   - ./unifi/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./vikunja/ks.yaml

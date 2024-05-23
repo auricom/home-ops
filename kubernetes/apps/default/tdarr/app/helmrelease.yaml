@@ -1,0 +1,123 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tdarr
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+    controllers:
+      tdarr:
+        containers:
+          app:
+            image:
+              repository: haveagitgat/tdarr
+              tag: 2.19.01@sha256:7ab5059f9e47237b872b9b9936542869d1d1a63fed754a4452a35f3d5ac761d2
+          node:
+            image:
+              repository: haveagitgat/tdarr_node
+              tag: 2.19.01@sha256:1ef70ed89e78040ca68fa23670c39f7e103330e1a4a55b7c6cabd34680f7175f
+            env:
+            - name: nodeID
+              value: node
+            - name: serverIP
+              value: localhost
+            - name: serverPort
+              value: 8266
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 8265
+      server:
+        controller: *app
+        type: LoadBalancer
+        loadBalancerIP: 192.168.169.117
+        externalTrafficPolicy: Local
+        ports:
+          server:
+            enabled: true
+            protocol: TCP
+            port: 8266
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_CLUSTER_DOMAIN}?rm=$request_method
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+          hajimari.io/icon: material-symbols:switch-video-outline
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /app/configs
+                subPath: config
+              - path: /app/server
+                subPath: server
+            node:
+              - path: /app/configs
+                subPath: config
+              - path: /app/server
+                subPath: server
+      movies:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/video/movies
+        globalMounts:
+          - path: /mnt/movies
+      tv:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/video/tv
+        globalMounts:
+          - path: /mnt/tv
+      shared:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/video/.tdarr
+        globalMounts:
+          - path: /mnt/shared
