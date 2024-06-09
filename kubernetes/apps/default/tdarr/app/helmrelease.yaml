@@ -29,9 +29,32 @@ spec:
     keepHistory: false
   values:
     defaultPodOptions:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              # Intel N100
+              - key: feature.node.kubernetes.io/cpu-model.id
+                operator: In
+                values:
+                - "190"
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # Intel N100
+              - key: feature.node.kubernetes.io/cpu-model.id
+                operator: In
+                values:
+                - "190"
+              - key: intel.feature.node.kubernetes.io/gpu
+                operator: In
+                values:
+                - "true"
       securityContext:
         fsGroup: 1000
-        fsGroupChangePolicy: "OnRootMismatch"
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       tdarr:
         containers:
