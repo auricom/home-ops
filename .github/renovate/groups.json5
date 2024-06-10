@@ -64,6 +64,14 @@
       "separateMinorPatch": true
     },
     {
+      "description": "Tdarr Group",
+      "groupName": "Tdarr",
+      "matchPackagePatterns": ["tdarr","tdarr_node"],
+      "matchDatasources": ["docker"],
+      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "separateMinorPatch": true
+    },
+    {
       "description": "Thanos Group",
       "groupName": "Thanos",
       "matchPackagePatterns": ["thanos"],
