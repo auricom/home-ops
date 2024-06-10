@@ -58,8 +58,16 @@
     {
       "description": "Rook-Ceph Group",
       "groupName": "Rook-Ceph",
-      "matchPackagePatterns": ["rook.ceph"],
+      "matchPackagePatterns": ["tdarr","tdarr_node"],
       "matchDatasources": ["docker", "helm"],
+      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "separateMinorPatch": true
+    },
+    {
+      "description": "Tdarr Group",
+      "groupName": "Tdarr",
+      "matchPackagePatterns": ["rook.ceph"],
+      "matchDatasources": ["docker"],
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
       "separateMinorPatch": true
     },
