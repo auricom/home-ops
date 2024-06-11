@@ -84,7 +84,6 @@ sonarr:
           - 9c11cd3f07101cdba90a2d81cf0e56b4  # LQ
           - e2315f990da2e2cbfc9fa5b7a6fcfe48  # LQ (Release Title)
           - 47435ece6b99a0b477caf360e79ba0bb  # x265 (HD)
-          - 15a05bc7c1a36e2b57fd628f8977e2fc  # AV1
           # Misc
           - ec8fa7296b64e8cd390a1600981f3923  # Repack/Proper
           - eb3d5cc0a2be0db205fb823640db6a3c  # Repack v2
@@ -215,7 +214,6 @@ radarr:
           - e204b80c87be9497a8a6eaff48f72905  # LQ (Release Title)
           - dc98083864ea246d05a42df0d05f81cc  # x265 (HD)
           - b8cd450cbfa689c0259a01d9e29ba3d6  # 3D
-          - cae4ca30163749b891686f95532519bd  # AV1
           - bfd8eb01832d646a0a89c4deb46f8564  # Upscaled
           - 48f031e76111f17ea94898f4cdc34fdc  # FR LQ
           # Streaming Services
