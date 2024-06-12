@@ -32,13 +32,13 @@ spec:
       createPrometheusRules: true
     ingress:
       dashboard:
-        ingressClassName: "nginx"
+        ingressClassName: nginx
         annotations:
-          hajimari.io/appName: "Rook"
+          hajimari.io/appName: Rook
           hajimari.io/icon: mdi:chess-rook
         host:
           name: "rook.${SECRET_CLUSTER_DOMAIN}"
-          path: "/"
+          path: /
         tls:
           - hosts:
               - "rook.${SECRET_CLUSTER_DOMAIN}"
@@ -59,64 +59,67 @@ spec:
         config:
           osdsPerDevice: "1"
         nodes:
-          - name: "talos-node-2"
+          - name: talos-node-1
             devices:
-              - name: "sda"
-          - name: "talos-node-3"
+              - name: sda
+          - name: talos-node-2
             devices:
-              - name: "sda"
-          - name: "talos-node-4"
+              - name: sda
+          - name: talos-node-3
             devices:
-              - name: "sda"
+              - name: sda
+          - name: talos-node-4
+            devices:
+              - name: sda
       resources:
         mgr:
           requests:
-            cpu: "125m"
-            memory: "512Mi"
+            cpu: 125m
+            memory: 512Mi
           limits:
-            memory: "1Gi"
+            memory: 1Gi
         mon:
           requests:
-            cpu: "50m"
-            memory: "512Mi"
+            cpu: 50m
+            memory: 512Mi
           limits:
-            memory: "1Gi"
+            memory: 1Gi
         osd:
           requests:
-            cpu: "300m"
-            memory: "512Mi"
+            cpu: 300m
+            memory: 512Mi
           limits:
-            memory: "6Gi"
+            memory: 6Gi
         mgr-sidecar:
           requests:
-            cpu: "50m"
-            memory: "100Mi"
+            cpu: 50m
+            memory: 100Mi
           limits:
-            memory: "200Mi"
+            memory: 200Mi
         crashcollector:
           requests:
-            cpu: "15m"
-            memory: "64Mi"
+            cpu: 15m
+            memory: 64Mi
           limits:
-            memory: "128Mi"
+            memory: 128Mi
         logcollector:
           requests:
-            cpu: "100m"
-            memory: "100Mi"
+            cpu: 100m
+            memory: 100Mi
           limits:
-            memory: "1Gi"
+            memory: 1Gi
         prepareosd:
           requests:
-            cpu: "250m"
-            memory: "50Mi"
+            cpu: 250m
+            memory: 50Mi
           limits:
-            memory: "2Gi"
+            memory: 2Gi
         cleanup:
           requests:
-            cpu: "250m"
-            memory: "100Mi"
+            cpu: 250m
+            memory: 100Mi
           limits:
-            memory: "1Gi"
+            memory: 1Gi
     cephBlockPoolsVolumeSnapshotClass:
       enabled: false
     cephBlockPools:
@@ -124,7 +127,7 @@ spec:
         spec:
           failureDomain: host
           replicated:
-            size: 3
+            size: 4
         storageClass:
           enabled: true
           name: rook-ceph-block
@@ -146,20 +149,20 @@ spec:
         spec:
           metadataPool:
             replicated:
-              size: 3
+              size: 4
           dataPools:
             - failureDomain: host
               replicated:
-                size: 3
+                size: 4
           metadataServer:
             activeCount: 1
             activeStandby: true
             resources:
               requests:
-                cpu: "35m"
-                memory: "64M"
+                cpu: 35m
+                memory: 64M
               limits:
-                memory: "600M"
+                memory: 600M
         storageClass:
           enabled: true
           isDefault: false
@@ -181,7 +184,7 @@ spec:
           metadataPool:
             failureDomain: host
             replicated:
-              size: 3
+              size: 4
           dataPool:
             failureDomain: host
             erasureCoded:
