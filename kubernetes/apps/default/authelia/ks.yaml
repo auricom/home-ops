@@ -11,6 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: cloudnative-pg-cluster
     - name: dragonfly-cluster
     - name: external-secrets-stores
   path: ./kubernetes/apps/default/authelia/app

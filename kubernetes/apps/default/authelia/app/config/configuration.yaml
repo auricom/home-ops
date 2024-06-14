@@ -1,15 +1,50 @@
 ---
+authentication_backend:
+  ldap:
+    address: ldap://lldap.default.svc.cluster.local:5389
+    implementation: custom
+    timeout: 5s
+    start_tls: false
+    base_dn: dc=home,dc=arpa
+    additional_users_dn: ou=people
+    users_filter: (&({username_attribute}={input})(objectClass=person))
+    additional_groups_dn: ou=groups
+    groups_filter: (member={dn})
+    user: uid=admin,ou=people,dc=home,dc=arpa
+    attributes:
+      username: uid
+      display_name: displayName
+      group_name: cn
+      mail: mail
+      member_of: memberOf
+  password_reset:
+    disable: true
+  refresh_interval: 1m
+
 session:
-  # redis:
-  #   high_availability:
-  #     sentinel_name: redis-master
-  #     nodes:
-  #       - host: redis-node-0.redis-headless.default.svc.cluster.local.
-  #         port: 26379
-  #       - host: redis-node-1.redis-headless.default.svc.cluster.local.
-  #         port: 26379
-  #       - host: redis-node-2.redis-headless.default.svc.cluster.local.
-  #         port: 26379
+  name: authelia-home-ops
+  same_site: lax
+  inactivity: 5m
+  expiration: 1h
+  remember_me: 1M
+  cookies:
+    - name: authelia_session
+      domain: ${SECRET_CLUSTER_DOMAIN}
+      authelia_url: https://auth.${SECRET_CLUSTER_DOMAIN}
+      default_redirection_url: https://${SECRET_CLUSTER_DOMAIN}
+  redis:
+    host: dragonfly.database.svc.cluster.local.
+    port: 6379
+    database_index: 2
+
+notifier:
+  disable_startup_check: true
+  smtp:
+    address: smtp-relay.default.svc.cluster.local.:2525
+    disable_require_tls: true
+
+duo_api:
+  disable: true
 
 access_control:
   ## Default policy can either be 'bypass', 'one_factor', 'two_factor' or 'deny'. It is the policy applied to any
@@ -17,25 +52,26 @@ access_control:
   default_policy: two_factor
   networks:
     - name: private
-      networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+      networks: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16]
     - name: vpn
-      networks: ["10.10.0.0/16"]
+      networks: [10.10.0.0/16]
   rules:
     # bypass Authelia WAN + LAN
     - domain:
-        - auth.${SECRET_PUBLIC_DOMAIN}
+        - auth.${SECRET_CLUSTER_DOMAIN}
       policy: bypass
     # One factor auth for LAN
     - domain:
-        - "*.${SECRET_PUBLIC_DOMAIN}"
+        - "*.${SECRET_CLUSTER_DOMAIN}"
       policy: one_factor
-      subject: ["group:admins", "group:users"]
+      subject: [group:admins, group:users]
       networks:
         - private
     # Deny public resources
-    - domain: ["navidrome.${SECRET_PUBLIC_DOMAIN}"]
-      resources: ["^/metrics.*$"]
+    - domain: ["navidrome.${SECRET_CLUSTER_DOMAIN}"]
+      resources: [^/metrics.*$]
       policy: deny
+
 identity_providers:
   oidc:
     cors:
@@ -44,36 +80,42 @@ identity_providers:
     clients:
       - client_id: freshrss
         client_name: freshrss
-        client_secret:
+        client_secret: "$${FRESHRSS_OAUTH_DIGEST}"
         public: false
         authorization_policy: two_factor
-        redirect_uris: ["https://freshrss.${SECRET_PUBLIC_DOMAIN}/i/oidc/"]
+        redirect_uris: ["https://freshrss.${SECRET_CLUSTER_DOMAIN}:443/i/oidc/"]
         scopes: [openid, profile, groups, email]
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
       - client_name: grafana
         client_id: grafana
-        client_secret: "${GRAFANA_OAUTH_CLIENT_SECRET}"
+        client_secret: "$${GRAFANA_OAUTH_DIGEST}"
         public: false
         authorization_policy: two_factor
         pre_configured_consent_duration: 1y
         scopes: [openid, profile, groups, email]
-        redirect_uris: ["https://grafana.${SECRET_PUBLIC_DOMAIN}/login/generic_oauth"]
-        userinfo_signing_algorithm: none
-      - id: outline
-        description: Outline
-        secret: "${OUTLINE_OAUTH_CLIENT_SECRET}"
+        redirect_uris: ["https://grafana.${SECRET_CLUSTER_DOMAIN}/login/generic_oauth"]
+        userinfo_signed_response_alg: none
+      - client_id: outline
+        client_name: Outline
+        client_secret: "$${OUTLINE_OAUTH_DIGEST}"
         public: false
         authorization_policy: two_factor
         pre_configured_consent_duration: 1y
         scopes: [openid, profile, email, offline_access]
-        redirect_uris: ["https://docs.${SECRET_PUBLIC_DOMAIN}/auth/oidc.callback"]
-        userinfo_signing_algorithm: none
+        response_types: code
+        redirect_uris: ["https://docs.${SECRET_CLUSTER_DOMAIN}/auth/oidc.callback"]
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
       - client_name: jellyfin
         client_id: jellyfin
-        client_secret: "${JELLYFIN_OAUTH_CLIENT_SECRET}"
+        client_secret: "$${JELLYFIN_OAUTH_DIGEST}"
         public: false
         authorization_policy: two_factor
+        require_pkce: true
+        pkce_challenge_method: S256
         pre_configured_consent_duration: 1y
-        scopes: [openid, profile, groups, email]
-        redirect_uris: [ "https://jellyfin.${SECRET_PUBLIC_DOMAIN}/sso/OID/redirect/authelia" ]
+        scopes: [openid, profile, groups]
+        redirect_uris: [ "https://jellyfin.${SECRET_CLUSTER_DOMAIN}/sso/OID/redirect/authelia"]
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_post

@@ -63,36 +63,10 @@ spec:
               repository: ghcr.io/authelia/authelia
               tag: 4.38.8@sha256:19375b10024caeef4e0b119a6247beae84cbaa02c846cfd750e92dea910d4b6a
             env:
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDITIONAL_GROUPS_DN: ou=groups
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDITIONAL_USERS_DN: ou=people
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_BASE_DN: dc=home,dc=arpa
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_DISPLAY_NAME_ATTRIBUTE: displayName
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_GROUPS_FILTER: (member={dn})
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_GROUP_NAME_ATTRIBUTE: cn
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_IMPLEMENTATION: custom
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_MAIL_ATTRIBUTE: mail
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_START_TLS: "false"
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_TIMEOUT: 5s
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_URL: ldap://lldap.default.svc.cluster.local:5389
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USER: uid=admin,ou=people,dc=home,dc=arpa
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USERNAME_ATTRIBUTE: uid
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USERS_FILTER: (&({username_attribute}={input})(objectClass=person))
-              AUTHELIA_AUTHENTICATION_BACKEND_PASSWORD_RESET_DISABLE: "true"
-              AUTHELIA_AUTHENTICATION_BACKEND_REFRESH_INTERVAL: 1m
-              AUTHELIA_DEFAULT_REDIRECTION_URL: https://auth.${SECRET_CLUSTER_DOMAIN}
-              AUTHELIA_DUO_API_DISABLE: "true"
               AUTHELIA_LOG_LEVEL: info
-              AUTHELIA_NOTIFIER_DISABLE_STARTUP_CHECK: "true"
-              AUTHELIA_NOTIFIER_SMTP_DISABLE_REQUIRE_TLS: "true"
-              AUTHELIA_NOTIFIER_SMTP_HOST: smtp-relay.default.svc.cluster.local.
-              AUTHELIA_NOTIFIER_SMTP_PORT: "2525"
               AUTHELIA_NOTIFIER_SMTP_SENDER: "Authelia <authelia@${SECRET_DOMAIN}>"
               AUTHELIA_SERVER_DISABLE_HEALTHCHECK: "true"
               AUTHELIA_SERVER_ADDRESS: tcp://0.0.0.0:8888
-              AUTHELIA_SESSION_DOMAIN: ${SECRET_CLUSTER_DOMAIN}
-              AUTHELIA_SESSION_NAME: authelia-home-ops
-              AUTHELIA_SESSION_REDIS_HOST: dragonfly.database.svc.cluster.local.
-              AUTHELIA_SESSION_REDIS_PORT: 6379
               AUTHELIA_TELEMETRY_METRICS_ADDRESS: tcp://0.0.0.0:8080
               AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
               AUTHELIA_THEME: dark
@@ -175,3 +149,9 @@ spec:
           - path: /config/configuration.yaml
             subPath: configuration.yaml
             readOnly: true
+      secret-files:
+        enabled: true
+        type: secret
+        name: authelia-secret
+        globalMounts:
+          - path: /config/secret

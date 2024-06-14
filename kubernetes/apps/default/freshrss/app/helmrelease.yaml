@@ -52,10 +52,10 @@ spec:
               OIDC_ENABLED: 1
               OIDC_PROVIDER_METADATA_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/.well-known/openid-configuration
               OIDC_CLIENT_ID: freshrss
-              OIDC_CLIENT_SECRET: insecure_secret
               OIDC_REMOTE_USER_CLAIM: preferred_username
               OIDC_SCOPES: openid groups email profile
               OIDC_X_FORWARDED_HEADERS: X-Forwarded-Host X-Forwarded-Port X-Forwarded-Proto
+            envFrom: *envFrom
             resources:
               requests:
                 cpu: 50m
