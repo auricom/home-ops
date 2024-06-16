@@ -62,7 +62,7 @@ spec:
           enabled: true
           className: nginx
           hosts:
-            - &host "cilium.${SECRET_CLUSTER_DOMAIN}"
+            - &host "cilium.${SECRET_EXTERNAL_DOMAIN}"
           tls:
             - hosts:
                 - *host
@@ -111,7 +111,7 @@ spec:
     ingressController:
       enabled: false
       defaultSecretNamespace: networking
-      defaultSecretName: ${SECRET_CLUSTER_DOMAIN//./-}-tls
+      defaultSecretName: ${SECRET_EXTERNAL_DOMAIN//./-}-tls
       loadbalancerMode: shared
       service:
         loadBalancerIP: 192.168.169.115

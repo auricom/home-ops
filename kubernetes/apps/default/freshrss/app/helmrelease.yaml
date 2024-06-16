@@ -48,9 +48,9 @@ spec:
             env:
               TZ: ${TIMEZONE}
               CRON_MIN: 18,48
-              DOMAIN: "https://freshrss.${SECRET_CLUSTER_DOMAIN}/"
+              DOMAIN: "https://freshrss.${SECRET_EXTERNAL_DOMAIN}/"
               OIDC_ENABLED: 1
-              OIDC_PROVIDER_METADATA_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/.well-known/openid-configuration
+              OIDC_PROVIDER_METADATA_URL: https://auth.${SECRET_EXTERNAL_DOMAIN}/.well-known/openid-configuration
               OIDC_CLIENT_ID: freshrss
               OIDC_REMOTE_USER_CLAIM: preferred_username
               OIDC_SCOPES: openid groups email profile
@@ -73,7 +73,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:rss
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

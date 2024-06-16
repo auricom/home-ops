@@ -1,7 +1,7 @@
 ---
 - Home:
     - HomeAssistant:
-        href: https://hass.${SECRET_CLUSTER_DOMAIN}
+        href: https://hass.${SECRET_EXTERNAL_DOMAIN}
         icon: home-assistant.png
         description: Home Assistant
         widget:
@@ -11,7 +11,7 @@
 - Media:
     - Jellyfin:
         icon: jellyfin.png
-        href: https://jellyfin.${SECRET_CLUSTER_DOMAIN}
+        href: https://jellyfin.${SECRET_EXTERNAL_DOMAIN}
         description: Media Server
         widget:
             type: jellyfin

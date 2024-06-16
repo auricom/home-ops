@@ -53,7 +53,7 @@ spec:
         path: /
         pathType: Prefix
         hosts:
-          - &host "emqx.${SECRET_CLUSTER_DOMAIN}"
+          - &host "emqx.${SECRET_EXTERNAL_DOMAIN}"
         tls:
           - hosts:
               - *host

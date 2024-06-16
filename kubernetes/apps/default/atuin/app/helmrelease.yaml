@@ -108,7 +108,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:powershell
         hosts:
-          - host: &host "sh.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "sh.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

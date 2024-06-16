@@ -48,7 +48,7 @@ spec:
             env:
               TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
-              APP_URL: https://lychee.${SECRET_CLUSTER_DOMAIN}
+              APP_URL: https://lychee.${SECRET_EXTERNAL_DOMAIN}
               DB_CONNECTION: pgsql
               PHP_TZ: ${TIMEZONE}
               REDIS_HOST: dragonfly.database.svc.cluster.local.
@@ -74,7 +74,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:camera
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

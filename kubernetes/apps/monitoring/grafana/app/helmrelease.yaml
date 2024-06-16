@@ -29,10 +29,10 @@ spec:
     rbac:
       pspEnabled: false
     env:
-      GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/userinfo
-      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/authorization
+      GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/userinfo
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/authorization
       GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://auth.${SECRET_CLUSTER_DOMAIN}/api/oidc/token
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/token
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
       GF_PANELS_DISABLE_SANITIZE_HTML: true
@@ -41,7 +41,7 @@ spec:
       GF_DATE_FORMATS_FULL_DATE: "DD.MM.YYYY hh:mm:ss"
       GF_SECURITY_ALLOW_EMBEDDING: true
       GF_SECURITY_COOKIE_SAMESITE: grafana
-      GF_SERVER_ROOT_URL: https://grafana.${SECRET_CLUSTER_DOMAIN}
+      GF_SERVER_ROOT_URL: https://grafana.${SECRET_EXTERNAL_DOMAIN}
     envFromSecrets:
       - name: grafana-secret
     grafana.ini:
@@ -50,7 +50,7 @@ spec:
         check_for_plugin_updates: false
         reporting_enabled: false
       auth:
-        signout_redirect_url: "https://auth.${SECRET_CLUSTER_DOMAIN}/logout"
+        signout_redirect_url: "https://auth.${SECRET_EXTERNAL_DOMAIN}/logout"
         oauth_auto_login: true
         oauth_allow_insecure_email_lookup: true
       auth.generic_oauth:
@@ -369,7 +369,7 @@ spec:
       annotations:
         hajimari.io/icon: simple-icons:grafana
       hosts:
-        - &host "grafana.${SECRET_CLUSTER_DOMAIN}"
+        - &host "grafana.${SECRET_EXTERNAL_DOMAIN}"
       tls:
         - hosts:
             - *host

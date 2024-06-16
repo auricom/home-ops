@@ -32,11 +32,9 @@ spec:
     installCRDs: true
     webhook:
       enabled: true
-    extraArgs:
-      - --dns01-recursive-nameservers=ns15.ovh.net:53,dns15.ovh.net:53
-      - --dns01-recursive-nameservers-only
-    cainjector:
-      replicaCount: 1
+    enableCertificateOwnerRef: true
+    dns01RecursiveNameservers: 8.8.8.8:53,1.1.1.1:53
+    dns01RecursiveNameserversOnly: true
     prometheus:
       enabled: true
       servicemonitor:

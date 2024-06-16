@@ -37,11 +37,11 @@ spec:
           hajimari.io/appName: Rook
           hajimari.io/icon: mdi:chess-rook
         host:
-          name: "rook.${SECRET_CLUSTER_DOMAIN}"
+          name: "rook.${SECRET_EXTERNAL_DOMAIN}"
           path: /
         tls:
           - hosts:
-              - "rook.${SECRET_CLUSTER_DOMAIN}"
+              - "rook.${SECRET_EXTERNAL_DOMAIN}"
     configOverride: |
       [global]
       bdev_enable_discard = true

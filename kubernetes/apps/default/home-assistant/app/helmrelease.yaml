@@ -89,7 +89,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:home-assistant
         hosts:
-          - host: &host "hass.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "hass.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

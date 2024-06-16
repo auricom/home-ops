@@ -124,7 +124,7 @@ spec:
         annotations:
           hajimari.io/enable: "false"
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

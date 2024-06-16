@@ -131,7 +131,7 @@ spec:
           gethomepage.dev/name: Authelia
           gethomepage.dev/icon: authelia.png
         hosts:
-          - host: &host auth.${SECRET_CLUSTER_DOMAIN}
+          - host: &host auth.${SECRET_EXTERNAL_DOMAIN}
             paths:
               - path: /
                 service:

@@ -92,7 +92,7 @@ spec:
           hajimari.io/icon: "weather-sunset"
           hajimari.io/instance: "admin"
         hosts:
-          - host: &host apps.${SECRET_CLUSTER_DOMAIN}
+          - host: &host apps.${SECRET_EXTERNAL_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix

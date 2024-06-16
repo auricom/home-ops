@@ -59,7 +59,7 @@ spec:
             env:
               TZ: ${TIMEZONE}
               LLDAP_HTTP_PORT: &port 8080
-              LLDAP_HTTP_URL: https://lldap.${SECRET_CLUSTER_DOMAIN}
+              LLDAP_HTTP_URL: https://lldap.${SECRET_EXTERNAL_DOMAIN}
               LLDAP_LDAP_PORT: &ldapPort 5389
               LLDAP_LDAP_BASE_DN: dc=home,dc=arpa
             envFrom: *envFrom
@@ -85,7 +85,7 @@ spec:
           hajimari.io/icon: mdi:account-multiple
         className: nginx
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

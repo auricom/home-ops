@@ -60,7 +60,7 @@ spec:
               PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local.:6379
               PAPERLESS_TASK_WORKERS: 2
               PAPERLESS_TIME_ZONE: Europe/Paris
-              PAPERLESS_URL: https://paperless.${SECRET_CLUSTER_DOMAIN}
+              PAPERLESS_URL: https://paperless.${SECRET_EXTERNAL_DOMAIN}
             envFrom: *envFrom
             resources:
               requests:
@@ -81,7 +81,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:barcode-scan
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

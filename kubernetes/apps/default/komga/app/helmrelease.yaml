@@ -57,7 +57,7 @@ spec:
           hajimari.io/icon: mdi:ideogram-cjk-variant
         className: nginx
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

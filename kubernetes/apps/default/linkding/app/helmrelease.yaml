@@ -79,7 +79,7 @@ spec:
         annotations:
           hajimari.io/icon: link
         hosts:
-          - host: &host "links.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "links.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

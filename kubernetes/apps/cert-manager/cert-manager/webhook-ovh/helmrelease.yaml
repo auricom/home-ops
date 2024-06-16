@@ -27,6 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
     groupName: "${SECRET_DOMAIN}"
     certManager:
       namespace: cert-manager
@@ -36,7 +38,7 @@ spec:
         create: true
         kind: ClusterIssuer
         acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
-        email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
+        email: "${SECRET_EXTERNAL_DOMAIN_EMAIL}"
         ovhEndpointName: ovh-eu
         ovhAuthenticationRef:
           applicationKeyRef:
@@ -52,7 +54,7 @@ spec:
         create: true
         kind: ClusterIssuer
         acmeServerUrl: https://acme-v02.api.letsencrypt.org/directory
-        email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
+        email: "${SECRET_EXTERNAL_DOMAIN_EMAIL}"
         ovhEndpointName: ovh-eu
         ovhAuthenticationRef:
           applicationKeyRef:

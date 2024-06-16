@@ -114,7 +114,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: simple-icons:jellyfin
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

@@ -78,7 +78,7 @@ spec:
         enabled: true
         className: nginx
         hosts:
-          - host: &host hass-code.${SECRET_CLUSTER_DOMAIN}
+          - host: &host hass-code.${SECRET_EXTERNAL_DOMAIN}
             paths:
               - path: /
                 service:

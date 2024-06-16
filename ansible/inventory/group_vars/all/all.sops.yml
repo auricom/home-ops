@@ -1,5 +1,5 @@
 kind: Secret
-secret_cluster_domain: ENC[AES256_GCM,data:V+KhvpQZ0bxjMDNZq4vYXg==,iv:WP0hlWvDEL0fu1aFR0UQW31nQKWxkkfgoXbfdV4WZ9w=,tag:e3Ky3kenlL71zyQBOXclsQ==,type:str]
+SECRET_EXTERNAL_DOMAIN: ENC[AES256_GCM,data:V+KhvpQZ0bxjMDNZq4vYXg==,iv:WP0hlWvDEL0fu1aFR0UQW31nQKWxkkfgoXbfdV4WZ9w=,tag:e3Ky3kenlL71zyQBOXclsQ==,type:str]
 secret_domain: ENC[AES256_GCM,data:SjdnR9pDjveodvo=,iv:GKvdD7c3bmaQN+CAYoKwAy78em9vYljGyl6VfGmJk9E=,tag:hz92J7d1NokEeyB6vxr3Uw==,type:str]
 public_ssh_keys:
     - ENC[AES256_GCM,data:/J9ejzvJHV5wdz9Dj0jUmAaVtIkgVpEoIRJocNGhszY2bmu5mruwWSz6E+XkcAGE0zQMo/9N8imIZoXfq0UQSyfCCitrA09x1z0Hf0s3iSA=,iv:jzA3bIQw+pL4tjNASNMwMcdHW+vSxgVo4Czo/ja0AO8=,tag:iTEDjARfH96oXATQu8VR8Q==,type:str]

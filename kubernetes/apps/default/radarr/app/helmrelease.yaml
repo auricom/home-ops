@@ -54,12 +54,12 @@ spec:
               tag: 5.6.0.8846@sha256:99c264af3f2d177e6674a9b304b64a35261202de30e54b35d5758d40edd94366
             env:
               TZ: "${TIMEZONE}"
-              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
               PUSHOVER_DEBUG: "false"
               PUSHOVER_PRIORITY: "0"
               RADARR__INSTANCE_NAME: Radarr
               RADARR__PORT: &port 8080
-              RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+              RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
               RADARR__LOG_LEVEL: info
               RADARR__THEME: dark
             envFrom: *envFrom
@@ -82,7 +82,7 @@ spec:
         annotations:
           # nginx.ingress.kubernetes.io/auth-method: GET
           # nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_CLUSTER_DOMAIN}?rm=$request_method
+          # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
           # nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:filmstrip

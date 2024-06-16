@@ -69,7 +69,7 @@ spec:
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
           hajimari.io/icon: mdi:account-arrow-up
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:

@@ -94,7 +94,7 @@ spec:
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
           hajimari.io/icon: mdi:lan
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
               - path: /
                 service:
