@@ -26,4 +26,5 @@ spec:
     substitute:
       APP: *app
       GATUS_PATH: /i/
+      GATUS_STATUS: "401"
       VOLSYNC_CAPACITY: 2Gi
