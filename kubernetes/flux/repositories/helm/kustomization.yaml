@@ -32,5 +32,4 @@ resources:
   - ./stakater.yaml
   - ./stevehipwell.yaml
   - ./vector.yaml
-  - ./weaveworks.yaml
   - ./xenitab.yaml

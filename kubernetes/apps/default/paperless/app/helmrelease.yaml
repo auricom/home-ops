@@ -33,6 +33,7 @@ spec:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: authelia-secret
         initContainers:
           init-db:
             image:
