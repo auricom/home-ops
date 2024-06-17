@@ -27,9 +27,6 @@ spec:
       APP: *app
       GATUS_SUBDOMAIN: hass
       VOLSYNC_CAPACITY: 5Gi
-      VOLSYNC_ACCESSMODES: ReadWriteMany
-      VOLSYNC_STORAGECLASS: rook-ceph-filesystem
-      VOLSYNC_SNAPSHOTCLASS: csi-ceph-filesystem
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
