@@ -61,11 +61,11 @@ spec:
           app:
             image:
               repository: haveagitgat/tdarr
-              tag: 2.20.01@sha256:b5789a3d9f667f7bc2768f63e9bf3dba52f8248d5f63ed00ed58249851621d01
+              tag: 2.21.01@sha256:e040d084136ef31118f01f2fcad1abef6d5860f799ecba27f4958701b31297ef
           node:
             image:
               repository: haveagitgat/tdarr_node
-              tag: 2.20.01@sha256:1e3e2a151170c6df7f826141111ad4a7341627a329e6d96197ccb0f85a016cc9
+              tag: 2.21.01@sha256:96d2f15b13364727fad2e50cd9953ca14892698f0671287abfc613dca24ba4db
             env:
             - name: nodeID
               value: node
