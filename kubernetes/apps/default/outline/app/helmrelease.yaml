@@ -57,6 +57,7 @@ spec:
               AWS_S3_UPLOAD_BUCKET_URL: "https://s3.${SECRET_INTERNAL_DOMAIN}"
               ENABLE_UPDATES: "false"
               FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
+              LOG_LEVEL: debug
               OIDC_AUTH_URI: "https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/authorization"
               OIDC_CLIENT_ID: outline
               OIDC_DISPLAY_NAME: Authelia
