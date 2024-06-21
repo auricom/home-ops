@@ -131,6 +131,7 @@ identity_providers:
         scopes: [openid, profile, email, offline_access]
         redirect_uris: ["https://docs.${SECRET_EXTERNAL_DOMAIN}/auth/oidc.callback"]
         userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_post
       - client_id: paperless
         client_name: Paperless
         client_secret: "$${PAPERLESS_OAUTH_DIGEST}"
