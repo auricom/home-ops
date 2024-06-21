@@ -6,7 +6,7 @@ namespace: default
 resources:
   - ./helmrelease.yaml
 configMapGenerator:
-  - name: homelab-truenas-photo-sort-configmap
+  - name: homelab-storage-photo-sort-configmap
     files:
       - ./scripts/sort.sh
 generatorOptions:

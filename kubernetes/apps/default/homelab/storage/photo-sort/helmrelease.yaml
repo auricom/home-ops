@@ -29,7 +29,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      homelab-truenas-photo-sort:
+      homelab-storage-photo-sort:
         type: cronjob
         cronjob:
           concurrencyPolicy: Forbid
@@ -59,7 +59,7 @@ spec:
     persistence:
       scripts:
         type: configMap
-        name: homelab-truenas-photo-sort-configmap
+        name: homelab-storage-photo-sort-configmap
         defaultMode: 0775
         globalMounts:
           - path: /app/sort.sh
