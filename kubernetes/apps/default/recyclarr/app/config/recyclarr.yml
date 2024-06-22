@@ -60,6 +60,20 @@ sonarr:
               - WEBRip-480p
           - name: DVD
           - name: SDTV
+      - name: Web 480p
+        reset_unmatched_scores:
+          enabled: true
+        upgrade:
+          allowed: false
+        min_format_score: 0
+        quality_sort: top
+        qualities:
+          - name: Web-480p
+            qualities:
+              - WEBDL-480p
+              - WEBRip-480p
+          - name: DVD
+          - name: SDTV
     custom_formats:
       - trash_ids:
           # Audio
