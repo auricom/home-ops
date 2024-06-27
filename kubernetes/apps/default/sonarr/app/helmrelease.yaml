@@ -51,7 +51,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/sonarr-develop
-              tag: 4.0.5.1760@sha256:2be2e97e105573bc0810af388ae8f9ec6d8a8a0784aae0b1ed75d3002b66a87a
+              tag: 4.0.5.1782@sha256:e52156ce17abc4e05e26536b72f2a39257461f06182a9696af317d025f0d7bc7
             env:
               TZ: "${TIMEZONE}"
               PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
