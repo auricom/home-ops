@@ -3,14 +3,14 @@
   ansible.builtin.file:
     path: "{{ root_path }}/mnt/{{ item }}"
     state: directory
-    mode: 0775
+    mode: "0775"
   loop: "{{ nfs_shares }}"
 
 - name: nfs | create system.d services
   ansible.builtin.template:
-    src: "storage-nfs.mount"
+    src: storage-nfs.mount.j2
     dest: "/storage/.config/system.d/storage-mnt-{{ item | replace('/','-') }}.mount"
-    mode: 0775
+    mode: "0775"
   loop: "{{ nfs_shares }}"
   register: services
 

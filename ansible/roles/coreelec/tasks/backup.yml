@@ -1,13 +1,13 @@
 ---
 - name: backup | copy script
-  ansible.builtin.copy:
-    src: backup.bash
+  ansible.builtin.template:
+    src: backup.bash.j2
     dest: /storage/backup.bash
-    mode: 0755
+    mode: "0755"
 
 - name: backup | crontab
   ansible.builtin.cron:
-    name: "daily backup"
+    name: daily backup
     minute: "14"
     hour: "4"
-    job: "/storage/backup.bash"
+    job: /storage/backup.bash

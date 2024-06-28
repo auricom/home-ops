@@ -3,7 +3,7 @@
 # Variables
 DATE=$(date +%Y%m%d%H%M)
 BACKUP_SRC="/storage/backup"
-BACKUP_DEST="homelab@storage.{{ secret_domain }}:/vol1/backups/servers/coreelec.{{ secret_domain }}/"
+BACKUP_DEST="homelab@storage.{{ internal_domain }}:/vol1/backups/servers/coreelec.{{ internal_domain }}/"
 
 error_handler() {
     local error_line=$1
@@ -17,7 +17,7 @@ error_handler() {
     curl -s \
         --form-string "token={{ pushover_api_token }}" \
         --form-string "user={{ pushover_user_key }}" \
-        --form-string "message=coreelec.{{ secret_domain }}
+        --form-string "message=coreelec.{{ internal_domain }}
 script: ${script_name}
 error_line: ${error_line}
 error_message: ${error_message}" \
