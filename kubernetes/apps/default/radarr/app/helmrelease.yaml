@@ -51,17 +51,20 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
-              tag: 5.7.0.8882@sha256:d6a11184848cc5309b9c0024cf33b40bb6a3613a5b15613bcc51864b23839015
+              tag: 5.8.0.8897@sha256:2c9c733b4c89280cfcc25ba727b08bac7fee272917dfa28de675d4e0c3309684
             env:
               TZ: "${TIMEZONE}"
+              RADARR__APP__INSTANCENAME: Radarr
+              RADARR__APP__THEME: dark
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__LOG__DBENABLED: "False"
+              RADARR__LOG__LEVEL: info
+              RADARR__SERVER__PORT: &port 8080
               PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+              RADARR__UPDATE__BRANCH: develop
               PUSHOVER_DEBUG: "false"
               PUSHOVER_PRIORITY: "0"
-              RADARR__INSTANCE_NAME: Radarr
-              RADARR__PORT: &port 8080
-              RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-              RADARR__LOG_LEVEL: info
-              RADARR__THEME: dark
             envFrom: *envFrom
             resources:
               requests:
