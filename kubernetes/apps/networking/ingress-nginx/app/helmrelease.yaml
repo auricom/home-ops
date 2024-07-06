@@ -120,7 +120,7 @@ spec:
       enabled: true
       image:
         repository: ghcr.io/tarampampam/error-pages
-        tag: 2.27.0@sha256:40e2631173b1a407c18fe7d1ba8104d995cf9e4780d123eeadfa1d57c68eaf4f
+        tag: 3.2.0@sha256:d09f15b6d7c80d535b3dc7f719f655f293d8c5f80121c5eb88843bfb8a603a4a
       extraEnvs:
         - name: TEMPLATE_NAME
           value: l7-light
