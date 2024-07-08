@@ -73,6 +73,11 @@ spec:
               value: localhost
             - name: serverPort
               value: 8266
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                cpu: 2
     service:
       app:
         controller: *app
