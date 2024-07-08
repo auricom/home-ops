@@ -45,7 +45,7 @@ spec:
           app:
             image:
               repository: cgr.dev/chainguard/python
-              tag: latest-dev@sha256:b179fd2b12dadbc3fceb0fda5133020269da349083eef7d1a6378a338fa4ee4b
+              tag: latest-dev@sha256:5ba92d0eb4410ac5963adc7aedc8bd7662e3c1d437eedcce1a7f874a184d62e9
             command:
               - /bin/bash
               - -c
