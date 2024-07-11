@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: docker.io/photoprism/photoprism
-              tag: latest@sha256:5db91badeec3f1e32a624f9e6c70541fe5d28ddfd5447d5d258046a5768c1c0b
+              tag: latest@sha256:6e6eb5d43544cbf9de3097fe4d37279267e271602aebcf16cefd1e50a08adf78
             env:
               PHOTOPRISM_STORAGE_PATH: &storage /config
               PHOTOPRISM_ORIGINALS_PATH: &originals /var/mnt/vol1/photo/Gallery
