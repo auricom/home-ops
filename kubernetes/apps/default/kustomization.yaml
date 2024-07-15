@@ -56,7 +56,6 @@ resources:
   - ./unifi/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./vikunja/ks.yaml
-  - ./wallabag/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./zwave-js-ui/ks.yaml
   # Default resources
