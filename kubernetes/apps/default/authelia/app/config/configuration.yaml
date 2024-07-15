@@ -1,6 +1,4 @@
 ---
-# Genereate client_secret
-# https://www.authelia.com/integration/openid-connect/frequently-asked-questions/#how-do-i-generate-a-client-identifier-or-client-secret
 authentication_backend:
   ldap:
     address: ldap://lldap.default.svc.cluster.local:5389
@@ -82,6 +80,8 @@ identity_providers:
       endpoints: [authorization, token, revocation, introspection]
       allowed_origins_from_client_redirect_uris: true
     clients:
+    # Genereate client_secret
+    # https://www.authelia.com/integration/openid-connect/frequently-asked-questions/#how-do-i-generate-a-client-identifier-or-client-secret
       - client_id: freshrss
         client_name: freshrss
         client_secret: "$${FRESHRSS_OAUTH_DIGEST}"
@@ -151,3 +151,10 @@ identity_providers:
         redirect_uris: ['https://pgadmin.${SECRET_EXTERNAL_DOMAIN}/oauth2/authorize']
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
+      - client_id: windmill
+        client_name: Windmill
+        client_secret: '$${WINDMILL_OAUTH_CLIENT_SECRET}'
+        authorization_policy: 'two_factor'
+        redirect_uris: ['https://windmill.${SECRET_EXTERNAL_DOMAIN}/user/login_callback/authelia']
+        scopes: [openid, profile, groups, email]
+        userinfo_signed_response_alg: none

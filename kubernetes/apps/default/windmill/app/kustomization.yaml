@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - ./externalsecret.yaml
+  - ./helmrelease.yaml
+  - ../../../../templates/gatus/guarded
+configMapGenerator:
+  - name: windmill-grants
+    files:
+      - ./scripts/grants.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
