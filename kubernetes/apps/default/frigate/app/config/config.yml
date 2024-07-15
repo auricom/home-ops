@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://frigate.devbu.io/api/config/schema.json
 logger:
   default: info
   # logs:
