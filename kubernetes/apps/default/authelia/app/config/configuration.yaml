@@ -154,7 +154,7 @@ identity_providers:
       - client_id: windmill
         client_name: Windmill
         client_secret: '$${WINDMILL_OAUTH_CLIENT_SECRET}'
-        authorization_policy: 'two_factor'
+        authorization_policy: two_factor
         redirect_uris: ['https://windmill.${SECRET_EXTERNAL_DOMAIN}/user/login_callback/authelia']
         scopes: [openid, profile, groups, email]
         userinfo_signed_response_alg: none

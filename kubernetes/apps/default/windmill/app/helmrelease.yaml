@@ -84,6 +84,19 @@ spec:
               memory: 256Mi
     ingress:
       enabled: true
+      annotations:
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/name: Windmill
+        gethomepage.dev/description: Developer platform to turn scripts into workflows and UIs
+        gethomepage.dev/group: Applications
+        gethomepage.dev/icon: webhook.png
+        gethomepage.dev/href: https://windmill.${SECRET_EXTERNAL_DOMAIN}
+        gethomepage.dev/pod-selector: >-
+          app in (
+            windmill-app,
+            windmill-workers,
+            windmill-lsp
+          )
       className: nginx
       tls:
         - hosts:
