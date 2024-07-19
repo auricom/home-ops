@@ -13,8 +13,8 @@ sonarr:
 
     quality_profiles:
       - name: Web 1080p
-        reset_unmatched_scores:
-          enabled: true
+        # reset_unmatched_scores:
+        #   enabled: true
         upgrade:
           allowed: true
           until_quality: Web-1080p
