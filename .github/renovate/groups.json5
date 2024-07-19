@@ -64,6 +64,16 @@
       "separateMinorPatch": true
     },
     {
+      "description": ["Scrutiny Group"],
+      "groupName": "Scrutiny Operator",
+      "matchPackagePatterns": ["master-web","master-collector"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
+    {
       "description": "Tdarr Group",
       "groupName": "Tdarr",
       "matchPackagePatterns": ["tdarr","tdarr_node"],
