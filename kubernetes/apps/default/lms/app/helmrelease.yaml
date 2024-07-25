@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: toertel/logitech-media-server
-              tag: v8.4.0-1@sha256:07dde462237c0618034c9d2db33967f5bc0db34544558e8edaac32ef0614555a
+              tag: v8.4.0-1@sha256:b54aca455eb07da2c97c555a8af6694ce962cea844e516d0d7147ff84005d55f
             env:
               AUDIO_DIR: &music /var/mnt/vol1/music
               PLAYLIST_DIR: &playlist /var/mnt/vol1/music/.lms
