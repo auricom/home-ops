@@ -134,15 +134,15 @@ sonarr:
           - ddb8eaa9c85a549c50034d280539d54d  # FR WEB Tier 01
           - a4c51febd4d8b2a0db10a3c974f21d92  # FR WEB Tier 02
           - dbfc0a4b5cb4cbd693311c4482ae9683  # FR WEB Tier 03
-        quality_profiles:
+        assign_scores_to:
           - name: Web 1080p
           - name: Web 720p
       - trash_ids: [9965a052eb87b0d10313b1cea89eb451] # Remux Tier 01
-        quality_profiles:
+        assign_scores_to:
           - name: Web 1080p
             score: 1900
       - trash_ids: [8a1d0c3d7497e741736761a1da866a2e] # Remux Tier 02
-        quality_profiles:
+        assign_scores_to:
           - name: Web 1080p
             score: 1850
 radarr:
@@ -234,7 +234,7 @@ radarr:
           - cc5e51a9e85a6296ceefe097a77f12f4  # BCORE
           - 2a6039655313bf5dab1e43523b62c374  # MA
           - 16622a6911d1ab5d5b8b713d5b0036d4  # CRiT
-        quality_profiles:
+        assign_scores_to:
           - name: Remux/Web 1080p
       - trash_ids:
           # Streaming Services
@@ -252,6 +252,6 @@ radarr:
           - c9fd353f8f5f1baf56dc601c4cb29920  # PCOK
           - e36a0ba1bc902b26ee40818a1d59b8bd  # PMTP
           - c2863d2a50c9acad1fb50e53ece60817  # STAN
-        quality_profiles:
+        assign_scores_to:
           - name: Remux/Web 1080p
             score: 0
