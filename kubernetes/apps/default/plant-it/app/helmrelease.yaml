@@ -1,0 +1,116 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app plant-it
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      plant-it:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: plant-it-secret
+        containers:
+          app:
+            image:
+              repository: msdeluise/plant-it-server
+              tag: 0.7.4@sha256:5860e254644aa0165e6217fb1f1ef49c56c55633cdeb08c96ee9735ba59e474d
+            env:
+              ALLOWED_ORIGINS: "*"
+              API_PORT: "8080"
+              CACHE_TTL: "86400"
+              CACHE_HOST: dragonfly.database.svc.cluster.local.
+              CACHE_PORT: "6379"
+              LOG_LEVEL: INFO
+              JWT_EXPL: "1"
+              SSL_ENABLED: "false"
+              UPLOAD_DIR: /config
+              USERS_LIMIT: "-1"
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 3000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/icon: mdi:leaf
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/description: Gardening companion
+          gethomepage.dev/group: Home
+          gethomepage.dev/name: Plant-it
+          gethomepage.dev/icon: plant-it.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              plant-it-app
+            )
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
