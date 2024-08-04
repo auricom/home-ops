@@ -41,7 +41,6 @@ resources:
   - ./plant-it/ks.yaml
   - ./pgadmin/ks.yaml
   - ./prowlarr/ks.yaml
-  - ./pushover-notifier/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
   - ./readeck/ks.yaml
