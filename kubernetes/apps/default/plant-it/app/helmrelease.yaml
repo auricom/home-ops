@@ -39,9 +39,11 @@ spec:
               tag: 0.7.5@sha256:9afcea385b2785e26a051df80c53f06d658e670a67fb0a47db5375d18468f24f
             env:
               ALLOWED_ORIGINS: "*"
-              API_PORT: "8080"
+              API_PORT: "8009"
               CACHE_TTL: "86400"
               CACHE_HOST: dragonfly.database.svc.cluster.local.
+              CACHE_USER: ""
+              CACHE_PASSWORD: ""
               CACHE_PORT: "6379"
               CERTIFICATE_PATH: /config/certs
               LOG_LEVEL: INFO
