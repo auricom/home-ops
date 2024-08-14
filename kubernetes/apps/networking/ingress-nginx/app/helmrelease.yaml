@@ -42,7 +42,7 @@ spec:
         client-body-buffer-size: "100M"
         client-body-timeout: 120
         client-header-timeout: 120
-        custom-http-errors: 400,401,403,404,500,502,503,504
+        custom-http-errors: 400,403,404,500,501,502,503,504
         enable-brotli: "true"
         enable-real-ip: "true"
         hsts-max-age: "31449600"
@@ -116,6 +116,21 @@ spec:
       #     cpu: 25m
       #   limits:
       #     memory: 1Gi
+    defaultBackend:
+      enabled: true
+      image:
+        repository: ghcr.io/tarampampam/error-pages
+        tag: 3.3.0@sha256:43c9917e99ac1bb4df3c4e037327637e502e2ab4c3d84803b223d5b7db6d4cd7
+        pullPolicy: IfNotPresent
+      extraEnvs:
+        - name: TEMPLATE_NAME
+          value: connection
+        - name: SHOW_DETAILS
+          value: "true"
+        - name: READ_BUFFER_SIZE
+          value: "8192"
+        - name: SEND_SAME_HTTP_CODE
+          value: "true"
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
