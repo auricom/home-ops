@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: cert-manager-webhook-ovh
-      version: 0.6.0
+      version: 0.7.0
       sourceRef:
         kind: HelmRepository
         name: cert-manager-webhook-ovh
@@ -27,6 +27,7 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    configVersion: 0.0.1
     podAnnotations:
       reloader.stakater.com/auto: "true"
     groupName: "${SECRET_DOMAIN}"
