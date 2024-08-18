@@ -34,8 +34,8 @@ spec:
         containers:
           app:
             image:
-              repository: toertel/logitech-media-server
-              tag: v8.4.0-1@sha256:b54aca455eb07da2c97c555a8af6694ce962cea844e516d0d7147ff84005d55f
+              repository: lmscommunity/logitechmediaserver
+              tag: 9.0.0@sha256:adcfb4ef31324b61d043411aa6409d8c01fc05983a7a1af1ac62805552e45486
             env:
               AUDIO_DIR: &music /var/mnt/vol1/music
               PLAYLIST_DIR: &playlist /var/mnt/vol1/music/.lms
@@ -72,6 +72,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:file-music
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Lyrion Music Server
+          gethomepage.dev/description: Stream not only your local music collection, but content from many music services and internet radio stations to your players.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: lms.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              lms.png
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
