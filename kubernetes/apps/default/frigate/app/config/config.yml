@@ -68,9 +68,9 @@ cameras:
       width: 640
       height: 480
       fps: 7
-    objects:
-      filters:
-        person:
-          mask:
-            - 960,626,800,617,797,0,960,0
-            - 960,0,960,138,0,149,0,0
+    # objects:
+    #   filters:
+    #     person:
+    #       mask:
+    #         - 960,626,800,617,797,0,960,0
+    #         - 960,0,960,138,0,149,0,0
