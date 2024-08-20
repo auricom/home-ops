@@ -29,29 +29,6 @@ spec:
     keepHistory: false
   values:
     defaultPodOptions:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              # Intel N100
-              - key: feature.node.kubernetes.io/cpu-model.id
-                operator: In
-                values:
-                - "190"
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              # Intel N100
-              - key: feature.node.kubernetes.io/cpu-model.id
-                operator: In
-                values:
-                - "190"
-              - key: intel.feature.node.kubernetes.io/gpu
-                operator: In
-                values:
-                - "true"
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
@@ -62,22 +39,12 @@ spec:
             image:
               repository: haveagitgat/tdarr
               tag: 2.24.04@sha256:b01fc64a885fe9976f07ff0673b5a0e62984068d4838b79dd47248c49e316ca1
-          node:
-            image:
-              repository: haveagitgat/tdarr_node
-              tag: 2.24.04@sha256:15cfc6f9bdf723c05cdea7d975376b724d8121af4dce939f0d47ff956da89a72
-            env:
-            - name: nodeID
-              value: node
-            - name: serverIP
-              value: localhost
-            - name: serverPort
-              value: 8266
             resources:
               requests:
-                cpu: 100m
+                cpu: 50m
+                memory: 256Mi
               limits:
-                cpu: 2
+                memory: 512Mi
     service:
       app:
         controller: *app
@@ -122,11 +89,6 @@ spec:
         advancedMounts:
           tdarr:
             app:
-              - path: /app/configs
-                subPath: config
-              - path: /app/server
-                subPath: server
-            node:
               - path: /app/configs
                 subPath: config
               - path: /app/server

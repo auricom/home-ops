@@ -1,0 +1,99 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tdarr-node
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    defaultPodOptions:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              # Intel N100
+              - key: feature.node.kubernetes.io/cpu-model.id
+                operator: In
+                values:
+                - "190"
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # Intel N100
+              - key: feature.node.kubernetes.io/cpu-model.id
+                operator: In
+                values:
+                - "190"
+              - key: intel.feature.node.kubernetes.io/gpu
+                operator: In
+                values:
+                - "true"
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      tdarr-node:
+        containers:
+          node:
+            image:
+              repository: haveagitgat/tdarr_node
+              tag: 2.24.04@sha256:15cfc6f9bdf723c05cdea7d975376b724d8121af4dce939f0d47ff956da89a72
+            env:
+            - name: nodeID
+              value: kube-node
+            - name: serverIP
+              value: tdarr-server.default.svc.cluster.local.
+            - name: serverPort
+              value: 8266
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                cpu: 2
+    service:
+      app:
+        controller: *app
+        enabled: false
+    persistence:
+      movies:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/video/movies
+        globalMounts:
+          - path: /mnt/movies
+      tv:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/video/tv
+        globalMounts:
+          - path: /mnt/tv
+      shared:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/video/.tdarr
+        globalMounts:
+          - path: /mnt/shared
