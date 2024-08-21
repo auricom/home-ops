@@ -45,6 +45,7 @@ spec:
             image:
               repository: eikek0/sharry
               tag: v1.14.0@sha256:8b1388310e9f93a61f54f27d1b4b1c91d8ef2e846ac1068023c4315fa7794729
+            envFrom: *envFrom
             args:
               - /opt/sharry.conf
             resources:
@@ -68,6 +69,15 @@ spec:
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
           hajimari.io/icon: mdi:account-arrow-up
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Sharry
+          gethomepage.dev/description: Share files with others in a simple way.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: sharry.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              sharry
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
@@ -86,3 +96,9 @@ spec:
         globalMounts:
           - path: /opt/sharry.conf
             subPath: sharry.conf
+      nfs:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/apps/sharry
+        globalMounts:
+          - path: /var/mnt/vol1/apps/sharry
