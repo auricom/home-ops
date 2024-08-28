@@ -78,6 +78,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: link
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Linkding
+          gethomepage.dev/description: Bookmark manager that is designed be to be minimal and fast
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: linkding.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              linkding
+            )
         hosts:
           - host: &host "links.${SECRET_EXTERNAL_DOMAIN}"
             paths:

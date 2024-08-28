@@ -102,6 +102,16 @@ spec:
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:cctv
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Frigate
+          gethomepage.dev/description: NVR with realtime local object detection for IP cameras
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: frigate.png
+          gethomepage.dev/href: https://windmill.${SECRET_EXTERNAL_DOMAIN}
+          gethomepage.dev/pod-selector: >-
+            app in (
+              frigate
+            )
         className: nginx
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"

@@ -90,6 +90,16 @@ spec:
       ingress:
         enabled: true
         ingressClassName: nginx
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Thanos
+          gethomepage.dev/description: Prometheus long term storage.
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/icon: thanos.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              thanos-query-frontend
+            )
         hosts:
           - thanos.${SECRET_EXTERNAL_DOMAIN}
       podAnnotations: &podAnnotations

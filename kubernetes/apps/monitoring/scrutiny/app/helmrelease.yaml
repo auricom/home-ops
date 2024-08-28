@@ -62,6 +62,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:harddiskstatus
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Scrutiny
+          gethomepage.dev/description: Hard Drive S.M.A.R.T Monitoring.
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/icon: scrutiny.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              scrutiny
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

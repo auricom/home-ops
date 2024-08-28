@@ -73,6 +73,16 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:rss
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: FreshRSS
+          gethomepage.dev/description: Developer platform to turn scripts into workflows and UIs
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: freshrss.png
+          gethomepage.dev/href: https://windmill.${SECRET_EXTERNAL_DOMAIN}
+          gethomepage.dev/pod-selector: >-
+            app in (
+              freshrss
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

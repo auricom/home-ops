@@ -61,6 +61,15 @@ spec:
           external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:file-document-arrow-right-outline
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Libmedium
+          gethomepage.dev/description: Medium.com
+          gethomepage.dev/group: Alternative Frontends
+          gethomepage.dev/icon: medium.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              libmedium
+            )
         hosts:
           - host: &host "libmedium.${SECRET_EXTERNAL_DOMAIN}"
             paths:

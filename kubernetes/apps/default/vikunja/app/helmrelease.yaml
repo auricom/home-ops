@@ -79,6 +79,15 @@ spec:
           external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:format-list-checks
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Vikunja
+          gethomepage.dev/description: Tasks and project management platform.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: vikunja.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              vikunja
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

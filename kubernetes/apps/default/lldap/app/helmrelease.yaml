@@ -83,6 +83,15 @@ spec:
         enabled: true
         annotations:
           hajimari.io/icon: mdi:account-multiple
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: lldap
+          gethomepage.dev/description: Light LDAP implementation
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/icon: lldap.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              lldap
+            )
         className: nginx
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"

@@ -67,6 +67,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:cash-multiple
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Ghostfolio
+          gethomepage.dev/description: NVR with realtime local object detection for IP cameras
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: ghostfolio.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              ghostfolio
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

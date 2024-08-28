@@ -79,7 +79,7 @@ spec:
           gethomepage.dev/icon: lms.png
           gethomepage.dev/pod-selector: >-
             app in (
-              lms.png
+              lms
             )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"

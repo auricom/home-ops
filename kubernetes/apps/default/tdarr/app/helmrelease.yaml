@@ -72,6 +72,15 @@ spec:
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: material-symbols:switch-video-outline
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Tdarr
+          gethomepage.dev/description: Distributed transcode automation using FFmpeg/HandBrake + Audio/Video library analytics.
+          gethomepage.dev/group: Media
+          gethomepage.dev/icon: tdarr.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              tdarr
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

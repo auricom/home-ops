@@ -132,6 +132,10 @@ spec:
           gethomepage.dev/group: Infrastructure
           gethomepage.dev/name: Authelia
           gethomepage.dev/icon: authelia.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              authelia
+            )
         hosts:
           - host: &host auth.${SECRET_EXTERNAL_DOMAIN}
             paths:

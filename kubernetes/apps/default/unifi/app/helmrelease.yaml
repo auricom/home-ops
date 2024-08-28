@@ -93,6 +93,15 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
           hajimari.io/icon: mdi:lan
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Unifi
+          gethomepage.dev/description: Centralized enterprise-grade networking for home and business.
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/icon: unifi.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              unifi
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

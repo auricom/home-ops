@@ -369,6 +369,15 @@ spec:
       ingressClassName: "nginx"
       annotations:
         hajimari.io/icon: simple-icons:grafana
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/name: Grafana
+        gethomepage.dev/description: Observability and data visualization platform.
+        gethomepage.dev/group: Infrastructure
+        gethomepage.dev/icon: grafana.png
+        gethomepage.dev/pod-selector: >-
+          app in (
+            grafana
+          )
       hosts:
         - &host "grafana.${SECRET_EXTERNAL_DOMAIN}"
       tls:

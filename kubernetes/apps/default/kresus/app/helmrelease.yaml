@@ -87,6 +87,15 @@ spec:
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:cash
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Kresus
+          gethomepage.dev/description: Personal finance manager
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: kresus.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              kresus
+            )
         hosts:
           - host: &host "cash.${SECRET_EXTERNAL_DOMAIN}"
             paths:

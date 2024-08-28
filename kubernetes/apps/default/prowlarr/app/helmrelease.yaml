@@ -79,6 +79,15 @@ spec:
           # nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:movie-search
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Prowlarr
+          gethomepage.dev/description: Torrent and Usenet Indexer manager/proxy.
+          gethomepage.dev/group: Media
+          gethomepage.dev/icon: prowlarr.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              prowlarr
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

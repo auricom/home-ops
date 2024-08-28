@@ -77,6 +77,15 @@ spec:
           external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:music
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Navidrome
+          gethomepage.dev/description: Modern music server and streamer compatible with subsonic/airsonic.
+          gethomepage.dev/group: Media
+          gethomepage.dev/icon: Navidrome.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              navidrome
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

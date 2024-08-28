@@ -73,6 +73,15 @@ spec:
           external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:web
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Redlib
+          gethomepage.dev/description: Reddit.com
+          gethomepage.dev/group: Alternative Frontends
+          gethomepage.dev/icon: redlib.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              redlib
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

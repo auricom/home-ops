@@ -129,6 +129,15 @@ spec:
           # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/appName: "Prometheus"
           hajimari.io/icon: simple-icons:prometheus
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Prometheus
+          gethomepage.dev/description: Systems and service monitoring system.
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/icon: prometheus.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              prometheus-kube-prometheus-stack-prometheus
+            )
         hosts: ["prometheus.${SECRET_EXTERNAL_DOMAIN}"]
         tls:
           - hosts:
@@ -247,6 +256,15 @@ spec:
           # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/appName: "Alert Manager"
           hajimari.io/icon: mdi:alert-decagram-outline
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Alert-Manager
+          gethomepage.dev/description: Handles alerts sent by Prometheus.
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/icon: alertmanager.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              alertmanager-kube-prometheus-stack-alertmanager
+            )
         hosts: ["alert-manager.${SECRET_EXTERNAL_DOMAIN}"]
         tls:
           - hosts:

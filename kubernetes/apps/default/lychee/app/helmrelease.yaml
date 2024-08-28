@@ -73,6 +73,15 @@ spec:
           external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:camera
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Lychee
+          gethomepage.dev/description: Photo-management tool.
+          gethomepage.dev/group: Media
+          gethomepage.dev/icon: lychee.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              lychee
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

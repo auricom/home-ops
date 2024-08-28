@@ -97,6 +97,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:text-box-multiple
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Outline
+          gethomepage.dev/description: A fast, collaborative, knowledge base.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: outline.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              outline
+            )
         hosts:
           - host: &host "docs.${SECRET_EXTERNAL_DOMAIN}"
             paths:

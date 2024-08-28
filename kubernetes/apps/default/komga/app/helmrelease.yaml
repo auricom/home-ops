@@ -57,6 +57,15 @@ spec:
         enabled: true
         annotations:
           hajimari.io/icon: mdi:ideogram-cjk-variant
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Komga
+          gethomepage.dev/description: Media server for comics/mangas/BDs/magazines/eBooks with API and OPDS support
+          gethomepage.dev/group: Media
+          gethomepage.dev/icon: komga.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              komga
+            )
         className: nginx
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"

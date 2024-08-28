@@ -104,6 +104,10 @@ spec:
           gethomepage.dev/group: Home
           gethomepage.dev/name: Babybuddy
           gethomepage.dev/icon: babybuddy.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              babybuddy
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

@@ -62,6 +62,15 @@ spec:
           hajimari.io/info: Inventory management system
           hajimari.io/icon: devices
           hajimari.io/targetBlank: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Homebox
+          gethomepage.dev/description: Inventory and organization system built for the Home User
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: homebox.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              homebox
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

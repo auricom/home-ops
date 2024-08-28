@@ -106,6 +106,15 @@ spec:
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:zigbee
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Zigbee2mqtt
+          gethomepage.dev/description: Bridge for connecting Zigbee devices to MQTT networks.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: zigbee2mqtt.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              zigbee2mqtt
+            )
         hosts:
           - host: &host "zigbee.${SECRET_EXTERNAL_DOMAIN}"
             paths:

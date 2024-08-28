@@ -78,6 +78,15 @@ spec:
           # nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:fa-book
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Readeck
+          gethomepage.dev/description: Saves the precious readable content of web pages to keep forever.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: readeck.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              readeck
+            )
         hosts:
           - host: *host
             paths:

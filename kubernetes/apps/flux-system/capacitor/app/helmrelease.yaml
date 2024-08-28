@@ -47,7 +47,7 @@ spec:
               capabilities: {drop: [ALL]}
     serviceAccount:
       create: true
-      name: "capacitor"
+      name: capacitor
     service:
       app:
         controller: *app
@@ -61,6 +61,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:sync
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Capacitor
+          gethomepage.dev/description: General purpose UI for FluxCD.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: capacitor.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              capacitor
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

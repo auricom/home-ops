@@ -71,6 +71,15 @@ spec:
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:youtube
           hajimari.io/name: invidious
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Invidious
+          gethomepage.dev/description: YouTube.com
+          gethomepage.dev/group: Alternative Frontends
+          gethomepage.dev/icon: youtube.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              invidious
+            )
         hosts:
           - host: &host "invidious.${SECRET_EXTERNAL_DOMAIN}"
             paths:

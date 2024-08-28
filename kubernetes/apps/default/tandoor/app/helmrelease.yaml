@@ -109,6 +109,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:chef-hat
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Tandoor
+          gethomepage.dev/description: Managing recipes, planned meals, shopping lists.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: tandoor.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              tandoor
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
