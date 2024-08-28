@@ -39,7 +39,7 @@ spec:
               tag: 0.8.0@sha256:b05762c750b4829274bb00368b2fdcee15c268a255bc0ac2bc7bed522ded36c9
             env:
               ALLOWED_ORIGINS: "*"
-              API_PORT: "8009"
+              API_PORT: &port_api "8009"
               CACHE_TTL: "86400"
               CACHE_HOST: dragonfly.database.svc.cluster.local.
               CACHE_USER: ""
@@ -61,7 +61,7 @@ spec:
                 spec:
                   httpGet:
                     path: /
-                    port: &port 3000
+                    port: &port_web 3000
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -78,7 +78,9 @@ spec:
         controller: *app
         ports:
           http:
-            port: *port
+            port: *port_web
+          api:
+            port: *port_api
     ingress:
       app:
         enabled: true
@@ -103,6 +105,11 @@ spec:
                 service:
                   identifier: app
                   port: http
+              - path: /api
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: api
         tls:
           - hosts:
               - *host
