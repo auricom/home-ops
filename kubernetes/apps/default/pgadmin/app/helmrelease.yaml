@@ -28,17 +28,17 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    annotations:
+      reloader.stakater.com/auto: "true"
+      secret.reloader.stakater.com/reload: authelia-secret
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 5050
+        runAsGroup: 5050
+        fsGroup: 5050
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       pgadmin:
-        annotations:
-          reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: authelia-secret
-        pod:
-          securityContext:
-            runAsUser: 5050 # ${APP_UID}
-            runAsGroup: 5050 # ${APP_GID}
-            fsGroup: 5050 # ${APP_GID}
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -67,6 +67,15 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:database
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: pgAdmin
+          gethomepage.dev/description: PostgreSQL management tool.
+          gethomepage.dev/group: Infrrastructure
+          gethomepage.dev/icon: pgadmin.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              pgadmin
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
