@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/redlib
-              tag: 0.35.1@sha256:14aab611ae56dd4046dfbe8581678639c7ab764bae257925b69c248b2fe738c2
+              tag: 0.35.1@sha256:16f626409c9a7b2e7fde0371e60108be1d57ff6b81e6ae369368f2b56c83d560
             probes:
               liveness: &probes
                 enabled: true
