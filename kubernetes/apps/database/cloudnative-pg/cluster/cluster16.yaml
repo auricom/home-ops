@@ -4,7 +4,7 @@ kind: Cluster
 metadata:
   name: postgres16
 spec:
-  instances: 4 # set to the number of nodes in the cluster
+  instances: 3 # set to the number of nodes in the cluster
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2-10
   primaryUpdateStrategy: unsupervised
   storage:
@@ -41,7 +41,7 @@ spec:
       endpointURL: https://s3.${SECRET_INTERNAL_DOMAIN}
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: postgres16-v3
+      serverName: postgres16-v4
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -53,9 +53,9 @@ spec:
   # # cluster when recovering from an existing cnpg cluster
   # bootstrap:
   #   recovery:
-  #     source: postgres16-v2
+  #     source: postgres16-v3
   # externalClusters:
-  #   - name: postgres16-v2
+  #   - name: postgres16-v3
   #     barmanObjectStore:
   #       destinationPath: s3://postgresql/
   #       endpointURL: https://s3.${SECRET_INTERNAL_DOMAIN}
