@@ -68,9 +68,6 @@ spec:
         config:
           osdsPerDevice: "1"
         nodes:
-          - name: talos-node-1
-            devices:
-              - name: sda
           - name: talos-node-2
             devices:
               - name: sda
@@ -136,7 +133,7 @@ spec:
         spec:
           failureDomain: host
           replicated:
-            size: 4
+            size: 3
         storageClass:
           enabled: true
           name: rook-ceph-block
@@ -158,11 +155,11 @@ spec:
         spec:
           metadataPool:
             replicated:
-              size: 4
+              size: 3
           dataPools:
             - failureDomain: host
               replicated:
-                size: 4
+                size: 3
           metadataServer:
             activeCount: 1
             activeStandby: true
@@ -193,7 +190,7 @@ spec:
           metadataPool:
             failureDomain: host
             replicated:
-              size: 4
+              size: 3
           dataPool:
             failureDomain: host
             erasureCoded:
