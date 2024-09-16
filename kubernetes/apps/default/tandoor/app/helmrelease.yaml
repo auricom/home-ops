@@ -93,8 +93,8 @@ spec:
                 memory: 512Mi
           nginx:
             image:
-              repository: ghcr.io/nginxinc/nginx-unprivileged
-              tag: 1.27.1-alpine@sha256:16f6d3e75e8e00832788c9e3d52fd00b29d363df1858d1906348752b539cd944
+              repository: nginxinc/nginx-unprivileged
+              tag: 1.27.1-alpine@sha256:a0e2ed302ce2f7d316ad3c98c5025f143d4bb0daf46fa86d2fb15b42d5cc31be
     service:
       app:
         controller: *app
