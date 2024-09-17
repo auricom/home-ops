@@ -6,8 +6,8 @@
 
 clusterName: cluster-0
 
-talosVersion: v1.7.2
-kubernetesVersion: v1.30.1
+talosVersion: v1.7.6
+kubernetesVersion: v1.30.2
 endpoint: https://cluster-0.${domainName}:6443
 allowSchedulingOnMasters: true
 cniConfig:
@@ -35,10 +35,6 @@ patches:
               - rw
 
 nodes:
-  - hostname: talos-node-1
-    ipAddress: 192.168.9.101
-    controlPlane: false
-    installDisk: /dev/nvme0n1
   - hostname: talos-node-2
     ipAddress: 192.168.9.102
     controlPlane: true
