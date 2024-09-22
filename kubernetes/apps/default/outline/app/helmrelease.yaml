@@ -45,7 +45,7 @@ spec:
           app:
             image:
               repository: docker.io/outlinewiki/outline
-              tag: 0.79.1@sha256:0785351e332e07c426bdcbfea93521887ac0970d2269739702f19dbd3f7d3699
+              tag: 0.80.1@sha256:21442dd0bc6e7b0acfa6ccd9c60de2cdeac7ff783f81a2c269e2d202a3c95298
             envFrom:
               - secretRef:
                   name: outline-secret
