@@ -35,8 +35,6 @@ spec:
     cluster:
       id: 1
       name: cluster-0
-    containerRuntime:
-      integration: containerd
     enableRuntimeDeviceDetection: true
     endpointRoutes:
       enabled: true
@@ -105,7 +103,6 @@ spec:
       autoMount:
         enabled: false
       hostRoot: /sys/fs/cgroup
-    tunnel: disabled
     l7proxy: true
     routingMode: native
     ingressController:
