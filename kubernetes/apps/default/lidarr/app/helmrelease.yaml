@@ -52,7 +52,7 @@ spec:
           app:
             image:
               repository: ghcr.io/crutonjohn/lidarr-plugins
-              tag: 2.6.2.4375@sha256:c21b0c77353437d73629ea805c389b4c0b2f05714c011191bcaed8918f0520a8
+              tag: 2.6.3.4390@sha256:920de3d09c80c6a86687c91226cea6d462364ebf1ff345f3d8429255864a8a88
             env:
               TZ: "${TIMEZONE}"
               LIDARR__INSTANCE_NAME: Lidarr
