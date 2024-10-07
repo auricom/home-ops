@@ -6,7 +6,9 @@
 
 clusterName: cluster-0
 
+# renovate: depName=ghcr.io/buroa/installer datasource=docker
 talosVersion: v1.7.6
+# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
 kubernetesVersion: v1.30.2
 endpoint: https://cluster-0.${domainName}:6443
 allowSchedulingOnMasters: true
