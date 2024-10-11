@@ -51,6 +51,21 @@ spec:
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
             envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/health
+                    port: &port 3333
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
             resources:
               requests:
                 cpu: 100m
@@ -60,7 +75,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 3333
+            port: *port
     ingress:
       app:
         enabled: true
