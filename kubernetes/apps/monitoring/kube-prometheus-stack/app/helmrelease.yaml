@@ -53,6 +53,8 @@ spec:
       enabled: false
     kubeEtcd:
       enabled: false
+    kubeScheduler:
+      enabled: false
 
     kubeStateMetrics:
       metricLabelsAllowlist:
