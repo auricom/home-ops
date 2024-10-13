@@ -49,15 +49,10 @@ spec:
 
     kubeProxy:
       enabled: false
-      service:
-        selector:
-          k8s-app: kube-scheduler
-    kubeControllerManager: &kubeControllerManager
-      service:
-        selector:
-          k8s-app: kube-controller-manager
+    kubeControllerManager:
+      enabled: false
     kubeEtcd:
-      <<: *kubeControllerManager # etcd runs on control plane nodes
+      enabled: false
 
     kubeStateMetrics:
       metricLabelsAllowlist:
