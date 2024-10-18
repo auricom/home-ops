@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: lmscommunity/logitechmediaserver
-              tag: 9.0.0@sha256:2bd6eb949158515896c98cac3af0aed8456e2dc5bc2bdd24c826be1f11570702
+              tag: 9.0.0@sha256:270c8f27c4557025e149b85f9719a16853f9cda634c84c959941803e59450e90
             env:
               AUDIO_DIR: &music /var/mnt/vol1/music
               PLAYLIST_DIR: &playlist /var/mnt/vol1/music/.lms
