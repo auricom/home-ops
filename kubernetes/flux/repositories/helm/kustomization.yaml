@@ -29,8 +29,8 @@ resources:
   - ./postfinance.yaml
   - ./prometheus-community.yaml
   - ./rook-ceph.yaml
+  - ./spegel.yaml
   - ./stakater.yaml
   - ./stevehipwell.yaml
   - ./vector.yaml
   - ./windmill.yaml
-  - ./xenitab.yaml
