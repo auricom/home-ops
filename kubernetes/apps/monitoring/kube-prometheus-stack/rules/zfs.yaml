@@ -1,0 +1,18 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: zrepl-replication-errors
+  namespace: monitoring
+spec:
+  groups:
+  - name: zrepl.rules
+    rules:
+    - alert: ZreplReplicationFilesystemErrors
+      expr: zrepl_replication_filesystem_errors > 0
+      for: 15m  # Alert if the condition persists for 15 minutes
+      labels:
+        severity: warning
+      annotations:
+        summary: "Zrepl replication filesystem errors detected"
+        description: "Zrepl job {{ $labels.zrepl_job }} has encountered filesystem errors during replication."
