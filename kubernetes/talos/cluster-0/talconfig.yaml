@@ -6,18 +6,17 @@
 
 clusterName: cluster-0
 
-# renovate: depName=ghcr.io/buroa/installer datasource=docker
-talosVersion: v1.7.6
-# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
-kubernetesVersion: v1.30.2
-endpoint: https://cluster-0.${domainName}:6443
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+talosVersion: v1.8.1
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.31.1
+endpoint: https://cluster-0.${internalDomain}:6443
 allowSchedulingOnMasters: true
 cniConfig:
   name: none
 
 additionalApiServerCertSans: &san
   - ${clusterEndpointIP}
-  - https://cluster-0.${domainName}:6443
   - https://cluster-0.${internalDomain}:6443
   - 127.0.0.1 # KubePrism
 
@@ -37,6 +36,10 @@ patches:
               - rw
 
 nodes:
+  - hostname: talos-node-1
+    ipAddress: 192.168.9.101
+    controlPlane: false
+    installDisk: /dev/nvme0n1
   - hostname: talos-node-2
     ipAddress: 192.168.9.102
     controlPlane: true
@@ -57,8 +60,9 @@ controlPlane:
         - net.ifnames=0
       systemExtensions:
         officialExtensions:
-          - siderolabs/intel-ucode
           - siderolabs/i915-ucode
+          - siderolabs/intel-ucode
+          - siderolabs/mei
 
   patches:
     # Disable search domain everywhere
@@ -66,6 +70,15 @@ controlPlane:
       machine:
         network:
           disableSearchDomain: true
+
+    # Disable Host DNS
+    - |-
+      machine:
+        features:
+          hostDNS:
+            enabled: true
+            resolveMemberNames: true
+            forwardKubeDNSToHost: false
 
     # Configure NTP
     - |-
@@ -90,7 +103,7 @@ controlPlane:
           extraHostEntries:
             - ip: ${clusterEndpointIP}
               aliases:
-                - cluster-0.${domainName}
+                - cluster-0.${internalDomain}
 
     # Cluster configuration
     - |-
@@ -129,8 +142,11 @@ controlPlane:
     - |-
       machine:
         sysctls:
-          fs.inotify.max_user_watches: "1048576"
+          fs.inotify.max_queued_events: "65536"
           fs.inotify.max_user_instances: "8192"
+          fs.inotify.max_user_watches: "524288"
+          net.core.rmem_max: "7500000"
+          net.core.wmem_max: "7500000"
 
     # Redirect logs
     # - |-
