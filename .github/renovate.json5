@@ -21,9 +21,9 @@
   "requireConfig": "optional",
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
-  "rebaseWhen": "conflicted",
-  "assigneesFromCodeOwners": true,
-  "reviewersFromCodeOwners": true,
+  "rebaseWhen": "auto",
+  "commitBodyTable": true,
+  "platformCommit": "enabled",
   "ignorePaths": [
     "**/*.sops.*",
     "**/.archive/**",
