@@ -17,8 +17,6 @@
     "github>auricom/home-ops//.github/renovate/packageRules.json5",
     "github>auricom/home-ops//.github/renovate/semanticCommits.json5"
   ],
-  "onboarding": false,
-  "requireConfig": "optional",
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "rebaseWhen": "auto",
