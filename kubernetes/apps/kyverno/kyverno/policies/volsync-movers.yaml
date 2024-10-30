@@ -10,7 +10,6 @@ metadata:
       This policy sets custom configuration on the Volsync mover Jobs.
     policies.kyverno.io/subject: Pod
 spec:
-  generateExistingOnPolicyUpdate: true
   rules:
     - name: set-volsync-movers-custom-config
       match:
