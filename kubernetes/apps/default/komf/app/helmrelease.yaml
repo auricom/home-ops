@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: sndxr/komf
-              tag: 1.0.8@sha256:c002ad6131944e2d66e1663644fbef3a39f27cbbc4d4940db6bdc7375fa4ed7a
+              tag: 1.1.0@sha256:ba6a9080f74e7c17a360112977ca633b202215ea801515bf2e03bc3dfe68f32e
             env:
               KOMF_KOMGA_BASE_URI: http://komga.default.svc.cluster.local:8080
               KOMF_LOG_LEVEL: INFO
