@@ -55,7 +55,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lldap/lldap
-              tag: v0.5.0
+              tag: v0.6.0@sha256:7eb344f0a61bdc212e7ed19e8d684a1c44b3882b2c18fc4f26a82860edb7fc46
             env:
               TZ: ${TIMEZONE}
               LLDAP_HTTP_PORT: &port 8080
