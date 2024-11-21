@@ -41,7 +41,7 @@ spec:
             image:
               # repository: docker.io/1password/connect-api
               repository: ghcr.io/haraldkoch/onepassword-connect-api
-              tag: 1.7.2
+              tag: 1.7.2@sha256:da8cb369fb841a7bd9447c909d273de4053ecc9c2b2e6432c5af6c2e08b82da1
             env:
               OP_BUS_PORT: "11220"
               OP_BUS_PEERS: "localhost:11221"
@@ -82,7 +82,7 @@ spec:
             # image: docker.io/1password/connect-sync:1.7.0
             image:
               repository: ghcr.io/haraldkoch/onepassword-sync
-              tag: 1.7.2
+              tag: 1.7.2@sha256:3e40f8903ec77b3476365fe300aeb326c75c94ff546e82060823561242ade674
             env:
               - { name: OP_HTTP_PORT, value: &sport 8081 }
               - { name: OP_BUS_PORT, value: "11221" }
