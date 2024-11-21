@@ -46,7 +46,7 @@ spec:
           app:
             image:
               repository: docker.io/yoryan/mailrise
-              tag: 1.4.0
+              tag: 1.4.0@sha256:66082168090b9a83f01cc71a9d7b1994840adbbbffbe4d2cf644272fbbc23a1a
             env:
               TZ: ${TIMEZONE}
             envFrom:
