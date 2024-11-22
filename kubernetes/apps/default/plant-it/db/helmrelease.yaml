@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: mariadb
-              tag: 11.5.2-ubi9@sha256:f46cff4a045b28691dc631cee75a940a2ac03f9fa4df65282ded7c39c397a41f
+              tag: 11.6.2-ubi9@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb
             envFrom:
               - secretRef:
                   name: plant-it-secret
