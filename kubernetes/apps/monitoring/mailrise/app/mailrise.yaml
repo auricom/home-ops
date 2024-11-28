@@ -5,8 +5,3 @@ configs:
       title_template: "KRESUS"
     urls:
       - !env_var PUSHOVER_KRESUS
-  windmill@mailrise.home.arpa:
-    mailrise:
-      title_template: "WINDMILL"
-    urls:
-      - !env_var PUSHOVER_WINDMILL
