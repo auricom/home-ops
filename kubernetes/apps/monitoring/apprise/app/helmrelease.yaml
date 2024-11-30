@@ -3,8 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app mailrise
-  namespace: default
+  name: &app apprise
 spec:
   interval: 30m
   chart:
@@ -27,52 +26,37 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   values:
-    defaultPodOptions:
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: *app
     controllers:
-      mailrise:
-        replicas: 2
-        strategy: RollingUpdate
-        annotations:
-          reloader.stakater.com/auto: "true"
+      apprise:
         containers:
           app:
             image:
-              repository: docker.io/yoryan/mailrise
-              tag: 1.4.0@sha256:66082168090b9a83f01cc71a9d7b1994840adbbbffbe4d2cf644272fbbc23a1a
+              # https://hub.docker.com/r/caronc/apprise
+              repository: docker.io/caronc/apprise
+              tag: 1.1.6
             env:
-              TZ: ${TIMEZONE}
-            envFrom:
-              - secretRef:
-                  name: mailrise-secret
-            resources:
-              requests:
-                cpu: 10m
-                memory: 10Mi
-              limits:
-                memory: 200Mi
+              TZ: "${TIMEZONE:=Etc/UTC}"
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
     service:
       app:
         controller: *app
-        type: LoadBalancer
-        loadBalancerIP: 192.168.169.112
-        externalTrafficPolicy: Local
         ports:
           http:
-            port: 8025
+            port: 8000
     ingress:
       app:
         enabled: true
         className: nginx
         annotations:
-          hajimari.io/enable: "false"
+          hajimari.io/icon: bell-cog
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
@@ -86,9 +70,6 @@ spec:
     persistence:
       config:
         enabled: true
-        type: configMap
-        name: mailrise-configmap
+        existingClaim: *app
         globalMounts:
-          - path: /etc/mailrise.conf
-            subPath: mailrise.conf
-            readOnly: true
+          - path: /config

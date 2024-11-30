@@ -58,7 +58,7 @@ spec:
               LANG: C.UTF-8
               KRESUS_DB_TYPE: postgres
               KRESUS_DIR: /config
-              KRESUS_EMAIL_HOST: mailrise.default.svc.cluster.local
+              KRESUS_EMAIL_HOST: mailrise.monitoring.svc.cluster.local
               KRESUS_EMAIL_PORT: 8025
               KRESUS_EMAIL_TRANSPORT: smtp
               KRESUS_EMAIL_FROM: kresus@mailrise.home.arpa

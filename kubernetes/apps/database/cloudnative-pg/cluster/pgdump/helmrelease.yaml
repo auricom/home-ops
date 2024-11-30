@@ -48,8 +48,8 @@ spec:
         containers:
           app:
             image:
-              repository: prodrigestivill/postgres-backup-local@sha256:c773a909faea23b2a7d1b7f7c1a1cead1bb3d84f44255444c207311e21912ff1
-              tag: 16-alpine
+              repository: prodrigestivill/postgres-backup-local
+              tag: 16-alpine@sha256:113aa6553e22bd3591b509a5abc7166973a2a6b046f38cab1e6ba40029b64c86
             command: [/backup.sh]
             env:
               POSTGRES_DB_FILE: /config/db_list

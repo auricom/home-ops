@@ -3,8 +3,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app pgadmin
-  namespace: default
+  name: &app mailrise
+  namespace: monitoring
 spec:
   interval: 30m
   chart:
@@ -28,54 +28,51 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    annotations:
-      reloader.stakater.com/auto: "true"
-      secret.reloader.stakater.com/reload: authelia-secret
     defaultPodOptions:
-      securityContext:
-        runAsUser: 5050
-        runAsGroup: 5050
-        fsGroup: 5050
-        fsGroupChangePolicy: OnRootMismatch
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
     controllers:
-      pgadmin:
+      mailrise:
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: dpage/pgadmin4
-              tag: 8.13@sha256:561c1f8f99f2fe24bc63814db9e30292cf4360331de9182da21e3554ce61bdaa
+              repository: docker.io/yoryan/mailrise
+              tag: 1.4.0@sha256:66082168090b9a83f01cc71a9d7b1994840adbbbffbe4d2cf644272fbbc23a1a
             env:
-              PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
+              TZ: ${TIMEZONE}
             envFrom:
               - secretRef:
-                  name: pgadmin-secret
+                  name: mailrise-secret
             resources:
               requests:
-                cpu: 50m
-                memory: 100Mi
+                cpu: 10m
+                memory: 10Mi
               limits:
-                memory: 500Mi
+                memory: 200Mi
     service:
       app:
         controller: *app
+        type: LoadBalancer
+        loadBalancerIP: 192.168.169.112
+        externalTrafficPolicy: Local
         ports:
           http:
-            port: 80
+            port: 8025
     ingress:
       app:
         enabled: true
         className: nginx
         annotations:
-          hajimari.io/icon: mdi:database
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: pgAdmin
-          gethomepage.dev/description: PostgreSQL management tool.
-          gethomepage.dev/group: Infrrastructure
-          gethomepage.dev/icon: pgadmin.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              pgadmin
-            )
+          hajimari.io/enable: "false"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
@@ -89,6 +86,9 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: *app
+        type: configMap
+        name: mailrise-configmap
         globalMounts:
-          - path: /var/lib/pgadmin
+          - path: /etc/mailrise.conf
+            subPath: mailrise.conf
+            readOnly: true
