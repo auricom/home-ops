@@ -39,7 +39,6 @@ resources:
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
   - ./plant-it/ks.yaml
-  - ./pgadmin/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml

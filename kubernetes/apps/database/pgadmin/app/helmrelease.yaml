@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app pgadmin
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -34,8 +33,8 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsUser: 5050
-        runAsGroup: 5050
-        fsGroup: 5050
+        runAsGroup: 0
+        fsGroup: 0
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       pgadmin:
@@ -92,3 +91,8 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /var/lib/pgadmin
+      sessions:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /var/lib/pgadmin/sessions
