@@ -1,17 +1,15 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/kustomization.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: default
+namespace: monitoring
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../templates/volsync
 configMapGenerator:
-  - name: recyclarr-configmap
+  - name: mailrise-configmap
     files:
-      - recyclarr.yml=./config/recyclarr.yml
-      - settings.yml=./config/settings.yml
+      - mailrise.conf=./mailrise.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

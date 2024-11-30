@@ -6,8 +6,10 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
+  - ./apprise/ks.yaml
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
+  - ./mailrise/ks.yaml
   - ./scrutiny/ks.yaml
   - ./thanos/ks.yaml

@@ -3,8 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app flood
-  namespace: default
+  name: &app pgadmin
 spec:
   interval: 30m
   chart:
@@ -28,55 +27,54 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    annotations:
+      reloader.stakater.com/auto: "true"
+      secret.reloader.stakater.com/reload: authelia-secret
     defaultPodOptions:
       securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-        fsGroup: 1001
+        runAsUser: 5050
+        runAsGroup: 0
+        fsGroup: 0
         fsGroupChangePolicy: OnRootMismatch
     controllers:
-      flood:
-        annotations:
-          reloader.stakater.com/auto: "true"
+      pgadmin:
         containers:
           app:
             image:
-              repository: jesec/flood
-              tag: master@sha256:85df7441049511f9fe64d3c99fa2ec1d1f70d1b9d5fe751a28e6c88ce1136234
+              repository: dpage/pgadmin4
+              tag: 8.13@sha256:561c1f8f99f2fe24bc63814db9e30292cf4360331de9182da21e3554ce61bdaa
             env:
-              FLOOD_OPTION_RUNDIR: /data
-              FLOOD_OPTION_AUTH: none
-              FLOOD_OPTION_QBURL: http://qbittorrent-app.default.svc.cluster.local.:8080
+              PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
             envFrom:
               - secretRef:
-                  name: flood-secret
+                  name: pgadmin-secret
             resources:
               requests:
-                memory: 250Mi
-                cpu: 15m
+                cpu: 50m
+                memory: 100Mi
               limits:
-                memory: 512Mi
+                memory: 500Mi
     service:
       app:
         controller: *app
         ports:
           http:
-            port: 3000
+            port: 80
     ingress:
       app:
         enabled: true
         className: nginx
         annotations:
-          nginx.ingress.kubernetes.io/auth-method: GET
-          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
-          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
-          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
-          hajimari.io/icon: mdi:download
+          hajimari.io/icon: mdi:database
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Media
-          gethomepage.dev/name: qBittorrent
-          gethomepage.dev/icon: qbittorrent.png
+          gethomepage.dev/name: pgAdmin
+          gethomepage.dev/description: PostgreSQL management tool.
+          gethomepage.dev/group: Infrrastructure
+          gethomepage.dev/icon: pgadmin.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              pgadmin
+            )
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:
@@ -92,4 +90,9 @@ spec:
         enabled: true
         existingClaim: *app
         globalMounts:
-          - path: /data
+          - path: /var/lib/pgadmin
+      sessions:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /var/lib/pgadmin/sessions
