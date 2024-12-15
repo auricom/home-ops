@@ -34,12 +34,12 @@ spec:
         configmap.reloader.stakater.com/reload: node-feature-discovery-worker-conf
       config:
         core:
-          sources:
+          labelSources:
             - cpu
             - custom
             - pci
             - usb
-        sources:
+        labelSources:
           usb:
             deviceClassWhitelist:
               - "02"
