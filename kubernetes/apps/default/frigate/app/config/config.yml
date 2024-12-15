@@ -4,6 +4,12 @@ logger:
   # logs:
   #   frigate.record: debug
 
+auth:
+  enabled: false
+
+tls:
+  enabled: false
+
 mqtt:
   host: emqx.default.svc.cluster.local
   topic_prefix: frigate
@@ -19,26 +25,24 @@ detectors:
     device: usb
 
 ffmpeg:
-  global_args: [-hide_banner, -loglevel, warning]
-  hwaccel_args: [-hwaccel, vaapi, -hwaccel_device, /dev/dri/renderD128, -hwaccel_output_format, yuv420p]
-  output_args:
-    record: preset-record-generic-audio-aac
+  global_args: [-hide_banner, -loglevel, info]
+  hwaccel_args: preset-vaapi
 
 snapshots:
   enabled: true
-  timestamp: false
+  timestamp: true
   bounding_box: true
   retain:
-    default: 2
+    default: 7
 
 record:
   enabled: true
   retain:
-    days: 2
+    days: 7
     mode: all
   events:
     retain:
-      default: 2
+      default: 7
       mode: active_objects
 
 objects:
@@ -51,7 +55,7 @@ objects:
 
 go2rtc:
   streams:
-    cam_01_bedroom: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}#video=copy#audio=copy#audio=opus
+    cam_01_bedroom: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}#video=copy#audio=copy
     cam_01_bedroom_sub: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}
 
 cameras:
@@ -60,10 +64,10 @@ cameras:
       inputs:
         - path: rtsp://localhost:8554/cam_01_bedroom?video=copy&audio=aac
           input_args: preset-rtsp-restream
-          roles: [record]
+          roles: [audio,record]
         - path: rtsp://localhost:8554/cam_01_bedroom_sub?video=copy
           input_args: preset-rtsp-restream
-          roles: [detect]
+          roles: [audio,detect]
     detect:
       width: 640
       height: 480
