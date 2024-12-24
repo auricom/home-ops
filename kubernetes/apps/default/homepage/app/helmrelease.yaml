@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: ghcr.io/gethomepage/homepage
-              tag: v0.10.1@sha256:10558a32aebe11fcc855fb541693d4ab0df7275e89ae6cc7656e1c35d809f891
+              tag: v0.10.3@sha256:c587203500b8d1c1bdd338e05eb610ddccd3e0a2f08f64525a7b656818805770
             env:
               TZ: ${TIMEZONE}
             envFrom:
