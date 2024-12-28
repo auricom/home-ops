@@ -24,6 +24,11 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  dependsOn:
+    - name: rook-ceph-operator
+      namespace: rook-ceph
+    - name: snapshot-controller
+      namespace: kube-system
   uninstall:
     keepHistory: false
   values:
@@ -130,7 +135,10 @@ spec:
           limits:
             memory: 1Gi
     cephBlockPoolsVolumeSnapshotClass:
-      enabled: false
+      enabled: true
+      name: csi-ceph-blockpool
+      isDefault: false
+      deletionPolicy: Delete
     cephBlockPools:
       - name: replicapool
         spec:
@@ -187,6 +195,11 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
+    cephFileSystemVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-filesystem
+      isDefault: false
+      deletionPolicy: Delete
     cephObjectStores:
       - name: rook-ceph-objectstore
         spec:
