@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app exercisediary
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      exercisediary:
+        containers:
+          app:
+            image:
+              repository: aceberg/exercisediary
+              tag: 0.1.9@sha256:bfa75741bf347faf8fe859c90e6db5440e9e51c1ced1e27a66f50e6b77c8ab71
+            env:
+              TZ: "${TIMEZONE}"
+              PORT: &port 8851
+              THEME: "darkly" # optional, default: grass
+              COLOR: "dark" # optional, default: light
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 512Mi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/icon: mdi:radio
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: exercisediary
+          gethomepage.dev/description: Workout diary with GitHub-style year visualization.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: exercisediary.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              exercisediary
+            )
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /data/ExerciseDiary

@@ -12,6 +12,7 @@ resources:
   - ./bazarr/ks.yaml
   - ./calibre/ks.yaml
   - ./emqx/ks.yaml
+  - ./exercisediary/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./flood/ks.yaml
   - ./freshrss/ks.yaml
