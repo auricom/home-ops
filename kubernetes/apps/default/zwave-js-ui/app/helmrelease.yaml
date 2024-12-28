@@ -76,7 +76,7 @@ spec:
     serviceMonitor:
       app:
         serviceName: *app
-        enabled: true # requires https://github.com/kvaster/zwavejs-prom
+        enabled: false # requires https://github.com/kvaster/zwavejs-prom
         endpoints:
           - port: http
             scheme: http
