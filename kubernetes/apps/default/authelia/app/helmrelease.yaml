@@ -75,7 +75,6 @@ spec:
               X_AUTHELIA_CONFIG: /config/configuration.yaml
               X_AUTHELIA_CONFIG_FILTERS: template
             envFrom: *envFrom
-            args: [--config, /config/configuration.yaml, --config.experimental.filters, expand-env]
             probes:
               liveness: &probes
                 enabled: true
