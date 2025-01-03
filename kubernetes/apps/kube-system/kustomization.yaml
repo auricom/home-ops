@@ -7,10 +7,11 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./cilium/ks.yaml
+  - ./coredns/ks.yaml
   - ./descheduler/ks.yaml
   - ./external-secrets/ks.yaml
   - ./intel-device-plugin/ks.yaml
-  - ./k8s-ycl/ks.yaml
+  # - ./k8s-ycl/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
   - ./metrics-server/ks.yaml
   - ./node-feature-discovery/ks.yaml
