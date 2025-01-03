@@ -1,0 +1,21 @@
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPPeeringPolicy
+metadata:
+  name: bgp-loadbalancer-ip-main
+spec:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/os: "linux"
+  virtualRouters:
+    - localASN: 64512
+      exportPodCIDR: false
+      serviceSelector:
+        matchExpressions:
+          - key: thisFakeSelector
+            operator: NotIn
+            values:
+              - will-match-and-announce-all-services
+      neighbors:
+        - peerAddress: ${LOCAL_LAN_OPNSENSE}
+          peerASN: 64512

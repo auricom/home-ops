@@ -9,6 +9,7 @@ resources:
   - ./bjw-s.yaml
   - ./cert-manager-webhook-ovh.yaml
   - ./cilium.yaml
+  - ./coredns.yaml
   - ./cloudnative-pg.yaml
   - ./crowdsec.yaml
   - ./descheduler.yaml
@@ -22,6 +23,7 @@ resources:
   - ./ingress-nginx.yaml
   - ./intel.yaml
   - ./jetstack.yaml
+  - ./k8s-gateway.yaml
   - ./kyverno.yaml
   - ./metrics-server.yaml
   - ./node-feature-discovery.yaml

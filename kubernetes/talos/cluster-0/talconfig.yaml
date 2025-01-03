@@ -7,9 +7,9 @@
 clusterName: cluster-0
 
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: v1.8.1
+talosVersion: v1.9.1
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.31.1
+kubernetesVersion: v1.32.0
 endpoint: https://cluster-0.${internalDomain}:6443
 allowSchedulingOnMasters: true
 cniConfig:
@@ -34,6 +34,81 @@ patches:
               - rbind
               - rshared
               - rw
+
+  # Configure containerd
+  - |-
+    machine:
+      files:
+        - op: create
+          path: /etc/cri/conf.d/20-customization.part
+          content: |
+            [plugins]
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
+
+
+  # Disable search domain everywhere
+  - |-
+    machine:
+      network:
+        disableSearchDomain: true
+
+  # Disable Host DNS
+  - |-
+    machine:
+      features:
+        hostDNS:
+          enabled: true
+          resolveMemberNames: true
+          forwardKubeDNSToHost: false
+
+  # Configure NTP
+  - |-
+    machine:
+      time:
+        disabled: false
+        servers:
+          - 192.168.8.1
+
+  # Configure cluster loopback
+  - |-
+    machine:
+      network:
+        extraHostEntries:
+          - ip: ${clusterEndpointIP}
+            aliases:
+              - cluster-0.${internalDomain}
+
+  # Kubelet configuration
+  - |-
+    machine:
+      kubelet:
+        extraArgs:
+          rotate-server-certificates: "true"
+        extraConfig:
+          maxPods: 150
+
+  # Custom sysctls
+  - |-
+    machine:
+      sysctls:
+        fs.inotify.max_queued_events: "65536"
+        fs.inotify.max_user_instances: "8192"
+        fs.inotify.max_user_watches: "524288"
+        net.core.rmem_max: "7500000"
+        net.core.wmem_max: "7500000"
+
+  # Redirect logs
+  # - |-
+  #   machine:
+  #     install:
+  #       extraKernelArgs:
+  #         - "talos.logging.kernel=udp://192.168.169.108:6050/"
+  #     logging:
+  #       destinations:
+  #         - endpoint: "udp://192.168.169.108:6051/"
+  #           format: json_lines
 
 nodes:
   - hostname: talos-node-1
@@ -60,101 +135,51 @@ controlPlane:
         - net.ifnames=0
       systemExtensions:
         officialExtensions:
-          - siderolabs/i915-ucode
+          - siderolabs/i915
           - siderolabs/intel-ucode
           - siderolabs/mei
 
   patches:
-    # Disable search domain everywhere
-    - |-
-      machine:
-        network:
-          disableSearchDomain: true
-
-    # Disable Host DNS
-    - |-
-      machine:
-        features:
-          hostDNS:
-            enabled: true
-            resolveMemberNames: true
-            forwardKubeDNSToHost: false
-
-    # Configure NTP
-    - |-
-      machine:
-        time:
-          disabled: false
-          servers:
-            - 192.168.8.1
-
-    # Enable KubePrism
-    - |-
-      machine:
-        features:
-          kubePrism:
-            enabled: true
-            port: 7445
-
-    # Configure cluster loopback
-    - |-
-      machine:
-        network:
-          extraHostEntries:
-            - ip: ${clusterEndpointIP}
-              aliases:
-                - cluster-0.${internalDomain}
-
     # Cluster configuration
     - |-
       cluster:
-        allowSchedulingOnMasters: true
+        allowSchedulingOnControlPlanes: true
+        controllerManager:
+          extraArgs:
+            bind-address: 0.0.0.0
+        coreDNS:
+          disabled: true
         proxy:
           disabled: true
-
-    # Configure containerd
-    - |-
-      machine:
-        files:
-          - op: create
-            path: /etc/cri/conf.d/20-customization.part
-            content: |
-              [plugins]
-                [plugins."io.containerd.grpc.v1.cri"]
-                  enable_unprivileged_ports = true
-                  enable_unprivileged_icmp = true
+        scheduler:
+          extraArgs:
+            bind-address: 0.0.0.0
+          config:
+            apiVersion: kubescheduler.config.k8s.io/v1
+            kind: KubeSchedulerConfiguration
+            profiles:
+              - schedulerName: default-scheduler
+                pluginConfig:
+                  - name: PodTopologySpread
+                    args:
+                      defaultingType: List
+                      defaultConstraints:
+                        - maxSkew: 1
+                          topologyKey: kubernetes.io/hostname
+                          whenUnsatisfiable: ScheduleAnyway
 
     # Disable default API server admission plugins.
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl
 
-    # Kubelet configuration
-    - |-
-      machine:
-        kubelet:
-          extraArgs:
-            rotate-server-certificates: "true"
-          extraConfig:
-            maxPods: 150
-
-    # Custom sysctls
-    - |-
-      machine:
-        sysctls:
-          fs.inotify.max_queued_events: "65536"
-          fs.inotify.max_user_instances: "8192"
-          fs.inotify.max_user_watches: "524288"
-          net.core.rmem_max: "7500000"
-          net.core.wmem_max: "7500000"
-
-    # Redirect logs
-    # - |-
-    #   machine:
-    #     install:
-    #       extraKernelArgs:
-    #         - "talos.logging.kernel=udp://192.168.169.108:6050/"
-    #     logging:
-    #       destinations:
-    #         - endpoint: "udp://192.168.169.108:6051/"
-    #           format: json_lines
+worker:
+  schematic:
+    customization:
+      extraKernelArgs:
+        - net.ifnames=0
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/i915
+          - siderolabs/intel-ucode
+          - siderolabs/mei

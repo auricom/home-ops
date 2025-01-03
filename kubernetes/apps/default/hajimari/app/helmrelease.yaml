@@ -50,8 +50,8 @@ spec:
         matchNames:
           - default
           - flux-system
-          - monitoring
-          - networking
+          - observability
+          - network
           - rook-ceph
       customApps:
         - group: servers
