@@ -156,27 +156,27 @@ spec:
             type: prometheus
             uid: prometheus
             access: proxy
-            url: http://thanos-query-frontend.monitoring.svc.cluster.local.:10902
+            url: http://thanos-query-frontend.observability.svc.cluster.local.:10902
             isDefault: true
           # - name: Loki
           #   type: loki
           #   uid: loki
           #   access: proxy
-          #   url: http://loki-gateway.monitoring.svc.cluster.local.:80
+          #   url: http://loki-gateway.observability.svc.cluster.local.:80
           - name: Alertmanager
             type: alertmanager
             uid: alertmanager
             access: proxy
-            url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
+            url: http://alertmanager-operated.observability.svc.cluster.local:9093
             jsonData:
               implementation: prometheus
     dashboards:
       default:
         home-assistant:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/monitoring/grafana/dashboards/home-assistant.json
+          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/observability/grafana/dashboards/home-assistant.json
           datasource: Prometheus
         homelab-temperatures:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/monitoring/grafana/dashboards/homelab-temperatures.json
+          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/observability/grafana/dashboards/homelab-temperatures.json
           datasource: Prometheus
         external-dns:
           # renovate: depName="External-dns"

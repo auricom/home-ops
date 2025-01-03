@@ -6,7 +6,7 @@ metadata:
   name: &app scrutiny
   namespace: flux-system
 spec:
-  targetNamespace: monitoring
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -14,7 +14,7 @@ spec:
     - name: external-secrets-stores
     - name: rook-ceph-cluster
     - name: volsync
-  path: ./kubernetes/apps/monitoring/scrutiny/app
+  path: ./kubernetes/apps/observability/scrutiny/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -35,11 +35,11 @@ metadata:
   name: &app scrutiny-collector
   namespace: flux-system
 spec:
-  targetNamespace: monitoring
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/monitoring/scrutiny/collector
+  path: ./kubernetes/apps/observability/scrutiny/collector
   prune: true
   sourceRef:
     kind: GitRepository

@@ -6,14 +6,14 @@ metadata:
   name: &app apprise
   namespace: flux-system
 spec:
-  targetNamespace: monitoring
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: rook-ceph-cluster
     - name: volsync
-  path: ./kubernetes/apps/monitoring/apprise/app
+  path: ./kubernetes/apps/observability/apprise/app
   prune: true
   sourceRef:
     kind: GitRepository

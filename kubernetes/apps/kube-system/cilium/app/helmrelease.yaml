@@ -3,8 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app cilium
-  namespace: &ns kube-system
+  name:  cilium
 spec:
   interval: 30m
   chart:
@@ -27,88 +26,31 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    autoDirectNodeRoutes: true
-    bgp:
-      announce:
-        loadbalancerIP: true
-      enabled: true
-    cluster:
-      id: 1
-      name: cluster-0
-    enableRuntimeDeviceDetection: true
-    endpointRoutes:
-      enabled: true
     hubble:
       enabled: true
       metrics:
         enabled:
-          - dns:query;ignoreAAAA
+          - dns:query
           - drop
           - tcp
           - flow
           - port-distribution
           - icmp
           - http
+        serviceMonitor:
+          enabled: true
+        dashboards:
+          enabled: true
       relay:
         enabled: true
         rollOutPods: true
-      serviceMonitor:
-        enabled: true
+        prometheus:
+          serviceMonitor:
+            enabled: true
       ui:
         enabled: true
+        rollOutPods: true
         ingress:
           enabled: true
-          className: nginx
-          hosts:
-            - &host "cilium.${SECRET_EXTERNAL_DOMAIN}"
-          tls:
-            - hosts:
-                - *host
-        rollOutPods: true
-    ipam:
-      mode: kubernetes
-    ipv4NativeRoutingCIDR: ${CILIUM_POD_CIDR}
-    k8sServiceHost: localhost
-    k8sServicePort: 7445
-    kubeProxyReplacement: true
-    kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
-    l2announcements:
-      enabled: true
-    loadBalancer:
-      algorithm: maglev
-      mode: dsr
-    localRedirectPolicy: true
-    operator:
-      rollOutPods: true
-    rollOutCiliumPods: true
-    securityContext:
-      capabilities:
-        ciliumAgent:
-          - CHOWN
-          - KILL
-          - NET_ADMIN
-          - NET_RAW
-          - IPC_LOCK
-          - SYS_ADMIN
-          - SYS_RESOURCE
-          - DAC_OVERRIDE
-          - FOWNER
-          - SETGID
-          - SETUID
-        cleanCiliumState:
-          - NET_ADMIN
-          - SYS_ADMIN
-          - SYS_RESOURCE
-    cgroup:
-      autoMount:
-        enabled: false
-      hostRoot: /sys/fs/cgroup
-    l7proxy: true
-    routingMode: native
-    ingressController:
-      enabled: false
-      defaultSecretNamespace: networking
-      defaultSecretName: ${SECRET_EXTERNAL_DOMAIN//./-}-tls
-      loadbalancerMode: shared
-      service:
-        loadBalancerIP: 192.168.169.115
+          className: internal
+          hosts: ["hubble.${CLUSTER_EXTERNAL_DOMAIN}"]

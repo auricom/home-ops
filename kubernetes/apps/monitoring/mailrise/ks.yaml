@@ -6,11 +6,11 @@ metadata:
   name: &app mailrise
   namespace: flux-system
 spec:
-  targetNamespace: monitoring
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/monitoring/mailrise/app
+  path: ./kubernetes/apps/observability/mailrise/app
   prune: true
   sourceRef:
     kind: GitRepository

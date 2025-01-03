@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: thanos
-  namespace: monitoring
 spec:
   interval: 30m
   timeout: 15m
@@ -57,7 +56,7 @@ spec:
         config:
           insecure: true
     additionalEndpoints:
-      - dnssrv+_grpc._tcp.kube-prometheus-stack-thanos-discovery.monitoring.svc.cluster.local
+      - dnssrv+_grpc._tcp.kube-prometheus-stack-thanos-discovery.observability.svc.cluster.local
     additionalReplicaLabels: ["__replica__"]
     serviceMonitor:
       enabled: true
@@ -113,7 +112,7 @@ spec:
           alertmanagers:
             - api_version: v2
               static_configs:
-                - dnssrv+_http-web._tcp.alertmanager-operated.monitoring.svc.cluster.local
+                - dnssrv+_http-web._tcp.alertmanager-operated.observability.svc.cluster.local
       rules:
         value: |-
           groups:

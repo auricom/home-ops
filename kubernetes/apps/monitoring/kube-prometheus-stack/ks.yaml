@@ -6,14 +6,14 @@ metadata:
   name: &app kube-prometheus-stack
   namespace: flux-system
 spec:
-  targetNamespace: monitoring
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: rook-ceph-cluster
     - name: thanos
-  path: ./kubernetes/apps/monitoring/kube-prometheus-stack/app
+  path: ./kubernetes/apps/observability/kube-prometheus-stack/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -35,13 +35,13 @@ metadata:
   name: &app kube-prometheus-rules
   namespace: flux-system
 spec:
-  targetNamespace: monitoring
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: kube-prometheus-stack
-  path: ./kubernetes/apps/monitoring/kube-prometheus-stack/rules
+  path: ./kubernetes/apps/observability/kube-prometheus-stack/rules
   prune: true
   sourceRef:
     kind: GitRepository
