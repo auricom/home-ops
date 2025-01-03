@@ -1,0 +1,49 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: &app wipe-rook
+  namespace: default
+  labels:
+    app.kubernetes.io/name: *app
+spec:
+  parallelism: 4
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: disk-wipe
+          image: rook/ceph:master
+          securityContext:
+            privileged: true
+          command:
+            [
+              "/bin/sh",
+              "-c",
+              "echo 'Starting disk operations on /dev/sdb'; \
+              echo 'Running sgdisk --zap-all /dev/sdb'; time sgdisk --zap-all /dev/sdb; \
+              echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb; \
+              echo 'Running blkdiscard /dev/sdb'; time blkdiscard /dev/sdb; \
+              echo 'Running partprobe /dev/sdb'; time partprobe /dev/sdb; \
+              echo 'Disk operations completed on /dev/sdb'"
+            ]
+          volumeMounts:
+            - mountPath: /dev
+              name: dev
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+      topologySpreadConstraints:
+        - maxSkew: 1
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule

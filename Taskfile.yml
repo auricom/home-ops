@@ -14,12 +14,13 @@ env:
   SOPS_AGE_KEY_FILE: "~/.config/sops/age/keys.txt"
 
 includes:
-  ansible: .taskfiles/Ansible/Taskfile.yaml
-  external-secrets: .taskfiles/ExternalSecrets/Taskfile.yaml
-  flux: .taskfiles/Flux/Taskfile.yaml
-  kubernetes: .taskfiles/Kubernetes/Taskfile.yaml
-  sops: .taskfiles/Sops/Taskfile.yaml
-  volsync: .taskfiles/VolSync/Taskfile.yaml
+  ansible: .taskfiles/ansible/Taskfile.yaml
+  bootstrap: .taskfiles/bootstrap/Taskfile.yaml
+  external-secrets: .taskfiles/externalsecrets/Taskfile.yaml
+  flux: .taskfiles/flux/Taskfile.yaml
+  kubernetes: .taskfiles/kubernetes/Taskfile.yaml
+  sops: .taskfiles/sops/Taskfile.yaml
+  volsync: .taskfiles/volsync/Taskfile.yaml
 
 tasks:
 

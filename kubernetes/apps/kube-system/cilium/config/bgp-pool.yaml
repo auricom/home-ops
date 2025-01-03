@@ -1,0 +1,8 @@
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: main-pool
+spec:
+  blocks:
+    - cidr: ${CILIUM_BGP_SVC_RANGE}
