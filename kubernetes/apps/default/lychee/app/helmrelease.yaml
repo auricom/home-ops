@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app lychee
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -32,14 +31,7 @@ spec:
       lychee:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: lychee-secret
+          secret.reloader.stakater.com/reload: lychee-db-secret
         containers:
           app:
             image:
@@ -54,24 +46,46 @@ spec:
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: lychee-secret
             resources:
               requests:
                 cpu: 100m
                 memory: 256Mi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: &probeHttpGet
+                    path: /
+                    port: &port 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  initialDelaySeconds: 0
+                  timeoutSeconds: 1
+                  periodSeconds: 10
+                  failureThreshold: 30
+                  httpGet: *probeHttpGet
     service:
       app:
         controller: *app
         ports:
           http:
-            port: 80
+            port: *port
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: external
         annotations:
-          external-dns.alpha.kubernetes.io/enabled: "true"
-          external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:camera
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Lychee

@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -15,6 +15,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+  dependsOn:
+    - name: crunchy-postgres-operator-cluster
   wait: false
   interval: 30m
   retryInterval: 1m

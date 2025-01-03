@@ -43,14 +43,7 @@ spec:
       bazarr:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: bazarr-secret
+          secret.reloader.stakater.com/reload: bazarr-db-secret
         containers:
           app:
             image:
@@ -58,11 +51,15 @@ spec:
               tag: 1.5.1@sha256:4f3f5f42e552979d75cf2f168d9f053134eefa11e9e42b4878bded3bb69978d4
             env:
               TZ: "${TIMEZONE}"
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: bazarr-secret
+              - secretRef:
+                  name: bazarr-db-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ALL] }
             probes:
               liveness: &probes
                 enabled: true
@@ -101,13 +98,13 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
-          # nginx.ingress.kubernetes.io/auth-method: GET
-          # nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
-          # nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
-          # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:subtitles-outline
           gethomepage.dev/enabled: "true"
           gethomepage.dev/group: Media
@@ -146,6 +143,6 @@ spec:
         enabled: true
         type: configMap
         name: bazarr-scripts # overriden by kustomizeconfig
-        defaultMode: 0775
+        defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
         globalMounts:
           - path: /scripts

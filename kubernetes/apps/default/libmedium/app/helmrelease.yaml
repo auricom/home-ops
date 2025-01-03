@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app libmedium
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -37,7 +36,7 @@ spec:
           app:
             image:
               repository: realaravinth/libmedium
-              tag: master@sha256:63d69a1fd87588028f9fdf26256ec11fc06ecb90fcdd6ee007cd20a1808e1b14
+              tag: latest@sha256:3ab8addf2e78c69ca26b3df6305667541b0cbddbc473401199311650aa298478
             resources:
               requests:
                 cpu: 50m
@@ -51,15 +50,13 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: external
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
-          external-dns.alpha.kubernetes.io/enabled: "true"
-          external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
           hajimari.io/icon: mdi:file-document-arrow-right-outline
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Libmedium

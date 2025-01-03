@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app lidarr
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -39,15 +38,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
           configmap.reloader.stakater.com/reload: lidarr-pushover
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-              pullPolicy: IfNotPresent
-            envFrom: &envFrom
-              - secretRef:
-                  name: lidarr-secret
+          secret.reloader.stakater.com/reload: lidarr-db-secret
         containers:
           app:
             image:
@@ -55,9 +46,9 @@ spec:
               tag: 2.9.0.4506@sha256:192f559e751fa123b752073beb4e840bd9c019825dd09a36beaa128cb7bc07e8
             env:
               TZ: "${TIMEZONE}"
-              LIDARR__INSTANCE_NAME: Lidarr
-              LIDARR__PORT: &port 8080
-              LIDARR__LOG_LEVEL: info
+              LIDARR__APP__INSTANCENAME: Lidarr
+              LIDARR__SERVER__PORT: &port 8080
+              LIDARR__LOG__LEVEL: info
               PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
               PUSHOVER_PRIORITY: "0"
             envFrom:
@@ -78,13 +69,13 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
-          # nginx.ingress.kubernetes.io/auth-method: GET
-          # nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
-          # nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
-          # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:headphones
         hosts:
           - host: *host
@@ -117,7 +108,7 @@ spec:
       scripts:
         type: configMap
         name: lidarr-pushover
-        defaultMode: 0775
+        defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
         globalMounts:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh

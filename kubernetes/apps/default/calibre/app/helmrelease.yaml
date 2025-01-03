@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app calibre
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -54,7 +53,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify

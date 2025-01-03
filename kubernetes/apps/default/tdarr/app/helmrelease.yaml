@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app tdarr
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -54,7 +53,7 @@ spec:
       server:
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: 192.168.169.117
+        loadBalancerIP: ${CLUSTER_LB_TDARR}
         externalTrafficPolicy: Local
         ports:
           server:
@@ -64,7 +63,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify

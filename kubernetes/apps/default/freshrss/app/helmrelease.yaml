@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app freshrss
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -33,14 +32,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
           secret.reloader.stakater.com/reload: authelia-secret
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: freshrss-secret
         containers:
           app:
             image:
@@ -56,7 +47,9 @@ spec:
               OIDC_REMOTE_USER_CLAIM: preferred_username
               OIDC_SCOPES: openid groups email profile
               OIDC_X_FORWARDED_HEADERS: X-Forwarded-Host X-Forwarded-Port X-Forwarded-Proto
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: freshrss-secret
             resources:
               requests:
                 cpu: 50m
@@ -70,7 +63,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
           hajimari.io/icon: mdi:rss
           gethomepage.dev/enabled: "true"

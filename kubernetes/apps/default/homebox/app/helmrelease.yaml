@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app homebox
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -55,7 +54,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
           hajimari.io/enable: "true"
           hajimari.io/appName: *app

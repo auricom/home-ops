@@ -1,0 +1,33 @@
+---
+# trunk-ignore(checkov/CKV_K8S_21)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pgadmin
+  annotations:
+          hajimari.io/icon: mdi:database
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: pgAdmin
+          gethomepage.dev/description: PostgreSQL management tool.
+          gethomepage.dev/group: Infrrastructure
+          gethomepage.dev/icon: pgadmin.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              pgadmin
+            )
+spec:
+  ingressClassName: internal
+  tls:
+    - hosts:
+        - &host pgadmin.${SECRET_EXTERNAL_DOMAIN}
+  rules:
+    - host: *host
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pgadmin
+                port:
+                  number: 5050

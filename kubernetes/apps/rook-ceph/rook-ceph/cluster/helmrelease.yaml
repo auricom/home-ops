@@ -4,13 +4,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: rook-ceph-cluster
-  namespace: rook-ceph
 spec:
   interval: 30m
   chart:
     spec:
       chart: rook-ceph-cluster
-      version: v1.16.0
+      version: v1.16.1
       sourceRef:
         kind: HelmRepository
         name: rook-ceph
@@ -37,7 +36,7 @@ spec:
       createPrometheusRules: true
     ingress:
       dashboard:
-        ingressClassName: nginx
+        ingressClassName: internal
         annotations:
           hajimari.io/appName: Rook
           hajimari.io/icon: mdi:chess-rook
@@ -78,13 +77,13 @@ spec:
               - name: sda
           - name: talos-node-2
             devices:
-              - name: sda
+              - name: sdb
           - name: talos-node-3
             devices:
-              - name: sda
+              - name: sdb
           - name: talos-node-4
             devices:
-              - name: sda
+              - name: sdb
       resources:
         mgr:
           requests:

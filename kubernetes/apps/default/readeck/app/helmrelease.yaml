@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app readeck
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -32,14 +31,6 @@ spec:
       readeck:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: readeck-secret
         containers:
           app:
             image:
@@ -54,7 +45,6 @@ spec:
               READECK_SERVER_PREFIX: /
               READECK_USE_X_FORWARDED: "true"
               READECK_ALLOWED_HOSTS: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            envFrom: *envFrom
             resources:
               requests:
                 cpu: 10m
@@ -70,13 +60,13 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
-          # nginx.ingress.kubernetes.io/auth-method: GET
-          # nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
-          # nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
-          # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:fa-book
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Readeck
@@ -102,4 +92,4 @@ spec:
         enabled: true
         existingClaim: *app
         globalMounts:
-          - path: /config
+          - path: /readeck

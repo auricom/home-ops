@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kubelet-csr-approver
-  namespace: kube-system
 spec:
   interval: 30m
   chart:
@@ -15,18 +14,14 @@ spec:
         kind: HelmRepository
         name: postfinance
         namespace: flux-system
-  maxHistory: 2
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
-  values:
-    providerRegex: ^talos-node-[1-9]$
-    namespace: kube-system
-    bypassDnsResolution: true
+  valuesFrom:
+    - kind: ConfigMap
+      name: kubelet-csr-approver-helm-values

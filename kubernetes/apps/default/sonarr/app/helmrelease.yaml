@@ -39,14 +39,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
           configmap.reloader.stakater.com/reload: sonarr-pushover
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: sonarr-secret
+          secret.reloader.stakater.com/reload: sonarr-db-secret
         containers:
           app:
             image:
@@ -62,7 +55,11 @@ spec:
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: &port 8080
               SONARR__UPDATE__BRANCH: develop
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: sonarr-secret
+              - secretRef:
+                  name: sonarr-db-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -93,13 +90,13 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
-          # nginx.ingress.kubernetes.io/auth-method: GET
-          # nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
-          # nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
-          # nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/icon: mdi:television-classic
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
@@ -132,7 +129,7 @@ spec:
       scripts:
         type: configMap
         name: sonarr-pushover
-        defaultMode: 0775
+        defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
         globalMounts:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh

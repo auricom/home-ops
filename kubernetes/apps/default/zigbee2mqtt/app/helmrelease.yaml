@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app zigbee2mqtt
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -65,22 +64,15 @@ spec:
               ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: "true"
               ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
               ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED: "true"
-              ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx.default.svc.cluster.local.
+              ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx.database.svc.cluster.local.
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
-              ZIGBEE2MQTT_CONFIG_MQTT_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: emqx-secret
-                    key: user_1_username
-              ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: emqx-secret
-                    key: user_1_password
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
               ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
               # ZIGBEE2MQTT_CONFIG_DEVICES: devices.yaml
               # ZIGBEE2MQTT_CONFIG_GROUPS: groups.yaml
+            envFrom:
+              - secretRef:
+                  name: zigbee2mqtt-secret
             securityContext:
               privileged: true
             resources:
@@ -98,7 +90,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify

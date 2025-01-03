@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: hajimari
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -30,7 +29,7 @@ spec:
     controller:
       strategy: RollingUpdate
     podAnnotations:
-      configmap.reloader.stakater.com/reload: "hajimari-settings"
+      configmap.reloader.stakater.com/reload: hajimari-settings
     env:
       TZ: ${TIMEZONE}
     hajimari:
@@ -50,8 +49,8 @@ spec:
         matchNames:
           - default
           - flux-system
-          - monitoring
-          - networking
+          - observability
+          - network
           - rook-ceph
       customApps:
         - group: servers
@@ -86,11 +85,11 @@ spec:
     ingress:
       app:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: internal
         annotations:
           hajimari.io/enable: "false"
-          hajimari.io/icon: "weather-sunset"
-          hajimari.io/instance: "admin"
+          hajimari.io/icon: weather-sunset
+          hajimari.io/instance: admin
         hosts:
           - host: &host apps.${SECRET_EXTERNAL_DOMAIN}
             paths:

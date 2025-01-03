@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app home-assistant-code
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -76,7 +75,7 @@ spec:
     ingress:
       app:
         enabled: true
-        className: nginx
+        className: internal
         hosts:
           - host: &host hass-code.${SECRET_EXTERNAL_DOMAIN}
             paths:

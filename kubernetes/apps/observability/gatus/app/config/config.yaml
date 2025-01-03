@@ -1,0 +1,37 @@
+---
+web:
+  port: ${CUSTOM_WEB_PORT}
+storage:
+  type: sqlite
+  path: /config/sqlite.db
+  caching: true
+metrics: true
+debug: false
+ui:
+  title: Status | Gatus
+  header: Status
+alerting:
+  pushover:
+    application-token: ${CUSTOM_PUSHOVER_APP_TOKEN}
+    user-key: ${CUSTOM_PUSHOVER_USER_KEY}
+    default-alert:
+      description: health-check failed
+      send-on-resolved: true
+      failure-threshold: 5
+      success-threshold: 2
+connectivity:
+  checker:
+    target: 192.168.8.1:53
+    interval: 1m
+endpoints:
+  - name: status
+    group: external
+    url: https://status.${SECRET_EXTERNAL_DOMAIN}
+    interval: 1m
+    client:
+      dns-resolver: tcp://192.168.8.1:53
+      insecure: true
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: pushover

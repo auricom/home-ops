@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app cloudnative-pg-postgres17-pgdump
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      cloudnative-pg-postgres17-pgdump:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 17
+            env:
+              EXCLUDE_DBS: app home_assistant lidarr_log radarr_log sonarr_log prowlarr_log postgres template0 template1
+            envFrom: &envFrom
+              - secretRef:
+                  name: cloudnative-pg-postgres17-pgdump-secret
+            command: /scripts/list_dbs.sh
+        containers:
+          app:
+            image:
+              repository: prodrigestivill/postgres-backup-local
+              tag: 17-alpine@sha256:d41309ea4abc06b1d369927cafa7abb8b9cccab21921dcb5d765379fcd9d60cb
+            command: [/backup.sh]
+            env:
+              POSTGRES_DB_FILE: /config/db_list
+              POSTGRES_EXTRA_OPTS: -Z9 --schema=public --blobs
+              BACKUP_KEEP_DAYS: "7"
+              BACKUP_KEEP_WEEKS: "4"
+              BACKUP_KEEP_MONTHS: "3"
+              HEALTHCHECK_PORT: "8080"
+            envFrom: *envFrom
+    service:
+      app:
+        controller: *app
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /config
+      backups:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/backups/postgresql
+        globalMounts:
+          - path: /backups
+      scripts:
+        enabled: true
+        type: configMap
+        name: cloudnative-pg-postgres17-pgdump-scripts # overriden by kustomizeconfig
+        defaultMode: 0775
+        globalMounts:
+          - path: /scripts

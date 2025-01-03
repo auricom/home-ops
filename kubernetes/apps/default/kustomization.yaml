@@ -8,10 +8,8 @@ resources:
   # Flux-Kustomizations
   - ./atuin/ks.yaml
   - ./authelia/ks.yaml
-  - ./babybuddy/ks.yaml
   - ./bazarr/ks.yaml
   - ./calibre/ks.yaml
-  - ./emqx/ks.yaml
   - ./exercisediary/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./flood/ks.yaml
@@ -22,24 +20,20 @@ resources:
   - ./home-assistant/ks.yaml
   - ./homebox/ks.yaml
   - ./homepage/ks.yaml
-  - ./invidious/ks.yaml
   - ./jellyfin/ks.yaml
   - ./joplin/ks.yaml
   - ./komf/ks.yaml
   - ./komga/ks.yaml
-  - ./kresus/ks.yaml
   - ./libmedium/ks.yaml
   - ./lidarr/ks.yaml
   - ./linkding/ks.yaml
   - ./lldap/ks.yaml
   - ./lms/ks.yaml
   - ./lychee/ks.yaml
-  - ./maybe/ks.yaml
   - ./music-transcode/ks.yaml
   - ./navidrome/ks.yaml
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
-  - ./plant-it/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
@@ -55,7 +49,6 @@ resources:
   - ./unifi/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./vikunja/ks.yaml
-  - ./windmill/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./zwave-js-ui/ks.yaml
   # Default resources

@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -23,21 +23,21 @@ spec:
     substitute:
       APP: *app
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cert-manager-webhook-ovh
+  name: &app cert-manager-issuers
   namespace: flux-system
 spec:
   targetNamespace: cert-manager
   commonMetadata:
     labels:
-      app.kubernetes.io/name: &app cert-manager
+      app.kubernetes.io/name: *app
   dependsOn:
     - name: cert-manager
     - name: external-secrets-stores
-  path: ./kubernetes/apps/cert-manager/cert-manager/webhook-ovh
+  path: ./kubernetes/apps/cert-manager/cert-manager/issuers
   prune: true
   sourceRef:
     kind: GitRepository

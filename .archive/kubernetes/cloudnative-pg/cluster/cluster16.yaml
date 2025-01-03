@@ -1,0 +1,64 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres16
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 50Gi
+    storageClass: openebs-hostpath
+  superuserSecret:
+    name: cloudnative-pg-secret
+  enableSuperuserAccess: true
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      memory: 4Gi
+  postgresql:
+    parameters:
+      max_connections: "600"
+      max_slot_wal_keep_size: 10GB
+      shared_buffers: 512MB
+  monitoring:
+    enablePodMonitor: true
+    # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
+    podMonitorMetricRelabelings:
+      - { sourceLabels: ["cluster"], targetLabel: cnpg_cluster, action: replace }
+      - { regex: cluster, action: labeldrop }
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore:
+      data:
+        compression: bzip2
+      wal:
+        compression: bzip2
+        maxParallel: 8
+      destinationPath: &dest s3://postgresql/
+      endpointURL: &url https://s3.${SECRET_INTERNAL_DOMAIN}
+      # Note: serverName version needs to be inclemented
+      # when recovering from an existing cnpg cluster
+      serverName: postgres16-v5
+      s3Credentials: &credentials
+        accessKeyId:
+          name: cloudnative-pg-secret
+          key: aws-access-key-id
+        secretAccessKey:
+          name: cloudnative-pg-secret
+          key: aws-secret-access-key
+  # Note: previousCluster needs to be set to the name of the previous
+  # cluster when recovering from an existing cnpg cluster
+  bootstrap:
+    recovery:
+      source: &backup postgres16-v4
+  externalClusters:
+    - name: *backup
+      barmanObjectStore:
+        destinationPath: *dest
+        endpointURL: *url
+        s3Credentials: *credentials
+        wal:
+          maxParallel: 8

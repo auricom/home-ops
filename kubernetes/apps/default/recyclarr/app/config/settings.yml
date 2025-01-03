@@ -3,7 +3,7 @@
 notifications:
   apprise:
     mode: stateless
-    base_url: http://apprise.monitoring.svc.cluster.local.:8000
+    base_url: http://apprise.observability.svc.cluster.local.:8000
     urls:
       - !env_var PUSHOVER_URL
   verbosity: normal
