@@ -9,8 +9,9 @@ resources:
   - ./bjw-s.yaml
   - ./cert-manager-webhook-ovh.yaml
   - ./cilium.yaml
-  - ./coredns.yaml
   - ./cloudnative-pg.yaml
+  - ./coredns.yaml
+  - ./crunchydata.yaml
   - ./crowdsec.yaml
   - ./descheduler.yaml
   - ./dysnix.yaml

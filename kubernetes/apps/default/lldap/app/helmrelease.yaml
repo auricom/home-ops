@@ -28,29 +28,10 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    defaultPodOptions:
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: *app
     controllers:
       lldap:
-        replicas: 2
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-              pullPolicy: IfNotPresent
-            envFrom: &envFrom
-              - secretRef:
-                  name: lldap-secret
         containers:
           app:
             image:
@@ -62,7 +43,9 @@ spec:
               LLDAP_HTTP_URL: https://lldap.${SECRET_EXTERNAL_DOMAIN}
               LLDAP_LDAP_PORT: &ldapPort 5389
               LLDAP_LDAP_BASE_DN: dc=home,dc=arpa
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: lldap-secret
             resources:
               requests:
                 cpu: 100m
@@ -105,6 +88,7 @@ spec:
               - *host
     persistence:
       data:
-        type: emptyDir
+        enabled: true
+        existingClaim: *app
         globalMounts:
           - path: /data

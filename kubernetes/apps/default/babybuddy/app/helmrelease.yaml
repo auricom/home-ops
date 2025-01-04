@@ -32,58 +32,31 @@ spec:
       babybuddy:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: babybuddy-secret
-          migrations:
-            image:
-              repository: ghcr.io/auricom/babybuddy
-              tag: 2.7.0@sha256:39bc60fb6825d5bca296c078f599e00c6b9249d55992ddfe4200e6aa0841f86a
-              pullPolicy: IfNotPresent
-            envFrom: *envFrom
-            command:
-              - /bin/bash
-              - -c
-              - |
-                #!/bin/bash
-
-                set -o errexit
-                set -o nounset
-
-                cd www/public
-                python3 ./manage.py migrate --noinput
-                python3 ./manage.py createcachetable
         containers:
           app:
             image:
-              repository: ghcr.io/auricom/babybuddy
-              tag: 2.7.0@sha256:e112563cbd34c4283e8cf5ee756dbed695799dcefe4f035f9495beacb6415d12
+              repository: lscr.io/linuxserver/babybuddy
+              tag: 2.7.0@sha256:c01a06f7740be88524c62d3d5542e5c60f426a3c77ae5554e643fb5df60c3fab
+              pullPolicy: IfNotPresent
             env:
               TZ: ${TIMEZONE}
               EMAIL_HOST: smtp-relay.default.svc.cluster.local.
               EMAIL_PORT: "2525"
               EMAIL_USE_TLS: "false"
-            envFrom: *envFrom
+              CSRF_TRUSTED_ORIGINS: https://babybuddy.${SECRET_EXTERNAL_DOMAIN}
+            envFrom:
+              - secretRef:
+                  name: babybuddy-secret
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /
-                    port: &port 3000
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+              readiness:
+                enabled: true
               startup:
-                enabled: false
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 100m
@@ -93,7 +66,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: *port
+            port: 8000
     ingress:
       app:
         enabled: true

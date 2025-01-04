@@ -32,15 +32,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          01-init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-              pullPolicy: IfNotPresent
-            envFrom: &envFrom
-              - secretRef:
-                  name: gatus-secret
-          02-init-config:
+          init-config:
             image: &configSyncImage
               repository: ghcr.io/kiwigrid/k8s-sidecar
               tag: 1.28.4@sha256:20caf4e241e1f9f9231527db5e75b735aa7b0da7bee3d262cbe369bb9b33469f
@@ -67,7 +59,9 @@ spec:
               GATUS_CONFIG_PATH: /config
               CUSTOM_WEB_PORT: &port 8080
               SECRET_EXTERNAL_DOMAIN: ${SECRET_EXTERNAL_DOMAIN}
-            envFrom: *envFrom
+            envFrom: &envFrom
+              - secretRef:
+                  name: gatus-secret
             resources:
               requests:
                 cpu: 10m
@@ -132,8 +126,7 @@ spec:
       name: *app
     persistence:
       config:
-        enabled: true
-        type: emptyDir
+        existingClaim: gatus
       config-file:
         type: configMap
         name: gatus-configmap
