@@ -25,3 +25,4 @@ spec:
     substitute:
       APP: *app
       GATUS_SUBDOMAIN: links
+      VOLSYNC_CAPACITY: 2Gi

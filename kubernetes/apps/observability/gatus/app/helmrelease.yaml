@@ -14,9 +14,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -24,24 +22,17 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   values:
     controllers:
       gatus:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          01-init-db:
+          init-config:
             image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-              pullPolicy: IfNotPresent
-            envFrom: &envFrom
-              - secretRef:
-                  name: gatus-secret
-          02-init-config:
-            image: &configSyncImage
               repository: ghcr.io/kiwigrid/k8s-sidecar
               tag: 1.28.4@sha256:20caf4e241e1f9f9231527db5e75b735aa7b0da7bee3d262cbe369bb9b33469f
             env:
@@ -50,11 +41,11 @@ spec:
               NAMESPACE: ALL
               RESOURCE: both
               UNIQUE_FILENAMES: true
-              METHOD: LIST
-            resources: &configSyncResources
+              METHOD: WATCH
+            restartPolicy: Always
+            resources:
               requests:
                 cpu: 10m
-                memory: 10Mi
               limits:
                 memory: 128Mi
         containers:
@@ -63,37 +54,54 @@ spec:
               repository: ghcr.io/twin/gatus
               tag: v5.15.0@sha256:45686324db605e57dfa8b0931d8d57fe06298f52685f06aa9654a1f710d461bb
             env:
-              TZ: ${TIMEZONE}
               GATUS_CONFIG_PATH: /config
-              CUSTOM_WEB_PORT: &port 8080
-              SECRET_EXTERNAL_DOMAIN: ${SECRET_EXTERNAL_DOMAIN}
-            envFrom: *envFrom
+              GATUS_DELAY_START_SECONDS: 5
+              WEB_PORT: &port 80
+            envFrom:
+              - secretRef:
+                  name: gatus-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 10m
-                memory: 256M
+                cpu: 100m
               limits:
-                memory: 512M
-          config-sync:
-            image: *configSyncImage
-            env:
-              FOLDER: /config
-              LABEL: gatus.io/enabled
-              NAMESPACE: ALL
-              RESOURCE: both
-              UNIQUE_FILENAMES: true
-              METHOD: WATCH
-            envFrom: *envFrom
-            resources: *configSyncResources
+                memory: 256Mi
+    defaultPodOptions:
+      dnsConfig:
+        options:
+          - { name: ndots, value: "1" }
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
     service:
       app:
-        controller: *app
+        controller: gatus
         ports:
           http:
             port: *port
     serviceMonitor:
       app:
-        serviceName: *app
+        serviceName: gatus
         endpoints:
           - port: http
             scheme: http
@@ -132,8 +140,7 @@ spec:
       name: *app
     persistence:
       config:
-        enabled: true
-        type: emptyDir
+        existingClaim: gatus
       config-file:
         type: configMap
         name: gatus-configmap

@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app vikunja
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -32,21 +31,17 @@ spec:
       vikunja:
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: lidarr-pushover
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: vikunja-secret
+          secret.reloader.stakater.com/reload: vikunja-db-secret
         containers:
           app:
             image:
               repository: vikunja/api
               tag: 0.22.1@sha256:c9415431e6235229302bb8f9ee6660b74c24859d1e8adbc4a3e25bd418604b57
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: vikunja-secret
+              - secretRef:
+                  name: vikunja-db-secret
             env:
               VIKUNJA_MAILER_HOST: smtp-relay.default.svc.cluster.local.
               VIKUNJA_MAILER_PORT: "2525"

@@ -32,14 +32,7 @@ spec:
       lychee:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: lychee-secret
+          secret.reloader.stakater.com/reload: lychee-db-secret
         containers:
           app:
             image:
@@ -54,7 +47,9 @@ spec:
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: lychee-secret
             resources:
               requests:
                 cpu: 100m

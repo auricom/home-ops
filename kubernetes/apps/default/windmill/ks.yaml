@@ -11,6 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: crunchy-postgres-operator-cluster
     - name: external-secrets-stores
   path: ./kubernetes/apps/default/windmill/app
   prune: true

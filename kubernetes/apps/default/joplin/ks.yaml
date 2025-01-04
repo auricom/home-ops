@@ -16,6 +16,7 @@ spec:
     kind: GitRepository
     name: home-ops-kubernetes
   dependsOn:
+    - name: crunchy-postgres-operator-cluster
     - name: external-secrets-stores
   wait: false
   interval: 30m

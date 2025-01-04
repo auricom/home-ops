@@ -33,15 +33,7 @@ spec:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: authelia-secret
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: paperless-secret
+          secret.reloader.stakater.com/reload: authelia-secret,paperless-db-secret
         containers:
           app:
             image:
@@ -62,7 +54,11 @@ spec:
               PAPERLESS_TASK_WORKERS: 2
               PAPERLESS_TIME_ZONE: Europe/Paris
               PAPERLESS_URL: https://paperless.${SECRET_EXTERNAL_DOMAIN}
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: paperless-secret
+              - secretRef:
+                  name: paperless-db-secret
             resources:
               requests:
                 cpu: 25m

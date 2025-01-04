@@ -29,37 +29,6 @@ spec:
       app:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          - name: init-db
-            image: ghcr.io/onedr0p/postgres-init:16
-            envFrom:
-              - secretRef:
-                  name: &secret windmill-secret
-          - name: init-grants
-            image: ghcr.io/onedr0p/postgres-init:16
-            command:
-              - /bin/bash
-              - -c
-              - |
-                #!/bin/bash
-
-                set -o errexit
-                set -o nounset
-
-                /var/run/grants.sh
-            envFrom:
-              - secretRef:
-                  name: *secret
-            volumeMounts:
-              - name: grants
-                readOnly: true
-                subPath: grants.sh
-                mountPath: /var/run/grants.sh
-        volumes:
-          - name: grants
-            configMap:
-              name: windmill-grants
-              defaultMode: 509
       baseDomain: &host "windmill.${SECRET_EXTERNAL_DOMAIN}"
       baseProtocol: https
       appReplicas: 1
@@ -105,6 +74,6 @@ spec:
       enabled: false
   valuesFrom:
     - kind: Secret
-      name: *secret
+      name: windmill-secret
       valuesKey: WINDMILL_POSTGRES_URL
       targetPath: windmill.databaseUrl

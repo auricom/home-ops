@@ -33,14 +33,7 @@ spec:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: ghostfolio-secret
+          secret.reloader.stakater.com/reload: ghostfolio-db-secret
         containers:
           app:
             image:
@@ -50,7 +43,11 @@ spec:
               NODE_ENV: production
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: ghostfolio-secret
+              - secretRef:
+                  name: ghostfolio-db-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -84,7 +81,7 @@ spec:
           hajimari.io/icon: mdi:cash-multiple
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Ghostfolio
-          gethomepage.dev/description: NVR with realtime local object detection for IP cameras
+          gethomepage.dev/description: Open Source Wealth Management Software
           gethomepage.dev/group: Applications
           gethomepage.dev/icon: ghostfolio.png
           gethomepage.dev/pod-selector: >-

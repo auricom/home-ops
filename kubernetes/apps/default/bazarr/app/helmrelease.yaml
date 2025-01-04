@@ -43,14 +43,6 @@ spec:
       bazarr:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: bazarr-secret
         containers:
           app:
             image:
@@ -58,7 +50,9 @@ spec:
               tag: 1.5.1@sha256:4f3f5f42e552979d75cf2f168d9f053134eefa11e9e42b4878bded3bb69978d4
             env:
               TZ: "${TIMEZONE}"
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: bazarr-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

@@ -11,6 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: crunchy-postgres-operator-cluster
     - name: external-secrets-stores
     - name: volsync
   path: ./kubernetes/apps/default/home-assistant/app
@@ -39,6 +40,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: &app home-assistant
+  dependsOn:
+    - name: home-assistant
   path: ./kubernetes/apps/default/home-assistant/code
   prune: true
   sourceRef:

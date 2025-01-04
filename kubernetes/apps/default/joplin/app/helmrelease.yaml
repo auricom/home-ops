@@ -33,14 +33,7 @@ spec:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: joplin-secret
+          secret.reloader.stakater.com/reload: joplin-db-secret
         containers:
           app:
             image:
@@ -56,7 +49,9 @@ spec:
               MAILER_SECURITY: none
               MAILER_NOREPLY_NAME: JoplinServer
               MAILER_NOREPLY_EMAIL: joplin@${SECRET_DOMAIN}
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: joplin-secret
             resources:
               requests:
                 cpu: 50m

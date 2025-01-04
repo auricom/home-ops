@@ -32,20 +32,14 @@ spec:
       sharry:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: sharry-secret
         containers:
           app:
             image:
               repository: eikek0/sharry
               tag: v1.14.0@sha256:8b1388310e9f93a61f54f27d1b4b1c91d8ef2e846ac1068023c4315fa7794729
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: sharry-secret
             args:
               - /opt/sharry.conf
             resources:
@@ -90,6 +84,11 @@ spec:
               - *host
     persistence:
       config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
+      configmap:
         enabled: true
         type: configMap
         name: sharry-configmap

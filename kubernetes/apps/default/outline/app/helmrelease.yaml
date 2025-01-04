@@ -32,15 +32,7 @@ spec:
       outline:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: authelia-secret
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: outline-secret
+          secret.reloader.stakater.com/reload: authelia-secret,outline-db-secret
         containers:
           app:
             image:
@@ -49,6 +41,8 @@ spec:
             envFrom:
               - secretRef:
                   name: outline-secret
+              - secretRef:
+                  name: outline-db-secret
             env:
               AWS_REGION: us-east-1
               AWS_S3_ACL: private
@@ -58,6 +52,7 @@ spec:
               ENABLE_UPDATES: "false"
               FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
               LOG_LEVEL: debug
+              NODE_TLS_REJECT_UNAUTHORIZED: "0"
               OIDC_AUTH_URI: "https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/authorization"
               OIDC_CLIENT_ID: outline
               OIDC_DISPLAY_NAME: Authelia

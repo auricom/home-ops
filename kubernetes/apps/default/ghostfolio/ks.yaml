@@ -16,6 +16,7 @@ spec:
     kind: GitRepository
     name: home-ops-kubernetes
   dependsOn:
+    - name: crunchy-postgres-operator-cluster
     - name: external-secrets-stores
     - name: dragonfly-cluster
   wait: false

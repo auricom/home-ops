@@ -30,23 +30,16 @@ spec:
   values:
     controllers:
       linkding:
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: linkding-secret
         containers:
           app:
             image:
               repository: sissbruecker/linkding
               tag: 1.36.0@sha256:6e2cfd1c32dae78ff6d0fd3000562556f123502d4b79f4e3e53b4b0592022edd
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: linkding-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -97,3 +90,9 @@ spec:
         tls:
           - hosts:
               - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /etc/linkding/data

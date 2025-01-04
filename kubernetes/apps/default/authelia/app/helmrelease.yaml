@@ -36,27 +36,13 @@ spec:
       securityContext:
         runAsUser: 568
         runAsGroup: 568
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: *app
     controllers:
       authelia:
         replicas: 2
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &envFrom
-              - secretRef:
-                  name: authelia-secret
+          secret.reloader.stakater.com/reload: authelia-db-secret
         containers:
           app:
             image:
@@ -74,7 +60,11 @@ spec:
               AUTHELIA_WEBAUTHN_DISABLE: "true"
               X_AUTHELIA_CONFIG: /config/configuration.yaml
               X_AUTHELIA_CONFIG_FILTERS: template
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: authelia-secret
+              - secretRef:
+                  name: authelia-db-secret
             probes:
               liveness: &probes
                 enabled: true
