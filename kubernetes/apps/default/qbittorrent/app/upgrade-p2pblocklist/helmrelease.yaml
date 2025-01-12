@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.32@sha256:dbbfeb6ee02a25ad35653d250ca85b25c2a3685f7e62c9e05a372e10f6902620
+              tag: 1.32@sha256:df963af076badffe5d21150c461e14e96e4ffcaf4b57ff6d5e68a359de0b717b
             command:
               - /bin/bash
               - -c
