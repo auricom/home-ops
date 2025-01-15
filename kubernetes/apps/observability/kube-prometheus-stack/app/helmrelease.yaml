@@ -151,7 +151,7 @@ spec:
               storageClassName: rook-ceph-block
               resources:
                 requests:
-                  storage: 20Gi
+                  storage: 60Gi
     alertmanager:
       config:
         global:

@@ -12,4 +12,5 @@ resources:
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./mailrise/ks.yaml
+  - ./pushgateway/ks.yaml
   - ./scrutiny/ks.yaml
