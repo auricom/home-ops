@@ -192,11 +192,6 @@ spec:
           revision: 1
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
-        zfs:
-          # renovate: depName="ZFS"
-          gnetId: 7845
-          revision: 4
-          datasource: Prometheus
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
           datasource: Prometheus
@@ -208,6 +203,14 @@ spec:
           datasource: Prometheus
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
+          datasource: Prometheus
+        resticprofile:
+          url: https://raw.githubusercontent.com/creativeprojects/resticprofile/047b81702b0a583a61facd72e704ab4f7bd495eb/contrib/grafana/dashboard.json
+          datasource: Prometheus
+        zfs:
+          # renovate: depName="ZFS"
+          gnetId: 7845
+          revision: 4
           datasource: Prometheus
         zrepl:
           url: https://raw.githubusercontent.com/zrepl/zrepl/master/dist/grafana/grafana-prometheus-zrepl.json
