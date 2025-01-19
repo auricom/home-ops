@@ -3,14 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app music-transcode
+  name: &app homelab-music-transcode
   namespace: flux-system
 spec:
   targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/default/music-transcode/app
+  path: ./kubernetes/apps/default/homelab/music-transcode
   prune: true
   sourceRef:
     kind: GitRepository

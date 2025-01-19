@@ -19,6 +19,7 @@ resources:
   - ./hajimari/ks.yaml
   - ./home-assistant/ks.yaml
   - ./homebox/ks.yaml
+  - ./homelab/ks.yaml
   - ./homepage/ks.yaml
   - ./jellyfin/ks.yaml
   - ./joplin/ks.yaml
@@ -30,7 +31,6 @@ resources:
   - ./lldap/ks.yaml
   - ./lms/ks.yaml
   - ./lychee/ks.yaml
-  - ./music-transcode/ks.yaml
   - ./navidrome/ks.yaml
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
