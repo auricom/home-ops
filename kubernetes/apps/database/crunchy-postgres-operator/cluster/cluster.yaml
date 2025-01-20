@@ -67,10 +67,6 @@ spec:
       databases:
         - ghostfolio
       password: *password
-    - name: home-assistant
-      databases:
-        - home-assistant
-      password: *password
     - name: joplin
       databases:
         - joplin

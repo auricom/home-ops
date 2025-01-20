@@ -50,8 +50,6 @@ spec:
             envFrom:
               - secretRef:
                   name: home-assistant-secret
-              - secretRef:
-                  name: home-assistant-db-secret
             probes:
               liveness:
                 enabled: false
