@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app homelab-github-notifier
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      music-transcode:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: 0 */3 * * * # Every 3 hours
+        containers:
+          app:
+            image:
+              repository: ghcr.io/auricom/github-notifier
+              tag: rolling@sha256:e940cef874e6aba265f07e7e9b205f4b7224d3ca5a7eedd5d3ed5767bbd63461
+            command:
+              - python
+              - /app/github-notifier.py
+            envFrom:
+              - secretRef:
+                  name: homelab-github-notifier-secret
+              - secretRef:
+                  name: homelab-github-notifier-db-secret
+    service:
+      app:
+        controller: *app
+        enabled: false
+    persistence:
+      config:
+        type: configMap
+        name: homelab-github-notifier-configmap
+        defaultMode: 0644 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      script:
+        type: configMap
+        name: homelab-github-notifier-configmap
+        defaultMode: 0644 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /app/github-notifier.py
+            subPath: github-notifier.py
+            readOnly: true

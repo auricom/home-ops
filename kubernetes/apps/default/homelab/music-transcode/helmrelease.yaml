@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app homelab-music-transcode
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -64,7 +63,7 @@ spec:
       scripts:
         type: configMap
         name: music-transcode-configmap
-        defaultMode: 0775
+        defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
         globalMounts:
           - path: /app/transcode.sh
             subPath: transcode.sh
@@ -72,7 +71,7 @@ spec:
       exclude:
         type: configMap
         name: music-transcode-configmap
-        defaultMode: 0775
+        defaultMode: 0644 # trunk-ignore(yamllint/octal-values)
         globalMounts:
           - path: /app/transcode_exclude.cfg
             subPath: transcode_exclude.cfg
