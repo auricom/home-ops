@@ -119,6 +119,10 @@ spec:
       databases:
         - tandoor
       password: *password
+    - name: vaultwarden
+      databases:
+        - vaultwarden
+      password: *password
     - name: vikunja
       databases:
         - vikunja
