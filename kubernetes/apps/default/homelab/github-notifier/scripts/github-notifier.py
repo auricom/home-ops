@@ -96,13 +96,15 @@ def check_latest_tag(repo_name, ignore_list):
 
 def send_pushover_notification(repo_name, tag_name):
     payload = {
-        "token": PUSHOVER_APP_TOKEN,
-        "user": PUSHOVER_USER_KEY,
+        "token": str(PUSHOVER_APP_TOKEN).strip(),
+        "user": str(PUSHOVER_USER_KEY).strip(),
         "html": "1",
-        "message": f'New stable release {tag_name} for repository <a href="https://github.com/{repo_name}">{repo_name}</a> is available.',
+        "message": f'New stable release {tag_name} for repository <a href="https://github.com/{repo_name}/releases">{repo_name}</a> is available.',
     }
     response = requests.post(PUSHOVER_API_URL, data=payload, timeout=5, headers={'User-Agent': 'Python'})
+    print(f"Response content: {response.text}")
     response.raise_for_status()
+
 
 def main():
     create_table()
