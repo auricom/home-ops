@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/ngnodehq/landing-page
-              tag: v0.1.4@sha256:87e6e0c73a0a97b1ad47d9d09d006c1b56257964561f2f47c9111f3cfb54399a
+              tag: v0.2.0@sha256:3d65a1aecad6c96acaed49aa2079b6a4aa700bd8cdce1cdeca3d0bbf1fe4b1c2
             resources:
               requests:
                 cpu: 5m
