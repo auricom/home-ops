@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: ghcr.io/foxcpp/maddy
-              tag: 0.7.1@sha256:6ab538e2f28baf2324f7cb418c7f9476fd9c7e9fa9b14bc3aecf51a9f6962064
+              tag: 0.8.0@sha256:7e4a6560cee8bf11a8fa6f624903cab38e8a3fb0e941a7d27dacf556038546cd
             env:
               DEBUG: "true"
               SMTP_DOMAIN: "${SECRET_DOMAIN}"
