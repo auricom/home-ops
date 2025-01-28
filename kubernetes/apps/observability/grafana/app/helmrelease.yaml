@@ -164,11 +164,8 @@ spec:
               implementation: prometheus
     dashboards:
       default:
-        home-assistant:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/observability/grafana/dashboards/home-assistant.json
-          datasource: Prometheus
-        homelab-temperatures:
-          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/observability/grafana/dashboards/homelab-temperatures.json
+        resticprofile:
+          url: https://raw.githubusercontent.com/auricom/home-ops/main/kubernetes/apps/default/homelab/nas/resticprofile-dashboard.json
           datasource: Prometheus
         external-dns:
           # renovate: depName="External-dns"
@@ -204,16 +201,10 @@ spec:
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: Prometheus
-        resticprofile:
-          url: https://raw.githubusercontent.com/creativeprojects/resticprofile/047b81702b0a583a61facd72e704ab4f7bd495eb/contrib/grafana/dashboard.json
-          datasource: Prometheus
         zfs:
           # renovate: depName="ZFS"
           gnetId: 7845
           revision: 4
-          datasource: Prometheus
-        zrepl:
-          url: https://raw.githubusercontent.com/zrepl/zrepl/master/dist/grafana/grafana-prometheus-zrepl.json
           datasource: Prometheus
       ceph:
         ceph-cluster:
