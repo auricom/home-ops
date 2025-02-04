@@ -33,11 +33,11 @@ spec:
         containers:
           app:
             image:
-              repository: lmscommunity/logitechmediaserver
-              tag: 9.0.0@sha256:625190b3dc527a0e4cc2f77eb1df728a6fcfe50f9a2c840aa3b39d8c71b3374a
+              repository: lmscommunity/lyrionmusicserver
+              tag: 9.0.2@sha256:448f374f6e6d18024508b21b76d454cf01f77b64647268209fa22843bb8b252b
             env:
-              AUDIO_DIR: &music /var/mnt/vol1/music
-              PLAYLIST_DIR: &playlist /var/mnt/vol1/music/.lms
+              AUDIO_DIR: &claude-music /mnt/claude-musique
+              PLAYLIST_DIR: &playlists /mnt/playlists
             resources:
               requests:
                 memory: 250Mi
@@ -99,18 +99,18 @@ spec:
       music:
         type: nfs
         server: 192.168.9.10
-        path: *music
+        path: /var/mnt/vol1/music
         globalMounts:
-          - path: *music
+          - path: *claude-music
       music-helene:
         type: nfs
         server: 192.168.9.10
         path: /var/mnt/vol1/home/helene/Musique
         globalMounts:
-          - path: /var/mnt/vol1/home/helene/Musique
+          - path: /mnt/helene-musique
       playlists:
         type: nfs
         server: 192.168.9.10
-        path: *playlist
+        path: /mnt/vol1/music/.lms
         globalMounts:
-          - path: *playlist
+          - path: *playlists
