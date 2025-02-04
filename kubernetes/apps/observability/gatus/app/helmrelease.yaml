@@ -54,9 +54,11 @@ spec:
               repository: ghcr.io/twin/gatus
               tag: v5.15.0@sha256:45686324db605e57dfa8b0931d8d57fe06298f52685f06aa9654a1f710d461bb
             env:
+              CUSTOM_SECRET_EXTERNAL_DOMAIN: ${SECRET_EXTERNAL_DOMAIN}
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
-              WEB_PORT: &port 80
+              TZ: ${TIMEZONE}
+              WEB_PORT: &port 8080
             envFrom:
               - secretRef:
                   name: gatus-secret
@@ -83,9 +85,6 @@ spec:
               limits:
                 memory: 256Mi
     defaultPodOptions:
-      dnsConfig:
-        options:
-          - { name: ndots, value: "1" }
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -99,18 +98,8 @@ spec:
         ports:
           http:
             port: *port
-    serviceMonitor:
-      app:
-        serviceName: gatus
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
     ingress:
       app:
-        enabled: true
         className: external
         annotations:
           hajimari.io/icon: mdi:list-status
