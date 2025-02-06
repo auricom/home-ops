@@ -37,13 +37,13 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.32.1@sha256:b01d7c1b5d9e900119a7568fc4d08a3a46afb65d430ed66173cdf101b4f211db
+              tag: 1.32.1@sha256:33ff33f4d00dc6779198b0da0200caddad8c191c59fe427dcaebe89695298ff0
             command:
               - /bin/bash
               - /app/backup.sh
             env:
               OPNSENSE_URL: "https://opnsense.${SECRET_INTERNAL_DOMAIN}"
-              S3_URL: "https://minio.${SECRET_INTERNAL_DOMAIN}"
+              S3_URL: "https://s3.${SECRET_INTERNAL_DOMAIN}"
             envFrom:
               - secretRef:
                   name: homelab-opnsense-backup-secret

@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-set -o nounset
+# Exit on error, undefined vars, pipe failures, and debug each command
 set -o errexit
+set -o nounset
+set -o pipefail
+set -o xtrace
+
+# Cleanup temporary files on script exit
+trap 'rm -f "/tmp/${config_filename}"' EXIT
 
 config_filename="$(date "+%Y%m%d-%H%M%S").xml"
 
