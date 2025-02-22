@@ -81,7 +81,7 @@ spec:
             # image: docker.io/1password/connect-sync:1.7.0
             image:
               repository: ghcr.io/haraldkoch/onepassword-sync
-              tag: 1.7.2@sha256:3e40f8903ec77b3476365fe300aeb326c75c94ff546e82060823561242ade674
+              tag: 1.7.3@sha256:7e30af4d83e6884981b2d47e6cfe5cca056da20b182e4c4c6def9e8ac65c0982
             env:
               - { name: OP_HTTP_PORT, value: &sport 8081 }
               - { name: OP_BUS_PORT, value: "11221" }
