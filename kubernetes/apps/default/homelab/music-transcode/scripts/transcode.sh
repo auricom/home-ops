@@ -7,6 +7,10 @@ set -u
 # Exit if any command in pipe fails
 set -o pipefail
 
+# Set locale to UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 # Create a logging function
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
@@ -298,11 +302,19 @@ remove_absent_from_source() {
         [[ -z "$val" ]] && continue
 
         local filename="$(dirname "$val")/$(basename "$val" .md5)"
-        if ! "$TRANSCODE_FD_BIN" . "$TRANSCODE_INPUT_DIR/$(dirname "$filename")" 2>/dev/null | grep -qF "$(basename "$filename" .md5)"; then
-            log "INFO: Transcoded file $filename doesn't have a source file: delete"
-            if [[ $MODE_DRY_RUN == false ]]; then
-                rm -f "$TRANSCODE_OUTPUT_DIR/$filename"*
-                rm -f "$TRANSCODE_DB/$filename"*
+        # Use printf to properly handle special characters
+        local source_path
+        source_path=$(printf "%s/%s" "$TRANSCODE_INPUT_DIR" "$filename")
+
+        if [[ ! -e "$source_path" ]]; then
+            log "INFO: Checking absence of: $filename"
+            # Double check with find to handle special characters
+            if ! find "$TRANSCODE_INPUT_DIR/$(dirname "$filename")" -maxdepth 1 -name "$(basename "$filename")*" 2>/dev/null | grep -q .; then
+                log "INFO: Confirmed - Transcoded file $filename doesn't have a source file: delete"
+                if [[ $MODE_DRY_RUN == false ]]; then
+                    rm -f "$TRANSCODE_OUTPUT_DIR/$filename"*
+                    rm -f "$TRANSCODE_DB/$filename"*
+                fi
             fi
         fi
     done <<< "$files"
@@ -310,9 +322,9 @@ remove_absent_from_source() {
     log "INFO: removing empty directories..."
     if [[ $MODE_DRY_RUN == false ]]; then
         cd "$TRANSCODE_OUTPUT_DIR" || exit 1
-        "$TRANSCODE_FD_BIN" --type empty --exec-batch rmdir {} \; || true
+        find . -type d -empty -delete 2>/dev/null || true
         cd "$TRANSCODE_DB" || exit 1
-        "$TRANSCODE_FD_BIN" --type empty --exec-batch rmdir {} \; || true
+        find . -type d -empty -delete 2>/dev/null || true
     fi
 }
 
