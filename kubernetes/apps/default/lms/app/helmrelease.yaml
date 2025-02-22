@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: lmscommunity/lyrionmusicserver
-              tag: 9.0.2@sha256:97112df8590def276bd527b3e52d2ad1b55996be98f2c29e89f0c4ca6f5a6026
+              tag: 9.1.0@sha256:40aca313a8a19029d24d49a67018ef6278fd26922a11c53a4abf72d1c3f7d82e
             env:
               AUDIO_DIR: &claude-music /mnt/claude-musique
               PLAYLIST_DIR: &playlists /mnt/playlists
