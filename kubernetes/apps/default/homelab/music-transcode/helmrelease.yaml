@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/freac
-              tag: 1.1.7@sha256:ed89c0d4476e7291caf271acfc54636b5649076478f86b05c1ab89eeea3873ee
+              tag: 1.1.7@sha256:d70f65290ffd63e10f7a864f397203510ccdf166208bbbab405a889adceaeecd
             command:
               - /bin/bash
               - -c
@@ -55,6 +55,9 @@ spec:
               TRANSCODE_INPUT_DIR: /mnt/music/
               TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded/
               TRANSCODE_FREAC_BIN: /app/freaccmd
+            envFrom:
+              - secretRef:
+                  name: homelab-nas-music-transcode-secret
     service:
       app:
         controller: *app
@@ -62,7 +65,7 @@ spec:
     persistence:
       scripts:
         type: configMap
-        name: music-transcode-configmap
+        name: homelab-music-transcode-configmap
         defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
         globalMounts:
           - path: /app/transcode.sh
@@ -70,7 +73,7 @@ spec:
             readOnly: true
       exclude:
         type: configMap
-        name: music-transcode-configmap
+        name: homelab-music-transcode-configmap
         defaultMode: 0644 # trunk-ignore(yamllint/octal-values)
         globalMounts:
           - path: /app/transcode_exclude.cfg

@@ -8,8 +8,14 @@ set -u
 set -o pipefail
 
 # Set locale to UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+
+# Send start ping to healthchecks
+if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
+    curl --silent --max-time 10 --retry 5 "https://hc-ping.com/${HEALTHCHECKS_ID}/start"
+fi
+
 
 # Create a logging function
 log() {
@@ -31,6 +37,20 @@ cleanup() {
     exit $exit_code
 }
 
+manage_execution_time() {
+    local timestamp_file="$TRANSCODE_DB/last_execution"
+
+    if [[ "$1" == "read" ]]; then
+        if [[ -f "$timestamp_file" ]]; then
+            cat "$timestamp_file"
+        else
+            echo "1970-01-01T00:00:00"  # Return epoch if no previous execution
+        fi
+    elif [[ "$1" == "write" ]]; then
+        date -u "+%Y-%m-%dT%H:%M:%S" > "$timestamp_file"
+    fi
+}
+
 trap cleanup EXIT
 trap 'log "Script interrupted by user"; exit 1' INT TERM
 
@@ -49,7 +69,16 @@ export TRANSCODE_DB="${TRANSCODE_DB:-${TRANSCODE_OUTPUT_DIR}.transcode}"
 export TRANSCODE_FREAC_BIN="${TRANSCODE_FREAC_BIN:-/app/freaccmd}"
 export TRANSCODE_COVER_EXTENSIONS="${TRANSCODE_COVER_EXTENSIONS:-png jpg}"
 export TRANSCODE_MUSIC_EXTENSIONS="${TRANSCODE_MUSIC_EXTENSIONS:-flac opus mp3 ogg wma m4a wav}"
-export TRANSCODE_FD_FILTERS="${TRANSCODE_FD_FILTERS:---changed-within 1week}"
+if [[ -n "${TRANSCODE_FD_FILTERS+x}" ]]; then
+    : # Keep existing value if explicitly set
+else
+    if [[ "$*" == *"-f"* ]]; then
+        export TRANSCODE_FD_FILTERS=""
+    else
+        last_exec=$(manage_execution_time read)
+        export TRANSCODE_FD_FILTERS="--changed-after $last_exec"
+    fi
+fi
 
 # Validate directories and files
 for dir in "$TRANSCODE_INPUT_DIR" "$TRANSCODE_OUTPUT_DIR"; do
@@ -339,4 +368,13 @@ if [[ $MODE_DELETE == false ]]; then
     fix_cuefiles
 else
     remove_absent_from_source
+fi
+
+if [[ $MODE_DRY_RUN == false ]]; then
+    manage_execution_time write
+fi
+
+# Send completion ping to healthchecks
+if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
+    curl --silent --max-time 10 --retry 5 "https://hc-ping.com/${HEALTHCHECKS_ID}"
 fi
