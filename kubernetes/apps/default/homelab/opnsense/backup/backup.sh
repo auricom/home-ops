@@ -9,6 +9,11 @@ set -o xtrace
 # Cleanup temporary files on script exit
 trap 'rm -f "/tmp/${config_filename}"' EXIT
 
+# Send start ping to healthchecks
+if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
+    curl --max-time 10 --retry 5 "https://hc-ping.com/${HEALTHCHECKS_ID}/start"
+fi
+
 config_filename="$(date "+%Y%m%d-%H%M%S").xml"
 
 http_host=${S3_URL#*//}
@@ -35,3 +40,8 @@ curl -fsSL \
     -H "Content-Type: text/xml" \
     -H "Authorization: AWS ${AWS_ACCESS_KEY_ID}:${http_signature}" \
     "${S3_URL}/${http_filepath}"
+
+# Send completion ping to healthchecks
+if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
+    curl --max-time 10 --retry 5 "https://hc-ping.com/${HEALTHCHECKS_ID}"
+fi
