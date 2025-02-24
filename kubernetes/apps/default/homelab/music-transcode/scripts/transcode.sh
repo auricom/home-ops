@@ -343,7 +343,6 @@ remove_absent_from_source() {
         source_path=$(printf "%s/%s" "$TRANSCODE_INPUT_DIR" "$filename")
 
         if [[ ! -e "$source_path" ]]; then
-            log "INFO: Checking absence of: $filename"
             # Double check with find to handle special characters
             if ! find "$TRANSCODE_INPUT_DIR/$(dirname "$filename")" -maxdepth 1 -name "$(basename "$filename")*" 2>/dev/null | grep -q .; then
                 log "INFO: Confirmed - Transcoded file $filename doesn't have a source file: delete"
