@@ -9,7 +9,7 @@ spec:
   interval: 10m
   url: oci://ghcr.io/fluxcd/flux-manifests
   ref:
-    tag: v2.4.0
+    tag: v2.5.1@sha256:3ad46381a9efb9e4ab491d76f3cc02389284ef38a7ecf3f5f3e3c186ded63255
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
