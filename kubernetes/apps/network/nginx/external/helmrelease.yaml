@@ -88,7 +88,7 @@ spec:
       enabled: true
       image:
         repository: ghcr.io/tarampampam/error-pages
-        tag: 3.3.1@sha256:8aa49143d301a8e43fb38578a21450567169c32068db7c43a05a67ac9f9283c8
+        tag: 3.3.2@sha256:e7133e4faf97675c00ad9150c98ec1a867ae91ece5131a7eb218b868ce5a628d
         pullPolicy: IfNotPresent
       extraEnvs:
         - name: TEMPLATE_NAME
