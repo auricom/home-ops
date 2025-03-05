@@ -11,12 +11,6 @@ set -o pipefail
 export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
 
-# # Send start ping to healthchecks
-# if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
-#     curl --silent --max-time 10 --retry 5 "https://hc-ping.com/${HEALTHCHECKS_ID}/start"
-# fi
-
-
 # Create a logging function
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
@@ -169,7 +163,7 @@ transcode() {
         fi
 
         mkdir -p "$(dirname "$md5_file")"
-        md5sum "$input_file" | awk '{ print $1 }' > "$md5_file"
+        md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
         log "Successfully transcoded: $input_file -> $output_file"
     fi
 }
@@ -188,7 +182,7 @@ write_cue() {
         fi
 
         mkdir -p "$(dirname "$md5_file")"
-        md5sum "$input_file" | awk '{ print $1 }' > "$md5_file"
+        md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
         log "Successfully wrote cue: $output_file"
     fi
 }
@@ -206,7 +200,7 @@ write_jpg() {
         fi
 
         mkdir -p "$(dirname "$md5_file")"
-        md5sum "$input_file" | awk '{ print $1 }' > "$md5_file"
+        md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
         log "Successfully converted cover: $input_file -> $output_file"
     fi
 }
@@ -217,21 +211,19 @@ directory_structure() {
 
     log "INFO: Creating directory structure with rsync..."
     if ! rsync -rvz $dryrun_flag --exclude-from="./transcode_exclude.cfg" \
-         --include="*/" --exclude="*" "$TRANSCODE_INPUT_DIR" "$TRANSCODE_OUTPUT_DIR"; then
+         --include="*/" --exclude="*" "$TRANSCODE_INPUT_DIR/" "$TRANSCODE_OUTPUT_DIR/"; then
         log "ERROR: rsync failed"
         return 1
     fi
 }
 
-convert_covers() {
-    log "INFO: Looking for covers to convert..."
-    cd "$TRANSCODE_INPUT_DIR" || exit 1
+process_file() {
+    local val="$1"
+    local ext="$2"
+    local type="$3"  # cover, music, or cue
 
-    for ext in $TRANSCODE_COVER_EXTENSIONS; do
-        log "INFO: Searching for .$ext files..."
-        while IFS= read -r val; do
-            [[ -z "$val" ]] && continue
-
+    case "$type" in
+        cover)
             local filename="$TRANSCODE_OUTPUT_DIR/${val%.*}.jpg"
             local md5_filename="$TRANSCODE_DB/${val}.md5"
             local process_file=false
@@ -245,7 +237,7 @@ convert_covers() {
                 process_file=true
                 log "Processing new file: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
-                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | awk '{ print $1 }')" ]]; then
+                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
                     process_file=true
                     log "File changed, reprocessing: $val"
                 fi
@@ -254,19 +246,9 @@ convert_covers() {
             if [[ $process_file == true ]]; then
                 write_jpg "$val" "$filename" "$md5_filename"
             fi
-        done < <("$TRANSCODE_FD_BIN" --extension "$ext" $TRANSCODE_FD_FILTERS --type f)
-    done
-}
+            ;;
 
-convert_music() {
-    log "INFO: Looking for music to transcode..."
-    cd "$TRANSCODE_INPUT_DIR" || exit 1
-
-    for ext in $TRANSCODE_MUSIC_EXTENSIONS; do
-        log "INFO: Searching for .$ext files..."
-        while IFS= read -r val; do
-            [[ -z "$val" ]] && continue
-
+        music)
             local filebasename="$TRANSCODE_OUTPUT_DIR/${val%.*}"
             local filename="${filebasename}.opus"
             local md5_filename="$TRANSCODE_DB/${val}.md5"
@@ -281,7 +263,7 @@ convert_music() {
                 process_file=true
                 log "Processing new file: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
-                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | awk '{ print $1 }')" ]]; then
+                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
                     process_file=true
                     log "File changed, reprocessing: $val"
                 fi
@@ -290,7 +272,54 @@ convert_music() {
             if [[ $process_file == true ]]; then
                 transcode "$val" "$filename" "$md5_filename"
             fi
-        done < <(fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f)
+            ;;
+
+        cue)
+            local output_file="$TRANSCODE_OUTPUT_DIR/$val"
+            local md5_filename="$TRANSCODE_DB/${val}.md5"
+            local replacement_text_string="FILE \"$(basename "${val%.*}").opus\" MP3"
+            local process_file=false
+
+            # Create output directory if it doesn't exist
+            mkdir -p "$(dirname "$output_file")"
+            mkdir -p "$(dirname "$md5_filename")"
+
+            # Check if we need to process this file
+            if [[ ! -f "$md5_filename" ]]; then
+                process_file=true
+                log "Processing new cuefile: $val"
+            elif [[ $MODE_CHECKSUM == true ]]; then
+                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
+                    process_file=true
+                    log "Cuefile changed, reprocessing: $val"
+                fi
+            fi
+
+            if [[ $process_file == true ]]; then
+                cp -p "$val" "$output_file"
+                write_cue "$val" "$output_file" "$replacement_text_string" "$md5_filename"
+            fi
+            ;;
+    esac
+}
+
+convert_covers() {
+    log "INFO: Looking for covers to convert..."
+    cd "$TRANSCODE_INPUT_DIR" || exit 1
+
+    for ext in $TRANSCODE_COVER_EXTENSIONS; do
+        log "INFO: Searching for .$ext files..."
+        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x bash -c "process_file {} $ext cover" \;
+    done
+}
+
+convert_music() {
+    log "INFO: Looking for music to transcode..."
+    cd "$TRANSCODE_INPUT_DIR" || exit 1
+
+    for ext in $TRANSCODE_MUSIC_EXTENSIONS; do
+        log "INFO: Searching for .$ext files..."
+        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x bash -c "process_file {} $ext music" \;
     done
 }
 
@@ -298,68 +327,34 @@ fix_cuefiles() {
     log "INFO: Looking for cuefiles..."
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
-    while IFS= read -r val; do
-        [[ -z "$val" ]] && continue
-
-        local output_file="$TRANSCODE_OUTPUT_DIR/$val"
-        local md5_filename="$TRANSCODE_DB/${val}.md5"
-        local replacement_text_string="FILE \"$(basename "${val%.*}").opus\" MP3"
-        local process_file=false
-
-        # Create output directory if it doesn't exist
-        mkdir -p "$(dirname "$output_file")"
-        mkdir -p "$(dirname "$md5_filename")"
-
-        # Check if we need to process this file
-        if [[ ! -f "$md5_filename" ]]; then
-            process_file=true
-            log "Processing new cuefile: $val"
-        elif [[ $MODE_CHECKSUM == true ]]; then
-            if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | awk '{ print $1 }')" ]]; then
-                process_file=true
-                log "Cuefile changed, reprocessing: $val"
-            fi
-        fi
-
-        if [[ $process_file == true ]]; then
-            cp -p "$val" "$output_file"
-            write_cue "$val" "$output_file" "$replacement_text_string" "$md5_filename"
-        fi
-    done < <("$TRANSCODE_FD_BIN" --extension cue $TRANSCODE_FD_FILTERS --type f)
+    fd_safe --extension cue $TRANSCODE_FD_FILTERS --type f -x bash -c "process_file {} cue cue" \;
 }
 
 remove_absent_from_source() {
     cd "$TRANSCODE_DB" || exit 1
 
-    local files
-    files=$("$TRANSCODE_FD_BIN" --extension md5) || return 0
+    "$TRANSCODE_FD_BIN" --extension md5 -x bash -c '
+        val="$1"
+        [[ -z "$val" ]] && exit 0
 
-    while IFS= read -r val; do
-        [[ -z "$val" ]] && continue
-
-        local filename="$(dirname "$val")/$(basename "$val" .md5)"
-        # Use printf to properly handle special characters
-        local source_path
-        source_path=$(printf "%s/%s" "$TRANSCODE_INPUT_DIR" "$filename")
+        filename="$(dirname "$val")/$(basename "$val" .md5)"
+        source_path="$TRANSCODE_INPUT_DIR/$filename"
 
         if [[ ! -e "$source_path" ]]; then
-            # Double check with find to handle special characters
             if ! find "$TRANSCODE_INPUT_DIR/$(dirname "$filename")" -maxdepth 1 -name "$(basename "$filename")*" 2>/dev/null | grep -q .; then
-                log "INFO: Confirmed - Transcoded file $filename doesn't have a source file: delete"
+                echo "[$(date "+%Y-%m-%d %H:%M:%S")] INFO: Confirmed - Transcoded file $filename doesnt have a source file: delete"
                 if [[ $MODE_DRY_RUN == false ]]; then
                     rm -f "$TRANSCODE_OUTPUT_DIR/$filename"*
                     rm -f "$TRANSCODE_DB/$filename"*
                 fi
             fi
         fi
-    done <<< "$files"
+    ' \;
 
     log "INFO: removing empty directories..."
     if [[ $MODE_DRY_RUN == false ]]; then
-        cd "$TRANSCODE_OUTPUT_DIR" || exit 1
-        find . -type d -empty -delete 2>/dev/null || true
-        cd "$TRANSCODE_DB" || exit 1
-        find . -type d -empty -delete 2>/dev/null || true
+        find "$TRANSCODE_OUTPUT_DIR" -type d -empty -delete 2>/dev/null || true
+        find "$TRANSCODE_DB" -type d -empty -delete 2>/dev/null || true
     fi
 }
 
@@ -379,8 +374,3 @@ fi
 if [[ $MODE_DRY_RUN == false ]]; then
     manage_execution_time write
 fi
-
-# # Send completion ping to healthchecks
-# if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
-#     curl --silent --max-time 10 --retry 5 "https://hc-ping.com/${HEALTHCHECKS_ID}"
-# fi
