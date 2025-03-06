@@ -7,9 +7,5 @@ resources:
   - ./helmrelease.yaml
   - ../../../../templates/gatus/external
   - ../../../../templates/volsync
-configMapGenerator:
-  - name: vikunja-configmap
-    files:
-      - ./config/Caddyfile
 generatorOptions:
   disableNameSuffixHash: true
