@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: eikek0/sharry
-              tag: v1.14.0@sha256:8b1388310e9f93a61f54f27d1b4b1c91d8ef2e846ac1068023c4315fa7794729
+              tag: v1.15.0@sha256:f49779d12c0abcdd274e9a9b893ee47f5c7a400ce5c55c2b810ea9706eb5fb14
             envFrom:
               - secretRef:
                   name: sharry-secret
