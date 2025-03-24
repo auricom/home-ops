@@ -1,0 +1,105 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app jellyseerr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      jellyseerr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/fallenbagel/jellyseerr
+              tag: 2.5.1@sha256:52ca0b18c58ec4e769b8acae9beaae37a520a365c7ead52b7fc3ba1c3352d1f0
+            env:
+              TZ: ${TIMEZONE}
+              LOG_LEVEL: "info"
+              PORT: &port 8080
+            # envFrom:
+            #   - secretRef:
+            #       name: jellyseerr-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        enabled: true
+        className: external
+        annotations:
+          hajimari.io/icon: simple-icons:jellyfish-outline
+        hosts:
+          - host: &host1 "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+            paths: &paths
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+          - host: &host2 requests.${SECRET_EXTERNAL_DOMAIN}
+            paths: *paths
+        tls:
+          - hosts:
+              - *host1
+              - *host2
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /app/config
+      config-cache:
+        existingClaim: jellyseerr-cache
+        globalMounts:
+          - path: /app/config/cache
+      config-logs:
+        type: emptyDir
+        globalMounts:
+          - path: /app/config/logs
+      tmp:
+        type: emptyDir
