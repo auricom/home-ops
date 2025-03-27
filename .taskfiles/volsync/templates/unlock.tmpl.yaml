@@ -12,13 +12,13 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: unlock-minio
-          image: docker.io/restic/restic:0.17.3@sha256:8f5a62b422a2cb1277ea0dd6e826fe1acf649e5b9f02d60e5268d5fd1976255a
+          image: docker.io/restic/restic:0.18.0@sha256:4cf4a61ef9786f4de53e9de8c8f5c040f33830eb0a10bf3d614410ee2fcb6120
           args: ["unlock", "--remove-all"]
           envFrom:
             - secretRef:
                 name: "${app}-volsync-secret"
         - name: unlock-r2
-          image: docker.io/restic/restic:0.17.3@sha256:8f5a62b422a2cb1277ea0dd6e826fe1acf649e5b9f02d60e5268d5fd1976255a
+          image: docker.io/restic/restic:0.18.0@sha256:4cf4a61ef9786f4de53e9de8c8f5c040f33830eb0a10bf3d614410ee2fcb6120
           args: ["unlock", "--remove-all"]
           envFrom:
             - secretRef:
