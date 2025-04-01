@@ -51,17 +51,17 @@ objects:
 
 go2rtc:
   streams:
-    cam_01_bedroom: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}#video=copy#audio=copy
-    cam_01_bedroom_sub: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}
+    cam_01_bedroom: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}#audio=copy#audio=opus
+    cam_01_bedroom_sub: ffmpeg:https://cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}:443/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user={FRIGATE_CAMERA_USER}&password={FRIGATE_CAMERA_PASSWORD}
 
 cameras:
   cam-01-bedroom:
     ffmpeg:
       inputs:
-        - path: rtsp://localhost:8554/cam_01_bedroom?video=copy&audio=aac
+        - path: rtsp://localhost:8554/cam_01_bedroom
           input_args: preset-rtsp-restream
           roles: [record]
-        - path: rtsp://localhost:8554/cam_01_bedroom_sub?video=copy
+        - path: rtsp://localhost:8554/cam_01_bedroom_sub
           input_args: preset-rtsp-restream
           roles: [detect]
     detect:
