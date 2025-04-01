@@ -106,7 +106,7 @@ spec:
           gethomepage.dev/description: NVR with realtime local object detection for IP cameras
           gethomepage.dev/group: Applications
           gethomepage.dev/icon: frigate.png
-          gethomepage.dev/href: https://windmill.${SECRET_EXTERNAL_DOMAIN}
+          gethomepage.dev/href: https://frigate.${SECRET_EXTERNAL_DOMAIN}
           gethomepage.dev/pod-selector: >-
             app in (
               frigate
