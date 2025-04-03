@@ -70,7 +70,7 @@ releases:
     needs: ['kube-system/spegel']
 
   - name: external-secrets
-    namespace: flux-system
+    namespace: external-secrets
     atomic: true
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 0.15.1
