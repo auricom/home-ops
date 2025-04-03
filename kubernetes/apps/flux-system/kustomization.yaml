@@ -9,3 +9,5 @@ resources:
   - ./addons/ks.yaml
   - ./capacitor/ks.yaml
   # Standard Resources
+  # - ./flux-instance/ks.yaml
+  - ./flux-operator/ks.yaml
