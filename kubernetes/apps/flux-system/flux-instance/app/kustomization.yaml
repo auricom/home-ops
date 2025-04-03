@@ -1,15 +1,15 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/kustomization.json
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: cert-manager
 resources:
   - ./externalsecret.yaml
-  - ./clusterissuer.yaml
   - ./helmrelease.yaml
+  - ./ingress.yaml
   - ./prometheusrule.yaml
+  - ./receiver.yaml
 configMapGenerator:
-  - name: cert-manager-values
+  - name: flux-instance-values
     files:
       - values.yaml=./helm/values.yaml
 configurations:

@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cert-manager-issuers
+    - name: cert-manager
   path: ./kubernetes/apps/network/nginx/certificates
   prune: true
   sourceRef:
