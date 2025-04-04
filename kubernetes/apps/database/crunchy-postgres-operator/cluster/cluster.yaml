@@ -28,7 +28,7 @@ spec:
       metadata:
         labels:
           app.kubernetes.io/name: crunchy-postgres
-      replicas: &replica 2
+      replicas: &replica 1
       dataVolumeClaimSpec:
         storageClassName: openebs-hostpath
         accessModes:
@@ -155,6 +155,11 @@ spec:
             full: 0 1 * * 0 # Sunday at 01:00
             differential: 0 1 * * 1-6 # Mon-Sat at 01:00
             incremental: 0 2-23 * * * # Every hour except 01:00
+      restore:
+        enabled: true
+        repoName: repo1
+        options:
+        - --set=20250330-010003F
 
   # dataSource:
   #   pgbackrest:
