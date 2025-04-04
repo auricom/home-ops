@@ -46,6 +46,8 @@ spec:
             envFrom:
               - secretRef:
                   name: lidarr-secret
+              - secretRef:
+                  name: lidarr-db-secret
             resources:
               requests:
                 cpu: 10m
