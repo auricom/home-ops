@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/coder/code-server
-              tag: 4.99.0@sha256:403adce354cc246be211db152294759fb5214a514eb6d10a20e29f889db93d36
+              tag: 4.99.2@sha256:6b5fcf74bb19579ca1666c8f96ac406ca5146a5c8756963a10991c4e520fa085
             env:
               TZ: ${TIMEZONE}
               GIT_SSH_COMMAND: ssh -i /config/.ssh/id_ed25519 -o IdentitiesOnly=yes
