@@ -18,6 +18,7 @@ spec:
   dependsOn:
     - name: crunchy-postgres-operator-cluster
     - name: external-secrets-stores
+      namespace: external-secrets
     - name: dragonfly-cluster
   wait: false
   interval: 30m

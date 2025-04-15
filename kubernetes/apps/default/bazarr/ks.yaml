@@ -13,6 +13,7 @@ spec:
   dependsOn:
     - name: crunchy-postgres-operator-cluster
     - name: external-secrets-stores
+      namespace: external-secrets
     - name: rook-ceph-cluster
     - name: volsync
   path: ./kubernetes/apps/default/bazarr/app

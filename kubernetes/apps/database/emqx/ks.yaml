@@ -13,6 +13,7 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
     - name: external-secrets-stores
+      namespace: external-secrets
   path: ./kubernetes/apps/database/emqx/app
   prune: true
   sourceRef:

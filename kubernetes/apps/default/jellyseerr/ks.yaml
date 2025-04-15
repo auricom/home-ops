@@ -13,6 +13,7 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
     - name: external-secrets-stores
+      namespace: external-secrets
     - name: volsync
   path: ./kubernetes/apps/default/jellyseerr/app
   prune: true

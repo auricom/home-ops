@@ -17,6 +17,7 @@ spec:
     name: home-ops-kubernetes
   dependsOn:
     - name: external-secrets-stores
+      namespace: external-secrets
   wait: false
   interval: 30m
   retryInterval: 1m

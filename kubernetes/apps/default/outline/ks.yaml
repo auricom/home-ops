@@ -19,6 +19,7 @@ spec:
     - name: crunchy-postgres-operator-cluster
     - name: dragonfly-cluster
     - name: external-secrets-stores
+      namespace: external-secrets
   wait: false
   interval: 30m
   retryInterval: 1m

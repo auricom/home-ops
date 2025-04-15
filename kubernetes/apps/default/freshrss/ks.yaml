@@ -17,6 +17,7 @@ spec:
     name: home-ops-kubernetes
   dependsOn:
     - name: external-secrets-stores
+      namespace: external-secrets
     - name: volsync
   wait: false
   interval: 30m

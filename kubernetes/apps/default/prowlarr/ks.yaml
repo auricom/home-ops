@@ -13,6 +13,7 @@ spec:
   dependsOn:
     - name: crunchy-postgres-operator-cluster
     - name: external-secrets-stores
+      namespace: external-secrets
   path: ./kubernetes/apps/default/prowlarr/app
   prune: true
   sourceRef:

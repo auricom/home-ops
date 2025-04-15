@@ -14,6 +14,7 @@ spec:
   prune: true
   dependsOn:
     - name: external-secrets-stores
+      namespace: external-secrets
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
