@@ -6,5 +6,3 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./sync
-  - ../../../../components/gatus/external
-  - ../../../../components/volsync

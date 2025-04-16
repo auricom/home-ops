@@ -10,13 +10,17 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/external
   path: ./kubernetes/apps/default/joplin/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   dependsOn:
     - name: crunchy-postgres-operator-cluster
+      namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets
   wait: false

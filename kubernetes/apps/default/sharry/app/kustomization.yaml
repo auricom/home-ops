@@ -5,8 +5,6 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../components/gatus/external
-  - ../../../../components/volsync
 configMapGenerator:
   - name: sharry-configmap
     files:

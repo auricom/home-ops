@@ -11,14 +11,21 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: node-feature-discovery
+    - name: node-feature-discovery-rules
+      namespace: flux-system
     - name: rook-ceph-cluster
+      namespace: flux-system
     - name: volsync
+      namespace: flux-system
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/zwave-js-ui/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

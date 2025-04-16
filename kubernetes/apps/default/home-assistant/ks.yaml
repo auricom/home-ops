@@ -12,14 +12,20 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: crunchy-postgres-operator-cluster
+      namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets
     - name: volsync
+      namespace: flux-system
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/home-assistant/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m
@@ -43,11 +49,14 @@ spec:
       app.kubernetes.io/name: &app home-assistant
   dependsOn:
     - name: home-assistant
+  components:
+    - ../../../../components/gatus/guarded
   path: ./kubernetes/apps/default/home-assistant/code
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

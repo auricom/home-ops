@@ -1,0 +1,12 @@
+endpoints:
+  - name: "${APP}"
+    group: guarded
+    url: "https://${GATUS_SUBDOMAIN:-${APP}}.${GATUS_DOMAIN:-${SECRET_EXTERNAL_DOMAIN}}${GATUS_PATH:-/}"
+    interval: 1m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    conditions:
+      - "[STATUS] == ${GATUS_STATUS:-200}"
+    alerts:
+      - type: pushover

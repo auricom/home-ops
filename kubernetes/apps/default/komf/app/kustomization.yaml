@@ -6,7 +6,6 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../components/volsync
 configMapGenerator:
   - name: komf-configmap
     files:

@@ -13,6 +13,9 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
     - name: volsync
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   path: ./kubernetes/apps/observability/apprise/app
   prune: true
   sourceRef:

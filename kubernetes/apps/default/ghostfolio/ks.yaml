@@ -10,16 +10,21 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/guarded
   path: ./kubernetes/apps/default/ghostfolio/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   dependsOn:
     - name: crunchy-postgres-operator-cluster
+      namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets
     - name: dragonfly-cluster
+      namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

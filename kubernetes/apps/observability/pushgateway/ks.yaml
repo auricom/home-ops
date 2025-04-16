@@ -12,6 +12,8 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: kube-prometheus-stack-crds
+  components:
+    - ../../../../components/gatus/guarded
   path: ./kubernetes/apps/observability/pushgateway/app
   prune: true
   sourceRef:
