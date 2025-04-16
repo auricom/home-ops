@@ -1,6 +1,6 @@
 {
   "extends": [
-    "config:best-practices",
+    "config:recommended",
     "replacements:k8s-registry-move",
     ":automergeBranch",
     ":disableRateLimiting",

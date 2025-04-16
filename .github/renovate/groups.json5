@@ -25,6 +25,24 @@
       "separateMinorPatch": true
     },
     {
+      "description": "Cert-Manager Group",
+      "groupName": "Cert-Manager",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/cert-manager/"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
+      "description": "Cilium Group",
+      "groupName": "Cilium",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/cilium/"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "description": ["Dragonfly Operator Group"],
       "groupName": "Dragonfly Operator",
       "matchPackagePatterns": ["dragonfly(?:db)?.operator"],
@@ -35,25 +53,43 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Flux Group",
-      "groupName": "Flux",
-      "matchPackagePatterns": ["fluxcd"],
-      "matchDatasources": ["docker", "github-tags"],
-      "versioning": "semver",
+      "description": "CoreDNS Group",
+      "groupName": "CoreDNS",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/coredns/"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "separateMinorPatch": true
+      }
     },
     {
-      "description": "Immich Group",
-      "groupName": "Immich",
-      "matchPackagePatterns": ["immich"],
+      "description": "External Secrets Operator Group",
+      "groupName": "External Secrets Operator",
       "matchDatasources": ["docker"],
+      "matchPackageNames": ["/external-secrets/"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "separateMinorPatch": true
+      }
+    },
+    {
+      "description": "Flux Operator Group",
+      "groupName": "Flux Operator",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/flux-operator/", "/flux-instance/"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
+      "description": "Intel Device Plugins Group",
+      "groupName": "Intel-Device-Plugins",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "/intel-device-plugins-operator/",
+        "/intel-device-plugins-gpu/"
+      ],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
     },
     {
       "description": "Rook-Ceph Group",
@@ -76,22 +112,22 @@
     {
       "description": "Tdarr Group",
       "groupName": "Tdarr",
-      "matchPackagePatterns": ["tdarr","tdarr_node"],
+      "matchPackagePatterns": ["tdarr", "tdarr_node"],
       "matchDatasources": ["docker"],
       "group": { "commitMessageTopic": "{{{groupName}}} group" },
       "separateMinorPatch": true
     },
     {
-      "description": "Thanos Group",
-      "groupName": "Thanos",
-      "matchPackagePatterns": ["thanos"],
-      "matchDatasources": ["docker", "github-releases", "helm"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
-      "separateMinorPatch": false
+      "description": "Spegel Group",
+      "groupName": "Spegel",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/spegel/"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
     },
     {
-      "description": "Vinkuja images",
+      "description": "Vinkuja Group",
       "groupName": "Vikunja",
       "matchPackagePatterns": ["vikunja"],
       "matchDatasources": ["docker"],
