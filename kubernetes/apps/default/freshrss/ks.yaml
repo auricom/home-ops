@@ -10,15 +10,20 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/freshrss/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: volsync
+      namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

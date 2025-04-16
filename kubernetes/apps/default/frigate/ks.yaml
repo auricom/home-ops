@@ -14,11 +14,16 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: node-feature-discovery-rules
+      namespace: flux-system
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/frigate/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

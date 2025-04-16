@@ -6,7 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./rbac.yaml
-  - ../../../../components/gatus/guarded
 configMapGenerator:
   - name: homepage-config
     files:

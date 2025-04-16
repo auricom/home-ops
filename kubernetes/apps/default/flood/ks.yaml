@@ -15,11 +15,16 @@ spec:
       namespace: external-secrets
     - name: qbittorrent
     - name: volsync
+      namespace: flux-system
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/flood/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

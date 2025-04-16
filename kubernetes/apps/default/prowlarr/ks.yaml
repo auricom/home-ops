@@ -12,13 +12,17 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: crunchy-postgres-operator-cluster
+      namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets
+  components:
+    - ../../../../components/gatus/guarded
   path: ./kubernetes/apps/default/prowlarr/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

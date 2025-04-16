@@ -6,8 +6,6 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../components/gatus/guarded
-  - ../../../../components/volsync
 configMapGenerator:
   - name: tandoor-configmap
     files:

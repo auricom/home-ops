@@ -10,7 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-
+  components:
+    - ../../../../components/gatus/external
   path: ./kubernetes/apps/default/libmedium/app
   dependsOn:
     - name: external-secrets-stores
@@ -19,6 +20,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

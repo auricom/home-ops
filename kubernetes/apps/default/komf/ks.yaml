@@ -14,12 +14,17 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: rook-ceph-cluster
+      namespace: flux-system
     - name: volsync
+      namespace: flux-system
+  components:
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/komf/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m
