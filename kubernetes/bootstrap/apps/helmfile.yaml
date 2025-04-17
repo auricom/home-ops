@@ -49,7 +49,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: postfinance/kubelet-csr-approver
-    version: 1.2.6
+    version: 1.2.7
     values: ["../../apps/kube-system/kubelet-csr-approver/app/helm-values.yaml"]
     needs: ["kube-system/coredns"]
 
