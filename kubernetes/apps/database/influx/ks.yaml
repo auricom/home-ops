@@ -17,10 +17,12 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
+    namespace: flux-system
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: volsync
+      namespace: volsync
   wait: true
   interval: 30m
   retryInterval: 1m

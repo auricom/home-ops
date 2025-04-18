@@ -14,13 +14,13 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: crunchy-postgres-operator-cluster
-      namespace: flux-system
+      namespace: database
     - name: external-secrets-stores
       namespace: external-secrets
     - name: rook-ceph-cluster
-      namespace: flux-system
+      namespace: rook-ceph
     - name: volsync
-      namespace: flux-system
+      namespace: volsync
   interval: 1h
   path: ./kubernetes/apps/default/tandoor/app
   postBuild:
