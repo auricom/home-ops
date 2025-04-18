@@ -159,16 +159,16 @@ spec:
         enabled: true
         repoName: repo1
         options:
-        - --set=20250330-010003F
+        - --set=20250413-010004F_20250418-020004I
 
-  # dataSource:
-  #   pgbackrest:
-  #     stanza: "db"
-  #     configuration: *backupConfig
-  #     global: *backupFlag
-  #     repo:
-  #       name: "repo1"
-  #       s3: *minio
+  dataSource:
+    pgbackrest:
+      stanza: "db"
+      configuration: *backupConfig
+      global: *backupFlag
+      repo:
+        name: "repo1"
+        s3: *minio
 
   monitoring:
     pgmonitor:

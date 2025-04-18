@@ -4,109 +4,134 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app crunchy-postgres-operator
-  namespace: flux-system
+  namespace: &namespace database
 spec:
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
-  timeout: 5m
+  interval: 1h
   path: ./kubernetes/apps/database/crunchy-postgres-operator/operator
+  postBuild:
+    substitute:
+      APP: *app
   prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  wait: true
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app crunchy-postgres-operator-cluster
-  namespace: flux-system
+  namespace: &namespace database
 spec:
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
-  timeout: 5m
-  path: ./kubernetes/apps/database/crunchy-postgres-operator/cluster
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
-  wait: true
   dependsOn:
     - name: crunchy-postgres-operator
     - name: external-secrets-stores
       namespace: external-secrets
+  interval: 1h
+  path: ./kubernetes/apps/database/crunchy-postgres-operator/cluster
+  postBuild:
+    substitute:
+      APP: *app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app crunchy-postgres-operator-secretstore
-  namespace: flux-system
+  namespace: &namespace database
 spec:
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
-  timeout: 5m
-  path: ./kubernetes/apps/database/crunchy-postgres-operator/clustersecretstore
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
-  wait: true
   dependsOn:
     - name: crunchy-postgres-operator-cluster
     - name: external-secrets
       namespace: external-secrets
+  interval: 1h
+  path: ./kubernetes/apps/database/crunchy-postgres-operator/clustersecretstore
+  postBuild:
+    substitute:
+      APP: *app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app crunchy-postgres-userinit-controller
-  namespace: flux-system
+  namespace: &namespace database
 spec:
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
-  timeout: 5m
+  dependsOn:
+    - name: crunchy-postgres-operator-cluster
+  interval: 1h
   path: ./kubernetes/apps/database/crunchy-postgres-operator/userinit-controller
+  postBuild:
+    substitute:
+      APP: *app
   prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  wait: true
-  dependsOn:
-    - name: crunchy-postgres-operator-cluster
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app crunchy-postgres-pgadmin
-  namespace: flux-system
+  namespace: &namespace database
 spec:
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
-  timeout: 5m
+  dependsOn:
+    - name: crunchy-postgres-operator-cluster
+  interval: 1h
   path: ./kubernetes/apps/database/crunchy-postgres-operator/pgadmin
+  postBuild:
+    substitute:
+      APP: *app
   prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  wait: true
-  dependsOn:
-    - name: crunchy-postgres-operator-cluster
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false

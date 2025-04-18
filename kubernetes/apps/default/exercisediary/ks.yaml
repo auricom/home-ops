@@ -14,9 +14,9 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: rook-ceph-cluster
-      namespace: flux-system
+      namespace: rook-ceph
     - name: volsync
-      namespace: flux-system
+      namespace: volsync
   interval: 1h
   path: ./kubernetes/apps/default/exercisediary/app
   postBuild:
