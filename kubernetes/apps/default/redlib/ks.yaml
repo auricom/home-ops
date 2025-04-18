@@ -4,24 +4,24 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app redlib
-  namespace: flux-system
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/external
+  interval: 1h
   path: ./kubernetes/apps/default/redlib/app
+  postBuild:
+    substitute:
+      APP: *app
   prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
     namespace: flux-system
-  wait: false
-  interval: 30m
-  retryInterval: 1m
+  targetNamespace: *namespace
   timeout: 5m
-  postBuild:
-    substitute:
-      APP: *app
+  wait: false

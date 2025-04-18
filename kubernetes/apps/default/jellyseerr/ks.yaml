@@ -4,9 +4,8 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app jellyseerr
-  namespace: flux-system
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -20,17 +19,18 @@ spec:
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync
+  interval: 1h
   path: ./kubernetes/apps/default/jellyseerr/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
-    namespace: flux-system
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
   postBuild:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 5Gi
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false

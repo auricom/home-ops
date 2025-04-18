@@ -4,9 +4,8 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app tdarr
-  namespace: flux-system
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -19,45 +18,46 @@ spec:
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync
+  interval: 1h
   path: ./kubernetes/apps/default/tdarr/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
-    namespace: flux-system
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
   postBuild:
     substitute:
       APP: *app
       VOLSYNC_CACHE_CAPACITY: 20Gi
       VOLSYNC_CAPACITY: 50Gi
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app tdarr-node
-  namespace: flux-system
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: tdarr
+  interval: 1h
   path: ./kubernetes/apps/default/tdarr/node
+  postBuild:
+    substitute:
+      APP: *app
   prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
     namespace: flux-system
-  wait: false
-  interval: 30m
-  retryInterval: 1m
+  targetNamespace: *namespace
   timeout: 5m
-  postBuild:
-    substitute:
-      APP: *app
+  wait: false

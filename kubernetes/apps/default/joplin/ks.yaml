@@ -4,29 +4,29 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app joplin
-  namespace: flux-system
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/external
-  path: ./kubernetes/apps/default/joplin/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
-    namespace: flux-system
   dependsOn:
     - name: crunchy-postgres-operator-cluster
       namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+  interval: 1h
+  path: ./kubernetes/apps/default/joplin/app
   postBuild:
     substitute:
       APP: *app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
