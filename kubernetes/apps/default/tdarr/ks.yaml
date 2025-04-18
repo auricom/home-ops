@@ -12,9 +12,9 @@ spec:
 
   dependsOn:
     - name: rook-ceph-cluster
-      namespace: flux-system
+      namespace: rook-ceph
     - name: volsync
-      namespace: flux-system
+      namespace: volsync
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync

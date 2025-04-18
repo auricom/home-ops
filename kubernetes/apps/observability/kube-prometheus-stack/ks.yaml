@@ -4,41 +4,52 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app kube-prometheus-stack-crds
-  namespace: flux-system
+  namespace: &namespace observability
 spec:
-  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  interval: 1h
   path: ./kubernetes/apps/observability/kube-prometheus-stack/crds
-  prune: false # never should be deleted
+  postBuild:
+    substitute:
+      APP: *app
+  prune: false
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  wait: false
-  interval: 30m
+    namespace: flux-system
+  targetNamespace: *namespace
   timeout: 5m
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app kube-prometheus-stack
-  namespace: flux-system
+  namespace: &namespace observability
 spec:
-  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: kube-prometheus-stack-crds
+      namespace: observability
+  interval: 1h
   path: ./kubernetes/apps/observability/kube-prometheus-stack/app
+  postBuild:
+    substitute:
+      APP: *app
   prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-ops-kubernetes
-  wait: false
-  interval: 30m
-  retryInterval: 1m
+    namespace: flux-system
+  targetNamespace: *namespace
   timeout: 5m
+  wait: false
