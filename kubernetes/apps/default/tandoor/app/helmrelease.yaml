@@ -84,7 +84,7 @@ spec:
           nginx:
             image:
               repository: nginxinc/nginx-unprivileged
-              tag: 1.27.4-alpine@sha256:a1b807b9dd454a969fbb4c3efc8d3e579e13f109e8de0690065758a0e27f7c89
+              tag: 1.27.4-alpine@sha256:62a904036bfc0e4a4f2b556e34cbf17bc136b47fde8cdb4628762725f48c5782
     service:
       app:
         controller: *app
