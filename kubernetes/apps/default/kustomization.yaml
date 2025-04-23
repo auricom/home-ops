@@ -41,6 +41,7 @@ resources:
   - ./readeck/ks.yaml
   - ./recyclarr/ks.yaml
   - ./redlib/ks.yaml
+  - ./renamarr/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./sharry/ks.yaml
   - ./sonarr/ks.yaml
