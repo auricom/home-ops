@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/qbittorrent
-              tag: 5.0.4@sha256:25ec4934fd35d5cbfc97a9829806b002253565320b39cec2925d9fa0c70dca9e
+              tag: 5.1.0@sha256:fe26058628e9eb57b542204b76443b7304ed8820151d51b5c285e1828ca175a0
             env:
               TZ: "${TIMEZONE}"
               QBITTORRENT__PORT: &port 8080
