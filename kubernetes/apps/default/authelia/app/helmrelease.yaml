@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: ghcr.io/authelia/authelia
-              tag: 4.39.1@sha256:e325963609cc928861ffe8130c09111862df88dd8fcafbcd2c47e5ff0a4ae268
+              tag: 4.39.3@sha256:7045ca3c14731634e0c05e1afff03aba66b12b4f518c839c32a65d5c59a56b12
             env:
               AUTHELIA_LOG_LEVEL: info
               AUTHELIA_NOTIFIER_SMTP_SENDER: "Authelia <authelia@${SECRET_DOMAIN}>"
