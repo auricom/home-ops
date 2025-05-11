@@ -33,7 +33,7 @@ spec:
           node:
             image:
               repository: ghcr.io/deathbybandaid/tdarr_inform
-              tag: latest@sha256:ea90e93d89fe6bfa852a322567770dbf5a9c002b7fc3cfc2466c774c8fe84f8c
+              tag: latest@sha256:98d3ef4614ab68f523d1a3c1034f92ae9f70231ab9927fe285fb4fbae8d64b4a
             resources:
               requests:
                 cpu: 25m
