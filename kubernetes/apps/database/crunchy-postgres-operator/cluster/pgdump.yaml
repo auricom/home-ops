@@ -31,7 +31,7 @@ spec:
                 claimName: "pg-${PG_APP_NAME}-${PG_DB_NAME}-dump-local"
           containers:
             - name: "postgres-backup"
-              image: "docker.io/prodrigestivill/postgres-backup-local:16@sha256:73f18e914cb6ffb29840b3fc5be0763f48eb1ca05f093c769ccd13982a634544"
+              image: "docker.io/prodrigestivill/postgres-backup-local:16@sha256:e7182c0dac78540405e954597fcb3f4cfa67955d5df008152ab41ce166fe6014"
               imagePullPolicy: "IfNotPresent"
               command: ["/backup.sh"]
               volumeMounts:
