@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: lycheeorg/lychee-laravel
-              tag: v6.5.1@sha256:e8ce27bc52effb04d54c9189202f8dd375a262c270ddafe75bcc3356a0d8b937
+              tag: v6.6.3@sha256:a3dc2606c334e37cff53bc3a808eff173c97ba604726e06ae4f2b97624191c05
             env:
               TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
