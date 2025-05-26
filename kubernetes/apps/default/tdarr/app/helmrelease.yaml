@@ -110,4 +110,4 @@ spec:
         server: 192.168.9.10
         path: /var/mnt/vol1/video/.tdarr
         globalMounts:
-          - path: /mnt/storage/video/.tdarr
+          - path: /mnt/cache
