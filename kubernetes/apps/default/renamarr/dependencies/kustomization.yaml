@@ -4,10 +4,3 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./externalsecret.yaml
-  - ./helmrelease.yaml
-configMapGenerator:
-  - name: renamarr-configmap
-    files:
-      - ./config/config.yml
-generatorOptions:
-  disableNameSuffixHash: true
