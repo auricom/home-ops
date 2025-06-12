@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: haveagitgat/tdarr
-              tag: 2.42.01@sha256:66e5c9d8e701faa9b5a36bec3830e16c6314592a1e7cecd836eb4043fae58ac1
+              tag: 2.43.01@sha256:55d3044b657f27d1efab20319a4b9dc3951ee2825b9650394eb8ae411dd8b233
             resources:
               requests:
                 cpu: 50m
