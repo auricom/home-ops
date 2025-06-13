@@ -1,7 +1,7 @@
 sonarr:
   - name: tv
     url: http://sonarr.default.svc.cluster.local.:8080
-    api_key: ${SECRET_RADARR_API_KEY}
+    api_key: ${SONARR_API_KEY}
     renamarr:
       enabled: true
       hourly_job: false
@@ -12,7 +12,7 @@ sonarr:
 radarr:
   - name: radarr
     url: http://radarr.default.svc.cluster.local.:8080
-    api_key: ${SECRET_RADARR_API_KEY}
+    api_key: ${RADARR_API_KEY}
     renamarr:
       enabled: true
       hourly_job: false
