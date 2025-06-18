@@ -48,7 +48,7 @@ jobs:
           path: pull
 
       - name: Gather Images in Default Branch
-        uses: docker://ghcr.io/allenporter/flux-local:v7.5.5@sha256:21c9a643c6c253e97c36f88b0f00548e6933d8e99e7a71f8b1f1b809c8889c69
+        uses: docker://ghcr.io/allenporter/flux-local:v7.5.6@sha256:725baade5b3d01ab6b1be0fb1de0d454e4222cbe959b3bdddee1137464aa1f3e
         with:
           args: >-
             get cluster
@@ -58,7 +58,7 @@ jobs:
             --output-file default.yaml
 
       - name: Gather Images in Pull Request Branch
-        uses: docker://ghcr.io/allenporter/flux-local:v7.5.5@sha256:21c9a643c6c253e97c36f88b0f00548e6933d8e99e7a71f8b1f1b809c8889c69
+        uses: docker://ghcr.io/allenporter/flux-local:v7.5.6@sha256:725baade5b3d01ab6b1be0fb1de0d454e4222cbe959b3bdddee1137464aa1f3e
         with:
           args: >-
             get cluster
