@@ -1,33 +1,38 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: cilium
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 1.17.3
+  url: oci://ghcr.io/home-operations/charts-mirror/cilium
+---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name:  cilium
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: cilium
-      version: 1.17.3
-      sourceRef:
-        kind: HelmRepository
-        name: cilium
-        namespace: flux-system
-  maxHistory: 2
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: cilium
   install:
-    createNamespace: true
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  uninstall:
-    keepHistory: false
   valuesFrom:
     - kind: ConfigMap
-      name: cilium-helm-values
+      name: cilium-values
   values:
     hubble:
       enabled: true
@@ -57,3 +62,5 @@ spec:
           enabled: true
           className: internal
           hosts: ["hubble.${SECRET_EXTERNAL_DOMAIN}"]
+    operator:
+      tolerations: []

@@ -19,3 +19,11 @@ spec:
       neighbors:
         - peerAddress: ${LOCAL_LAN_OPNSENSE}/24
           peerASN: 64512
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: main-pool
+spec:
+  blocks:
+    - cidr: ${CILIUM_BGP_SVC_RANGE}
