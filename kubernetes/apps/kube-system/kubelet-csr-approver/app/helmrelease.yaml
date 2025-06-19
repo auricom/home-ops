@@ -33,4 +33,4 @@ spec:
       retries: 3
   valuesFrom:
     - kind: ConfigMap
-      name: kubelet-csr-approver-helm-values
+      name: kubelet-csr-approver-values
