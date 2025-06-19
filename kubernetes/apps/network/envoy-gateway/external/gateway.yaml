@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://schemas.budimanjojo.com/gateway.networking.k8s.io/gateway_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: external
+  # annotations:
+  #   external-dns.alpha.kubernetes.io/target: external.${SECRET_CLUSTER_DOMAIN}
+spec:
+  gatewayClassName: envoy-gateway
+  addresses:
+    - type: IPAddress
+      value: "${CLUSTER_LB_ENVOY_EXTERNAL}"
+  # infrastructure:
+  #   annotations:
+  #     external-dns.alpha.kubernetes.io/hostname: external.${SECRET_CLUSTER_DOMAIN}
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.${SECRET_CLUSTER_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${SECRET_CLUSTER_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: ${SECRET_EXTERNAL_DOMAIN//./-}-tls

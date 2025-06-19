@@ -2,12 +2,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/kustomization.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: network
-components:
-  - ../../components/common
+namespace: networking-system
 resources:
-  - ./cloudflared/ks.yaml
-  - ./envoy-gateway/ks.yaml
-  - ./external-dns/ks.yaml
-  - ./nginx/ks.yaml
-  - ./k8s-gateway/ks.yaml
+  - ./gateway.yaml
+  - ./redirect.yaml

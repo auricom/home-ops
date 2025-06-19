@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app envoy-gateway
+  namespace: &namespace network
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  interval: 1h
+  path: ./kubernetes/apps/network/envoy-gateway/operator
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: *app
+      namespace: *namespace
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: GatewayClass
+      name: envoy-gateway
+  healthCheckExprs:
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: GatewayClass
+      failed: status.conditions.filter(e, e.type == 'Accepted').all(e, e.status == 'False')
+      inProgress: status.conditions.filter(e, e.type == 'Accepted').all(e, e.status == 'Unknown')
+      current: status.conditions.filter(e, e.type == 'Accepted').all(e, e.status == 'True')
+  prune: false
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
+---
+# yaml-language-server: $schema=https://schemas.budimanjojo.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app envoy-gateway-internal
+  namespace: &namespace network
+spec:
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
+  prune: false
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./kubernetes/apps/network/envoy-gateway/internal
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: envoy-gateway-operator
+      namespace: *namespace
+---
+# yaml-language-server: $schema=https://schemas.budimanjojo.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app envoy-gateway-external
+  namespace: &namespace network
+spec:
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
+  prune: false
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./kubernetes/apps/network/envoy-gateway/external
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: envoy-gateway-operator
+      namespace: *namespace
