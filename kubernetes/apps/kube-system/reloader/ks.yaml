@@ -11,10 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   interval: 1h
   path: ./kubernetes/apps/kube-system/reloader/app
-  postBuild:
-    substitute:
-      APP: *app
-  prune: false
+  prune: true
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
