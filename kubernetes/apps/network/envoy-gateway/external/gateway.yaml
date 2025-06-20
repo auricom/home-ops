@@ -10,7 +10,7 @@ spec:
   gatewayClassName: envoy-gateway
   addresses:
     - type: IPAddress
-      value: "${CLUSTER_LB_ENVOY_EXTERNAL}"
+      value: 192.168.169.122
   # infrastructure:
   #   annotations:
   #     external-dns.alpha.kubernetes.io/hostname: external.${SECRET_EXTERNAL_DOMAIN}
