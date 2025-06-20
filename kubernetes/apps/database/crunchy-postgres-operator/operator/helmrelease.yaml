@@ -1,24 +1,35 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: pgo
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 5.8.2
+  url: oci://registry.developers.crunchydata.com/crunchydata/pgo
+---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: crunchy-postgres-operator
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: pgo
-      version: 5.8.2
-      sourceRef:
-        kind: HelmRepository
-        name: crunchydata
-        namespace: flux-system
-      interval: 5m
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: pgo
   install:
-    crds: CreateReplace
+    remediation:
+      retries: -1
   upgrade:
-    crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   dependsOn:
     - name: openebs
       namespace: openebs-system
