@@ -10,6 +10,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: mosquitto
+      namespace: database
     - name: node-feature-discovery-rules
       namespace: kube-system
     - name: rook-ceph-cluster
