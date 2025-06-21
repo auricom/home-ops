@@ -21,7 +21,7 @@ spec:
   dependsOn:
     - name: intel-device-plugin-gpu
       namespace: kube-system
-    - name: emqx
+    - name: mosquitto
       namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph

@@ -8,6 +8,5 @@ components:
 resources:
   - ./crunchy-postgres-operator/ks.yaml
   - ./dragonfly/ks.yaml
-  - ./emqx/ks.yaml
   - ./influx/ks.yaml
   - ./mosquitto/ks.yaml
