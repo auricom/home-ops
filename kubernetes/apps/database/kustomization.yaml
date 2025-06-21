@@ -10,3 +10,4 @@ resources:
   - ./dragonfly/ks.yaml
   - ./emqx/ks.yaml
   - ./influx/ks.yaml
+  - ./mosquitto/ks.yaml
