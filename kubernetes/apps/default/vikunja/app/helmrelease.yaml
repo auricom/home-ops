@@ -57,7 +57,6 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/enabled: "true"
           external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
-          hajimari.io/icon: mdi:format-list-checks
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Vikunja
           gethomepage.dev/description: Tasks and project management platform.

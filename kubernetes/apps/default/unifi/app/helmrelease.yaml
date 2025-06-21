@@ -83,7 +83,6 @@ spec:
         className: internal
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-          hajimari.io/icon: mdi:lan
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Unifi
           gethomepage.dev/description: Centralized enterprise-grade networking for home and business.

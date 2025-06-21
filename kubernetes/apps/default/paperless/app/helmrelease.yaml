@@ -66,7 +66,6 @@ spec:
         enabled: true
         className: internal
         annotations:
-          hajimari.io/icon: mdi:barcode-scan
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Paperless
           gethomepage.dev/description: Document management system that transform physical documents into a searchable online archive.

@@ -3,8 +3,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: webhook-receiver
-  annotations:
-    hajimari.io/enable: "false"
 spec:
   ingressClassName: external
   rules:

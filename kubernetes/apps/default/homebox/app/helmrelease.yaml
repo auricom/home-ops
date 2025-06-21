@@ -47,11 +47,6 @@ spec:
         enabled: true
         className: internal
         annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/appName: *app
-          hajimari.io/info: Inventory management system
-          hajimari.io/icon: devices
-          hajimari.io/targetBlank: "true"
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Homebox
           gethomepage.dev/description: Inventory and organization system built for the Home User

@@ -64,7 +64,6 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
-          hajimari.io/icon: mdi:music
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Navidrome
           gethomepage.dev/description: Modern music server and streamer compatible with subsonic/airsonic.

@@ -97,7 +97,6 @@ spec:
       app:
         className: external
         annotations:
-          hajimari.io/icon: mdi:list-status
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Gatus
           gethomepage.dev/description: Automated developer-oriented status page.

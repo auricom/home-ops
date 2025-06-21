@@ -77,7 +77,6 @@ spec:
         enabled: true
         className: external
         annotations:
-          hajimari.io/icon: mdi:camera
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Lychee
           gethomepage.dev/description: Photo-management tool.

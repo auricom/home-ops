@@ -38,8 +38,6 @@ spec:
       dashboard:
         ingressClassName: internal
         annotations:
-          hajimari.io/appName: Rook
-          hajimari.io/icon: mdi:chess-rook
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Rook
           gethomepage.dev/description: Cloud-Native Storage for Kubernetes.

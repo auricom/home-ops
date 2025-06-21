@@ -82,8 +82,6 @@ spec:
       app:
         enabled: true
         className: internal
-        annotations:
-          hajimari.io/icon: mdi:powershell
         hosts:
           - host: &host "sh.${SECRET_EXTERNAL_DOMAIN}"
             paths:

@@ -47,7 +47,6 @@ spec:
         enabled: true
         className: internal
         annotations:
-          hajimari.io/icon: mdi:ideogram-cjk-variant
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Komga
           gethomepage.dev/description: Media server for comics/mangas/BDs/magazines/eBooks with API and OPDS support

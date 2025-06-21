@@ -56,7 +56,6 @@ spec:
         enabled: true
         className: internal
         annotations:
-          hajimari.io/icon: mdi:rss
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: FreshRSS
           gethomepage.dev/description: Developer platform to turn scripts into workflows and UIs

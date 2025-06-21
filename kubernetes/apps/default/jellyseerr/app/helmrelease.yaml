@@ -73,8 +73,6 @@ spec:
       app:
         enabled: true
         className: external
-        annotations:
-          hajimari.io/icon: simple-icons:jellyfish-outline
         hosts:
           - host: &host1 "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths: &paths

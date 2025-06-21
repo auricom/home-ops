@@ -58,7 +58,6 @@ spec:
       app:
         enabled: true
         annotations:
-          hajimari.io/icon: mdi:account-multiple
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: lldap
           gethomepage.dev/description: Light LDAP implementation

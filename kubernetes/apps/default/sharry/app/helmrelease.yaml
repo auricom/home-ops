@@ -50,7 +50,6 @@ spec:
         className: external
         annotations:
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          hajimari.io/icon: mdi:account-arrow-up
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Sharry
           gethomepage.dev/description: Share files with others in a simple way.

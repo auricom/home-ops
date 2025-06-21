@@ -65,7 +65,6 @@ spec:
         enabled: true
         className: external
         annotations:
-          hajimari.io/icon: mdi:lock
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Vaultwarden
           gethomepage.dev/description: Open-source password manager compatible with Bitwarden clients.

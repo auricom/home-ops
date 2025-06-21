@@ -5,16 +5,15 @@ kind: Ingress
 metadata:
   name: pgadmin
   annotations:
-          hajimari.io/icon: mdi:database
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: pgAdmin
-          gethomepage.dev/description: PostgreSQL management tool.
-          gethomepage.dev/group: Infrrastructure
-          gethomepage.dev/icon: pgadmin.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              pgadmin
-            )
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: pgAdmin
+    gethomepage.dev/description: PostgreSQL management tool.
+    gethomepage.dev/group: Infrrastructure
+    gethomepage.dev/icon: pgadmin.png
+    gethomepage.dev/pod-selector: >-
+      app in (
+        pgadmin
+      )
 spec:
   ingressClassName: internal
   tls:

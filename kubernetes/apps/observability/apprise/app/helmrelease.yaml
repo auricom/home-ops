@@ -46,8 +46,6 @@ spec:
       app:
         enabled: true
         className: internal
-        annotations:
-          hajimari.io/icon: bell-cog
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

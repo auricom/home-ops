@@ -56,7 +56,6 @@ spec:
         enabled: true
         className: external
         annotations:
-          hajimari.io/icon: mdi:text
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Joplin
           gethomepage.dev/description: Secure note taking and to-do app with synchronisation capabilities

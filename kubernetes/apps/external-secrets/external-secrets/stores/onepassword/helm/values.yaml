@@ -92,8 +92,6 @@ service:
 #   app:
 #     enabled: true
 #     className: internal
-#     annotations:
-#       hajimari.io/enable: "false"
 #     hosts:
 #       - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
 #         paths:

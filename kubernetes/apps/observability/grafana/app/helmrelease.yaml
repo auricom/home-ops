@@ -1,28 +1,35 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: grafana
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 9.2.7
+  url: oci://ghcr.io/grafana/helm-charts/grafana
+---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: grafana
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: grafana
-      version: 9.2.2
-      sourceRef:
-        kind: HelmRepository
-        name: grafana
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: grafana
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  uninstall:
-    keepHistory: false
   values:
     annotations:
       reloader.stakater.com/auto: "true"
@@ -326,7 +333,6 @@ spec:
       enabled: true
       ingressClassName: internal
       annotations:
-        hajimari.io/icon: simple-icons:grafana
         gethomepage.dev/enabled: "true"
         gethomepage.dev/name: Grafana
         gethomepage.dev/description: Observability and data visualization platform.

@@ -116,8 +116,6 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
-          hajimari.io/appName: Prometheus
-          hajimari.io/icon: simple-icons:prometheus
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Prometheus
           gethomepage.dev/description: Systems and service monitoring system.
@@ -230,8 +228,6 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
-          hajimari.io/appName: Alert Manager
-          hajimari.io/icon: mdi:alert-decagram-outline
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Alert-Manager
           gethomepage.dev/description: Handles alerts sent by Prometheus.

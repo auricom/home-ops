@@ -101,8 +101,6 @@ spec:
       app:
         enabled: true
         className: external
-        annotations:
-          hajimari.io/icon: simple-icons:jellyfin
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
             paths:

@@ -52,7 +52,6 @@ spec:
         enabled: true
         className: internal
         annotations:
-          hajimari.io/icon: mdi:harddiskstatus
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Scrutiny
           gethomepage.dev/description: Hard Drive S.M.A.R.T Monitoring.
