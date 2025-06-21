@@ -11,7 +11,8 @@ tls:
   enabled: false
 
 mqtt:
-  host: emqx.database.svc.cluster.local
+  host: mosquitto.database.svc.cluster.local
+  port: 1883
   topic_prefix: frigate
   user: "{FRIGATE_MQTT_USERNAME}"
   password: "{FRIGATE_MQTT_PASSWORD}"
