@@ -15,7 +15,7 @@ spec:
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
@@ -53,7 +53,7 @@ spec:
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m

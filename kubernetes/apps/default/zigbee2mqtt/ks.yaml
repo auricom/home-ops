@@ -10,6 +10,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: mosquitto
+      namespace: database
     - name: node-feature-discovery-rules
       namespace: kube-system
     - name: rook-ceph-cluster
@@ -30,7 +32,7 @@ spec:
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m

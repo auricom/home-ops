@@ -9,7 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: app-template
-    namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -69,33 +68,32 @@ spec:
         ports:
           http:
             port: *port
-    route:
-      main:
-        hostnames: ["sh.${SECRET_EXTERNAL_DOMAIN}"]
-        parentRefs:
-          - name: internal
-            namespace: network
-            port: 443
-        rules:
-          - backendRefs:
-              - name: qbittorrent
-                port: *port
-    # ingress:
-    #   app:
-    #     enabled: true
-    #     className: internal
-    #     annotations:
-    #       hajimari.io/icon: mdi:powershell
-    #     hosts:
-    #       - host: &host "sh.${SECRET_EXTERNAL_DOMAIN}"
-    #         paths:
-    #           - path: /
-    #             service:
-    #               identifier: app
-    #               port: http
-    #     tls:
-    #       - hosts:
-    #           - *host
+    # route:
+    #   main:
+    #     hostnames: ["sh.${SECRET_EXTERNAL_DOMAIN}"]
+    #     parentRefs:
+    #       - name: internal
+    #         namespace: network
+    #     rules:
+    #       - backendRefs:
+    #           - name: atuin
+    #             port: *port
+    ingress:
+      app:
+        enabled: true
+        className: internal
+        annotations:
+          hajimari.io/icon: mdi:powershell
+        hosts:
+          - host: &host "sh.${SECRET_EXTERNAL_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
     persistence:
       config:
         existingClaim: atuin
