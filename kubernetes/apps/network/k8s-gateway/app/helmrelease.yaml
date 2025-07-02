@@ -23,7 +23,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: k8s-gateway
-        namespace: flux-system
   install:
     remediation:
       retries: 3
