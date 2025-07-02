@@ -38,8 +38,8 @@ spec:
                 set -o errexit
                 set -o nounset
 
-                if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
-                    wget "https://hc-ping.com/${HEALTHCHECKS_ID}/start" -T 10 -t 5 -O /dev/null
+                if [[ -n "$HEALTHCHECKS_ID" ]]; then
+                    wget "https://hc-ping.com/$HEALTHCHECKS_ID/start" -T 10 -t 5 -O /dev/null
                 fi
 
                 cd /app
@@ -48,8 +48,8 @@ spec:
                 /app/transcode.sh -r
 
                 # Send completion ping to healthchecks
-                if [[ -n "${HEALTHCHECKS_ID:-}" ]]; then
-                    wget "https://hc-ping.com/${HEALTHCHECKS_ID}" -T 10 -t 5 -O /dev/null
+                if [[ -n "$HEALTHCHECKS_ID" ]]; then
+                    wget "https://hc-ping.com/$HEALTHCHECKS_ID" -T 10 -t 5 -O /dev/null
                 fi
             env:
               TRANSCODE_INPUT_DIR: /mnt/music/
