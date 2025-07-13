@@ -18,13 +18,8 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    defaultPodOptions:
-      nodeSelector:
-        zzh.feature.node.kubernetes.io/zigbee: "true"
     controllers:
       zigbee2mqtt:
-        annotations:
-          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
@@ -40,7 +35,6 @@ spec:
               ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "[204, 61, 75, 23, 44, 230, 24, 203, 53, 5, 248, 32, 50, 84, 44, 159]"
               ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
               ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
-              ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_LEGACY: "false"
               ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
               ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: "true"
               ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: &port 8080
@@ -53,21 +47,36 @@ spec:
               ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://mosquitto.database.svc.cluster.local.:1883
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
-              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: zstack
-              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
-              # ZIGBEE2MQTT_CONFIG_DEVICES: devices.yaml
-              # ZIGBEE2MQTT_CONFIG_GROUPS: groups.yaml
-            envFrom:
-              - secretRef:
-                  name: zigbee2mqtt-secret
+              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ember
+              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://192.168.9.91:6638
+              ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: 115200
+              ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: "false"
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext:
-              privileged: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
-                memory: 128Mi
               limits:
-                memory: 512Mi
+                memory: 384Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: *app
@@ -109,10 +118,7 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config
-      usb:
-        enabled: true
-        type: hostPath
-        hostPath: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
-        hostPathType: CharDevice
+      logs:
+        type: emptyDir
         globalMounts:
-          - path: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+          - path: /config/log

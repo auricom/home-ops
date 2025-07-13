@@ -7,4 +7,3 @@ resources:
   - ./aeotec-zwave-device.yaml
   - ./google-coral-device.yaml
   - ./nodo-rflink-device.yaml
-  - ./zzh-zigbee-device.yaml
