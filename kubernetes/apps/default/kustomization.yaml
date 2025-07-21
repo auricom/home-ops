@@ -31,6 +31,7 @@ resources:
   - ./lms/ks.yaml
   - ./lychee/ks.yaml
   - ./navidrome/ks.yaml
+  - ./opengist/ks.yaml
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
   - ./prowlarr/ks.yaml

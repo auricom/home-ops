@@ -1,0 +1,107 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app opengist
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  interval: 15m
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  driftDetection:
+    mode: enabled
+    ignore:
+      - paths:
+          - /spec/containers/resources/limits
+        target:
+          kind: Pod
+  values:
+    controllers:
+      opengist:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/thomiceli/opengist
+              tag: 1.10.0@sha256:b3ae8c4614fcfc3099ed08317f0113444f314d3d390e89161cff9b673729d191
+            command: # double "$$" escape flux substitutions
+              - ./opengist
+            args:
+              - --config
+              - /config/config.yaml
+            resources:
+              requests:
+                cpu: 100m
+                memory: 52M
+              limits:
+                memory: 256M
+            securityContext:
+              allowPrivilegeEscalation: false
+              # readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+    defaultPodOptions:
+      securityContext:
+        # runAsGroup: 65534
+        # runAsUser: 65534
+        # runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 6157
+          # ssh:
+          #   port: 2222
+    ingress:
+      app:
+        className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Opengist
+          gethomepage.dev/description: Photo-management tool.
+          gethomepage.dev/group: Applications
+          gethomepage.dev/icon: opengist.png
+          gethomepage.dev/pod-selector: >-
+            app in (
+              opengist
+            )
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        type: configMap
+        name: opengist-configmap
+        globalMounts:
+          - subPath: config.yaml
+            path: /config/config.yaml
+        defaultMode: 0775
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /config

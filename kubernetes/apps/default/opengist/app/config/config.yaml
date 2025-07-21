@@ -1,0 +1,65 @@
+---
+# Set the log level to one of the following: trace, debug, info, warn, error, fatal, panic. Default: warn
+log-level: warn
+
+# Public URL for the Git HTTP/SSH connection.
+# If not set, uses the URL from the request
+# external-url: opengist.${SECRET_EXTERNAL_DOMAIN}
+
+# Directory where Opengist will store its data. Default: /opengist/
+opengist-home: /config/opengist/
+
+# Name of the SQLite database file. Default: opengist.db
+db-uri: opengist.db
+
+# Set the journal mode for SQLite. Default: WAL
+# See https://www.sqlite.org/pragma.html#pragma_journal_mode
+sqlite.journal-mode: WAL
+
+
+# HTTP server configuration
+# Host to bind to. Default: 0.0.0.0
+http.host: 0.0.0.0
+
+# Port to bind to. Default: 6157
+http.port: 6157
+
+# Enable or disable git operations (clone, pull, push) via HTTP (either `true` or `false`). Default: true
+http.git-enabled: true
+
+# SSH built-in server configuration
+# Note: it is not using the SSH daemon from your machine (yet)
+
+# Enable or disable SSH built-in server
+# for git operations (clone, pull, push) via SSH (either `true` or `false`). Default: true
+ssh.git-enabled: true
+
+# Host to bind to. Default: 0.0.0.0
+ssh.host: 0.0.0.0
+
+# Port to bind to. Default: 2222
+# Note: it cannot be the same port as the SSH daemon if it's currently running
+# If you want to use the port 22 for the built-in SSH server,
+# you can either change the port of the SSH daemon or stop it
+ssh.port: 2222
+
+# Public domain for the Git SSH connection, if it has to be different from the HTTP one.
+# If not set, uses the URL from the request
+# ssh.external-domain: opengist.${SECRET_EXTERNAL_DOMAIN}
+
+# Path or alias to ssh-keygen executable. Default: ssh-keygen
+ssh.keygen-executable: ssh-keygen
+
+
+# OAuth2 configuration
+# The callback/redirect URL must be http://opengist.domain/oauth/<github|gitea>/callback
+
+# To create a new OAuth2 application using GitHub : https://github.com/settings/applications/new
+# github.client-key:
+# github.secret:
+
+# To create a new OAuth2 application using Gitea : https://gitea.domain/user/settings/applications
+# gitea.client-key:
+# gitea.secret:
+# URL of the Gitea instance. Default: https://gitea.com/
+# gitea.url: https://gitea.com/
