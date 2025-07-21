@@ -1,13 +1,18 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrepository-source-v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: OCIRepository
 metadata:
   name: k8s-gateway
   namespace: network # Required for Renovate lookups
 spec:
   interval: 1h
-  url: https://ori-edge.github.io/k8s_gateway
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 3.2.3
+  url: oci://ghcr.io/k8s-gateway/charts/k8s-gateway
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -15,17 +20,13 @@ kind: HelmRelease
 metadata:
   name: k8s-gateway
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: k8s-gateway
-      version: 2.4.0
-      sourceRef:
-        kind: HelmRepository
-        name: k8s-gateway
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: k8s-gateway
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -40,4 +41,4 @@ spec:
       annotations:
         lbipam.cilium.io/ips: ${CLUSTER_LB_K8SGATEWAY}
       externalTrafficPolicy: Local
-    watchedResources: ["Ingress", "Service"]
+    watchedResources: ["HTTPRoute", "Ingress", "Service"]
