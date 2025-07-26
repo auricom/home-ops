@@ -1,6 +1,6 @@
 ---
 replicas: 1
-providerRegex: ^talos-\d$
+providerRegex: ^talos-node-\d$
 bypassDnsResolution: true
 metrics:
   enable: true
