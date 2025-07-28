@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2025.7.2@sha256:1ccea0e903924bb3198f130b4018ff27315b03fbbe343c3f4aee289b5050660e
+              tag: 2025.7.4@sha256:0f7f057d1817c7bed5632ce510ffcc921799ff34e75c6a53346994ba6c7b14ab
             env:
               TZ: "${TIMEZONE}"
             envFrom:
