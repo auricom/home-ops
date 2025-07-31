@@ -9,7 +9,7 @@ spec:
   timeout: 60s
   url: oci://ghcr.io/kyverno/charts/kyverno
   ref:
-    tag: 3.4.4
+    tag: 3.5.0
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
