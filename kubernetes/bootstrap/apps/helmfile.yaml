@@ -41,7 +41,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: oci://ghcr.io/coredns/charts/coredns
-    version: 1.43.0
+    version: 1.43.2
     values: ["../../apps/kube-system/coredns/app/helm-values.yaml"]
     needs: ["kube-system/cilium"]
 
