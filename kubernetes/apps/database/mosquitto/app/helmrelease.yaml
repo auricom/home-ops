@@ -95,7 +95,7 @@ spec:
         type: LoadBalancer
         externalTrafficPolicy: Local
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: "mqtt.${SECRET_PUBLIC_DOMAIN}."
+          external-dns.alpha.kubernetes.io/hostname: "mqtt.${SECRET_EXTERNAL_DOMAIN}"
         ports:
           mqtt:
             port: 1883
