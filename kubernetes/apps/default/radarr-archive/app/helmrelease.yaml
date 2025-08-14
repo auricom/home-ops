@@ -29,7 +29,7 @@ spec:
         annotations:
           configmap.reloader.stakater.com/reload: radarr-pushover
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: radarr-db-secret
+          secret.reloader.stakater.com/reload: radarr-archive-db-secret
         containers:
           app:
             image:
