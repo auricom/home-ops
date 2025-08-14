@@ -110,6 +110,7 @@ spec:
       databases:
         - radarr_archive_main
         - radarr_archive_log
+      password: *password
     - name: sonarr
       databases:
         - sonarr_main
