@@ -106,6 +106,11 @@ spec:
         - radarr_main
         - radarr_log
       password: *password
+    - name: radarr-archive
+      databases:
+        - radarr_archive_main
+        - radarr_archive_log
+      password: *password
     - name: sonarr
       databases:
         - sonarr_main

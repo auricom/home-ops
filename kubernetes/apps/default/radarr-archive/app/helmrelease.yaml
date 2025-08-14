@@ -1,0 +1,116 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app radarr-archive
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      radarr-archive:
+        annotations:
+          configmap.reloader.stakater.com/reload: radarr-pushover
+          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: radarr-archive-db-secret
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/radarr
+              tag: 5.27.3.10153@sha256:1bf822eaf3d944dc994656c3a712a89df0d88f5f46731af4fccc90c5e0333167
+            env:
+              TZ: "${TIMEZONE}"
+              RADARR__APP__INSTANCENAME: Radarr-archive
+              RADARR__APP__THEME: dark
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__LOG__DBENABLED: "False"
+              RADARR__LOG__LEVEL: info
+              RADARR__SERVER__PORT: &port 8080
+              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+              RADARR__UPDATE__BRANCH: develop
+              PUSHOVER_DEBUG: "false"
+              PUSHOVER_PRIORITY: "0"
+            envFrom:
+              - secretRef:
+                  name: radarr-secret
+              - secretRef:
+                  name: radarr-archive-db-secret
+            resources:
+              requests:
+                cpu: 500m
+                memory: 500Mi
+              limits:
+                memory: 2000Mi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        enabled: true
+        className: internal
+        annotations:
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
+      downloads:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/downloads
+        globalMounts:
+          - path: /mnt/storage/downloads
+      video:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/video
+        globalMounts:
+          - path: /mnt/storage/video
+      scripts:
+        enabled: true
+        type: configMap
+        name: radarr-pushover
+        defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /scripts/pushover-notify.sh
+            subPath: pushover-notify.sh
+            readOnly: true
