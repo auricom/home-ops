@@ -52,6 +52,5 @@ resources:
   - ./vikunja/ks.yaml
   - ./webhook/ks.yaml
   - ./zigbee2mqtt/ks.yaml
-  - ./zwave-js-ui/ks.yaml
   # Default resources
   - jobs-rbac.yaml
