@@ -25,7 +25,7 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
     controllers:
-      radarr:
+      radarr-archive:
         annotations:
           configmap.reloader.stakater.com/reload: radarr-pushover
           reloader.stakater.com/auto: "true"
