@@ -6,11 +6,3 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-configMapGenerator:
-  - name: radarr-archive-pushover
-    files:
-      - ./scripts/pushover-notify.sh
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
