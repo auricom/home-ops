@@ -41,7 +41,7 @@ radarr:
 
     include:
       - template: radarr-quality-definition-sqp-streaming
-      - template: radarr-quality-profile-sqp-1-1080p-default
+      - template: radarr-quality-profile-sqp-1-1080p
       - template: radarr-custom-formats-sqp-1-1080p
 
     custom_formats:
