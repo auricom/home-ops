@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: freshrss/freshrss
-              tag: 1.26.3@sha256:f9733e2cdf754d82e25826324fb4cbf3d736d82e2d36bf8e379dd4f0eeee0932
+              tag: 1.27.0@sha256:2b53d2708fc755aab499a96e865be5ae6deeafb99e855e235e8870b4013c56cd
             env:
               TZ: ${TIMEZONE}
               CRON_MIN: 18,48
