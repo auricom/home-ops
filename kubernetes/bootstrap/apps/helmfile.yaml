@@ -1,13 +1,8 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
-# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubeVersion: v1.33.2
-
 helmDefaults:
-  force: true
-  recreatePods: true
-  timeout: 600
+  cleanupOnFail: true
   wait: true
   waitForJobs: true
 
@@ -16,62 +11,42 @@ repositories:
     url: https://postfinance.github.io/kubelet-csr-approver
 
 releases:
-  - name: kube-prometheus-stack-crds
-    namespace: observability
-    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
-    version: 22.0.2
-
   - name: cilium
     namespace: kube-system
-    atomic: true
     chart: oci://ghcr.io/home-operations/charts-mirror/cilium
-    version: 1.17.6
-    values: ["../../apps/kube-system/cilium/app/helm-values.yaml"]
-    hooks:
-      - # Wait for cilium CRDs to be available
-        events: ['postsync']
-        command: bash
-        args:
-          - -c
-          - until kubectl get crd ciliumbgppeeringpolicies.cilium.io ciliuml2announcementpolicies.cilium.io ciliumloadbalancerippools.cilium.io &>/dev/null; do sleep 10; done
-        showlogs: true
-    needs: ["observability/kube-prometheus-stack-crds"]
+    version: 1.18.1
+    values: ['../kubernetes/apps/kube-system/cilium/app/helm/values.yaml']
 
   - name: coredns
     namespace: kube-system
-    atomic: true
     chart: oci://ghcr.io/coredns/charts/coredns
     version: 1.43.2
-    values: ["../../apps/kube-system/coredns/app/helm-values.yaml"]
-    needs: ["kube-system/cilium"]
+    values: ['../kubernetes/apps/kube-system/coredns/app/helm/values.yaml']
+    needs: ['kube-system/cilium']
 
   - name: kubelet-csr-approver
     namespace: kube-system
-    atomic: true
     chart: postfinance/kubelet-csr-approver
     version: 1.2.10
-    values: ["../../apps/kube-system/kubelet-csr-approver/app/helm-values.yaml"]
-    needs: ["kube-system/coredns"]
+    values: ['../../apps/kube-system/kubelet-csr-approver/app/helm-values.yaml']
+    needs: ['kube-system/coredns']
 
   - name: spegel
     namespace: kube-system
-    atomic: true
     chart: oci://ghcr.io/spegel-org/helm-charts/spegel
     version: 0.3.0
-    values: ["../../apps/kube-system/spegel/app/helm-values.yaml"]
-    needs: ["kube-system/kubelet-csr-approver"]
+    values: ['../kubernetes/apps/kube-system/spegel/app/helm/values.yaml']
+    needs: ['kube-system/coredns']
 
   - name: cert-manager
     namespace: cert-manager
-    atomic: true
-    chart: oci://ghcr.io/home-operations/charts-mirror/cert-manager
-    version: v1.17.1
-    values: ['../../apps/cert-manager/cert-manager/app/helm/values.yaml']
+    chart: oci://quay.io/jetstack/charts/cert-manager
+    version: v1.18.2
+    values: ['../kubernetes/apps/cert-manager/cert-manager/app/helm/values.yaml']
     needs: ['kube-system/spegel']
 
   - name: external-secrets
     namespace: external-secrets
-    atomic: true
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 0.19.1
     values: ['../../apps/external-secrets/external-secrets/app/helm/values.yaml']
