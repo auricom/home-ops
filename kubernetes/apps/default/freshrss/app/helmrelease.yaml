@@ -32,12 +32,6 @@ spec:
               TZ: ${TIMEZONE}
               CRON_MIN: 18,48
               DOMAIN: "https://freshrss.${SECRET_EXTERNAL_DOMAIN}/"
-              OIDC_ENABLED: 1
-              OIDC_PROVIDER_METADATA_URL: https://auth.${SECRET_EXTERNAL_DOMAIN}/.well-known/openid-configuration
-              OIDC_CLIENT_ID: freshrss
-              OIDC_REMOTE_USER_CLAIM: preferred_username
-              OIDC_SCOPES: openid groups email profile
-              OIDC_X_FORWARDED_HEADERS: X-Forwarded-Host X-Forwarded-Port X-Forwarded-Proto
             envFrom:
               - secretRef:
                   name: freshrss-secret
@@ -50,32 +44,18 @@ spec:
         controller: *app
         ports:
           http:
-            port: 80
-    ingress:
+            port: &port 80
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: FreshRSS
-          gethomepage.dev/description: Developer platform to turn scripts into workflows and UIs
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: freshrss.png
-          gethomepage.dev/href: https://windmill.${SECRET_EXTERNAL_DOMAIN}
-          gethomepage.dev/pod-selector: >-
-            app in (
-              freshrss
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

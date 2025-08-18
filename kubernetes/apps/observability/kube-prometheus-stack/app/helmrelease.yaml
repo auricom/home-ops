@@ -105,29 +105,14 @@ spec:
     ### Prometheus instance values
     ###
     prometheus:
-      ingress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: internal
-        annotations:
-          nginx.ingress.kubernetes.io/auth-method: GET
-          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
-          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
-          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Prometheus
-          gethomepage.dev/description: Systems and service monitoring system.
-          gethomepage.dev/group: Infrastructure
-          gethomepage.dev/icon: prometheus.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              prometheus-kube-prometheus-stack-prometheus
-            )
-        hosts: ["prometheus.${SECRET_EXTERNAL_DOMAIN}"]
-        tls:
-          - hosts:
-              - "prometheus.${SECRET_EXTERNAL_DOMAIN}"
+      route:
+        main:
+          enabled: true
+          hostnames: ["prometheus.${SECRET_EXTERNAL_DOMAIN}"]
+          parentRefs:
+            - name: internal
+              namespace: network
+              sectionName: https
       prometheusSpec:
         replicas: 2
         replicaExternalLabelName: replica
@@ -217,29 +202,14 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
-      ingress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: internal
-        annotations:
-          nginx.ingress.kubernetes.io/auth-method: GET
-          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local.:8888/api/verify
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_EXTERNAL_DOMAIN}?rm=$request_method
-          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
-          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Alert-Manager
-          gethomepage.dev/description: Handles alerts sent by Prometheus.
-          gethomepage.dev/group: Infrastructure
-          gethomepage.dev/icon: alertmanager.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              alertmanager-kube-prometheus-stack-alertmanager
-            )
-        hosts: ["alert-manager.${SECRET_EXTERNAL_DOMAIN}"]
-        tls:
-          - hosts:
-              - "alert-manager.${SECRET_EXTERNAL_DOMAIN}"
+      route:
+        main:
+          enabled: true
+          hostnames: ["alertmanager.${SECRET_EXTERNAL_DOMAIN}"]
+          parentRefs:
+            - name: internal
+              namespace: network
+              sectionName: https
       prometheus:
         monitor:
           enabled: true

@@ -1,15 +1,17 @@
 ---
 web:
   port: 8080
-storage:
-  type: sqlite
-  path: /config/sqlite.db
-  caching: true
 metrics: true
-debug: false
 ui:
   title: Status | Gatus
   header: Status
+  logo: https://avatars.githubusercontent.com/u/27022259
+  link: https://github.com/auricom
+  buttons:
+    - name: Github
+      link: https://github.com/auricom
+    - name: Homelab
+      link: https://github.com/onedr0p/home-ops
 alerting:
   pushover:
     application-token: ${CUSTOM_PUSHOVER_APP_TOKEN}

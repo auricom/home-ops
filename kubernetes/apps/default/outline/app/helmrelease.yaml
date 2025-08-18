@@ -75,28 +75,15 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8080
-    ingress:
+            port: &port 8080
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Outline
-          gethomepage.dev/description: A fast, collaborative, knowledge base.
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: outline.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              outline
-            )
-        hosts:
-          - host: &host "docs.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["docs.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

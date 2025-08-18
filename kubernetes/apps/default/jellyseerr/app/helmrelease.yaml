@@ -69,23 +69,17 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
+    route:
       app:
-        enabled: true
-        className: external
-        hosts:
-          - host: &host1 "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths: &paths
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-          - host: &host2 requests.${SECRET_EXTERNAL_DOMAIN}
-            paths: *paths
-        tls:
-          - hosts:
-              - *host1
-              - *host2
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}","requests.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         existingClaim: *app

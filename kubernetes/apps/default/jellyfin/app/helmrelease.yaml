@@ -96,21 +96,18 @@ spec:
         externalTrafficPolicy: Local
         ports:
           http:
-            port: 8096
-    ingress:
+            port: &port 8096
+    route:
       app:
-        enabled: true
-        className: external
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

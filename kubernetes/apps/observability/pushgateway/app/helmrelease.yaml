@@ -34,10 +34,4 @@ spec:
       enabled: true
       namespace: observability
     ingress:
-      enabled: true
-      className: internal
-      hosts:
-        - &host "pushgateway.${SECRET_EXTERNAL_DOMAIN}"
-      tls:
-        - hosts:
-            - *host
+      enabled: false

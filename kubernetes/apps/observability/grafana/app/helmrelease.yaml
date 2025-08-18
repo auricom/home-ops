@@ -272,13 +272,6 @@ spec:
           gnetId: 11454
           revision: 14
           datasource: Prometheus
-      nginx:
-        nginx:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
-          datasource: Prometheus
-        nginx-request-handling-performance:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
-          datasource: Prometheus
       prometheus:
         prometheus:
           # renovate: depName="Prometheus"
@@ -329,24 +322,14 @@ spec:
       - vonage-status-panel
     serviceMonitor:
       enabled: true
-    ingress:
-      enabled: true
-      ingressClassName: internal
-      annotations:
-        gethomepage.dev/enabled: "true"
-        gethomepage.dev/name: Grafana
-        gethomepage.dev/description: Observability and data visualization platform.
-        gethomepage.dev/group: Infrastructure
-        gethomepage.dev/icon: grafana.png
-        gethomepage.dev/pod-selector: >-
-          app in (
-            grafana
-          )
-      hosts:
-        - &host "grafana.${SECRET_EXTERNAL_DOMAIN}"
-      tls:
-        - hosts:
-            - *host
+    route:
+      main:
+        enabled: true
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
     persistence:
       enabled: false
     testFramework:

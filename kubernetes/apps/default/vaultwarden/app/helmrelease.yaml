@@ -60,30 +60,17 @@ spec:
         ports:
           http:
             port: &port 80
-    ingress:
+    route:
       app:
-        enabled: true
-        className: external
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Vaultwarden
-          gethomepage.dev/description: Open-source password manager compatible with Bitwarden clients.
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: vaultwarden.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              vaultwarden
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

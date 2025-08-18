@@ -9,7 +9,6 @@ resources:
   - ./atuin/ks.yaml
   - ./authelia/ks.yaml
   - ./bazarr/ks.yaml
-  - ./calibre/ks.yaml
   - ./exercisediary/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./flood/ks.yaml
@@ -18,7 +17,6 @@ resources:
   - ./home-assistant/ks.yaml
   - ./homebox/ks.yaml
   - ./homelab/ks.yaml
-  - ./homepage/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./joplin/ks.yaml

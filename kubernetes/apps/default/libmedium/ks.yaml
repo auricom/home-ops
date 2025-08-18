@@ -10,6 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
+    - ../../../../components/ext-auth
     - ../../../../components/gatus/external
   dependsOn:
     - name: external-secrets-stores

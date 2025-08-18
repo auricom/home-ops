@@ -44,7 +44,7 @@ spec:
         externalTrafficPolicy: Local
         ports:
           http:
-            port: 9000
+            port: &port 9000
           cli:
             enabled: true
             port: 9090
@@ -57,30 +57,17 @@ spec:
             enabled: true
             port: 3483
             protocol: UDP
-    ingress:
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Lyrion Music Server
-          gethomepage.dev/description: Stream not only your local music collection, but content from many music services and internet radio stations to your players.
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: lms.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              lms
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

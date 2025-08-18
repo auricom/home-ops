@@ -63,21 +63,18 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8888
-    ingress:
+            port: &port 8888
+    route:
       app:
-        enabled: true
-        className: internal
-        hosts:
-          - host: &host hass-code.${SECRET_EXTERNAL_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["hass-code.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

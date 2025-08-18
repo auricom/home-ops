@@ -1,0 +1,78 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: envoy-gateway
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: config
+    namespace: network
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/gateway_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: internal
+  annotations:
+    external-dns.alpha.kubernetes.io/target: &host internal.${SECRET_EXTERNAL_DOMAIN}
+spec:
+  gatewayClassName: envoy-gateway
+  infrastructure:
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: *host
+      lbipam.cilium.io/ips: 192.168.169.121
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: ${SECRET_EXTERNAL_DOMAIN//./-}-tls
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/gateway_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: external
+  annotations:
+    external-dns.alpha.kubernetes.io/target: &host external.${SECRET_EXTERNAL_DOMAIN}
+spec:
+  gatewayClassName: envoy-gateway
+  infrastructure:
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: *host
+      lbipam.cilium.io/ips: 192.168.169.122
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: ${SECRET_EXTERNAL_DOMAIN//./-}-tls

@@ -54,30 +54,17 @@ spec:
           ldap:
             enabled: true
             port: *ldapPort
-    ingress:
+    route:
       app:
-        enabled: true
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: lldap
-          gethomepage.dev/description: Light LDAP implementation
-          gethomepage.dev/group: Infrastructure
-          gethomepage.dev/icon: lldap.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              lldap
-            )
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       data:
         type: emptyDir

@@ -41,24 +41,15 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8000
-    ingress:
+            port: &port 8000
+    route:
       app:
-        enabled: true
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
-    persistence:
-      config:
-        enabled: true
-        existingClaim: *app
-        globalMounts:
-          - path: /config
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

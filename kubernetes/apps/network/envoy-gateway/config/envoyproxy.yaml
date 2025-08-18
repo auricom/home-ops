@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/charts/gateway-helm/crds/generated/gateway.envoyproxy.io_envoyproxies.yaml
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: config
+spec:
+  # ipFamily: DualStack
+  telemetry:
+    metrics:
+      prometheus: {}
+  shutdown:
+    drainTimeout: 300s
+  logging:
+    level:
+      default: info
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        replicas: 1
+        container:
+          resources:
+            requests:
+              cpu: 150m
+              memory: 640Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+      envoyService:
+        externalTrafficPolicy: Cluster # cilium l2 announce doesn't support externalTrafficPolicy: Local

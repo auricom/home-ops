@@ -23,14 +23,6 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
-    ingress:
-      enabled: true
-      className: internal
-      hosts:
-        - host: blackbox-exporter.${SECRET_EXTERNAL_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
     securityContext:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false

@@ -1,0 +1,44 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: gateway-api-crds
+spec:
+  interval: 30m
+  url: https://github.com/kubernetes-sigs/gateway-api.git
+  ref:
+    tag: v1.3.0
+  ignore: |
+    # exclude
+    /*
+    # include
+    !config/crd/experimental/gateway*.yaml
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &name gateway-api-crds
+  namespace: &namespace network
+spec:
+  targetNamespace: *namespace
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: *name
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
+  healthChecks:
+    - &crds
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: backendtlspolicies.gateway.networking.k8s.io
+    - <<: *crds
+      name: gatewayclasses.gateway.networking.k8s.io
+    - <<: *crds
+      name: gateways.gateway.networking.k8s.io
+    - <<: *crds
+      name: httproutes.gateway.networking.k8s.io
+    - <<: *crds
+      name: tlsroutes.gateway.networking.k8s.io

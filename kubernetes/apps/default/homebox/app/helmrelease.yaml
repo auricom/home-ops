@@ -41,31 +41,18 @@ spec:
         controller: *app
         ports:
           http:
-            port: 7745
-    ingress:
+            port: &port 7745
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Homebox
-          gethomepage.dev/description: Inventory and organization system built for the Home User
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: homebox.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              homebox
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

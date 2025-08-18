@@ -47,7 +47,7 @@ spec:
         loadBalancerIP: 192.168.169.103
         ports:
           http:
-            port: 8443
+            port: &port 8443
             protocol: HTTPS
           controller:
             enabled: true
@@ -77,31 +77,17 @@ spec:
             enabled: true
             port: 10001
             protocol: UDP
-    ingress:
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Unifi
-          gethomepage.dev/description: Centralized enterprise-grade networking for home and business.
-          gethomepage.dev/group: Infrastructure
-          gethomepage.dev/icon: unifi.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              unifi
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

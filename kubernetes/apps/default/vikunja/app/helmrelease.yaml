@@ -49,33 +49,18 @@ spec:
         controller: *app
         ports:
           http:
-            port: 3456
-    ingress:
+            port: &port 3456
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          external-dns.alpha.kubernetes.io/enabled: "true"
-          external-dns.alpha.kubernetes.io/target: services.${SECRET_DOMAIN}.
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Vikunja
-          gethomepage.dev/description: Tasks and project management platform.
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: vikunja.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              vikunja
-            )
-        hosts:
-          - host: *host
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

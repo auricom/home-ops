@@ -16,6 +16,7 @@ spec:
     - name: volsync
       namespace: volsync
   components:
+    - ../../../../components/ext-auth
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h

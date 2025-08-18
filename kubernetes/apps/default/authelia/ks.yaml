@@ -16,6 +16,8 @@ spec:
       namespace: database
     - name: external-secrets-stores
       namespace: external-secrets
+    - name: gateway-api-crds
+      namespace: network
   components:
     - ../../../../components/gatus/external
   interval: 1h

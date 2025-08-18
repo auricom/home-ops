@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://schemas.budimanjojo.com/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: ${APP}
+spec:
+  extAuth:
+    headersToExtAuth:
+      - X-Forwarded-For # this is here so we can get the real IP
+      - X-Forwarded-Proto
+      - authorization
+      - header-authorization
+      - proxy-authorization
+      - accept
+      - cookie
+    failOpen: false
+    http:
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: authelia
+          namespace: default
+          port: 8888
+      path: /api/authz/ext-authz/
+      headersToBackend:
+        - 'remote-*'
+        - 'authelia-*'
+  targetRefs:
+    - group: ${EXT_AUTH_GROUP:-gateway.networking.k8s.io}
+      kind: ${EXT_AUTH_KIND:-HTTPRoute}
+      name: ${EXT_AUTH_TARGET:-${APP}}

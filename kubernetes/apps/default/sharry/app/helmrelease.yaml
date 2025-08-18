@@ -43,32 +43,18 @@ spec:
         controller: *app
         ports:
           http:
-            port: 9090
-    ingress:
+            port: &port 9090
+    route:
       app:
-        enabled: true
-        className: external
-        annotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Sharry
-          gethomepage.dev/description: Share files with others in a simple way.
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: sharry.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              sharry
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true

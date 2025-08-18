@@ -73,26 +73,12 @@ spec:
         hostnames: ["sh.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
-            namespace: kube-system
+            namespace: network
             sectionName: https
         rules:
           - backendRefs:
-              - name: app
+              - name: *app
                 port: *port
-    # ingress:
-    #   app:
-    #     enabled: true
-    #     className: internal
-    #     hosts:
-    #       - host: &host "sh.${SECRET_EXTERNAL_DOMAIN}"
-    #         paths:
-    #           - path: /
-    #             service:
-    #               identifier: app
-    #               port: http
-    #     tls:
-    #       - hosts:
-    #           - *host
     persistence:
       config:
         existingClaim: atuin

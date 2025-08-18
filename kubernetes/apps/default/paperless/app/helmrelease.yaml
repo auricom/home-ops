@@ -60,31 +60,18 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8000
-    ingress:
+            port: &port 8000
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Paperless
-          gethomepage.dev/description: Document management system that transform physical documents into a searchable online archive.
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: paperless.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              paperless
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       data:
         enabled: true
