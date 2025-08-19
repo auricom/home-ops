@@ -49,19 +49,19 @@ spec:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
               GATUS_WEB_PORT: &port 80
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /health
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+            # probes:
+            #   liveness: &probes
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       httpGet:
+            #         path: /health
+            #         port: *port
+            #       initialDelaySeconds: 0
+            #       periodSeconds: 10
+            #       timeoutSeconds: 1
+            #       failureThreshold: 3
+            #   readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -78,18 +78,23 @@ spec:
         runAsGroup: 1000
     service:
       app:
+        controller: *app
         ports:
           http:
             port: *port
+    serviceAccount:
+      gatus: {}
     serviceMonitor:
       app:
+        serviceName: *app
+        enabled: true
         endpoints:
           - port: http
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["status.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
-          - name: internal
+          - name: external
             namespace: network
             sectionName: https
         rules:
@@ -111,8 +116,6 @@ spec:
             identifier: gatus
           subjects:
             - identifier: gatus
-    serviceAccount:
-      gatus: {}
     persistence:
       config:
         type: emptyDir
