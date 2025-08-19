@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app qbittorrent-upgrade-p2pblocklist
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      qbittorrent-upgrade-p2pblocklist:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/auricom/kubectl
+              tag: 1.33@sha256:64d2ccc1e85ed34a7612026bb31bbc052776d58e94063f7d9a5c5bcf89630b8a
+            command:
+              - /bin/bash
+              - -c
+              - |
+                #!/bin/bash
+
+                set -o errexit
+                set -o nounset
+
+                curl --silent --location https://github.com/DavidMoore/ipfilter/releases/download/lists/ipfilter.dat.gz --output /tmp/ipfilter.dat.gz
+                gunzip /tmp/ipfilter.dat.gz
+                result=$(kubectl get pod --selector app.kubernetes.io/name=qbittorrent --output custom-columns=:metadata.name --namespace default)
+                QBITTORRENT_POD=$(echo $result | awk '{ print $NF }')
+                if [[ $QBITTORRENT_POD == *"qbittorrent"* ]]; then
+                  kubectl cp /tmp/ipfilter.dat default/$QBITTORRENT_POD:/config/ipfilter.dat
+                  kubectl rollout restart deployment qbittorrent --namespace default
+                else
+                  echo "qbittorrent deployment not found"
+                  exit 1
+                fi
+    service:
+      app:
+        controller: *app
+        enabled: false
+    serviceAccount:
+      qbittorrent-upgrade-p2pblocklist: {}
+    rbac:
+      roles:
+        qbittorrent-upgrade-p2pblocklist:
+          type: ClusterRole
+          rules:
+            - apiGroups: [""]
+              resources: ["pods", "pods/log", "pods/exec", "pods/ephemeralcontainers"]
+              verbs: ["get", "list", "create", "update", "patch"]
+            - apiGroups: ["apps"]
+              resources: ["deployments"]
+              verbs: ["get", "list", "patch", "update"]
+      bindings:
+        gatus:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: qbittorrent-upgrade-p2pblocklist
+          subjects:
+            - identifier: qbittorrent-upgrade-p2pblocklist

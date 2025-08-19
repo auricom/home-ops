@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: '${SECRET_EXTERNAL_DOMAIN/./-}-unifi'
+spec:
+  secretName: '${SECRET_EXTERNAL_DOMAIN/./-}-unifi'
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: 'unifi.${SECRET_EXTERNAL_DOMAIN}'
+  dnsNames:
+    - 'unifi.${SECRET_EXTERNAL_DOMAIN}'
+  keystores:
+    jks:
+      create: true
+      alias: unifi
+      password: aircontrolenterprise

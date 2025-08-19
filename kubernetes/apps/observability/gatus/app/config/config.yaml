@@ -1,6 +1,10 @@
 ---
 web:
   port: 8080
+storage:
+  type: sqlite
+  path: /config/sqlite.db
+  caching: true
 metrics: true
 ui:
   title: Status | Gatus
@@ -30,7 +34,7 @@ connectivity:
 endpoints:
   - name: flux-webhook
     group: external
-    url: https://flux-webhook.${CUSTOM_SECRET_EXTERNAL_DOMAIN}
+    url: https://flux-webhook.${SECRET_EXTERNAL_DOMAIN}
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53

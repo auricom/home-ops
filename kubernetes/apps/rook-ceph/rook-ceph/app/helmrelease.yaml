@@ -46,6 +46,9 @@ spec:
     crds:
       enabled: true
     pspEnable: false
+    enableDiscoveryDaemon: true
+    image:
+      repository: ghcr.io/rook/ceph
     monitoring:
       enabled: true
     resources:

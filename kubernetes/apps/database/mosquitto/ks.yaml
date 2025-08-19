@@ -9,8 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/gatus/guarded
   interval: 1h
   path: ./kubernetes/apps/database/mosquitto/app
   postBuild:

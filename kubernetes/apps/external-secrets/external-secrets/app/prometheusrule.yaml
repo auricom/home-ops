@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: external-secret-sync-alert
+  namespace: external-secrets
+spec:
+  groups:
+  - name: external-secrets
+    rules:
+    - alert: ExternalSecretNotSynced
+      expr: |
+        (
+          max_over_time(
+            external_secret_status_condition{condition="Ready", status="True"}[15m]
+          ) == 0
+        ) or on(name, namespace) (
+          external_secret_status_condition{condition="Ready", status="False"} == 1
+        )
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: ExternalSecret not synchronized
+        description: "ExternalSecret {{ $labels.namespace }}/{{ $labels.name }} has not synced for >5 min."

@@ -17,6 +17,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_STATUS: "401"
   prune: true
   retryInterval: 2m
   sourceRef:

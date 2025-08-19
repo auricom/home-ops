@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - ./helmrelease.yaml
+  - ./prometheusrule.yaml
 configMapGenerator:
   - name: external-secrets-values
     files:

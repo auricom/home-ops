@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app qbittorrent-upgrade-p2pblocklist
+  name: &app lychee-sync
 spec:
   interval: 1h
   chartRef:
@@ -19,13 +19,13 @@ spec:
       retries: 3
   values:
     controllers:
-      qbittorrent-upgrade-p2pblocklist:
+      main:
         type: cronjob
         cronjob:
           concurrencyPolicy: Forbid
-          schedule: "@daily"
+          schedule: 0 0 * * 1  # At 00:00 on Monday
         containers:
-          app:
+          main:
             image:
               repository: ghcr.io/auricom/kubectl
               tag: 1.33@sha256:64d2ccc1e85ed34a7612026bb31bbc052776d58e94063f7d9a5c5bcf89630b8a
@@ -38,15 +38,12 @@ spec:
                 set -o errexit
                 set -o nounset
 
-                curl --silent --location https://github.com/DavidMoore/ipfilter/releases/download/lists/ipfilter.dat.gz --output /tmp/ipfilter.dat.gz
-                gunzip /tmp/ipfilter.dat.gz
-                result=$(kubectl get pod --selector app.kubernetes.io/name=qbittorrent --output custom-columns=:metadata.name --namespace default)
-                QBITTORRENT_POD=$(echo $result | awk '{ print $NF }')
-                if [[ $QBITTORRENT_POD == *"qbittorrent"* ]]; then
-                  kubectl cp /tmp/ipfilter.dat default/$QBITTORRENT_POD:/config/ipfilter.dat
-                  kubectl rollout restart deployment qbittorrent --namespace default
+                result=$(kubectl get pod --selector app.kubernetes.io/name=lychee --output custom-columns=:metadata.name --namespace default)
+                LYCHEE_POD=$(echo $result | awk '{ print $NF }')
+                if [[ $LYCHEE_POD == *"lychee"* ]]; then
+                  kubectl exec --stdin --container app $LYCHEE_POD -- php artisan lychee:sync /mnt/storage/photo/Gallery/ --skip_duplicates=1
                 else
-                  echo "qbittorrent deployment not found"
+                  echo "lychee deployment not found"
                   exit 1
                 fi
     service:
@@ -54,5 +51,19 @@ spec:
         controller: *app
         enabled: false
     serviceAccount:
-      create: false
-      name: jobs
+      lychee-sync: {}
+    rbac:
+      roles:
+        lychee-sync:
+          type: ClusterRole
+          rules:
+            - apiGroups: [""]
+              resources: ["pods/exec"]
+              verbs: ["create"]
+      bindings:
+        gatus:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: lychee-sync
+          subjects:
+            - identifier: lychee-sync

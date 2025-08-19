@@ -28,6 +28,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 2Gi
+      GATUS_STATUS: "401"
       GATUS_SUBDOMAIN: zigbee
   prune: true
   retryInterval: 2m

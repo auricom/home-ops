@@ -46,7 +46,7 @@ spec:
         externalTrafficPolicy: Local
         loadBalancerIP: 192.168.169.103
         ports:
-          http:
+          https:
             port: &port 8443
             protocol: HTTPS
           controller:
@@ -88,9 +88,27 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+            timeouts:
+              request: 0s # websocket, never time out
+              backendRequest: 0s # websocket, never time out
     persistence:
       config:
         enabled: true
         existingClaim: *app
         globalMounts:
           - path: /unifi
+      cert:
+        type: secret
+        name: '${SECRET_EXTERNAL_DOMAIN/./-}-unifi'
+        advancedMounts:
+          unifi:
+            app:
+              - path: /unifi/cert/cert.pem
+                subPath: tls.crt
+                readOnly: true
+              - path: /unifi/cert/privkey.pem
+                subPath: tls.key
+                readOnly: true
+              - path: /unifi/data/keystore
+                subPath: keystore.jks
+                readOnly: false

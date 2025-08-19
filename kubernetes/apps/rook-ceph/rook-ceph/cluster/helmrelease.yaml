@@ -33,25 +33,6 @@ spec:
     monitoring:
       enabled: true
       createPrometheusRules: true
-    ingress:
-      dashboard:
-        ingressClassName: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Rook
-          gethomepage.dev/description: Cloud-Native Storage for Kubernetes.
-          gethomepage.dev/group: Infrastructure
-          gethomepage.dev/icon: rook.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              rook
-            )
-        host:
-          name: "rook.${SECRET_EXTERNAL_DOMAIN}"
-          path: /
-        tls:
-          - hosts:
-              - "rook.${SECRET_EXTERNAL_DOMAIN}"
     configOverride: |
       [global]
       bdev_enable_discard = true
@@ -63,6 +44,7 @@ spec:
         enabled: true
         urlPrefix: /
         ssl: false
+        prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
       storage:
         useAllNodes: false
         useAllDevices: false

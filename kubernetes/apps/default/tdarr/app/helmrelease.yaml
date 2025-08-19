@@ -40,7 +40,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8265
+            port: &port 8265
       server:
         controller: *app
         type: LoadBalancer
@@ -50,7 +50,7 @@ spec:
           server:
             enabled: true
             protocol: TCP
-            port: &port 8266
+            port: 8266
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]

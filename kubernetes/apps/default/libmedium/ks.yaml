@@ -20,6 +20,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_STATUS: "401"
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   retryInterval: 2m

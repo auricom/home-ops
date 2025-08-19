@@ -46,7 +46,6 @@ spec:
               source /opt/recipes/venv/bin/activate
               echo "Updating database"
               python3 /opt/recipes/manage.py migrate
-              python3 /opt/recipes/manage.py collectstatic_js_reverse
               python3 /opt/recipes/manage.py collectstatic --noinput
         containers:
           app:
@@ -59,7 +58,7 @@ spec:
               ALLOWED_HOSTS: "*"
               GUNICORN_MEDIA: "0"
               TZ: ${TIMEZONE}
-              TANDOOR_PORT: &port 8888
+              TANDOOR_PORT: &tandoorPort 8888
               FRACTION_PREF_DEFAULT: "0"
               COMMENT_PREF_DEFAULT: "1"
               SHOPPING_MIN_AUTOSYNC_INTERVAL: "5"
@@ -74,6 +73,28 @@ spec:
               - --log-level
               - INFO
               - recipes.wsgi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: *tandoorPort
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: *tandoorPort
+                  failureThreshold: 30
+                  periodSeconds: 10
             resources:
               requests:
                 cpu: 100m
@@ -89,41 +110,21 @@ spec:
         controller: *app
         ports:
           http:
-            port: *port
+            port: *tandoorPort
           nginx:
-            port: &port2 8080
-    ingress:
+            port: &nginxPort 8080
+    route:
       app:
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Tandoor
-          gethomepage.dev/description: Managing recipes, planned meals, shopping lists.
-          gethomepage.dev/group: Applications
-          gethomepage.dev/icon: tandoor.png
-          gethomepage.dev/pod-selector: >-
-            app in (
-              tandoor
-            )
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-              - path: /media
-                service:
-                  identifier: app
-                  port: *port2
-              - path: /static
-                service:
-                  identifier: app
-                  port: *port2
-        tls:
-          - hosts:
-              - *host
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *nginxPort
     persistence:
       config:
         existingClaim: *app
