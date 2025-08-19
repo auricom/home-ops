@@ -87,7 +87,7 @@ spec:
           - port: http
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["status.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
             namespace: network
