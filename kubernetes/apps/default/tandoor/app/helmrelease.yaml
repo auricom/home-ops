@@ -32,7 +32,7 @@ spec:
           migrations:
             image:
               repository: vabene1111/recipes
-              tag: 2.0.1@sha256:b95f7b3e3df000cd39a152be0ddff7139c6d7c5f59cd306f325da44c50a81d05
+              tag: 2.0.2@sha256:79f337a334207d0fe49732197ee721f363aeaac8a600b75560e23c72ba5a8c25
             envFrom: &envFrom
               - secretRef:
                   name: tandoor-secret
@@ -51,7 +51,7 @@ spec:
           app:
             image:
               repository: vabene1111/recipes
-              tag: 2.0.1@sha256:b95f7b3e3df000cd39a152be0ddff7139c6d7c5f59cd306f325da44c50a81d05
+              tag: 2.0.2@sha256:79f337a334207d0fe49732197ee721f363aeaac8a600b75560e23c72ba5a8c25
             envFrom: *envFrom
             env:
               DEBUG: "0"
