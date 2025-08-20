@@ -191,7 +191,7 @@ spec:
       service:
         metadata:
           annotations:
-            lbipam.cilium.io/ips: ${CLUSTER_LB_POSTGRES}
+            io.cilium/lb-ipam-ips: ${CLUSTER_LB_POSTGRES}
         type: LoadBalancer
       replicas: *replica
       metadata:
