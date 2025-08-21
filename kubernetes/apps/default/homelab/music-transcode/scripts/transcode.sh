@@ -46,8 +46,34 @@ manage_execution_time() {
 }
 
 fd_safe() {
-    if ! "$TRANSCODE_FD_BIN" "$@"; then
-        log "ERROR: fd command failed"
+    local cmd_args=("$@")
+    log "DEBUG: Executing fd command: $TRANSCODE_FD_BIN ${cmd_args[*]}"
+
+    local output
+    local exit_code
+
+    # Capture both stdout and stderr
+    if output=$("$TRANSCODE_FD_BIN" "${cmd_args[@]}" 2>&1); then
+        exit_code=0
+        # If there's output and it's not just whitespace, log it
+        if [[ -n "${output// }" ]]; then
+            log "DEBUG: fd command output: $output"
+        fi
+    else
+        exit_code=$?
+        log "ERROR: fd command failed with exit code $exit_code"
+        log "ERROR: Command was: $TRANSCODE_FD_BIN ${cmd_args[*]}"
+        log "ERROR: Working directory: $(pwd)"
+        log "ERROR: fd output/error: $output"
+
+        # Additional debugging info
+        log "DEBUG: TRANSCODE_FD_BIN=$TRANSCODE_FD_BIN"
+        log "DEBUG: TRANSCODE_FD_FILTERS=$TRANSCODE_FD_FILTERS"
+        log "DEBUG: Current directory contents:"
+        ls -la . | head -10 | while read -r line; do
+            log "DEBUG:   $line"
+        done
+
         exit 1
     fi
 }
@@ -312,63 +338,86 @@ export -f process_file
 
 convert_covers() {
     log "INFO: Looking for covers to convert..."
+    log "DEBUG: Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
     for ext in $TRANSCODE_COVER_EXTENSIONS; do
         log "INFO: Searching for .$ext files..."
+        log "DEBUG: Processing extension: $ext"
+        log "DEBUG: FD filters: $TRANSCODE_FD_FILTERS"
+
         # Create a temporary script for processing
         local temp_script=$(mktemp)
+        log "DEBUG: Created temp script: $temp_script"
         cat > "$temp_script" << 'EOF'
 #!/bin/bash
 process_file "$1" "$2" "$3"
 EOF
         chmod +x "$temp_script"
 
+        log "DEBUG: About to run fd_safe for covers with extension $ext"
         fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} "$ext" cover \;
+        log "DEBUG: Completed fd_safe for covers with extension $ext"
         rm -f "$temp_script"
     done
 }
 
 convert_music() {
     log "INFO: Looking for music to transcode..."
+    log "DEBUG: Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
     for ext in $TRANSCODE_MUSIC_EXTENSIONS; do
         log "INFO: Searching for .$ext files..."
+        log "DEBUG: Processing extension: $ext"
+        log "DEBUG: FD filters: $TRANSCODE_FD_FILTERS"
+
         # Create a temporary script for processing
         local temp_script=$(mktemp)
+        log "DEBUG: Created temp script: $temp_script"
         cat > "$temp_script" << 'EOF'
 #!/bin/bash
 process_file "$1" "$2" "$3"
 EOF
         chmod +x "$temp_script"
 
+        log "DEBUG: About to run fd_safe for music with extension $ext"
         fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} "$ext" music \;
+        log "DEBUG: Completed fd_safe for music with extension $ext"
         rm -f "$temp_script"
     done
 }
 
 fix_cuefiles() {
     log "INFO: Looking for cuefiles..."
+    log "DEBUG: Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
+
+    log "DEBUG: FD filters: $TRANSCODE_FD_FILTERS"
 
     # Create a temporary script for processing
     local temp_script=$(mktemp)
+    log "DEBUG: Created temp script: $temp_script"
     cat > "$temp_script" << 'EOF'
 #!/bin/bash
 process_file "$1" "$2" "$3"
 EOF
     chmod +x "$temp_script"
 
+    log "DEBUG: About to run fd_safe for cue files"
     fd_safe --extension cue $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} cue cue \;
+    log "DEBUG: Completed fd_safe for cue files"
     rm -f "$temp_script"
 }
 
 remove_absent_from_source() {
+    log "INFO: Looking for files to remove from output that no longer exist in source..."
+    log "DEBUG: Changing to directory: $TRANSCODE_DB"
     cd "$TRANSCODE_DB" || exit 1
 
     # Create a temporary script file for the removal operation
     local temp_script=$(mktemp)
+    log "DEBUG: Created temp script: $temp_script"
     cat > "$temp_script" << 'EOF'
 #!/bin/bash
 val="$1"
@@ -389,7 +438,10 @@ fi
 EOF
     chmod +x "$temp_script"
 
+    log "DEBUG: About to run fd command for md5 files in removal check"
+    log "DEBUG: Command: $TRANSCODE_FD_BIN --extension md5 -x $temp_script {} \\;"
     "$TRANSCODE_FD_BIN" --extension md5 -x "$temp_script" {} \;
+    log "DEBUG: Completed fd command for md5 files in removal check"
     rm -f "$temp_script"
 
     log "INFO: removing empty directories..."
