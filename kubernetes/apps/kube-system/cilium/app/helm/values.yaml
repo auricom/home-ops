@@ -18,20 +18,17 @@ enableIPv4BIGTCP: true
 endpointRoutes:
   enabled: true
 envoy:
-  rollOutPods: true
-  prometheus:
-    serviceMonitor:
-      enabled: true
+  enabled: false
 gatewayAPI:
-  enabled: true
-  enableAlpn: true
+  enabled: false
+  enableAlpn: false
   xffNumTrustedHops: 1
 hubble:
   enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.69.0.0/16
-k8sServiceHost: localhost
+k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
