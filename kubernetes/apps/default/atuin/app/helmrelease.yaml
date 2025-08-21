@@ -70,7 +70,10 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["sh.${SECRET_EXTERNAL_DOMAIN}"]
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: &host sh.${SECRET_EXTERNAL_DOMAIN}
+        hostnames:
+          - *host
         parentRefs:
           - name: internal
             namespace: network

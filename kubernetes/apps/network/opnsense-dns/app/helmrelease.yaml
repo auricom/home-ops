@@ -78,6 +78,8 @@ spec:
             cpu: 10m
           limits:
             memory: 100Mi
+    extraArgs:
+      - --managed-record-types=A,AAAA
     policy: upsert-only
     registry: noop
     sources: ["gateway-httproute", "service"]
