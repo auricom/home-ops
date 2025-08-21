@@ -25,15 +25,18 @@ spec:
     name: cloudflare-dns
   install:
     remediation:
-      retries: -1
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   values:
     fullnameOverride: *app
     provider:
       name: cloudflare
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
     env:
       - name: &name CF_API_TOKEN
         valueFrom:
