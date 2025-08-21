@@ -21,8 +21,8 @@ spec:
         - peerAddress: ${LOCAL_LAN_OPNSENSE}/24
           peerASN: 64512
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumloadbalancerippool_v2.json
-apiVersion: cilium.io/v2
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumloadbalancerippool_v2alpha1.json
+apiVersion: cilium.io/v2alpha1
 kind: CiliumLoadBalancerIPPool
 metadata:
   name: main-pool
