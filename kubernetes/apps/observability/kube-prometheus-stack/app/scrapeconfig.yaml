@@ -10,6 +10,7 @@ spec:
         - pikvm.${SECRET_INTERNAL_DOMAIN}:9100
         - opnsense.${SECRET_INTERNAL_DOMAIN}:9273
         - storage.${SECRET_INTERNAL_DOMAIN}:9100
+        - storage-remote.${SECRET_INTERNAL_DOMAIN}:9100
   metricsPath: /metrics
   relabelings:
     - action: replace
