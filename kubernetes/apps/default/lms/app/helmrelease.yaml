@@ -25,8 +25,8 @@ spec:
         containers:
           app:
             image:
-              repository: lmscommunity/lyrionmusicserver
-              tag: 9.0.2@sha256:edeb934fbef19c7e15f94d457c563f76ee31ac795bfbae2edb2b7530e15a66ea
+              repository: ghcr.io/lms-community/lyrionmusicserver
+              tag: stable@sha256:c093bd206286e57ec7aa91857794daa5e9190897f0411072f230c9599d82f57b
             env:
               AUDIO_DIR: &claude-music /mnt/claude-musique
               PLAYLIST_DIR: &playlists /mnt/playlists
@@ -73,7 +73,7 @@ spec:
         enabled: true
         existingClaim: *app
         globalMounts:
-          - path: /srv/squeezebox
+          - path: /config
       music:
         type: nfs
         server: 192.168.9.10
