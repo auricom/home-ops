@@ -43,12 +43,28 @@ spec:
                   name: prowlarr-secret
               - secretRef:
                   name: prowlarr-db-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
-                memory: 100Mi
               limits:
-                memory: 500Mi
+                memory: 1Gi
     service:
       app:
         controller: *app
@@ -67,6 +83,12 @@ spec:
               - name: *app
                 port: *port
     persistence:
-      config:
-        enabled: true
+      tmpfs:
         type: emptyDir
+        advancedMounts:
+          prowlarr:
+            app:
+              - path: /config
+                subPath: config
+              - path: /tmp
+                subPath: tmp
