@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: codeberg.org/readeck/readeck
-              tag: 0.19.2@sha256:eee50d23cfa486d02d5ba7db4acd484b68e36fae234f437d385afa8335655366
+              tag: 0.20.0@sha256:717721d4dd2bb57b8c7cb2b7a97c15fd1d627c01a53f9bcbd5a6c6a9cbdee03f
             env:
               TZ: "${TIMEZONE}"
               READECK_LOG_LEVEL: info
