@@ -92,6 +92,10 @@ spec:
       databases:
         - paperless
       password: *password
+    - name: playnite
+      databases:
+        - playnite
+      password: *password
     - name: prowlarr
       databases:
         - prowlarr_main
