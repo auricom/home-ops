@@ -32,6 +32,7 @@ resources:
   - ./opengist/ks.yaml
   - ./outline/ks.yaml
   - ./paperless/ks.yaml
+  - ./playnite/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
