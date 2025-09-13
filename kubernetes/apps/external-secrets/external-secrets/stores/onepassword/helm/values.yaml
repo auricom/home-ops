@@ -12,7 +12,7 @@ controllers:
         image:
           # repository: docker.io/1password/connect-api
           repository: ghcr.io/haraldkoch/onepassword-connect-api
-          tag: 1.8.0@sha256:ab2306610401fdcb64c893cad8933a14c2f9c0608ea39063c0864448a1c49b61
+          tag: 1.8.1@sha256:a7f072b50c65e161ccdf8d0f6714a631a93fea4c92f2865651a34818cb6ef3b1
         env:
           OP_BUS_PORT: "11220"
           OP_BUS_PEERS: localhost:11221
