@@ -1,0 +1,107 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app calibre-downloader
+  namespace: default
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: false
+        seccompProfile: { type: RuntimeDefault }
+    controllers:
+      ${APP}:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/calibrain/calibre-web-automated-book-downloader-extbp
+              tag: v0.2.1@sha256:ad85f74b495e8736d4081052236866f5a6587ffd60638f448cce80c1d35c5b03
+            env:
+              FLASK_PORT: &port 8084
+              INGEST_DIR: &ingest /cwa-book-ingest
+              BOOK_LANGUAGE: en
+              DEFAULT_SLEEP: 15
+              USE_BOOK_TITLE: true
+              LOG_LEVEL: debug
+              # Use flaresolverr instead of integrated chromium
+              EXT_BYPASSER_URL: http://flaresolverr:8191
+            command:
+              - /bin/sh
+              - -c
+              - |
+                gunicorn -t 300 -b 0.0.0.0:8084 app:app
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /request/api/status
+                    port: *port
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 10m
+                memory: 150Mi
+              limits:
+                memory: 500Mi
+            securityContext:
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+              allowPrivilegeEscalation: false
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames: ["books.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+            timeouts:
+              request: 0s
+    persistence:
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+            subPath: tmp
+          - path: /app/downloaded_files
+            subPath: downloads
+          - path: /var/log/cwa-book-downloader/
+            subPath: logs
+      ingest:
+        type: nfs
+        server: 192.168.9.10
+        path: /var/mnt/vol1/apps/calibre/ingest
+        globalMounts:
+          - path: *ingest
+
