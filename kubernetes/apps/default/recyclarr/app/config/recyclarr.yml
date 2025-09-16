@@ -63,6 +63,10 @@ radarr:
 
     quality_profiles:
       - name: SQP-2
+        reset_unmatched_scores:
+          enabled: true
+          except:
+            - Remux Tier 00
 
     include:
       # Comment out any of the following includes to disable them
