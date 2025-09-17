@@ -5,10 +5,8 @@ kind: Kustomization
 namespace: default
 resources:
   - ./helmrelease.yaml
-  - ../../../../templates/gatus/guarded
-  - ../../../../templates/volsync
 configMapGenerator:
-  - name: resilio-claude-configmap
+  - name: resilio-helene-configmap
     files:
       - ./config/sync.conf
 generatorOptions:

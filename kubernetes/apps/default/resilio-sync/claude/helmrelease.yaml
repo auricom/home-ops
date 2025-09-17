@@ -1,23 +1,15 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: &app resilio-claude
-  namespace: default
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.1.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  maxHistory: 2
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -25,12 +17,11 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
   values:
     defaultPodOptions:
       securityContext:
-        runAsUser: 0
+        runAsUser: 65532
+        runAsGroup: 65532
     controllers:
       resilio-claude:
         annotations:
@@ -39,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/resilio-sync
-              tag: 2.8.0@sha256:b30f6084396dbb4cbd0d4416580c8f7f9065fcc947ffae6e5d2067beb4f190bb
+              tag: 3.1.0@sha256:28636113eacc080d80427b0d8a1987197bc102a93b7653ddf915d40e1fba46e1
             env:
               - name: TZ
                 value: "${TIMEZONE}"
@@ -52,27 +43,25 @@ spec:
     service:
       app:
         controller: *app
+        type: LoadBalancer
+        loadBalancerIP: 192.168.169.106
+        externalTrafficPolicy: Local
         ports:
           http:
-            port: 8888
+            port: &port 8888
           com:
             port: 55555
-    ingress:
+    route:
       app:
-        enabled: true
-        className: nginx
-        annotations:
-          hajimari.io/icon: mdi:file-arrow-up-down
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_CLUSTER_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         enabled: true
@@ -85,12 +74,6 @@ spec:
         globalMounts:
           - path: /app/sync.conf
             subPath: sync.conf
-      backups:
-        type: nfs
-        server: 192.168.9.10
-        path: /var/mnt/vol1/backups
-        globalMounts:
-          - path: /sync/backup
       home-claude:
         type: nfs
         server: 192.168.9.10

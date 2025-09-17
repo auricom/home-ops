@@ -4,55 +4,67 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app resilio-claude
-  namespace: flux-system
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/resilio-sync/claude
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
+  interval: 1h
   dependsOn:
     - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: volsync
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+      namespace: volsync
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 2Gi
       GATUS_STATUS: "401"
+      VOLSYNC_CAPACITY: 2Gi
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app resilio-helene
-  namespace: flux-system
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/resilio-sync/helene
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-ops-kubernetes
+  components:
+    - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
+  interval: 1h
   dependsOn:
     - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: volsync
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+      namespace: volsync
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 2Gi
       GATUS_STATUS: "401"
+      VOLSYNC_CAPACITY: 2Gi
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
