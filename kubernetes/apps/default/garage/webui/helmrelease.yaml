@@ -63,3 +63,11 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: garage-configmap
+        globalMounts:
+          - path: /etc/garage.toml
+            subPath: configuration.toml

@@ -10,7 +10,7 @@ rpc_bind_addr = "[::]:3901"
 rpc_public_addr = "127.0.0.1:3901"
 
 [s3_api]
-s3_region = "eu-west-2"
+s3_region = "eu-west-1"
 api_bind_addr = "[::]:3900"
 root_domain = ".s3.${SECRET_EXTERNAL_DOMAIN}"
 
