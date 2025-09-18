@@ -1,0 +1,18 @@
+metadata_dir = "/meta"
+data_dir = "/data"
+db_engine = "lmdb"
+metadata_auto_snapshot_interval = "6h"
+
+replication_factor = 1
+compression_level = 2
+
+rpc_bind_addr = "[::]:3901"
+rpc_public_addr = "127.0.0.1:3901"
+
+[s3_api]
+s3_region = "eu-west-2"
+api_bind_addr = "[::]:3900"
+root_domain = ".s3.${SECRET_EXTERNAL_DOMAIN}"
+
+[admin]
+api_bind_addr = "[::]:3903"
