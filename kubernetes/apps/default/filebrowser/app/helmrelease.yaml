@@ -28,7 +28,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
     controllers:
-      flood:
+      filebrowser:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
