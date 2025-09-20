@@ -29,18 +29,51 @@ spec:
             image:
               repository: haveagitgat/tdarr
               tag: 2.46.01@sha256:1376fc2c1bcbd8c3eabc210d1531cd4287334facfbf3a78e4b10387be0a4d223
+            env:
+              TZ: ${TIMEZONE}
+              PUID: 1000
+              PGID: 1000
+              serverIP: 0.0.0.0
+              serverPort: &serverPort 8266
+              webUIPort: &port 8265
+              internalNode: "false"
+              inContainer: "true"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/status
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+            #  capabilities:
+            #    drop:
+            #      - ALL
             resources:
               requests:
-                cpu: 50m
-                memory: 256Mi
+                cpu: 100m
+                memory: 512Mi
               limits:
-                memory: 1Gi
+                memory: 2Gi
     service:
       app:
         controller: *app
         ports:
           http:
-            port: &port 8265
+            port: *port
       server:
         controller: *app
         type: LoadBalancer
@@ -50,7 +83,7 @@ spec:
           server:
             enabled: true
             protocol: TCP
-            port: 8266
+            port: *serverPort
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
