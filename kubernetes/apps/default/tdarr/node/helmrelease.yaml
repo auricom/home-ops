@@ -56,9 +56,13 @@ spec:
             - name: nodeID
               value: kube-node
             - name: serverIP
-              value: tdarr-server.default.svc.cluster.local.
+              value: 192.168.169.117
             - name: serverPort
               value: 8266
+            - name: inContainer
+              value: true
+            - name: TZ
+              value: Europe/Paris
             resources:
               requests:
                 cpu: 100m
