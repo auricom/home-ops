@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/blakeblackshear/frigate
-              tag: 0.16.0-beta3@sha256:944dbf199f1cbe99cfedc74b7cd9791daa68a334d4e9f74214a06dde58c1458a
+              tag: 0.16.1@sha256:cb6624b9075f76ece626139eedca7e728cab1456a5f8c351afbf877320826bc1
             env:
               TZ: ${TIMEZONE}
               LIBVA_DRIVER_NAME: i965
@@ -54,7 +54,7 @@ spec:
                   httpGet:
                     path: /api/version
                     port: &port 5000
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 120
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
@@ -63,26 +63,18 @@ spec:
                 enabled: false
             resources:
               requests:
-                cpu: 10m
-                memory: 1000Mi
+                cpu: 500m
+                memory: 1Gi
                 gpu.intel.com/i915: 1
               limits:
-                memory: 6000Mi
+                memory: 4Gi
                 gpu.intel.com/i915: 1
-            securityContext:
-              privileged: true
     service:
       app:
-        controller: *app
-        type: LoadBalancer
-        externalTrafficPolicy: Local
-        loadBalancerIP: ${CLUSTER_LB_FRIGATE}
+        controller: frigate
         ports:
           http:
             port: *port
-          rtsp:
-            enabled: true
-            port: &port 8554
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]

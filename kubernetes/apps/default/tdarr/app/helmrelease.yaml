@@ -77,12 +77,10 @@ spec:
       server:
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: ${CLUSTER_LB_TDARR}
+        loadBalancerIP: 192.168.169.117
         externalTrafficPolicy: Local
         ports:
           server:
-            enabled: true
-            protocol: TCP
             port: *serverPort
     route:
       app:
@@ -93,7 +91,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: tdarr-app
                 port: *port
     persistence:
       config:
