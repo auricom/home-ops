@@ -74,15 +74,7 @@ spec:
         ports:
           http:
             port: *port
-      server:
-        controller: *app
-        type: LoadBalancer
-        loadBalancerIP: ${CLUSTER_LB_TDARR}
-        externalTrafficPolicy: Local
-        ports:
           server:
-            enabled: true
-            protocol: TCP
             port: *serverPort
     route:
       app:
