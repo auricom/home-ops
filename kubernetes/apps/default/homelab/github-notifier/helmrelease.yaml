@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/github-notifier
-              tag: rolling@sha256:257a85c39c89dc1ce2f92a9cc8e80ea83eba2818df33be5dc6d8bc8b5bd7b58b
+              tag: rolling@sha256:73cb1cd920e3a1bb8e634643f765c7800505a637ec713692bdd3346a48e0a372
             command:
               - python
               - /app/github-notifier.py
