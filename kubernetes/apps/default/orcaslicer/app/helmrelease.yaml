@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app orcaslicer
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  interval: 15m
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  driftDetection:
+    mode: enabled
+    ignore:
+      - paths:
+          - /spec/containers/resources/limits
+        target:
+          kind: Pod
+  values:
+    controllers:
+      orcaslicer:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/linuxserver/orcaslicer
+              tag: 2.3.1@sha256:247941d28397644fe2d73a8dd8bde4ec133d088c6616353ef7aa53361d9dc4ce
+            env:
+              DRINODE: /dev/dri/renderD128
+              GTK_THEME: Adwaita:dark # segfaults if no theme is set
+              S6_READ_ONLY_ROOT: '1'
+              PGID: '911' # default for this image
+              PUID: '911' # default for this image
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: false
+                spec:
+                  failureThreshold: 10
+              startup: *probes
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFileSystem: true
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                cpu: 4
+                memory: 3Gi
+                gpu.intel.com/i915: 1
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 3000
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /config/.config/OrcaSlicer
+            subPath: orcaslicer
+          - path: /config/models
+            subPath: models
+
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /run
+            subPath: run
+          - path: /tmp
+            subPath: tmp
+          - path: /config
+            subPath: config
+          - path: /config/.config/OrcaSlicer/log
+            subPath: log
+          - path: /config/.config/OrcaSlicer/cache
+            subPath: cache

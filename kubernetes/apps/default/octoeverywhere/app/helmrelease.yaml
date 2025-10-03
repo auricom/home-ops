@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app octoeverywhere
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  interval: 15m
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  driftDetection:
+    mode: enabled
+    ignore:
+      - paths:
+          - /spec/containers/resources/limits
+        target:
+          kind: Pod
+  values:
+    controllers:
+      orcaslicer:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: docker.io/octoeverywhere/octoeverywhere
+              tag: 4.4.0@sha256:ac8f41f7497b8ff2a1288ecee02c3a99c077ce20ffaf04ece5cb7f40506915ac
+            env:
+              COMPANION_MODE: elegoo
+              PRINTER_IP: 192.168.12.2
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: [ALL] }
+              readOnlyRootFilesystem: true
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      data:
+        existingClaim: *app
