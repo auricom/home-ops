@@ -7,7 +7,7 @@ spec:
   interval: 30m
   url: https://github.com/kubernetes-sigs/gateway-api.git
   ref:
-    tag: v1.3.0
+    tag: v1.4.0
   ignore: |
     # exclude
     /*
