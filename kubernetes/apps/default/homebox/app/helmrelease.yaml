@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/sysadminsmedia/homebox
-              tag: 0.20.1@sha256:cd5ab1669c37625b55be7758bd54dc2d2d6146db61c510322d0378312783a9b7
+              tag: 0.20.1@sha256:25130d8147c0c924d3ad1e9e1022fc1bb6a9d98f5665adac42d2ad3465a0081a
             env:
               TZ: "${TIMEZONE}"
               HBOX_LOG_LEVEL: info
