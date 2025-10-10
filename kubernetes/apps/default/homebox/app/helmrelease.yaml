@@ -20,28 +20,61 @@ spec:
   values:
     controllers:
       homebox:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: homebox-db-secret
         containers:
           app:
             image:
-              repository: ghcr.io/hay-kot/homebox
-              tag: v0.10.3@sha256:b1fbca6fc1ad2bd3634d13056d1bc0242cf92e9bad4ca21ce57589be3fe4987e
+              repository: ghcr.io/sysadminsmedia/homebox
+              tag: 0.20.1@sha256:cd5ab1669c37625b55be7758bd54dc2d2d6146db61c510322d0378312783a9b7
             env:
               TZ: "${TIMEZONE}"
               HBOX_LOG_LEVEL: info
               HBOX_LOG_FORMAT: text
-              HBOX_MEB_MAX_UPLOAD_SIZE: 10
+              HBOX_WEB_HOST: 0.0.0.0
+              HBOX_WEB_PORT: &port 7745
+              HBOX_MEB_MAX_UPLOAD_SIZE: 25
+            envFrom:
+              - secretRef:
+                  name: homebox-db-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup: *probes
             resources:
               requests:
-                cpu: 100m
-                memory: 52M
+                cpu: 15m
+                memory: 80M
               limits:
                 memory: 256M
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ALL] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: *app
         ports:
           http:
-            port: &port 7745
+            port: *port
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
@@ -58,4 +91,4 @@ spec:
         enabled: true
         existingClaim: *app
         globalMounts:
-          - path: /config
+          - path: /data

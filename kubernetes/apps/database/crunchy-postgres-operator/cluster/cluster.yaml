@@ -63,9 +63,9 @@ spec:
         - bazarr_main
         - bazarr_log
       password: *password
-    - name: ghostfolio
+    - name: homebox
       databases:
-        - ghostfolio
+        - homebox
       password: *password
     - name: joplin
       databases:
