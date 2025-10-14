@@ -35,10 +35,18 @@ snapshots:
     default: 7
 
 record:
-  enabled: true
+  enabled: True
   retain:
-    days: 7
-    mode: all
+    days: 3
+    mode: motion
+  alerts:
+    retain:
+      days: 5
+      mode: motion
+  detections:
+    retain:
+      days: 5
+      mode: motion
 
 objects:
   track: [person]
@@ -56,20 +64,17 @@ go2rtc:
 cameras:
   cam-01-bedroom:
     ffmpeg:
+      output_args:
+        record: preset-record-generic-audio-copy
       inputs:
-        - path: rtsp://localhost:8554/cam_01_bedroom
+        - path: rtsp://127.0.0.1:8554/cam_01_bedroom
           input_args: preset-rtsp-restream
           roles: [record]
-        - path: rtsp://localhost:8554/cam_01_bedroom_sub
+        - path: rtsp://127.0.0.1:8554/cam_01_bedroom_sub
           input_args: preset-rtsp-restream
           roles: [detect]
-    detect:
-      width: 640
-      height: 480
-      fps: 7
-    # objects:
-    #   filters:
-    #     person:
-    #       mask:
-    #         - 960,626,800,617,797,0,960,0
-    #         - 960,0,960,138,0,149,0,0
+    onvif:
+      host: cam-01-bedroom.{FRIGATE_SECRET_DOMAIN}
+      port: 8000
+      user: admin
+      password: password
