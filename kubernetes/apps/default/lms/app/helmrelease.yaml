@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lms-community/lyrionmusicserver
-              tag: stable@sha256:dd9a5242acb819cb0d204abc51b086fba7b77680d87f5eb0fbc6e29affb2f06f
+              tag: stable@sha256:02157cddc16bf519fc84a949c2786ab864c9bc0e8dd123300e2d9b74ac25f46f
             env:
               AUDIO_DIR: &claude-music /mnt/claude-musique
               PLAYLIST_DIR: &playlists /mnt/playlists
