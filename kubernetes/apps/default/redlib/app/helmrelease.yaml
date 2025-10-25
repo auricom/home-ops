@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/redlib
-              tag: rolling@sha256:ce6e4068b28bc46dbdae72f032107e6f73047f6617bc0a9a6cd35dc2d81457f5
+              tag: rolling@sha256:68a1484c3a400ecd2d50815216b55c29fed66a310aa218cd719b8cf382204e04
             probes:
               liveness: &probes
                 enabled: true
