@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: haveagitgat/tdarr
-              tag: 2.50.01@sha256:67d6a456d3c7963d2bc50318275843015af76e1f4dced3b1c5a91f8874d230bf
+              tag: 2.51.03@sha256:5796f2fbb318f22609972f8dd07602b1fc562606c518c13c809eda4c2f9fca26
             env:
               TZ: ${TIMEZONE}
               PUID: 1000
