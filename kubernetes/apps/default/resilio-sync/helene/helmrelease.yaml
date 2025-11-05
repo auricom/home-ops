@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/resilio-sync
-              tag: 3.1.0@sha256:ea60ac2ac9579c2bfda8ed464c35eddabed664a622bc2dfc888b849051ac27be
+              tag: 3.1.0@sha256:9ecc5381a7d1cbdae66df3ece44f1157c420ff4932f2284ed04c3fa5fe0fd683
             env:
               - name: TZ
                 value: "${TIMEZONE}"
