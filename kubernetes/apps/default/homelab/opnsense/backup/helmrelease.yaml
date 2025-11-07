@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/kubectl
-              tag: 1.34@sha256:9b8092f6a662a82ed660c2cb2e6cbb7d581e82d3b67171d9a8d862215a2baac0
+              tag: 1.34@sha256:4be1e10003f46dd00c5576422b800701970aff91f7f3cf7c46ad284f5cefbf18
             command:
               - /bin/bash
               - /app/backup.sh
