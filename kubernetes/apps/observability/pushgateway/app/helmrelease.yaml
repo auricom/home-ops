@@ -28,7 +28,7 @@ spec:
   values:
     image:
       repository: prom/pushgateway
-      tag: v1.11.1@sha256:03738d278e082ee9821df730c741b3b465c251fc2b68a85883def301a55a6215
+      tag: v1.11.2@sha256:c835998819105d84d484918908df132807c78c05f3e0e649df0c0479c6780d98
       pullPolicy: IfNotPresent
     serviceMonitor:
       enabled: true
