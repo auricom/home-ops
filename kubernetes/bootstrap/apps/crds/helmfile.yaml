@@ -23,11 +23,6 @@ releases:
     chart: oci://ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds
     version: 1.4.0
 
-  - name: keda
-    namespace: observability
-    chart: oci://ghcr.io/home-operations/charts-mirror/keda
-    version: 2.17.2
-
   - name: kube-prometheus-stack
     namespace: observability
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
