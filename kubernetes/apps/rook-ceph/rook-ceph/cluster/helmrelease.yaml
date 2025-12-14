@@ -56,13 +56,13 @@ spec:
               - name: sda
           - name: talos-node-2
             devices:
-              - name: sdb
+              - name: sda
           - name: talos-node-3
             devices:
-              - name: sdb
+              - name: sda
           - name: talos-node-4
             devices:
-              - name: sdb
+              - name: sda
       resources:
         mgr:
           requests:
