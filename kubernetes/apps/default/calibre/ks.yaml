@@ -29,6 +29,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 10Gi
+      GATUS_SUBDOMAIN: calibre
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -42,6 +43,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/calibre/calibre-downloader
+  components:
+    - ../../../../components/gatus/guarded
   prune: true
   sourceRef:
     kind: GitRepository
@@ -53,3 +56,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_SUBDOMAIN: books
