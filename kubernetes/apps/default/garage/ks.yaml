@@ -19,6 +19,8 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_STATUS: "403"
+      GATUS_SUBDOMAIN: s3
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -44,7 +46,6 @@ spec:
       namespace: external-secrets
   components:
     - ../../../../components/ext-auth
-    - ../../../../components/gatus/guarded
   interval: 1h
   path: ./kubernetes/apps/default/garage/webui
   postBuild:

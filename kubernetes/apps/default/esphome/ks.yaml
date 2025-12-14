@@ -15,6 +15,7 @@ spec:
     - name: volsync
       namespace: volsync
   components:
+    - ../../../../components/ext-auth
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h
@@ -22,6 +23,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_STATUS: "401"
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   retryInterval: 2m
