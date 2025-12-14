@@ -9,14 +9,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: volsync
-      namespace: volsync
   components:
     - ../../../../components/gatus/guarded
-    - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/observability/apprise/app
   postBuild:
