@@ -1,6 +1,4 @@
 ---
-web:
-  port: 8080
 storage:
   type: sqlite
   path: /config/sqlite.db

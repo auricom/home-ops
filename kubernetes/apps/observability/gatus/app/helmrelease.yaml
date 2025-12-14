@@ -25,7 +25,7 @@ spec:
           init-config:
             image:
               repository: ghcr.io/home-operations/k8s-sidecar
-              tag: 1.30.11@sha256:d8a53f834b0fe70030df75f3f956d1c5e56fbb067b09803708b2bc26e26cfc12
+              tag: 2.1.4@sha256:438df334bf9b195efc8251967248b9b12e02192a19a65021bee1da408a670383
             env:
               FOLDER: /config
               LABEL: gatus.io/enabled
@@ -38,7 +38,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 128Mi
+                memory: 512Mi
         containers:
           app:
             image:
@@ -48,7 +48,7 @@ spec:
               TZ: ${TIMEZONE}
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
-              GATUS_WEB_PORT: &port 8080
+              WEB_PORT: &port 8090
             envFrom:
               - secretRef:
                   name: gatus-secret
@@ -68,7 +68,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ALL] }
             resources:
               requests:
                 cpu: 100m
@@ -77,11 +77,13 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: 1022
+        runAsGroup: 1022
+        fsGroup: 1022
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+        sysctls:
+          - name: net.ipv4.ping_group_range
+            value: 0 2147483647
     service:
       app:
         controller: *app
