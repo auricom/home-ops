@@ -23,6 +23,9 @@ PUSHOVER_API_URL = "https://api.pushover.net/1/messages.json"
 PUSHOVER_APP_TOKEN = config("PUSHOVER_APP_TOKEN")
 PUSHOVER_USER_KEY = config("PUSHOVER_USER_KEY")
 
+# GitHub API token
+GITHUB_API_TOKEN = config("GITHUB_API_TOKEN", default="")
+
 # PostgreSQL connection parameters
 DB_HOST = config("DB_HOST")
 DB_PORT = config("DB_PORT", "5432")
@@ -59,8 +62,15 @@ def create_table():
 # Check for new release
 def check_new_release(repo_name):
     try:
+        headers = {}
+        if GITHUB_API_TOKEN:
+            headers["Authorization"] = f"token {GITHUB_API_TOKEN}"
+        headers["User-Agent"] = "github-notifier"
+
         response = requests.get(
-            f"https://api.github.com/repos/{repo_name}/releases/latest", timeout=5
+            f"https://api.github.com/repos/{repo_name}/releases/latest",
+            timeout=5,
+            headers=headers
         )
         response.raise_for_status()
         release_data = response.json()
@@ -75,7 +85,16 @@ def should_ignore_tag(tag_name, ignore_list):
     return any(ignore_str in tag_name for ignore_str in ignore_list)
 
 def check_latest_tag(repo_name, ignore_list):
-    response = requests.get(f"https://api.github.com/repos/{repo_name}/tags", timeout=5)
+    headers = {}
+    if GITHUB_API_TOKEN:
+        headers["Authorization"] = f"token {GITHUB_API_TOKEN}"
+    headers["User-Agent"] = "github-notifier"
+
+    response = requests.get(
+        f"https://api.github.com/repos/{repo_name}/tags",
+        timeout=5,
+        headers=headers
+    )
     response.raise_for_status()
     tags = response.json()
 
@@ -85,7 +104,7 @@ def check_latest_tag(repo_name, ignore_list):
             continue
 
         commit_url = tag["commit"]["url"]
-        commit_response = requests.get(commit_url, timeout=5)
+        commit_response = requests.get(commit_url, timeout=5, headers=headers)
         commit_response.raise_for_status()
         commit_data = commit_response.json()
         commit_date = commit_data["commit"]["committer"]["date"]
