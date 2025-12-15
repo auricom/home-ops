@@ -22,6 +22,15 @@ spec:
       esphome:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name":"multus-iot",
+                "namespace": "network",
+                "ips": ["192.168.12.1/22"],
+                "mac": "92:cf:d7:05:70:84"
+              }]
         containers:
           app:
             image:
