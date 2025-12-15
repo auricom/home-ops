@@ -26,6 +26,18 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       # nodeSelector:
       #   nodo.feature.node.kubernetes.io/rflink: "true"
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - home-assistant-code
+              topologyKey: kubernetes.io/name
     controllers:
       home-assistant:
         annotations:
