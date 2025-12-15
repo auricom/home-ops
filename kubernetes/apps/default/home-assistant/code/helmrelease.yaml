@@ -21,21 +21,9 @@ spec:
     - name: home-assistant
       namespace: default
   values:
-    defaultPodOptions:
+    # defaultPodOptions:
     #   nodeSelector:
     #     nodo.feature.node.kubernetes.io/rflink: "true"
-      affinity:
-        podAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                  - key: app.kubernetes.io/name
-                    operator: In
-                    values:
-                      - home-assistant
-              topologyKey: kubernetes.io/hostname
     controllers:
       home-assistant-code:
         annotations:
@@ -78,7 +66,7 @@ spec:
             port: &port 8888
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["hass-code.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
             namespace: network
