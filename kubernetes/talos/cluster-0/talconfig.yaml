@@ -128,8 +128,6 @@ nodes:
           - # IOT
             vlanId: 12
             dhcp: false
-            addresses:
-              - 192.168.15.241/32
             mtu: 1500
   - hostname: talos-node-2
     ipAddress: 192.168.9.102
@@ -148,8 +146,6 @@ nodes:
           - # IOT
             vlanId: 12
             dhcp: false
-            addresses:
-              - 192.168.15.242/32
             mtu: 1500
   - hostname: talos-node-3
     ipAddress: 192.168.9.103
@@ -168,8 +164,6 @@ nodes:
           - # IOT
             vlanId: 12
             dhcp: false
-            addresses:
-              - 192.168.15.243/32
             mtu: 1500
   - hostname: talos-node-4
     ipAddress: 192.168.9.104
@@ -188,8 +182,6 @@ nodes:
           - # IOT
             vlanId: 12
             dhcp: false
-            addresses:
-              - 192.168.15.244/32
             mtu: 1500
 
 controlPlane:
