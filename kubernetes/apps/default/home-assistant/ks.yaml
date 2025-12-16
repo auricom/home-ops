@@ -54,7 +54,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: hass-code
   prune: true
   retryInterval: 2m
   sourceRef:

@@ -68,15 +68,15 @@ spec:
     service:
       app:
         controller: *app
-        type: LoadBalancer
-        loadBalancerIP: 192.168.169.107
-        externalTrafficPolicy: Local
+        # type: LoadBalancer
+        # loadBalancerIP: 192.168.169.107
+        # externalTrafficPolicy: Local
         ports:
           http:
             port: &port 8123
     route:
       app:
-        hostnames: ["hass.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
             namespace: network
