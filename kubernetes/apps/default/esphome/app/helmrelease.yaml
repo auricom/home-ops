@@ -36,8 +36,8 @@ spec:
             image:
               repository: esphome/esphome
               tag: 2025.12.0@sha256:6ca26eefc6d64b70596f489e727c37a04c39298f3803d1a9ea020cc18da80670
-            env:
-              ESPHOME_DASHBOARD_USE_PING: true
+            # env:
+            #   ESPHOME_DASHBOARD_USE_PING: true
             probes:
               liveness:
                 enabled: true

@@ -21,9 +21,19 @@ spec:
     - name: home-assistant
       namespace: default
   values:
-    # defaultPodOptions:
     #   nodeSelector:
     #     nodo.feature.node.kubernetes.io/rflink: "true"
+    defaultPodOptions:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - home-assistant
+            topologyKey: kubernetes.io/hostname
     controllers:
       home-assistant-code:
         annotations:
