@@ -21,7 +21,7 @@ spec:
     controllers:
       esphome:
         annotations:
-          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: esphome-secrets,esphome-deploykey
         pod:
           annotations:
             k8s.v1.cni.cncf.io/networks: |
@@ -34,32 +34,71 @@ spec:
         containers:
           app:
             image:
-              repository: esphome/esphome
-              tag: 2025.12.0@sha256:6ca26eefc6d64b70596f489e727c37a04c39298f3803d1a9ea020cc18da80670
+              repository: ghcr.io/home-operations/esphome
+              tag: 2025.12.0@sha256:ab9bc7f8c87536473c90bfc3a8fe329ea5fb5a556aea0b0e261683e1cb78c28d
             # env:
             #   ESPHOME_DASHBOARD_USE_PING: true
             probes:
               liveness:
-                enabled: true
+                enabled: false
               readiness:
-                enabled: true
+                enabled: false
               startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
+                enabled: false
             resources:
               requests:
-                cpu: 100m
-                memory: 500Mi
+                cpu: 5m
+                memory: 512Mi
               limits:
                 memory: 4Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+          code-server:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.107.0@sha256:4b622c4cd1b0f559fec0df67fcf09042d63e9ce84c575102066afd9511695627
+            args:
+              - --auth
+              - none
+              - --disable-telemetry
+              - --disable-update-check
+              - --user-data-dir
+              - /config/.code-server
+              - --extensions-dir
+              - /config/.code-server
+              - --port
+              - "12321"
+              - /config
+            env:
+              ESPHOME_VERSION: "{{ (split \"@\" .Values.controllers.esphome.containers.app.image.tag)._0 }}"
+              GIT_AUTHOR_NAME: auricom
+            resources:
+              requests:
+                cpu: 10m
+                memory: 384Mi
+              limits:
+                memory: 1024Mi
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        runAsNonRoot: true
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: *app
         ports:
           http:
             port: &port 6052
+      code-server:
+        ports:
+          http:
+            port: &code-server-port 12321
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
@@ -71,11 +110,62 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /code/
+            filters:
+              - type: URLRewrite
+                urlRewrite:
+                  path:
+                    type: ReplacePrefixMatch
+                    replacePrefixMatch: /
+            backendRefs:
+              - name: code-server
+                port: *code-server-port
     persistence:
       config:
-        enabled: true
         existingClaim: *app
-      cache:
-        type: emptyDir
+        advancedMounts:
+          esphome:
+            app:
+              - path: /config
+            code-server:
+              - path: /config
+              - path: /mnt/code-server
+                subPath: code-server
+      secrets:
+        type: secret
+        name: esphome-secrets
         globalMounts:
-          - path: /config/.esphome
+          - path: /config/secrets.yaml
+            subPath: secrets.yaml
+      buildcache:
+        suffix: buildcache
+        size: 50Gi
+        accessMode: ReadWriteOnce
+        advancedMounts:
+          esphome:
+            app:
+              - path: /cache
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          esphome:
+            app:
+              - path: /tmp
+                subPath: esphome-tmp
+            code-server:
+              - path: /tmp
+                subPath: code-server-tmp
+              - path: /nonexistent
+                subPath: nonexistent
+      deploy-key:
+        type: secret
+        name: esphome-deploykey
+        defaultMode: 256
+        advancedMounts:
+          esphome:
+            code-server:
+              - path: /home/coder/.ssh/id_ed25519
+                subPath: id_ed25519
