@@ -28,14 +28,16 @@ spec:
       #   nodo.feature.node.kubernetes.io/rflink: "true"
       affinity:
         podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/instance
-                operator: In
-                values:
-                - home-assistant-code
-            topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - home-assistant-code
+              topologyKey: kubernetes.io/hostname
     controllers:
       home-assistant:
         annotations:
@@ -57,6 +59,9 @@ spec:
               tag: 2025.12.3@sha256:711c90c7e6f73268a212806bcd9235b6917ae9f81012041aa2dfc895ec2cc558
             env:
               TZ: "${TIMEZONE}"
+              HASS_HTTP_TRUSTED_PROXY_1: 192.168.8.0/22
+              HASS_HTTP_TRUSTED_PROXY_2: 10.10.0.0/24
+              HASS_HTTP_TRUSTED_PROXY_3: 10.95.0.0/16
             envFrom:
               - secretRef:
                   name: home-assistant-secret
