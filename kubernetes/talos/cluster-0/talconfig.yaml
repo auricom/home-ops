@@ -110,6 +110,7 @@ patches:
   #         - endpoint: "udp://192.168.169.108:6051/"
   #           format: json_lines
 
+
 nodes:
   - hostname: talos-node-1
     ipAddress: 192.168.9.101
@@ -228,6 +229,17 @@ controlPlane:
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl
+
+    # Allow tuppr
+    - |-
+      machine:
+        features:
+          kubernetesTalosAPIAccess:
+            allowedKubernetesNamespaces:
+              - system-upgrade
+            allowedRoles:
+              - os:admin
+            enabled: true
 
 worker:
   schematic:
