@@ -24,8 +24,8 @@ spec:
         runAsGroup: 0
         fsGroup: 0
         fsGroupChangePolicy: OnRootMismatch
-      # nodeSelector:
-      #   nodo.feature.node.kubernetes.io/rflink: "true"
+      nodeSelector:
+        nodo.feature.node.kubernetes.io/rflink: "true"
       affinity:
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -106,10 +106,10 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config
-      # usb:
-      #   enabled: true
-      #   type: hostPath
-      #   hostPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
-      #   hostPathType: CharDevice
-      #   globalMounts:
-      #     - path: /dev/ttyUSB0
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
+        hostPathType: CharDevice
+        globalMounts:
+          - path: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
