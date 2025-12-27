@@ -20,13 +20,13 @@ spec:
       retries: 3
   values:
     defaultPodOptions:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-        runAsNonRoot: false
-        seccompProfile: { type: RuntimeDefault }
+      # securityContext:
+      #   runAsUser: 1000
+      #   runAsGroup: 1000
+      #   fsGroup: 1000
+      #   fsGroupChangePolicy: OnRootMismatch
+      #   runAsNonRoot: false
+      #   seccompProfile: { type: RuntimeDefault }
     controllers:
       ${APP}:
         containers:
@@ -43,11 +43,6 @@ spec:
               LOG_LEVEL: debug
               # Use flaresolverr instead of integrated chromium
               EXT_BYPASSER_URL: http://flaresolverr:8191
-            command:
-              - /bin/sh
-              - -c
-              - |
-                gunicorn -t 300 -b 0.0.0.0:8084 app:app
             probes:
               liveness: &probes
                 enabled: true
