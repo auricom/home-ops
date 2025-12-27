@@ -22,18 +22,20 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsGroup: 100
+        fsGroup: 100
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: false
         seccompProfile: { type: RuntimeDefault }
     controllers:
-      ${APP}:
+      calibre-downloader:
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
               repository: ghcr.io/calibrain/calibre-web-automated-book-downloader-extbp
-              tag: v0.3.4@sha256:23600fa32fb5d1a46a8cce6a66109a6506e39745427bcdff9d61b107103a5994
+              tag: v0.4.0@sha256:9f89f90ffbe373407031b7b441dc11617762b26b6a1a571e08fb3905b1c045f4
             env:
               FLASK_PORT: &port 8084
               INGEST_DIR: &ingest /cwa-book-ingest
@@ -47,7 +49,7 @@ spec:
               - /bin/sh
               - -c
               - |
-                gunicorn -t 300 -b 0.0.0.0:8084 app:app
+                HOME=/app gunicorn --access-logfile - --error-logfile - --worker-class geventwebsocket.gunicorn.workers.GeventWebSocketWorker --workers 1 -t 300 -b 0.0.0.0:8084 cwa_book_downloader.main:app
             probes:
               liveness: &probes
                 enabled: true
@@ -89,6 +91,19 @@ spec:
             timeouts:
               request: 0s
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
+      configmap:
+        enabled: true
+        type: configMap
+        name: calibre-downloader-configmap
+        defaultMode: 0755 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /app/entrypoint.sh
+            subPath: entrypoint.sh
       tmpfs:
         type: emptyDir
         globalMounts:

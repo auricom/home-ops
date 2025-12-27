@@ -45,6 +45,7 @@ spec:
   path: ./kubernetes/apps/default/calibre/calibre-downloader
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   prune: true
   sourceRef:
     kind: GitRepository
@@ -57,3 +58,4 @@ spec:
     substitute:
       APP: *app
       GATUS_SUBDOMAIN: books
+      VOLSYNC_CAPACITY: 1Gi
