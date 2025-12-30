@@ -31,6 +31,7 @@ resources:
   - ./lldap/ks.yaml
   - ./lms/ks.yaml
   - ./lychee/ks.yaml
+  - ./mesh-organizer/ks.yaml
   - ./navidrome/ks.yaml
   - ./opengist/ks.yaml
   - ./outline/ks.yaml
