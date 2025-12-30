@@ -34,7 +34,7 @@ spec:
               - /app/backup.sh
             env:
               OPNSENSE_URL: "https://opnsense.${SECRET_INTERNAL_DOMAIN}"
-              S3_URL: "https://s3.${SECRET_INTERNAL_DOMAIN}"
+              S3_URL: "https://s3.${SECRET_EXTERNAL_DOMAIN}"
             envFrom:
               - secretRef:
                   name: homelab-opnsense-backup-secret
