@@ -92,10 +92,6 @@ spec:
       databases:
         - paperless
       password: *password
-    - name: playnite
-      databases:
-        - playnite
-      password: *password
     - name: prowlarr
       databases:
         - prowlarr_main
@@ -140,35 +136,36 @@ spec:
       global: &backupFlag
         compress-type: bz2
         compress-level: "9"
-        # Minio
+        # Garage
         repo1-block: y
         repo1-bundle: y
         repo1-path: /crunchy-pgo
         repo1-retention-full: "30" # days
         repo1-retention-full-type: time
         repo1-s3-uri-style: path
-      manual:
-        repoName: repo1
-        options:
-          - --type=full
+        # Minio
+        repo2-block: y
+        repo2-bundle: y
+        repo2-path: /crunchy-pgo
+        repo2-s3-uri-style: path
       metadata:
         labels:
           app.kubernetes.io/name: crunchy-postgres-backup
       repos:
-        - name: repo1 # Minio
-          s3: &minio
+        - name: repo1 # Garage
+          s3: &garage
             bucket: crunchy-postgres-operator
-            endpoint: "s3.${SECRET_INTERNAL_DOMAIN}"
+            endpoint: "s3.${SECRET_EXTERNAL_DOMAIN}"
             region: us-east-1
           schedules:
             full: 0 1 * * 0 # Sunday at 01:00
             differential: 0 1 * * 1-6 # Mon-Sat at 01:00
             incremental: 0 2-23 * * * # Every hour except 01:00
-      restore:
-        enabled: true
-        repoName: repo1
-        options:
-        - --set=20250413-010004F_20250418-020004I
+        - name: repo2 # Minio
+          s3: &minio
+            bucket: crunchy-postgres-operator
+            endpoint: "s3.${SECRET_INTERNAL_DOMAIN}"
+            region: us-east-1
 
   dataSource:
     pgbackrest:
@@ -176,7 +173,7 @@ spec:
       configuration: *backupConfig
       global: *backupFlag
       repo:
-        name: "repo1"
+        name: "repo2"
         s3: *minio
 
   monitoring:
