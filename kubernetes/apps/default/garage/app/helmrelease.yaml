@@ -79,12 +79,12 @@ spec:
       data:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/apps/garage/data
+        path: /mnt/vol1/apps/garage/data
         globalMounts:
           - path: /data
       meta:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/apps/garage/meta
+        path: /mnt/vol1/apps/garage/meta
         globalMounts:
           - path: /meta

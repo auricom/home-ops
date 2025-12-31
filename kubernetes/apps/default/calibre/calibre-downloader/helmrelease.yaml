@@ -116,7 +116,7 @@ spec:
       ingest:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/apps/calibre/ingest
+        path: /mnt/vol1/apps/calibre/ingest
         globalMounts:
           - path: *ingest
 

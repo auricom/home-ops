@@ -76,18 +76,18 @@ spec:
       movies:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video/movies
+        path: /mnt/vol1/video/movies
         globalMounts:
           - path: /mnt/storage/video/movies
       tv:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video/tv
+        path: /mnt/vol1/video/tv
         globalMounts:
           - path: /mnt/storage/video/tv
       shared:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video/.tdarr
+        path: /mnt/vol1/video/.tdarr
         globalMounts:
           - path: /mnt/cache

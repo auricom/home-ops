@@ -77,27 +77,27 @@ spec:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/shared-documents/paperless/data
+        path: /mnt/vol1/shared-documents/paperless/data
         globalMounts:
           - path: /usr/src/paperless/data
       media:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/shared-documents/paperless/media
+        path: /mnt/vol1/shared-documents/paperless/media
         globalMounts:
           - path: /usr/src/paperless/media
       consume:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/shared-documents/paperless/watch
+        path: /mnt/vol1/shared-documents/paperless/watch
         globalMounts:
           - path: /usr/src/paperless/consume
       export:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/shared-documents/paperless/export
+        path: /mnt/vol1/shared-documents/paperless/export
         globalMounts:
           - path: /usr/src/paperless/export

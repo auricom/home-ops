@@ -38,7 +38,7 @@ spec:
               tag: v2.53.0@sha256:379e12c1b49fb367b54265488a67f0789ab8903cf84655ce0282930cd7eda953
             env:
               FB_DATABASE: /config/filebrowser.db
-              FB_ROOT: /var/mnt
+              FB_ROOT: /mnt
               FB_LOG: stdout
               FB_PORT: &port 7000
             probes:
@@ -83,94 +83,85 @@ spec:
               - name: *app
                 port: *port
     persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       calibre:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/apps/calibre
+        path: /mnt/vol1/apps/calibre
         globalMounts:
-          - path: /var/mnt/vol1/apps/calibre
-      frigate:
-        enabled: true
-        type: nfs
-        server: 192.168.9.10
-        path: /var/mnt/vol1/apps/frigate
-        globalMounts:
-          - path: /var/mnt/vol1/apps/frigate
+          - path: /mnt/vol1/apps/calibre
       sharry:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/apps/sharry
+        path: /mnt/vol1/apps/sharry
         globalMounts:
-          - path: /var/mnt/vol1/apps/sharry
+          - path: /mnt/vol1/apps/sharry
       downloads:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/downloads
+        path: /mnt/vol1/downloads
         globalMounts:
-          - path: /var/mnt/vol1/downloads
+          - path: /mnt/vol1/downloads
       claude:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/home/claude
+        path: /mnt/vol1/home/claude
         globalMounts:
-          - path: /var/mnt/vol1/home/claude
+          - path: /mnt/vol1/home/claude
       helene:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/home/helene
+        path: /mnt/vol1/home/helene
         globalMounts:
-          - path: /var/mnt/vol1/home/helene
+          - path: /mnt/vol1/home/helene
       music:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music
+        path: /mnt/vol1/music
         globalMounts:
-          - path: /var/mnt/vol1/music
+          - path: /mnt/vol1/music
       music-transcoded:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music_transcoded
+        path: /mnt/vol1/music_transcoded
         globalMounts:
-          - path: /var/mnt/vol1/music_transcoded
+          - path: /mnt/vol1/music_transcoded
       photo:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/photo
+        path: /mnt/vol1/photo
         globalMounts:
-          - path: /var/mnt/vol1/photo
+          - path: /mnt/vol1/photo
       piracy:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/piracy
+        path: /mnt/vol1/piracy
         globalMounts:
-          - path: /var/mnt/vol1/piracy
+          - path: /mnt/vol1/piracy
       shared-documents:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/shared-documents
+        path: /mnt/vol1/shared-documents
         globalMounts:
-          - path: /var/mnt/vol1/shared-documents
+          - path: /mnt/vol1/shared-documents
       video:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video
+        path: /mnt/vol1/video
         globalMounts:
-          - path: /var/mnt/vol1/video
-      minio:
-        enabled: true
-        type: nfs
-        server: 192.168.9.10
-        path: /var/mnt/vol2/apps/minio
-        globalMounts:
-          - path: /var/mnt/vol2/apps/minio
+          - path: /mnt/vol1/video

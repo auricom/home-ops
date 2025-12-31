@@ -79,18 +79,18 @@ spec:
       home-helene:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/home/helene
+        path: /mnt/vol1/home/helene
         globalMounts:
           - path: /sync/home
       shared-documents:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/shared-documents
+        path: /mnt/vol1/shared-documents
         globalMounts:
           - path: /sync/shared-documents
       photo:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/photo
+        path: /mnt/vol1/photo
         globalMounts:
           - path: /sync/photo
