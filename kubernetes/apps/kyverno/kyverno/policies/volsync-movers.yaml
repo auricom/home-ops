@@ -46,4 +46,4 @@ spec:
                   - name: repository
                     nfs:
                       server: 192.168.9.10
-                      path: /mnt/vol2/apps/minio/volsync
+                      path: /mnt/vol1/apps/garage/volsync

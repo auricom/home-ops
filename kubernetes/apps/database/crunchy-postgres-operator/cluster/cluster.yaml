@@ -156,7 +156,7 @@ spec:
           s3: &garage
             bucket: crunchy-postgres-operator
             endpoint: "s3.${SECRET_EXTERNAL_DOMAIN}"
-            region: us-east-1
+            region: dc1
           schedules:
             full: 0 1 * * 0 # Sunday at 01:00
             differential: 0 1 * * 1-6 # Mon-Sat at 01:00

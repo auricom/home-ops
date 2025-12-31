@@ -77,13 +77,13 @@ spec:
       music:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music
+        path: /mnt/vol1/music
         globalMounts:
           - path: *claude-music
       music-helene:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/home/helene/Musique
+        path: /mnt/vol1/home/helene/Musique
         globalMounts:
           - path: /mnt/helene-musique
       playlists:

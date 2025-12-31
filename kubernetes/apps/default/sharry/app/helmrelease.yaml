@@ -79,6 +79,6 @@ spec:
       nfs:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/apps/sharry
+        path: /mnt/vol1/apps/sharry
         globalMounts:
-          - path: /var/mnt/vol1/apps/sharry
+          - path: /mnt/vol1/apps/sharry

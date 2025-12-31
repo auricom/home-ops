@@ -35,7 +35,7 @@ spec:
               ND_DATAFOLDER: /config
               ND_ENABLEGRAVATAR: "true"
               ND_LOGLEVEL: info
-              ND_MUSICFOLDER: /var/mnt/vol1/music/Artistes
+              ND_MUSICFOLDER: /mnt/vol1/music/Artistes
               ND_PORT: &port 8080
               ND_PROMETHEUS_ENABLED: "true"
               ND_REVERSEPROXYUSERHEADER: Remote-User
@@ -74,7 +74,7 @@ spec:
       music:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music
+        path: /mnt/vol1/music
         globalMounts:
-          - path: /var/mnt/vol1/music
+          - path: /mnt/vol1/music
             readOnly: true

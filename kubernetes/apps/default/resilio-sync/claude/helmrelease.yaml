@@ -79,30 +79,30 @@ spec:
       home-claude:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/home/claude
+        path: /mnt/vol1/home/claude
         globalMounts:
           - path: /sync/home/claude
       music-transcoded:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music_transcoded
+        path: /mnt/vol1/music_transcoded
         globalMounts:
           - path: /sync/music_transcoded
       photo:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/photo
+        path: /mnt/vol1/photo
         globalMounts:
           - path: /sync/photo
       shared-documents:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/shared-documents
+        path: /mnt/vol1/shared-documents
         globalMounts:
           - path: /sync/shared-documents
       video:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video
+        path: /mnt/vol1/video
         globalMounts:
           - path: /sync/video

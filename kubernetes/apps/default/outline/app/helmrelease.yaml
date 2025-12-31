@@ -34,7 +34,7 @@ spec:
               - secretRef:
                   name: outline-db-secret
             env:
-              AWS_REGION: us-east-1
+              AWS_REGION: dc1
               AWS_S3_ACL: private
               AWS_S3_FORCE_PATH_STYLE: "true"
               AWS_S3_UPLOAD_BUCKET_NAME: outline

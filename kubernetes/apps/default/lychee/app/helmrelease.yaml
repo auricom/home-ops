@@ -93,6 +93,6 @@ spec:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/photo
+        path: /mnt/vol1/photo
         globalMounts:
           - path: /mnt/storage/photo

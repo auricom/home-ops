@@ -101,12 +101,12 @@ spec:
       ingest:
         type: nfs
         server: &nas 192.168.9.10
-        path: /var/mnt/vol1/apps/calibre/ingest
+        path: /mnt/vol1/apps/calibre/ingest
         globalMounts:
           - path: /cwa-book-ingest
       library:
         type: nfs
         server: *nas
-        path: /var/mnt/vol1/apps/calibre/library
+        path: /mnt/vol1/apps/calibre/library
         globalMounts:
           - path: /calibre-library

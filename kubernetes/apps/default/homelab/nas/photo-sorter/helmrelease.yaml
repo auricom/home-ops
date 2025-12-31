@@ -51,8 +51,8 @@ spec:
                     curl --silent --max-time 10 --retry 5  "https://hc-ping.com/$HEALTHCHECKS_ID"
                 fi
             env:
-              SORT_SOURCE_DIR: /var/mnt/vol1/photo/mobile
-              SORT_DEST_DIR: /var/mnt/vol1/photo
+              SORT_SOURCE_DIR: /mnt/vol1/photo/mobile
+              SORT_DEST_DIR: /mnt/vol1/photo
             envFrom:
               - secretRef:
                   name: homelab-nas-photo-sorter-secret
@@ -71,7 +71,7 @@ spec:
             readOnly: true
       photo:
         type: nfs
-        path: /var/mnt/vol1/photo
+        path: /mnt/vol1/photo
         server: 192.168.9.10
         globalMounts:
-          - path: /var/mnt/vol1/photo
+          - path: /mnt/vol1/photo

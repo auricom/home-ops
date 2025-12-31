@@ -79,18 +79,18 @@ spec:
       downloads:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/downloads
+        path: /mnt/vol1/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       music-qbittorrent:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music/.qbittorrent
+        path: /mnt/vol1/music/.qbittorrent
         globalMounts:
           - path: /mnt/storage/music/.qbittorrent
       video-qbittorrent:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video/.qbittorrent
+        path: /mnt/vol1/video/.qbittorrent
         globalMounts:
           - path: /mnt/storage/video/.qbittorrent

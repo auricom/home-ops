@@ -81,13 +81,13 @@ spec:
             readOnly: true
       music:
         type: nfs
-        path: /var/mnt/vol1/music
+        path: /mnt/vol1/music
         server: 192.168.9.10
         globalMounts:
           - path: /mnt/music
       music-transcoded:
         type: nfs
-        path: /var/mnt/vol1/music_transcoded
+        path: /mnt/vol1/music_transcoded
         server: 192.168.9.10
         globalMounts:
           - path: /mnt/music_transcoded

@@ -98,18 +98,18 @@ spec:
       downloads:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/downloads
+        path: /mnt/vol1/downloads
         globalMounts:
           - path: /mnt/storage/downloads
       music-usenet:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music/.usenet
+        path: /mnt/vol1/music/.usenet
         globalMounts:
           - path: /mnt/storage/music/.usenet
       video-usenet:
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video/.usenet
+        path: /mnt/vol1/video/.usenet
         globalMounts:
           - path: /mnt/storage/video/.usenet

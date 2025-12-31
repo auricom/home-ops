@@ -118,21 +118,21 @@ spec:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/music
+        path: /mnt/vol1/music
         globalMounts:
           - path: /mnt/storage/music
       photo:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/photo
+        path: /mnt/vol1/photo
         globalMounts:
           - path: /mnt/storage/photo
       video:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /var/mnt/vol1/video
+        path: /mnt/vol1/video
         globalMounts:
           - path: /mnt/storage/video
       transcode:
