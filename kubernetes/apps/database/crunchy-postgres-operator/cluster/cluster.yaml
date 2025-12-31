@@ -158,7 +158,7 @@ spec:
         - name: repo1 # Minio
           s3: &minio
             bucket: crunchy-postgres-operator
-            endpoint: "s3.${SECRET_EXTERNAL_DOMAIN}"
+            endpoint: "s3.${SECRET_INTERNAL_DOMAIN}"
             region: us-east-1
           schedules:
             full: 0 1 * * 0 # Sunday at 01:00
