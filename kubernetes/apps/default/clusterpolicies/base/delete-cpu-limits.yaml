@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0-standalone-strict/mutatingadmissionpolicybinding-admissionregistration-v1beta1.json
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicyBinding
+metadata:
+  name: delete-cpu-limits
+spec:
+  policyName: delete-cpu-limits
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0-standalone-strict/mutatingadmissionpolicy-admissionregistration-v1beta1.json
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicy
+metadata:
+  name: delete-cpu-limits
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE]
+        resources: [pods]
+  matchConditions:
+    - name: is-not-a-job
+      expression: "!('job-name' in object.metadata.labels)"
+    - name: is-not-a-statefulset
+      expression: "!('statefulset.kubernetes.io/pod-name' in object.metadata.labels)"
+  failurePolicy: Fail
+  reinvocationPolicy: IfNeeded
+  mutations:
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: |
+          object.spec.containers.filter(c, has(c.resources) && has(c.resources.limits) && has(c.resources.limits.cpu)).map(c, JSONPatch{
+            op: "remove",
+            path: "/spec/containers/" + string(object.spec.containers.indexOf(c)) + "/resources/limits/cpu"
+          })
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: |
+          has (object.spec.initContainers) ?
+            object.spec.initContainers.filter(c, has(c.resources) && has(c.resources.limits) && has(c.resources.limits.cpu)).map(c, JSONPatch{
+              op: "remove",
+              path: "/spec/initContainers/" + string(object.spec.initContainers.indexOf(c)) + "/resources/limits/cpu"
+            })
+          : []
