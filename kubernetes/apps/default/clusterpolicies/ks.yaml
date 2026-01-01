@@ -13,7 +13,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *name
-  path: ./cluster/apps/default/clusterpolicies/base
+  path: ./kubernetes/apps/default/clusterpolicies/base
   sourceRef:
     kind: GitRepository
     name: flux-system

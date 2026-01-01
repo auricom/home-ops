@@ -5,7 +5,13 @@
 # It is not intended to be used with helmfile apply or sync.
 
 helmDefaults:
-  args: ['--include-crds', '--no-hooks'] # Prevent helmfile apply or sync
+  args:
+    - --include-crds
+    - --no-hooks
+  postRenderer: bash
+  postRendererArgs:
+    - -c
+    - yq ea -e 'select(.kind == "CustomResourceDefinition")'
 
 releases:
   - name: cloudflare-dns
@@ -22,6 +28,11 @@ releases:
     namespace: kube-system
     chart: oci://ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds
     version: 1.4.0
+
+  - name: grafana-operator
+    namespace: observability
+    chart: oci://ghcr.io/grafana/helm-charts/grafana-operator
+    version: 5.21.3
 
   - name: kube-prometheus-stack
     namespace: observability
