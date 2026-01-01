@@ -12,6 +12,7 @@ spec:
   path: ./kubernetes/apps/default/resilio-sync/claude
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
   dependsOn:
@@ -47,6 +48,7 @@ spec:
   path: ./kubernetes/apps/default/resilio-sync/helene
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
   dependsOn:

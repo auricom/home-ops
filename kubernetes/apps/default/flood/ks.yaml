@@ -18,6 +18,7 @@ spec:
   components:
     - ../../../../components/ext-auth
     - ../../../../components/gatus/guarded
+    - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/flood/app
