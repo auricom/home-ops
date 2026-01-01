@@ -10,7 +10,7 @@ resources:
   - ./authelia/ks.yaml
   - ./bazarr/ks.yaml
   - ./calibre/ks.yaml
-  - ./clusterpolicies/ks.yaml
+  # - ./clusterpolicies/ks.yaml
   - ./esphome/ks.yaml
   - ./exercisediary/ks.yaml
   - ./filebrowser/ks.yaml
