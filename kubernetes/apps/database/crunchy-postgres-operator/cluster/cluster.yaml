@@ -164,7 +164,7 @@ spec:
         - name: repo2 # Minio
           s3: &minio
             bucket: crunchy-postgres-operator
-            endpoint: "s3.${SECRET_INTERNAL_DOMAIN}"
+            endpoint: "s3minio.${SECRET_EXTERNAL_DOMAIN}"
             region: us-east-1
 
   dataSource:
