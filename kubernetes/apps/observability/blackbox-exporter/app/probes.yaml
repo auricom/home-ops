@@ -12,4 +12,19 @@ spec:
     staticConfig:
       static:
         - pikvm.${SECRET_INTERNAL_DOMAIN}
-        - homeassistant.${SECRET_INTERNAL_DOMAIN}
+        # - homeassistant.${SECRET_INTERNAL_DOMAIN}
+        - zigbee-controller.${SECRET_INTERNAL_DOMAIN}
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: tcp
+spec:
+  module: tcp_connect
+  prober:
+    url: blackbox-exporter.observability.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - storage.${SECRET_INTERNAL_DOMAIN}:2049
