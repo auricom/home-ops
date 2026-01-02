@@ -18,7 +18,7 @@ spec:
   components:
     - ../../../../components/ext-auth
     - ../../../../components/gatus/guarded
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/tdarr/app
@@ -51,7 +51,7 @@ spec:
   dependsOn:
     - name: tdarr
   components:
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
   interval: 1h
   path: ./kubernetes/apps/default/tdarr/node
   postBuild:
@@ -81,7 +81,7 @@ spec:
     - name: volsync
       namespace: volsync
   components:
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/tdarr/inform

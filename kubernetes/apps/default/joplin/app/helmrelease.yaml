@@ -18,12 +18,16 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       joplin:
         strategy: RollingUpdate
-        annotations:
-          reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: joplin-db-secret
         containers:
           app:
             image:
@@ -38,9 +42,8 @@ spec:
               MAILER_SECURITY: none
               MAILER_NOREPLY_NAME: JoplinServer
               MAILER_NOREPLY_EMAIL: joplin@${SECRET_DOMAIN}
-            envFrom:
-              - secretRef:
-                  name: joplin-secret
+              DB_CLIENT: sqlite3
+              SQLITE_DATABASE: /data/db.sqlite3
             resources:
               requests:
                 cpu: 50m
@@ -62,3 +65,8 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /data

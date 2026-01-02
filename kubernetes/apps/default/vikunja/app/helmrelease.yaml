@@ -18,11 +18,16 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 0
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       vikunja:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: vikunja-db-secret
         containers:
           app:
             image:
@@ -31,9 +36,9 @@ spec:
             envFrom:
               - secretRef:
                   name: vikunja-secret
-              - secretRef:
-                  name: vikunja-db-secret
             env:
+              VIKUNJA_DATABASE_TYPE: sqlite
+              VIKUNJA_DATABASE_PATH: /db/vikunja.db
               VIKUNJA_SERVICE_PUBLICURL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
               VIKUNJA_MAILER_HOST: smtp-relay.default.svc.cluster.local.
               VIKUNJA_MAILER_PORT: "2525"
@@ -63,7 +68,11 @@ spec:
                 port: *port
     persistence:
       config:
-        enabled: true
         existingClaim: *app
-        globalMounts:
-          - path: /app/vikunja/files
+        advancedMounts:
+          vikunja:
+            app:
+              - path: /db
+                subPath: db
+              - path: /app/vikunja/files
+                subPath: files

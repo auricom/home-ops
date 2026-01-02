@@ -54,80 +54,76 @@ spec:
       password: &password
         type: AlphaNumeric
     # Applications
-    - name: authelia
-      databases:
-        - authelia
-      password: *password
-    - name: bazarr
-      databases:
-        - bazarr_main
-        - bazarr_log
-      password: *password
-    - name: homebox
-      databases:
-        - homebox
-      password: *password
-    - name: joplin
-      databases:
-        - joplin
-      password: *password
-    - name: lldap
-      databases:
-        - lldap
-      password: *password
-    - name: lidarr
-      databases:
-        - lidarr_main
-        - lidarr_log
-      password: *password
-    - name: lychee
-      databases:
-        - lychee
-      password: *password
+    # - name: authelia
+    #   databases:
+    #     - authelia
+    #   password: *password
+    # - name: bazarr
+    #   databases:
+    #     - bazarr_main
+    #     - bazarr_log
+    #   password: *password
+    # - name: joplin
+    #   databases:
+    #     - joplin
+    #   password: *password
+    # - name: lldap
+    #   databases:
+    #     - lldap
+    #   password: *password
+    # - name: lidarr
+    #   databases:
+    #     - lidarr_main
+    #     - lidarr_log
+    #   password: *password
+    # - name: lychee
+    #   databases:
+    #     - lychee
+    #   password: *password
     - name: outline
       databases:
         - outline
       password: *password
-    - name: paperless
-      databases:
-        - paperless
-      password: *password
-    - name: prowlarr
-      databases:
-        - prowlarr_main
-        - prowlarr_logs
-      password: *password
-    - name: pushover-notifier
-      databases:
-        - pushover-notifier
-      password: *password
-    - name: radarr
-      databases:
-        - radarr_main
-        - radarr_log
-      password: *password
-    - name: radarr-archive
-      databases:
-        - radarr_archive_main
-        - radarr_archive_log
-      password: *password
-    - name: sonarr
-      databases:
-        - sonarr_main
-        - sonarr_log
-      password: *password
-    - name: tandoor
-      databases:
-        - tandoor
-      password: *password
+    # - name: paperless
+    #   databases:
+    #     - paperless
+    #   password: *password
+    # - name: prowlarr
+    #   databases:
+    #     - prowlarr_main
+    #     - prowlarr_logs
+    #   password: *password
+    # - name: pushover-notifier
+    #   databases:
+    #     - pushover-notifier
+    #   password: *password
+    # - name: radarr
+    #   databases:
+    #     - radarr_main
+    #     - radarr_log
+    #   password: *password
+    # - name: radarr-archive
+    #   databases:
+    #     - radarr_archive_main
+    #     - radarr_archive_log
+    #   password: *password
+    # - name: sonarr
+    #   databases:
+    #     - sonarr_main
+    #     - sonarr_log
+    #   password: *password
+    # - name: tandoor
+    #   databases:
+    #     - tandoor
+    #   password: *password
     - name: vaultwarden
       databases:
         - vaultwarden
       password: *password
-    - name: vikunja
-      databases:
-        - vikunja
-      password: *password
+    # - name: vikunja
+    #   databases:
+    #     - vikunja
+    #   password: *password
   backups:
     pgbackrest:
       configuration: &backupConfig
@@ -136,49 +132,44 @@ spec:
       global: &backupFlag
         compress-type: bz2
         compress-level: "9"
-        # Garage
         repo1-block: y
         repo1-bundle: y
         repo1-path: /crunchy-pgo
         repo1-retention-full: "30" # days
         repo1-retention-full-type: time
         repo1-s3-uri-style: path
-        # Minio
-        repo2-block: y
-        repo2-bundle: y
-        repo2-path: /crunchy-pgo
-        repo2-s3-uri-style: path
+
       metadata:
         labels:
           app.kubernetes.io/name: crunchy-postgres-backup
       repos:
-        - name: repo1 # nfs-csi
-          volume: &nfs
-            volumeClaimSpec:
-              storageClassName: nfs-csi #csi-driver-nfs
-              volumeName: crunchy-postgres-nfs
-              accessModes: [ReadWriteMany]
-              resources:
-                requests:
-                  storage: 1Mi
-          schedules:
-            full: 0 1 * * 0 # Sunday at 01:00
-            differential: 0 1 * * 1-6 # Mon-Sat at 01:00
-            incremental: 0 2-23 * * * # Every hour except 01:00
-        - name: repo2 # Minio
+        # - name: repo1 # nfs-csi
+        #   volume: &nfs
+        #     volumeClaimSpec:
+        #       storageClassName: nfs-csi #csi-driver-nfs
+        #       volumeName: crunchy-postgres-nfs
+        #       accessModes: [ReadWriteMany]
+        #       resources:
+        #         requests:
+        #           storage: 1Mi
+        #   schedules:
+        #     full: 0 1 * * 0 # Sunday at 01:00
+        #     differential: 0 1 * * 1-6 # Mon-Sat at 01:00
+        #     incremental: 0 2-23 * * * # Every hour except 01:00
+        - name: repo1 # Minio
           s3: &minio
             bucket: crunchy-postgres-operator
             endpoint: "s3minio.${SECRET_EXTERNAL_DOMAIN}"
             region: us-east-1
 
-  # dataSource:
-  #   pgbackrest:
-  #     stanza: "db"
-  #     configuration: *backupConfig
-  #     global: *backupFlag
-  #     repo:
-  #       name: "repo2"
-  #       s3: *minio
+  dataSource:
+    pgbackrest:
+      stanza: "db"
+      configuration: *backupConfig
+      global: *backupFlag
+      repo:
+        name: "repo1"
+        s3: *minio
 
   monitoring:
     pgmonitor:

@@ -3,30 +3,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app authelia
+  name: &app bookstack
   namespace: &namespace default
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: crunchy-postgres-operator-cluster
+    - name: mariadb
       namespace: database
-    - name: dragonfly-cluster
-      namespace: database
-    - name: external-secrets-stores
-      namespace: external-secrets
-    - name: gateway-api-crds
-      namespace: network
   components:
-    - ../../../../components/gatus/external
+    - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h
-  path: ./kubernetes/apps/default/authelia/app
+  path: ./kubernetes/apps/default/bookstack/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: auth
   prune: true
   retryInterval: 2m
   sourceRef:

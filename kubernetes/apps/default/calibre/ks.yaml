@@ -16,7 +16,7 @@ spec:
   path: ./kubernetes/apps/default/calibre/calibre-web-automated
   components:
     - ../../../../components/gatus/guarded
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   prune: true
   sourceRef:
@@ -46,7 +46,7 @@ spec:
   path: ./kubernetes/apps/default/calibre/calibre-downloader
   components:
     - ../../../../components/gatus/guarded
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   prune: true
   sourceRef:
