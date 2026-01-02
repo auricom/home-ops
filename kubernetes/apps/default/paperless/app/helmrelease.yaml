@@ -18,12 +18,18 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       paperless:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: authelia-secret,paperless-db-secret
         containers:
           app:
             image:
@@ -47,8 +53,6 @@ spec:
             envFrom:
               - secretRef:
                   name: paperless-secret
-              - secretRef:
-                  name: paperless-db-secret
             resources:
               requests:
                 cpu: 25m
@@ -77,27 +81,27 @@ spec:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/vol1/shared-documents/paperless/data
+        path: /mnt/vol1/apps/paperless/data
         globalMounts:
           - path: /usr/src/paperless/data
       media:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/vol1/shared-documents/paperless/media
+        path: /mnt/vol1/apps/paperless/media
         globalMounts:
           - path: /usr/src/paperless/media
       consume:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/vol1/shared-documents/paperless/watch
+        path: /mnt/vol1/apps/paperless/watch
         globalMounts:
           - path: /usr/src/paperless/consume
       export:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/vol1/shared-documents/paperless/export
+        path: /mnt/vol1/apps/paperless/export
         globalMounts:
           - path: /usr/src/paperless/export

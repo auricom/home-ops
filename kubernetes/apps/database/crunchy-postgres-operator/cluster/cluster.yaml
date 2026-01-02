@@ -63,10 +63,6 @@ spec:
         - bazarr_main
         - bazarr_log
       password: *password
-    - name: homebox
-      databases:
-        - homebox
-      password: *password
     - name: joplin
       databases:
         - joplin

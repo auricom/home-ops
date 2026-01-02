@@ -35,8 +35,6 @@ spec:
             envFrom:
               - secretRef:
                   name: homelab-github-notifier-secret
-              - secretRef:
-                  name: homelab-github-notifier-db-secret
     service:
       app:
         controller: *app
@@ -50,6 +48,10 @@ spec:
           - path: /config/config.yaml
             subPath: config.yaml
             readOnly: true
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /data
       script:
         type: configMap
         name: homelab-github-notifier-configmap
