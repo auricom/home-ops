@@ -3,7 +3,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app prowlarr
+  name: &app bookstack
+  namespace: default
 spec:
   interval: 1h
   chartRef:
@@ -18,50 +19,59 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: false
+        seccompProfile: { type: RuntimeDefault }
     controllers:
-      prowlarr:
+      bookstack:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/prowlarr
-              tag: 2.3.1.5238@sha256:4394dff2311238bf5c31e006872122ed4e5f6bf042d33528d80acd44a09c57f7
+              repository: lscr.io/linuxserver/bookstack
+              tag: 25.12.20251224
             env:
-              TZ: "${TIMEZONE}"
-              PROWLARR__APP__INSTANCENAME: Prowlarr
-              PROWLARR__APP__THEME: dark
-              PROWLARR__LOG__DBENABLED: "False"
-              PROWLARR__LOG__LEVEL: info
-              PROWLARR__AUTH__METHOD: External
-              PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              PROWLARR__SERVER__PORT: &port 8080
-              PROWLARR__UPDATE__BRANCH: develop
+              TZ: ${TIMEZONE}
+              PUID: "1000"
+              PGID: "1000"
+              APP_URL: "https://bookstack.${SECRET_DOMAIN}"
+              DB_HOST: bookstack-mariadb.default.svc.cluster.local
+              DB_PORT: "3306"
+              DB_DATABASE: bookstack
+              DB_USERNAME: bookstack
+              DB_PASSWORD:
+                secretKeyRef:
+                  name: bookstack-mariadb-secret
+                  key: MARIADB_PASSWORD
+              QUEUE_CONNECTION: database
             envFrom:
               - secretRef:
-                  name: prowlarr-secret
+                  name: bookstack-secret
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /ping
-                    port: *port
-                  initialDelaySeconds: 0
+                    path: /
+                    port: &port 80
+                  initialDelaySeconds: 30
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
+                memory: 256Mi
               limits:
-                memory: 1Gi
+                memory: 2Gi
     service:
       app:
         controller: *app
@@ -80,12 +90,8 @@ spec:
               - name: *app
                 port: *port
     persistence:
-      tmpfs:
-        type: emptyDir
-        advancedMounts:
-          prowlarr:
-            app:
-              - path: /config
-                subPath: config
-              - path: /tmp
-                subPath: tmp
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /config

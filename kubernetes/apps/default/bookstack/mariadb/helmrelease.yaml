@@ -1,0 +1,110 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app bookstack-mariadb
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+        seccompProfile: { type: RuntimeDefault }
+    controllers:
+      bookstack-mariadb:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: mariadb
+              tag: 12.1.2@sha256:e1bcd6f85781f4a875abefb11c4166c1d79e4237c23de597bf0df81fec225b40
+            env:
+              MARIADB_USER: bookstack
+            envFrom:
+              - secretRef:
+                  name: bookstack-mariadb-secret
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+                ephemeral-storage: 50Mi
+              limits:
+                ephemeral-storage: 2Gi
+            securityContext:
+              readOnlyRootFilesystem: true
+              allowPrivilegeEscalation: false
+              capabilities: {drop: [ALL]}
+            # probes:
+            #   liveness:
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       exec:
+            #         command: [/scripts/liveness.sh]
+            #   readiness:
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       exec:
+            #         command: [/scripts/readiness.sh]
+            #   startup:
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       exec:
+            #         command: [/scripts/liveness.sh]
+            #       failureThreshold: 60
+            #       periodSeconds: 5
+    service:
+      app:
+        controller: *app
+        ports:
+          mariadb:
+            port: 3306
+    persistence:
+      data:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /var/lib/mysql
+      scripts:
+        type: configMap
+        identifier: scripts
+        defaultMode: 0550 # trunk-ignore(yamllint/octal-values)
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+            subPath: tmp
+          - path: /run/mysqld
+            subPath: run/mysqld
+    configMaps:
+      scripts:
+        data:
+          # language=shell script
+          liveness.sh: |
+            #!/bin/sh
+            password="${MARIADB_PASSWORD:-}"
+            exec mariadb-admin status -b -ubookstack -p"$password"
+          # language=shell script
+          readiness.sh: |
+            #!/bin/sh
+            password="${MARIADB_PASSWORD:-}"
+            exec mariadb-admin ping -b -ubookstack -p"$password"

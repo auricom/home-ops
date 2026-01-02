@@ -24,7 +24,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
           configmap.reloader.stakater.com/reload: sonarr-pushover
-          secret.reloader.stakater.com/reload: sonarr-db-secret
         containers:
           app:
             image:
@@ -43,8 +42,6 @@ spec:
             envFrom:
               - secretRef:
                   name: sonarr-secret
-              - secretRef:
-                  name: sonarr-db-secret
             probes:
               liveness: &probes
                 enabled: true
