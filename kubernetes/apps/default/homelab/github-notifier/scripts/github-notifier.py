@@ -5,8 +5,7 @@ import requests
 import yaml
 from decouple import config
 from requests.exceptions import HTTPError
-import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import sqlite3
 
 log_level = logging.DEBUG if config("LOG_LEVEL", "") == "DEBUG" else logging.INFO
 
@@ -26,38 +25,35 @@ PUSHOVER_USER_KEY = config("PUSHOVER_USER_KEY")
 # GitHub API token
 GITHUB_API_TOKEN = config("GITHUB_API_TOKEN", default="")
 
-# PostgreSQL connection parameters
-DB_HOST = config("DB_HOST")
-DB_PORT = config("DB_PORT", "5432")
-DB_NAME = config("DB_NAME")
-DB_USER = config("DB_USER")
-DB_PASSWORD = config("DB_PASSWORD")
+# SQLite database configuration
+DB_PATH = config("DB_PATH", default="/data/github_notifier.db")
 
 # Observability
 healthchecks_id = config("HEALTHCHECKS_ID")
 
 def get_db_connection():
-    return psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
-    )
+    # Ensure the directory exists before creating the database
+    db_dir = os.path.dirname(DB_PATH)
+    if db_dir and not os.path.exists(db_dir):
+        os.makedirs(db_dir, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 # Create table if not exists
 def create_table():
     conn = get_db_connection()
-    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    with conn.cursor() as cur:
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS github_releases (
-                repo_name TEXT PRIMARY KEY,
-                latest_release TEXT,
-                release_date TIMESTAMP
-            )
-        """)
-    conn.close()
+    try:
+        with conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS github_releases (
+                    repo_name TEXT PRIMARY KEY,
+                    latest_release TEXT,
+                    release_date TIMESTAMP
+                )
+            """)
+    finally:
+        conn.close()
 
 # Check for new release
 def check_new_release(repo_name):
@@ -154,24 +150,19 @@ def main():
             print(f"Latest tag for {repo_name}: {latest_tag}, published at: {release_date}")
             release_date = datetime.strptime(release_date, "%Y-%m-%dT%H:%M:%SZ")
 
-            with conn.cursor() as cur:
+            with conn:
                 print(f"Updating database for {repo_name}...")
-                cur.execute(
-                    "SELECT release_date FROM github_releases WHERE repo_name = %s",
+                cur = conn.execute(
+                    "SELECT release_date FROM github_releases WHERE repo_name = ?",
                     (repo_name,)
                 )
                 current = cur.fetchone()
 
                 if not current or release_date > current[0]:
-                    cur.execute("""
-                        INSERT INTO github_releases (repo_name, latest_release, release_date)
-                        VALUES (%s, %s, %s)
-                        ON CONFLICT (repo_name)
-                        DO UPDATE SET
-                            latest_release = EXCLUDED.latest_release,
-                            release_date = EXCLUDED.release_date
+                    conn.execute("""
+                        INSERT OR REPLACE INTO github_releases (repo_name, latest_release, release_date)
+                        VALUES (?, ?, ?)
                     """, (repo_name, latest_tag, release_date))
-                    conn.commit()
 
                     print(f"New release for {repo_name} found, sending notification.")
                     send_pushover_notification(repo_name, latest_tag)

@@ -21,13 +21,14 @@ spec:
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
-        runAsUser: 568
-        runAsGroup: 568
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       tandoor:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: lychee-db-secret
         initContainers:
           migrations:
             image:
@@ -36,8 +37,6 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: tandoor-secret
-              - secretRef:
-                  name: tandoor-db-secret
             command:
             - sh
             - -c
@@ -58,6 +57,8 @@ spec:
               ALLOWED_HOSTS: "*"
               GUNICORN_MEDIA: "0"
               TZ: ${TIMEZONE}
+              DB_ENGINE: django.db.backends.sqlite3
+              POSTGRES_DB: /opt/recipes/data/tandoor.sqlite
               TANDOOR_PORT: &tandoorPort 8888
               FRACTION_PREF_DEFAULT: "0"
               COMMENT_PREF_DEFAULT: "1"
@@ -95,24 +96,22 @@ spec:
                     port: *tandoorPort
                   failureThreshold: 30
                   periodSeconds: 10
+          nginx:
+            image:
+              repository: nginxinc/nginx-unprivileged
+              tag: 1.29.3-alpine@sha256:42c794e539b375187fa8b34b8b3f693a919b0ce8009a85e862caf39186c10b4f
             resources:
               requests:
                 cpu: 100m
                 memory: 256Mi
               limits:
                 memory: 512Mi
-          nginx:
-            image:
-              repository: nginxinc/nginx-unprivileged
-              tag: 1.29.3-alpine@sha256:42c794e539b375187fa8b34b8b3f693a919b0ce8009a85e862caf39186c10b4f
     service:
       app:
         controller: *app
         ports:
-          http:
-            port: *tandoorPort
           nginx:
-            port: &nginxPort 8080
+            port: &port 8080
     route:
       app:
         hostnames:
@@ -124,16 +123,25 @@ spec:
         rules:
           - backendRefs:
               - name: *app
-                port: *nginxPort
+                port: *port
     persistence:
       config:
         existingClaim: *app
         advancedMounts:
           tandoor:
-            app:
+            app: &folders
+              - path: /opt/recipes/data
+                subPath: data
               - path: /opt/recipes/mediafiles
+                subPath: mediafiles
+              - path: /opt/recipes/staticfiles
+                subPath: staticfiles
+            migrations: *folders
             nginx:
               - path: /media
+                subPath: mediafiles
+              - path: /static
+                subPath: staticfiles
       nginx-config:
         type: configMap
         name: tandoor-configmap
@@ -141,7 +149,7 @@ spec:
           tandoor:
             nginx:
               - path: /etc/nginx/nginx.conf
-                subPath: nginx-config
+                subPath: nginx.conf
       django-js-reverse:
         type: emptyDir
         advancedMounts:
@@ -150,16 +158,6 @@ spec:
               - path: /opt/recipes/cookbook/static/django_js_reverse
             migrations:
               - path: /opt/recipes/cookbook/static/django_js_reverse
-      static:
-        type: emptyDir
-        advancedMounts:
-          tandoor:
-            app:
-              - path: /opt/recipes/staticfiles
-            nginx:
-              - path: /static
-            migrations:
-              - path: /opt/recipes/staticfiles
       cache:
         type: emptyDir
         advancedMounts:

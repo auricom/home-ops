@@ -20,9 +20,6 @@ spec:
   values:
     controllers:
       homebox:
-        annotations:
-          reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: homebox-db-secret
         containers:
           app:
             image:
@@ -35,9 +32,6 @@ spec:
               HBOX_WEB_HOST: 0.0.0.0
               HBOX_WEB_PORT: &port 7745
               HBOX_MEB_MAX_UPLOAD_SIZE: 25
-            envFrom:
-              - secretRef:
-                  name: homebox-db-secret
             probes:
               liveness: &probes
                 enabled: true
