@@ -9,23 +9,6 @@ spec:
     - targets:
         - pikvm.${SECRET_INTERNAL_DOMAIN}:9100
         - opnsense.${SECRET_INTERNAL_DOMAIN}:9273
-        - storage.${SECRET_INTERNAL_DOMAIN}:9100
-        - storage-remote.${SECRET_INTERNAL_DOMAIN}:9100
-        - homeassistant.${SECRET_INTERNAL_DOMAIN}:9100
-  metricsPath: /metrics
-  relabelings:
-    - action: replace
-      targetLabel: job
-      replacement: *name
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/scrapeconfig_v1alpha1.json
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
-metadata:
-  name: &name podman-exporter
-spec:
-  staticConfigs:
-    - targets: ["storage.${SECRET_INTERNAL_DOMAIN}:9882"]
   metricsPath: /metrics
   relabelings:
     - action: replace
@@ -49,20 +32,6 @@ spec:
       name: kube-prometheus-stack-secret
       key: PIKVM_PASSWORD
   scheme: HTTPS
-  relabelings:
-    - action: replace
-      targetLabel: job
-      replacement: *name
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/scrapeconfig_v1alpha1.json
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
-metadata:
-  name: &name zrepl
-spec:
-  staticConfigs:
-    - targets: ["storage.${SECRET_INTERNAL_DOMAIN}:9811"]
-  metricsPath: /metrics
   relabelings:
     - action: replace
       targetLabel: job
