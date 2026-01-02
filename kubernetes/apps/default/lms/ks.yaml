@@ -14,7 +14,7 @@ spec:
       namespace: volsync
   components:
     - ../../../../components/gatus/guarded
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/lms/app

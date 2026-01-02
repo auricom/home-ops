@@ -14,7 +14,7 @@ spec:
       namespace: external-secrets
   components:
     - ../../../../components/gatus/guarded
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
   interval: 1h
   path: ./kubernetes/apps/default/garage/app
   postBuild:
@@ -47,7 +47,7 @@ spec:
       namespace: external-secrets
   components:
     - ../../../../components/ext-auth
-    - ../../../../components/nfs-scaler
+   # - ../../../../components/nfs-scaler
   interval: 1h
   path: ./kubernetes/apps/default/garage/webui
   postBuild:

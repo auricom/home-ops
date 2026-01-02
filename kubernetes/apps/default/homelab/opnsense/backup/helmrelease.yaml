@@ -52,3 +52,9 @@ spec:
           - path: /app/backup.sh
             subPath: backup.sh
             readOnly: true
+      nfs:
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/apps/homelab_backups/opnsense
+        globalMounts:
+          - path: /mnt/nfs/opnsense
