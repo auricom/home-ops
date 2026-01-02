@@ -117,3 +117,5 @@ spec:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh
             readOnly: true
+      tmp:
+        type: emptyDir
