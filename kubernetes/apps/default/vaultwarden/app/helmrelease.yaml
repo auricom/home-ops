@@ -22,7 +22,6 @@ spec:
       vaultwarden:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: vaultwarden-db-secret
         containers:
           app:
             image:
@@ -46,8 +45,6 @@ spec:
             envFrom:
               - secretRef:
                   name: vaultwarden-secret
-              - secretRef:
-                  name: vaultwarden-db-secret
             resources:
               requests:
                 cpu: 100m

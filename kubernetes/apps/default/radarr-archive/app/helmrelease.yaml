@@ -23,7 +23,6 @@ spec:
         annotations:
           configmap.reloader.stakater.com/reload: radarr-pushover
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: radarr-archive-db-secret
         containers:
           app:
             image:
@@ -45,8 +44,6 @@ spec:
             envFrom:
               - secretRef:
                   name: radarr-secret
-              - secretRef:
-                  name: radarr-archive-db-secret
             probes:
               liveness: &probes
                 enabled: true
