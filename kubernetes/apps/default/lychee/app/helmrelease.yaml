@@ -18,22 +18,29 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 82
+        runAsGroup: 82
+        fsGroup: 82
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       lychee:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: lychee-db-secret
         containers:
           app:
             image:
-              repository: lycheeorg/lychee-laravel
-              tag: v6.10.4@sha256:4a695e81c0751b1a024cb87384a6cf4cd7c84c96c528d92bcc7effc8ce075a1e
+              repository: ghcr.io/lycheeorg/lychee
+              tag: v7.0.1@sha256:c109a65be24498fca32c147970c4cd655ca60fb70141a2f795b0bab39fd76bf0
             env:
               TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
               APP_URL: https://lychee.${SECRET_EXTERNAL_DOMAIN}
-              DB_CONNECTION: pgsql
-              PHP_TZ: ${TIMEZONE}
+              DB_CONNECTION: sqlite
+              PUID: 82
+              PGID: 82
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
@@ -51,7 +58,7 @@ spec:
                 spec:
                   httpGet: &probeHttpGet
                     path: /
-                    port: &port 80
+                    port: &port 8000
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -85,10 +92,23 @@ spec:
                 port: *port
     persistence:
       config:
-        enabled: true
         existingClaim: *app
-        globalMounts:
-          - path: /uploads
+        advancedMounts:
+          lychee:
+            app:
+              - path: /app/public/uploads
+                subPath: uploads
+              - path: /app/storage/app
+                subPath: app
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          lychee:
+            app:
+              - path: /app/storage/logs
+                subPath: logs
+              - path: /app/storage/tmp
+                subPath: tmp
       photo:
         enabled: true
         type: nfs

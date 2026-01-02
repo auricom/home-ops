@@ -1,4 +1,8 @@
 ---
+storage:
+  local:
+    path: /data/db.sqlite3
+
 authentication_backend:
   ldap:
     address: ldap://lldap.default.svc.cluster.local:5389

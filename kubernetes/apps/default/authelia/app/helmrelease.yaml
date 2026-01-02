@@ -26,13 +26,16 @@ spec:
       securityContext:
         runAsUser: 568
         runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
     controllers:
       authelia:
-        replicas: 2
+        replicas: 1
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: authelia-db-secret
         containers:
           app:
             image:
@@ -53,8 +56,6 @@ spec:
             envFrom:
               - secretRef:
                   name: authelia-secret
-              - secretRef:
-                  name: authelia-db-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -107,15 +108,17 @@ spec:
                 port: *port
     persistence:
       config:
-        enabled: true
         type: configMap
         name: authelia-configmap
         globalMounts:
           - path: /config/configuration.yaml
             subPath: configuration.yaml
             readOnly: true
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /data
       secret-files:
-        enabled: true
         type: secret
         name: authelia-secret
         globalMounts:

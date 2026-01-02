@@ -34,7 +34,6 @@ spec:
       bazarr:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: bazarr-db-secret
         containers:
           app:
             image:
@@ -45,8 +44,6 @@ spec:
             envFrom:
               - secretRef:
                   name: bazarr-secret
-              - secretRef:
-                  name: bazarr-db-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

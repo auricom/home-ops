@@ -31,7 +31,7 @@ resources:
   - ./linkding/ks.yaml
   - ./lldap/ks.yaml
   - ./lms/ks.yaml
-  - ./lychee/ks.yaml
+  # - ./lychee/ks.yaml
   - ./mesh-organizer/ks.yaml
   - ./minio/ks.yaml
   - ./navidrome/ks.yaml

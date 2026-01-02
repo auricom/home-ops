@@ -22,7 +22,6 @@ spec:
       lldap:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: lldap-db-secret
         containers:
           app:
             image:
@@ -37,8 +36,6 @@ spec:
             envFrom:
               - secretRef:
                   name: lldap-secret
-              - secretRef:
-                  name: lldap-db-secret
             resources:
               requests:
                 cpu: 100m
@@ -67,6 +64,6 @@ spec:
                 port: *port
     persistence:
       data:
-        type: emptyDir
+        existingClaim: *app
         globalMounts:
           - path: /data

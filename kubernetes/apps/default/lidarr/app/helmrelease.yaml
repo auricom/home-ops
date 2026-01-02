@@ -29,7 +29,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
           configmap.reloader.stakater.com/reload: lidarr-pushover
-          secret.reloader.stakater.com/reload: lidarr-db-secret
         containers:
           app:
             image:
@@ -47,8 +46,6 @@ spec:
             envFrom:
               - secretRef:
                   name: lidarr-secret
-              - secretRef:
-                  name: lidarr-db-secret
             resources:
               requests:
                 cpu: 10m
