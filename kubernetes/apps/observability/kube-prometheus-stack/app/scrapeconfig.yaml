@@ -36,22 +36,3 @@ spec:
     - action: replace
       targetLabel: job
       replacement: *name
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/scrapeconfig_v1alpha1.json
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
-metadata:
-  name: &name minio
-spec:
-  staticConfigs:
-    - targets: ["s3.${SECRET_INTERNAL_DOMAIN}"]
-  metricsPath: /minio/v2/metrics/cluster
-  authorization:
-    credentials:
-      name: kube-prometheus-stack-secret
-      key: MINIO_PROM_TOKEN
-  scheme: HTTPS
-  relabelings:
-    - action: replace
-      targetLabel: job
-      replacement: *name
