@@ -22,7 +22,6 @@ spec:
       prowlarr:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: prowlarr-db-secret
         containers:
           app:
             image:
@@ -41,8 +40,6 @@ spec:
             envFrom:
               - secretRef:
                   name: prowlarr-secret
-              - secretRef:
-                  name: prowlarr-db-secret
             probes:
               liveness: &probes
                 enabled: true

@@ -11,6 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   dependsOn:
     - name: crunchy-postgres-operator-cluster
       namespace: database

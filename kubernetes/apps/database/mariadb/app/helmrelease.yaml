@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.nerdz.cloud/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mariadb
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: mariadb
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    global:
+      defaultFips: "off"
+      security:
+        allowInsecureImages: false
+    auth:
+      usePasswordFiles: false
+      existingSecret: mariadb-secret
+    metrics:
+      enabled: false
+    volumePermissions:
+      fips:
+        openssl: "off"
+    primary:
+      extraEnvVarsSecret: mariadb-secret
+      resourcesPreset: small
+      persistence:
+        enabled: true
+        existingClaim: *app
+      fips:
+        openssl: "off"
+    initdbScripts:
+      init-bookstack.sql: |
+        CREATE DATABASE IF NOT EXISTS bookstack;
+        CREATE USER IF NOT EXISTS 'bookstack'@'%' IDENTIFIED BY '${BOOKSTACK_MARIADB_PASSWORD}';
+        GRANT ALL PRIVILEGES ON bookstack.* to 'bookstack'@'%';
+        FLUSH PRIVILEGES;

@@ -9,4 +9,5 @@ resources:
   - ./crunchy-postgres-operator/ks.yaml
   - ./dragonfly/ks.yaml
   - ./influx/ks.yaml
+  - ./mariadb/ks.yaml
   - ./mosquitto/ks.yaml

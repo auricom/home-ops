@@ -3,7 +3,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app lldap
+  name: &app bookstack
+  namespace: default
 spec:
   interval: 1h
   chartRef:
@@ -19,38 +20,52 @@ spec:
       retries: 3
   values:
     controllers:
-      lldap:
+      bookstack:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/lldap/lldap
-              tag: v0.6.2@sha256:9e605a66c02514bfcffd1b67cafb1e98d50992216bb2871d7ae44622047dd09d
+              repository: lscr.io/linuxserver/bookstack
+              tag: 25.12.20251224
             env:
               TZ: ${TIMEZONE}
-              LLDAP_HTTP_PORT: &port 8080
-              LLDAP_HTTP_URL: https://lldap.${SECRET_EXTERNAL_DOMAIN}
-              LLDAP_LDAP_PORT: &ldapPort 5389
-              LLDAP_LDAP_BASE_DN: dc=home,dc=arpa
+              PUID: "1000"
+              PGID: "1000"
+              APP_URL: "https://bookstack.${SECRET_DOMAIN}"
+              DB_HOST: mariadb.database.svc.cluster.local
+              DB_PORT: "3306"
+              DB_DATABASE: bookstack
+              DB_USERNAME: bookstack
+              QUEUE_CONNECTION: database
             envFrom:
               - secretRef:
-                  name: lldap-secret
+                  name: bookstack-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 80
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
                 cpu: 100m
-                memory: 100Mi
+                memory: 256Mi
               limits:
-                memory: 500Mi
+                memory: 2Gi
     service:
       app:
         controller: *app
         ports:
           http:
             port: *port
-          ldap:
-            enabled: true
-            port: *ldapPort
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
@@ -63,7 +78,8 @@ spec:
               - name: *app
                 port: *port
     persistence:
-      data:
+      config:
+        enabled: true
         existingClaim: *app
         globalMounts:
-          - path: /data
+          - path: /config
