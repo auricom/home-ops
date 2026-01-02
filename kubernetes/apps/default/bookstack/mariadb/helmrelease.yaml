@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: mariadb
-              tag: 11.4.8
+              tag: 11.8.5
             env:
               MYSQL_USER: bookstack
               MYSQL_DATABASE: bookstack
