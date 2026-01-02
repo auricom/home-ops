@@ -20,6 +20,7 @@ spec:
       namespace: network
   components:
     - ../../../../components/gatus/external
+    - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/authelia/app
   postBuild:
