@@ -152,11 +152,15 @@ spec:
         labels:
           app.kubernetes.io/name: crunchy-postgres-backup
       repos:
-        - name: repo1 # Garage
-          s3: &garage
-            bucket: crunchy-postgres-operator
-            endpoint: "s3.${SECRET_EXTERNAL_DOMAIN}"
-            region: dc1
+        - name: repo1 # nfs-csi
+          volume: &nfs
+            volumeClaimSpec:
+              storageClassName: nfs-csi #csi-driver-nfs
+              volumeName: crunchy-postgres-nfs
+              accessModes: [ReadWriteMany]
+              resources:
+                requests:
+                  storage: 1Mi
           schedules:
             full: 0 1 * * 0 # Sunday at 01:00
             differential: 0 1 * * 1-6 # Mon-Sat at 01:00
@@ -167,14 +171,14 @@ spec:
             endpoint: "s3minio.${SECRET_EXTERNAL_DOMAIN}"
             region: us-east-1
 
-  dataSource:
-    pgbackrest:
-      stanza: "db"
-      configuration: *backupConfig
-      global: *backupFlag
-      repo:
-        name: "repo2"
-        s3: *minio
+  # dataSource:
+  #   pgbackrest:
+  #     stanza: "db"
+  #     configuration: *backupConfig
+  #     global: *backupFlag
+  #     repo:
+  #       name: "repo2"
+  #       s3: *minio
 
   monitoring:
     pgmonitor:
