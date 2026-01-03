@@ -37,7 +37,6 @@ resources:
   - ./minio/ks.yaml
   - ./navidrome/ks.yaml
   - ./opengist/ks.yaml
-  - ./outline/ks.yaml
   - ./paperless/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
