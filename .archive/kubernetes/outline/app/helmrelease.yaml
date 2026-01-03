@@ -1,0 +1,88 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app outline
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      outline:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: authelia-secret,outline-db-secret
+        containers:
+          app:
+            image:
+              repository: docker.io/outlinewiki/outline
+              tag: 1.1.0@sha256:51db3e893d3eabdbf9092712c9c8ed5362efb20e4c1d35b941ccacaed1c0f010
+            envFrom:
+              - secretRef:
+                  name: outline-secret
+              - secretRef:
+                  name: outline-db-secret
+            env:
+              AWS_REGION: dc1
+              AWS_S3_ACL: private
+              AWS_S3_FORCE_PATH_STYLE: "true"
+              AWS_S3_UPLOAD_BUCKET_NAME: outline
+              ENABLE_UPDATES: "false"
+              FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
+              LOG_LEVEL: debug
+              NODE_TLS_REJECT_UNAUTHORIZED: "0"
+              OIDC_AUTH_URI: "https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/authorization"
+              OIDC_CLIENT_ID: outline
+              OIDC_DISPLAY_NAME: Authelia
+              OIDC_SCOPES: openid profile email offline_access
+              OIDC_TOKEN_URI: "https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/token"
+              OIDC_USERINFO_URI: "https://auth.${SECRET_EXTERNAL_DOMAIN}/api/oidc/userinfo"
+              OIDC_USERNAME_CLAIM: preferred_username
+              PORT: 8080
+              REDIS_URL: redis://dragonfly.database.svc.cluster.local.:6379
+              SMTP_HOST: smtp-relay.default.svc.cluster.local.
+              SMTP_PORT: 2525
+              SMTP_FROM_EMAIL: "outline@${SECRET_DOMAIN}"
+              SMTP_SECURE: "false"
+              URL: "https://docs.${SECRET_EXTERNAL_DOMAIN}"
+              WEB_CONCURRENCY: 10
+            command:
+              [
+                /bin/sh,
+                -c,
+                yarn db:migrate --env=production-ssl-disabled && yarn start --env=production-ssl-disabled,
+              ]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 1Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 8080
+    route:
+      app:
+        hostnames: ["docs.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
