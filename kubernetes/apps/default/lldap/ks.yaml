@@ -12,9 +12,6 @@ spec:
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync
-  dependsOn:
-    - name: crunchy-postgres-operator-cluster
-      namespace: database
   interval: 1h
   path: ./kubernetes/apps/default/lldap/app
   postBuild:

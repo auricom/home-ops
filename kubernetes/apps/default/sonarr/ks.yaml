@@ -10,8 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: crunchy-postgres-operator-cluster
-      namespace: database
     - name: external-secrets-stores
       namespace: external-secrets
     - name: rook-ceph-cluster
