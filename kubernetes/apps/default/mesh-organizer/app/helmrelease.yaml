@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/suchmememanyskill/mesh-organiser
-              tag: v2.0.0@sha256:0786cd8ff715047b698ee7f7957fc889ea282a823d8749e0fdafa1703160e962
+              tag: v2.0.1@sha256:ca77a4110ae998f7743921aa4c2ad515417061b756fff90ce6d81533feb54909
             env:
               APP_CONFIG_PATH: /cfg/config.json
               SERVER_PORT: &port 3000
