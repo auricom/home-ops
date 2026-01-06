@@ -1,0 +1,209 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgres-operator.crunchydata.com/postgrescluster_v1beta1.json
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: &name postgres
+spec:
+  postgresVersion: 17
+
+  metadata:
+    labels:
+      crunchy-userinit.ramblurr.github.com/enabled: "true"
+      crunchy-userinit.ramblurr.github.com/superuser: postgres
+
+  patroni: # turn on sync writes to at least 1 other replica
+    dynamicConfiguration:
+      synchronous_mode: true
+      postgresql:
+        max_wal_size: 5GB
+        synchronous_commit: "on"
+        pg_hba:
+          - hostnossl authelia all 192.168.8.0/22 md5 # Needed because authelia does not support SSL yet
+          - hostssl all all all md5
+        parameters:
+          max_connections: 500
+  instances:
+    - name: postgres
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres
+      replicas: &replica 1
+      dataVolumeClaimSpec:
+        storageClassName: openebs-hostpath
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 80Gi
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/data: postgres
+
+  users:
+    # Superuser
+    - name: postgres
+      databases:
+        - postgres
+      options: SUPERUSER
+      password: &password
+        type: AlphaNumeric
+    # Applications
+    # - name: authelia
+    #   databases:
+    #     - authelia
+    #   password: *password
+    # - name: bazarr
+    #   databases:
+    #     - bazarr_main
+    #     - bazarr_log
+    #   password: *password
+    # - name: joplin
+    #   databases:
+    #     - joplin
+    #   password: *password
+    # - name: lldap
+    #   databases:
+    #     - lldap
+    #   password: *password
+    # - name: lidarr
+    #   databases:
+    #     - lidarr_main
+    #     - lidarr_log
+    #   password: *password
+    # - name: lychee
+    #   databases:
+    #     - lychee
+    #   password: *password
+    - name: outline
+      databases:
+        - outline
+      password: *password
+    # - name: paperless
+    #   databases:
+    #     - paperless
+    #   password: *password
+    # - name: prowlarr
+    #   databases:
+    #     - prowlarr_main
+    #     - prowlarr_logs
+    #   password: *password
+    # - name: pushover-notifier
+    #   databases:
+    #     - pushover-notifier
+    #   password: *password
+    # - name: radarr
+    #   databases:
+    #     - radarr_main
+    #     - radarr_log
+    #   password: *password
+    # - name: radarr-archive
+    #   databases:
+    #     - radarr_archive_main
+    #     - radarr_archive_log
+    #   password: *password
+    # - name: sonarr
+    #   databases:
+    #     - sonarr_main
+    #     - sonarr_log
+    #   password: *password
+    # - name: tandoor
+    #   databases:
+    #     - tandoor
+    #   password: *password
+    - name: vaultwarden
+      databases:
+        - vaultwarden
+      password: *password
+    # - name: vikunja
+    #   databases:
+    #     - vikunja
+    #   password: *password
+  backups:
+    pgbackrest:
+      configuration: &backupConfig
+        - secret:
+            name: crunchy-postgres-secret
+      global: &backupFlag
+        compress-type: bz2
+        compress-level: "9"
+        repo1-block: y
+        repo1-bundle: y
+        repo1-path: /crunchy-pgo
+        repo1-retention-full: "30" # days
+        repo1-retention-full-type: time
+        repo1-s3-uri-style: path
+
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres-backup
+      repos:
+        # - name: repo1 # nfs-csi
+        #   volume: &nfs
+        #     volumeClaimSpec:
+        #       storageClassName: nfs-csi #csi-driver-nfs
+        #       volumeName: crunchy-postgres-nfs
+        #       accessModes: [ReadWriteMany]
+        #       resources:
+        #         requests:
+        #           storage: 1Mi
+        #   schedules:
+        #     full: 0 1 * * 0 # Sunday at 01:00
+        #     differential: 0 1 * * 1-6 # Mon-Sat at 01:00
+        #     incremental: 0 2-23 * * * # Every hour except 01:00
+        - name: repo1 # Minio
+          s3: &minio
+            bucket: crunchy-postgres-operator
+            endpoint: "s3minio.${SECRET_EXTERNAL_DOMAIN}"
+            region: us-east-1
+
+  dataSource:
+    pgbackrest:
+      stanza: "db"
+      configuration: *backupConfig
+      global: *backupFlag
+      repo:
+        name: "repo1"
+        s3: *minio
+
+  monitoring:
+    pgmonitor:
+      exporter:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64M
+          limits:
+            memory: 512M
+
+  proxy:
+    pgBouncer:
+      port: 5432
+      service:
+        metadata:
+          annotations:
+            io.cilium/lb-ipam-ips: ${CLUSTER_LB_POSTGRES}
+        type: LoadBalancer
+      replicas: *replica
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres-pgbouncer
+      config:
+        global:
+          pool_mode: session # Grafana requires session https://github.com/grafana/grafana/issues/74260#issuecomment-1702795311. Everything else is happy with transaction
+          client_tls_sslmode: prefer
+          default_pool_size: "100"
+          max_client_conn: "500"
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/role: pgbouncer

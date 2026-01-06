@@ -1,0 +1,22 @@
+---
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PGAdmin
+metadata:
+  name: pgadmin
+spec:
+  users:
+  - username: admin@homelab.io
+    role: Administrator
+    passwordRef:
+      name: pgadmin-secret
+      key: PGADMIN_PASSWORD
+  dataVolumeClaimSpec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  serverGroups:
+    - name: supply
+      postgresClusterSelector: {}
+  serviceName: pgadmin
