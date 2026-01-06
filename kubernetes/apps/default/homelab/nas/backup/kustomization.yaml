@@ -6,9 +6,9 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
 configMapGenerator:
-  - name: homelab-truenas-backup-configmap
+  - name: homelab-nas-backup-configmap
     files:
-      - ./resources/script.sh
+      - ./resources/script.py
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

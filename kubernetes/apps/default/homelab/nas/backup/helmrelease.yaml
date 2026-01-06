@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app homelab-truenas-backup
+  name: &app homelab-nas-backup
 spec:
   interval: 1h
   chartRef:
@@ -27,8 +27,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/auricom/kubectl
-              tag: 1.34@sha256:fdc2c52d3d0c6f1037f4b52d85c50683f3b81437136b4bb85fa0aea5e3964e9e
+              repository: ghcr.io/auricom/python
+              tag: rolling@sha256:2b29ef38cc87ca2b1ea711437c1e5e4e86f0d67c1d16258a5e0028ec569464a2
             command:
               - /bin/bash
               - -c
@@ -42,7 +42,12 @@ spec:
                     curl --silent --max-time 10 --retry 5 "https://hc-ping.com/$HEALTHCHECKS_ID/start"
                 fi
 
-                /app/backup.sh
+                python /app/script.py \
+                    -H $HOST \
+                    -k $API_KEY \
+                    -o $BACKUP_LOCATION \
+                    --secret-seed --root-keys \
+                    --keep 90
 
                 # Send completion ping to healthchecks
                 if [[ -n "$HEALTHCHECKS_ID" ]]; then
@@ -51,15 +56,14 @@ spec:
             env:
               API_KEY:
                 secretKeyRef:
-                  name: homelab-truenas-backup-secret
+                  name: homelab-nas-backup-secret
                   key: STORAGE_TRUENAS_API_KEY
               BACKUP_LOCATION: /mnt/nfs
               HEALTHCHECKS_ID:
                 secretKeyRef:
-                  name: homelab-truenas-backup-secret
+                  name: homelab-nas-backup-secret
                   key: STORAGE_HEALTHCHECKS_ID
-              HOSTNAME: storage.${SECRET_INTERNAL_DOMAIN}
-              SORT_DEST_DIR: /mnt/vol1/photo
+              HOST: storage.${SECRET_INTERNAL_DOMAIN}
     service:
       app:
         controller: *app
@@ -67,11 +71,11 @@ spec:
     persistence:
       scripts:
         type: configMap
-        name: homelab-truenas-backup-configmap
+        name: homelab-nas-backup-configmap
         defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
         globalMounts:
-          - path: /app/backup.sh
-            subPath: script.sh
+          - path: /app/script.py
+            subPath: script.py
             readOnly: true
       nfs:
         type: nfs

@@ -8,8 +8,8 @@ resources:
 configMapGenerator:
   - name: homelab-github-notifier-configmap
     files:
-      - ./config/config.yaml
-      - ./scripts/github-notifier.py
+      - ./resources/config.yaml
+      - ./resources/github-notifier.py
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
