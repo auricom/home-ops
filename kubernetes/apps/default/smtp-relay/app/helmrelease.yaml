@@ -33,7 +33,7 @@ spec:
               DEBUG: "true"
               SMTP_DOMAIN: "${SECRET_DOMAIN}"
               SMTP_SERVER: smtp.fastmail.com
-              SMTP_PORT: "465"
+              SMTP_PORT: "587"
             envFrom:
               - secretRef:
                   name: smtp-relay-secret
