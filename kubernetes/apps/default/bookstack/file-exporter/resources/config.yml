@@ -1,0 +1,14 @@
+host: "https://docs.${SECRET_DOMAIN}"
+formats:
+- markdown
+- pdf
+assets:
+  export_images: true
+  export_attachments: true
+  modify_markdown: false
+  export_meta: false
+keep_last: 5
+notifications:
+  apprise:
+    on_success: false
+    on_failure: true

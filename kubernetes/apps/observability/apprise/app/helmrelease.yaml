@@ -18,6 +18,13 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 950
+        runAsGroup: 950
+        fsGroup: 950
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       apprise:
         containers:

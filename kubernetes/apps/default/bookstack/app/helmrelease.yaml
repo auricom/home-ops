@@ -32,7 +32,7 @@ spec:
               TZ: ${TIMEZONE}
               PUID: "1000"
               PGID: "1000"
-              APP_URL: "https://bookstack.${SECRET_DOMAIN}"
+              APP_URL: "https://docs.${SECRET_DOMAIN}"
               DB_HOST: mariadb.database.svc.cluster.local
               DB_PORT: "3306"
               DB_DATABASE: bookstack
@@ -68,7 +68,7 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["docs.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
             namespace: network
