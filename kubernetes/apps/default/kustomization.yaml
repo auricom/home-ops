@@ -13,6 +13,7 @@ resources:
   - ./bookstack/ks.yaml
   - ./calibre/ks.yaml
   # - ./clusterpolicies/ks.yaml
+  - ./ephemera/ks.yaml
   - ./esphome/ks.yaml
   - ./exercisediary/ks.yaml
   - ./filebrowser/ks.yaml

@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app ephemera
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: ephemera
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    # defaultPodOptions:
+    #   securityContext:
+    #     runAsUser: 1002
+    #     runAsGroup: 100
+    #     fsGroup: 100
+    #     fsGroupChangePolicy: OnRootMismatch
+    #     runAsNonRoot: false
+    #     seccompProfile: { type: RuntimeDefault }
+    controllers:
+      ephemera:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/orwellianepilogue/ephemera
+              tag: 2.0.0@sha256:9634dc6979fc6ac11243ee6898a1b92236d564b43cc795450928634bce2ae2c0
+            env:
+              AA_BASE_URL: https://annas-archive.li
+              ALLOWED_ORIGINS: https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}
+              FLARESOLVERR_URL: http://flaresolverr.default.svc.cluster.local:8191/
+              LG_BASE_URL: https://gen.com
+              TZ: ${TIMEZONE}
+              PUID: "1000"
+              PGID: "1000"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8286
+                  initialDelaySeconds: 40
+                  periodSeconds: 30
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 250m
+                memory: 500M
+              limits:
+                cpu: 500m
+                memory: 900M
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+            timeouts:
+              request: 0s
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /app/data
+      ingests:
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/apps/booklore/ingest
+        globalMounts:
+          - path: /bookdrop
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          ephemera:
+            app:
+              - path: /app/downloads
