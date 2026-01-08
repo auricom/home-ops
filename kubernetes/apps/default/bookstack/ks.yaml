@@ -9,9 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: mariadb
-      namespace: database
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync

@@ -55,6 +55,24 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
+          mariadb:
+            image:
+              repository: lscr.io/linuxserver/mariadb
+              tag: 11.4.8
+            env:
+              TZ: ${TIMEZONE}
+              MYSQL_USER: booklore
+              MYSQL_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: booklore-secret
+                    key: DATABASE_PASSWORD
+              MYSQL_DATABASE: booklore
+              MYSQL_ROOT_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: booklore-secret
+                    key: DATABASE_ROOT_PASSWORD
     service:
       app:
         controller: *app
@@ -78,17 +96,27 @@ spec:
       config:
         enabled: true
         existingClaim: *app
-        globalMounts:
-          - path: /app/data
+        advancedMounts:
+          booklore:
+            app:
+              - path: /app/data
+                subPath: app
+            mariadb:
+              - path: /config
+                subPath: db
       books-claude:
         type: nfs
         server: 192.168.9.10
         path: /mnt/vol1/apps/booklore/claude
-        globalMounts:
-          - path: /mnt/claude/books
+        advancedMounts:
+          booklore:
+            app:
+              - path: /mnt/claude/books
       bookdrop-claude:
         type: nfs
         server: 192.168.9.10
         path: /mnt/vol1/apps/booklore/ingest
-        globalMounts:
-          - path: /bookdrop
+        advancedMounts:
+          booklore:
+            app:
+              - path: /bookdrop

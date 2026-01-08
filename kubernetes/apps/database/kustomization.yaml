@@ -8,5 +8,4 @@ components:
 resources:
   - ./dragonfly/ks.yaml
   - ./influx/ks.yaml
-  - ./mariadb/ks.yaml
   - ./mosquitto/ks.yaml

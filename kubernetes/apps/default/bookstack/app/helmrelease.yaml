@@ -33,10 +33,6 @@ spec:
               PUID: "1000"
               PGID: "1000"
               APP_URL: "https://docs.${SECRET_DOMAIN}"
-              DB_HOST: mariadb.database.svc.cluster.local
-              DB_PORT: "3306"
-              DB_DATABASE: bookstack
-              DB_USERNAME: bookstack
               QUEUE_CONNECTION: database
             envFrom:
               - secretRef:
@@ -60,6 +56,24 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 2Gi
+          mariadb:
+            image:
+              repository: lscr.io/linuxserver/mariadb
+              tag: 11.4.8
+            env:
+              TZ: ${TIMEZONE}
+              MYSQL_USER: bookstack
+              MYSQL_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: bookstack-secret
+                    key: DB_PASSWORD
+              MYSQL_DATABASE: bookstack
+              MYSQL_ROOT_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: bookstack-secret
+                    key: DB_ROOT_PASSWORD
     service:
       app:
         controller: *app
@@ -81,5 +95,11 @@ spec:
       config:
         enabled: true
         existingClaim: *app
-        globalMounts:
-          - path: /config
+        advancedMounts:
+          bookstack:
+            app:
+              - path: /config
+                subPath: app
+            mariadb:
+              - path: /config
+                subPath: db
