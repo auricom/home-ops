@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app booklore
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: booklore
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      booklore:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/booklore-app/booklore
+              tag: v1.16.5@sha256:3b95a0c0085b6972f19075db695a118a9fe589561eec7816e4441465ae915ecd
+            env:
+              TZ: ${TIMEZONE}
+              USER_ID: "1000"
+              GROUP_ID: "1000"
+              BOOKLORE_PORT: &port 6060
+              SWAGGER_ENABLED: "false"
+            envFrom:
+              - secretRef:
+                  name: booklore-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+            timeouts:
+              request: 0s
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /app/data
+      books-claude:
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/apps/booklore/claude
+        globalMounts:
+          - path: /mnt/claude/books
+      bookdrop-claude:
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/apps/booklore/ingest
+        globalMounts:
+          - path: /bookdrop
