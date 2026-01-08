@@ -44,3 +44,8 @@ spec:
         CREATE USER IF NOT EXISTS 'bookstack'@'%' IDENTIFIED BY '${BOOKSTACK_MARIADB_PASSWORD}';
         GRANT ALL PRIVILEGES ON bookstack.* to 'bookstack'@'%';
         FLUSH PRIVILEGES;
+      init-booklore.sql: |
+        CREATE DATABASE IF NOT EXISTS booklore;
+        CREATE USER IF NOT EXISTS 'booklore'@'%' IDENTIFIED BY '${BOOKLORE_MARIADB_PASSWORD}';
+        GRANT ALL PRIVILEGES ON booklore.* to 'booklore'@'%';
+        FLUSH PRIVILEGES;

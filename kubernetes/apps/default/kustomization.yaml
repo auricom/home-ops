@@ -9,6 +9,7 @@ resources:
   - ./atuin/ks.yaml
   - ./authelia/ks.yaml
   - ./bazarr/ks.yaml
+  - ./booklore/ks.yaml
   - ./bookstack/ks.yaml
   - ./calibre/ks.yaml
   # - ./clusterpolicies/ks.yaml
