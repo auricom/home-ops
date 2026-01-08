@@ -7,7 +7,7 @@ spec:
   rootPasswordSecretKeyRef:
     name: mariadb-secret
     key: MARIADB_ROOT_PASSWORD
-  replicas: 3
+  replicas: 2
   replication:
     enabled: true
     primary:
@@ -17,8 +17,9 @@ spec:
         name: mariadb-secret
         key: MARIADB_REPL_PASSWORD
   storage:
-    size: 10Gi
-    storageClassName: openebs-hostpath
+    size: 15Gi
+    # storageClassName: openebs-hostpath
+    storageClassName: rook-ceph-block
   port: 3306
   myCnf: |
     [mariadb]
@@ -43,14 +44,14 @@ spec:
       secretAccessKeySecretKeyRef:
         name: mariadb-secret
         key: S3_ACCESS_KEY_ID
-    stagingStorage:
-      persistentVolumeClaim:
-        resources:
-          requests:
-            storage: 1Gi
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: openebs-hostpath
+    # stagingStorage:
+    #   persistentVolumeClaim:
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
+    #     accessModes:
+    #       - ReadWriteOnce
+    #     storageClassName: openebs-hostpath
   resources:
     requests:
       cpu: 10m
