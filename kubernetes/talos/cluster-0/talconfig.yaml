@@ -201,6 +201,12 @@ controlPlane:
     - |-
       cluster:
         allowSchedulingOnControlPlanes: true
+        apiServer:
+          admissionControl:
+            $$patch: delete
+          extraArgs:
+            feature-gates: MutatingAdmissionPolicy=true
+            runtime-config: admissionregistration.k8s.io/v1beta1=true
         controllerManager:
           extraArgs:
             bind-address: 0.0.0.0
@@ -224,11 +230,6 @@ controlPlane:
                         - maxSkew: 1
                           topologyKey: kubernetes.io/hostname
                           whenUnsatisfiable: ScheduleAnyway
-
-    # Disable default API server admission plugins.
-    - |-
-      - op: remove
-        path: /cluster/apiServer/admissionControl
 
     # Allow tuppr
     - |-
