@@ -11,7 +11,6 @@ resources:
   - ./bazarr/ks.yaml
   - ./booklore/ks.yaml
   - ./bookstack/ks.yaml
-  - ./calibre/ks.yaml
   # - ./clusterpolicies/ks.yaml
   - ./ephemera/ks.yaml
   - ./esphome/ks.yaml
