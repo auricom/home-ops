@@ -12,8 +12,11 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
+    - name: volsync
+      namespace: volsync
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/prowlarr/app
   postBuild:

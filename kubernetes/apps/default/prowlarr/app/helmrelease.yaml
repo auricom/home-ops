@@ -62,6 +62,13 @@ spec:
                 cpu: 100m
               limits:
                 memory: 1Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: *app
@@ -80,12 +87,14 @@ spec:
               - name: *app
                 port: *port
     persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /config
       tmpfs:
         type: emptyDir
         advancedMounts:
           prowlarr:
             app:
-              - path: /config
-                subPath: config
               - path: /tmp
                 subPath: tmp
