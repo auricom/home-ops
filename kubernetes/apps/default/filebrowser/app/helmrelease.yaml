@@ -88,20 +88,41 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config
-      calibre:
+      booklore:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/vol1/apps/calibre
+        path: /mnt/vol1/apps/booklore
         globalMounts:
-          - path: /mnt/vol1/apps/calibre
-      sharry:
+          - path: /mnt/vol1/apps/booklore
+      bookstack:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/vol1/apps/sharry
+        path: /mnt/vol1/apps/bookstack
         globalMounts:
-          - path: /mnt/vol1/apps/sharry
+          - path: /mnt/vol1/apps/bookstack
+      homelab-backups:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/apps/homelab_backups
+        globalMounts:
+          - path: /mnt/vol1/apps/homelab_backups
+      paperless:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/apps/paperless
+        globalMounts:
+          - path: /mnt/vol1/apps/paperless
+      playnite:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/apps/playnite
+        globalMounts:
+          - path: /mnt/vol1/apps/playnite
       downloads:
         enabled: true
         type: nfs
