@@ -20,9 +20,9 @@ spec:
   values:
     defaultPodOptions:
       securityContext:
-        runAsUser: 65532
-        runAsGroup: 65532
-        fsGroup: 65532
+        runAsUser: 950
+        runAsGroup: 950
+        fsGroup: 950
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       resilio-claude:
