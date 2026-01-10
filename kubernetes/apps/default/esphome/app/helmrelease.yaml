@@ -144,6 +144,7 @@ spec:
         suffix: buildcache
         size: 50Gi
         accessMode: ReadWriteOnce
+        storageClass: openebs-hostpath
         advancedMounts:
           esphome:
             app:
