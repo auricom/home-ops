@@ -21,10 +21,10 @@ spec:
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        # fsGroup: 1000
+        # fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: false
     controllers:
       lychee:
@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lycheeorg/lychee
-              tag: v7.0.1@sha256:c109a65be24498fca32c147970c4cd655ca60fb70141a2f795b0bab39fd76bf0
+              tag: v7.1.0@sha256:50418b69997fa91a83d9c08c4045b10bf668f7afeac00d826eeb54abd5c0f6e3
             env:
               APP_TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
