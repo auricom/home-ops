@@ -21,10 +21,10 @@ spec:
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
-        # runAsUser: 1000
-        # runAsGroup: 1000
-        # fsGroup: 1000
-        # fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: false
     controllers:
       lychee:
@@ -47,8 +47,8 @@ spec:
               CLOCKWORK_ENABLE: false
               APP_URL: https://lychee.${SECRET_EXTERNAL_DOMAIN}
               DB_CONNECTION: sqlite
-              # PUID: 1000
-              # PGID: 1000
+              PUID: 0
+              PGID: 0
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
