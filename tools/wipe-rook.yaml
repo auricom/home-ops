@@ -1,148 +1,148 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: my-privileged-namespace
-  labels:
-    pod-security.kubernetes.io/enforce: privileged
-    pod-security.kubernetes.io/enforce-version: latest
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: disk-wipe-talos-node-1
-  namespace: my-privileged-namespace
-spec:
-  restartPolicy: Never
-  nodeName: talos-node-2
-  containers:
-    - name: disk-wipe
-      image: rook/ceph:v1.13.2
-      securityContext:
-        privileged: true
-      command:
-        [
-          "/bin/sh",
-          "-c",
-          "echo 'Starting disk operations on /dev/sda'; \
-          echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
-          echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
-          echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
-          echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
-          echo 'Disk operations completed on /dev/sda'"
-        ]
-      volumeMounts:
-        - mountPath: /dev
-          name: dev
-  securityContext:
-    runAsUser: 0
-    runAsGroup: 0
-  volumes:
-    - name: dev
-      hostPath:
-        path: /dev
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: disk-wipe-talos-node-2
-  namespace: my-privileged-namespace
-spec:
-  restartPolicy: Never
-  nodeName: talos-node-2
-  containers:
-    - name: disk-wipe
-      image: rook/ceph:v1.13.2
-      securityContext:
-        privileged: true
-      command:
-        [
-          "/bin/sh",
-          "-c",
-          "echo 'Starting disk operations on /dev/sda'; \
-          echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
-          echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
-          echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
-          echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
-          echo 'Disk operations completed on /dev/sda'"
-        ]
-      volumeMounts:
-        - mountPath: /dev
-          name: dev
-  securityContext:
-    runAsUser: 0
-    runAsGroup: 0
-  volumes:
-    - name: dev
-      hostPath:
-        path: /dev
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: disk-wipe-talos-node-3
-  namespace: my-privileged-namespace
-spec:
-  restartPolicy: Never
-  nodeName: talos-node-3
-  containers:
-    - name: disk-wipe
-      image: rook/ceph:v1.13.2
-      securityContext:
-        privileged: true
-      command:
-        [
-          "/bin/sh",
-          "-c",
-          "echo 'Starting disk operations on /dev/sda'; \
-          echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
-          echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
-          echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
-          echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
-          echo 'Disk operations completed on /dev/sda'"
-        ]
-      volumeMounts:
-        - mountPath: /dev
-          name: dev
-  securityContext:
-    runAsUser: 0
-    runAsGroup: 0
-  volumes:
-    - name: dev
-      hostPath:
-        path: /dev
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: disk-wipe-talos-node-4
-  namespace: my-privileged-namespace
-spec:
-  restartPolicy: Never
-  nodeName: talos-node-4
-  containers:
-    - name: disk-wipe
-      image: rook/ceph:v1.13.2
-      securityContext:
-        privileged: true
-      command:
-        [
-          "/bin/sh",
-          "-c",
-          "echo 'Starting disk operations on /dev/sda'; \
-          echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
-          echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
-          echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
-          echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
-          echo 'Disk operations completed on /dev/sda'"
-        ]
-      volumeMounts:
-        - mountPath: /dev
-          name: dev
-  securityContext:
-    runAsUser: 0
-    runAsGroup: 0
-  volumes:
-    - name: dev
-      hostPath:
-        path: /dev
+# ---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: my-privileged-namespace
+#   labels:
+#     pod-security.kubernetes.io/enforce: privileged
+#     pod-security.kubernetes.io/enforce-version: latest
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: disk-wipe-talos-node-1
+#   namespace: my-privileged-namespace
+# spec:
+#   restartPolicy: Never
+#   nodeName: talos-node-1
+#   containers:
+#     - name: disk-wipe
+#       image: rook/ceph:v1.13.2
+#       securityContext:
+#         privileged: true
+#       command:
+#         [
+#           "/bin/sh",
+#           "-c",
+#           "echo 'Starting disk operations on /dev/sda'; \
+#           echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
+#           echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
+#           echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
+#           echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
+#           echo 'Disk operations completed on /dev/sda'"
+#         ]
+#       volumeMounts:
+#         - mountPath: /dev
+#           name: dev
+#   securityContext:
+#     runAsUser: 0
+#     runAsGroup: 0
+#   volumes:
+#     - name: dev
+#       hostPath:
+#         path: /dev
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: disk-wipe-talos-node-2
+#   namespace: my-privileged-namespace
+# spec:
+#   restartPolicy: Never
+#   nodeName: talos-node-2
+#   containers:
+#     - name: disk-wipe
+#       image: rook/ceph:v1.13.2
+#       securityContext:
+#         privileged: true
+#       command:
+#         [
+#           "/bin/sh",
+#           "-c",
+#           "echo 'Starting disk operations on /dev/sda'; \
+#           echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
+#           echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
+#           echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
+#           echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
+#           echo 'Disk operations completed on /dev/sda'"
+#         ]
+#       volumeMounts:
+#         - mountPath: /dev
+#           name: dev
+#   securityContext:
+#     runAsUser: 0
+#     runAsGroup: 0
+#   volumes:
+#     - name: dev
+#       hostPath:
+#         path: /dev
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: disk-wipe-talos-node-3
+#   namespace: my-privileged-namespace
+# spec:
+#   restartPolicy: Never
+#   nodeName: talos-node-3
+#   containers:
+#     - name: disk-wipe
+#       image: rook/ceph:v1.13.2
+#       securityContext:
+#         privileged: true
+#       command:
+#         [
+#           "/bin/sh",
+#           "-c",
+#           "echo 'Starting disk operations on /dev/sda'; \
+#           echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
+#           echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
+#           echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
+#           echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
+#           echo 'Disk operations completed on /dev/sda'"
+#         ]
+#       volumeMounts:
+#         - mountPath: /dev
+#           name: dev
+#   securityContext:
+#     runAsUser: 0
+#     runAsGroup: 0
+#   volumes:
+#     - name: dev
+#       hostPath:
+#         path: /dev
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: disk-wipe-talos-node-4
+#   namespace: my-privileged-namespace
+# spec:
+#   restartPolicy: Never
+#   nodeName: talos-node-4
+#   containers:
+#     - name: disk-wipe
+#       image: rook/ceph:v1.13.2
+#       securityContext:
+#         privileged: true
+#       command:
+#         [
+#           "/bin/sh",
+#           "-c",
+#           "echo 'Starting disk operations on /dev/sda'; \
+#           echo 'Running sgdisk --zap-all /dev/sda'; time sgdisk --zap-all /dev/sda; \
+#           echo 'Running dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda'; time dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sda; \
+#           echo 'Running blkdiscard /dev/sda'; time blkdiscard /dev/sda; \
+#           echo 'Running partprobe /dev/sda'; time partprobe /dev/sda; \
+#           echo 'Disk operations completed on /dev/sda'"
+#         ]
+#       volumeMounts:
+#         - mountPath: /dev
+#           name: dev
+#   securityContext:
+#     runAsUser: 0
+#     runAsGroup: 0
+#   volumes:
+#     - name: dev
+#       hostPath:
+#         path: /dev
