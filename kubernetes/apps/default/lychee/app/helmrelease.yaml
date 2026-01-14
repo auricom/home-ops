@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lycheeorg/lychee
-              tag: v7.1.0@sha256:50418b69997fa91a83d9c08c4045b10bf668f7afeac00d826eeb54abd5c0f6e3
+              tag: v7.1.1@sha256:f5042df4051d016a7cc1ceea3b6aab3138a33f79f4f1b1d9943757f3bd0eeba5
             env:
               APP_TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
