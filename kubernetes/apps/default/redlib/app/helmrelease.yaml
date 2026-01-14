@@ -28,6 +28,8 @@ spec:
               # tag: rolling@sha256:4d2655db02165605945fa8d8938f02d8b8b0f0dc0e30a0bb56a1481813ed4454
               repository: git.ptr.moe/baalajimaestro/redlib
               tag: latest@sha256:43edfc71d7e3c91c7fad617881dc7c279c382981aefdf466906308a859651886
+            env:
+              REDLIB_ARTI_PATH: /tmp/arti
             probes:
               liveness: &probes
                 enabled: true
@@ -64,3 +66,9 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+
+    persistence:
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp/arti
