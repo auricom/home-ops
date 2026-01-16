@@ -18,6 +18,14 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
     controllers:
       redlib:
         strategy: RollingUpdate

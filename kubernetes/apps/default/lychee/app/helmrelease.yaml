@@ -20,12 +20,12 @@ spec:
   values:
     defaultPodOptions:
       enableServiceLinks: false
-      # securityContext:
-      #   runAsUser: 0
-      #   runAsGroup: 0
-      #   fsGroup: 0
-      #   fsGroupChangePolicy: OnRootMismatch
-      #   runAsNonRoot: false
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
+        fsGroup: 33
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
     controllers:
       lychee:
         annotations:
