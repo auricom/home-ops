@@ -20,12 +20,12 @@ spec:
   values:
     defaultPodOptions:
       enableServiceLinks: false
-      securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 0
-        fsGroupChangePolicy: OnRootMismatch
-        runAsNonRoot: false
+      # securityContext:
+      #   runAsUser: 0
+      #   runAsGroup: 0
+      #   fsGroup: 0
+      #   fsGroupChangePolicy: OnRootMismatch
+      #   runAsNonRoot: false
     controllers:
       lychee:
         annotations:
@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lycheeorg/lychee
-              tag: v7.1.1@sha256:f5042df4051d016a7cc1ceea3b6aab3138a33f79f4f1b1d9943757f3bd0eeba5
+              tag: v7.1.2@sha256:6819e9b393d80446fd697ba77426c3b98ae9ffd4faf118678efcfde3d39d167e
             env:
               APP_TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
@@ -47,8 +47,9 @@ spec:
               CLOCKWORK_ENABLE: false
               APP_URL: https://lychee.${SECRET_EXTERNAL_DOMAIN}
               DB_CONNECTION: sqlite
-              PUID: 0
-              PGID: 0
+              DB_DATABASE: storage/database/database.sqlite
+              # PUID: 0
+              # PGID: 0
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
@@ -104,6 +105,8 @@ spec:
         advancedMounts:
           lychee:
             app:
+              - path: /app/storage/database
+                subPath: db
               - path: /app/public/uploads
                 subPath: uploads
               - path: /app/storage/app
