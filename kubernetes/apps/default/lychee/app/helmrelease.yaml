@@ -20,12 +20,12 @@ spec:
   values:
     defaultPodOptions:
       enableServiceLinks: false
-      securityContext:
-        runAsUser: 33
-        runAsGroup: 33
-        fsGroup: 33
-        fsGroupChangePolicy: OnRootMismatch
-        runAsNonRoot: true
+      # securityContext:
+      #   runAsUser: 33
+      #   runAsGroup: 33
+      #   fsGroup: 33
+      #   fsGroupChangePolicy: OnRootMismatch
+      #   runAsNonRoot: true
     controllers:
       lychee:
         annotations:
@@ -102,17 +102,20 @@ spec:
     persistence:
       config:
         existingClaim: *app
+        mode: 2775
         advancedMounts:
           lychee:
             app:
               - path: /app/storage/database
                 subPath: db
+
               - path: /app/public/uploads
                 subPath: uploads
               - path: /app/storage/app
                 subPath: app
       tmpfs:
         type: emptyDir
+        defaultMode: 2775
         advancedMounts:
           lychee:
             app:
