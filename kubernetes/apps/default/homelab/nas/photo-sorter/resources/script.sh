@@ -17,13 +17,15 @@ log_message() {
 cleanup_orphans() {
     log_message "Cleaning up orphaned symlinks."
 
-    # Find all broken symlinks in SORT_DEST_DIR
-    fd --follow --type symlink '' "${SORT_DEST_DIR}" | while IFS= read -r symlink; do
-        # Check if the symlink is broken
-        if [[ ! -e "${symlink}" ]]; then
-            echo "Removing broken symlink newer than 6 months: ${symlink}"
+    # Find all symlinks in SORT_DEST_DIR (without following them)
+    find "${SORT_DEST_DIR}" -type l | while IFS= read -r symlink; do
+        # Check if the symlink is broken by reading the target and checking if it exists
+        # Use readlink to get the target, then check if it exists
+        target=$(readlink -f "${symlink}" 2>/dev/null)
+        if [[ -z "${target}" ]] || [[ ! -e "${target}" ]]; then
+            echo "Removing broken symlink: ${symlink}"
             rm "${symlink}"  # Remove the broken symlink
-            log_message "Removed symlink ${symlink}."
+            log_message "Removed broken symlink ${symlink}."
         fi
     done
 }
