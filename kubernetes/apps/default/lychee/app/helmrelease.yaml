@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lycheeorg/lychee
-              tag: v7.1.2@sha256:6819e9b393d80446fd697ba77426c3b98ae9ffd4faf118678efcfde3d39d167e
+              tag: master@sha256:f2b84162ecbf76df0f079a14d50fa758c1b62a62cdc55736ec3bd42339564f36
             env:
               APP_TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
@@ -102,7 +102,6 @@ spec:
     persistence:
       config:
         existingClaim: *app
-        mode: 2775
         advancedMounts:
           lychee:
             app:
@@ -115,7 +114,6 @@ spec:
                 subPath: app
       tmpfs:
         type: emptyDir
-        defaultMode: 2775
         advancedMounts:
           lychee:
             app:
