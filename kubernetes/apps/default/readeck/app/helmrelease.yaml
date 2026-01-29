@@ -32,7 +32,7 @@ spec:
               READECK_LOG_LEVEL: info
               READECK_DEV_MODE: "false"
               READECK_SERVER_HOST: 0.0.0.0
-              READECK_SERVER_PORT: &port "8080"
+              READECK_SERVER_PORT: &port 8080
               READECK_SERVER_PREFIX: /
               READECK_USE_X_FORWARDED: "true"
               READECK_ALLOWED_HOSTS: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
