@@ -38,6 +38,19 @@ spec:
             image:
               repository: ghcr.io/calibrain/shelfmark
               tag: v1.0.3@sha256:85adbbce1eb36ff32bd9ff36fbbd1720a7bd00ca1b592427b9a07b4b3f198a3d
+            command:
+              - gunicorn
+            args:
+              # - --log-level=debug
+              - --access-logfile=-
+              - --error-logfile=-
+              - --worker-class=geventwebsocket.gunicorn.workers.GeventWebSocketWorker
+              - --workers=1
+              - -t
+              - "300"
+              - -b
+              - 0.0.0.0:8084
+              - shelfmark.main:app
             env:
               CACHE_DIR: /cache
               INGEST_DIR: /booklore-ingest
@@ -52,7 +65,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    port: &port 8083
+                    port: &port 8084
                     path: /login
               readiness: *probes
             resources:
@@ -69,7 +82,7 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["calibre.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
             namespace: network

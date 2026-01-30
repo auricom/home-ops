@@ -41,7 +41,9 @@ spec:
                 result=$(kubectl get pod --selector app.kubernetes.io/name=lychee --output custom-columns=:metadata.name --namespace default)
                 LYCHEE_POD=$(echo $result | awk '{ print $NF }')
                 if [[ $LYCHEE_POD == *"lychee"* ]]; then
-                  kubectl exec --stdin --container app $LYCHEE_POD -- php artisan lychee:sync /mnt/storage/photo/Gallery/ --skip_duplicates=1
+                  kubectl exec --stdin --container app $LYCHEE_POD -- chmod -R 775 /app/storage/tmp/
+                  kubectl exec --stdin --container app $LYCHEE_POD -- chmod -R 775 /app/public/uploads/
+                  kubectl exec --stdin --container app $LYCHEE_POD -- php artisan lychee:sync /mnt/storage/photo/Gallery/* --skip_duplicates=1
                 else
                   echo "lychee deployment not found"
                   exit 1
