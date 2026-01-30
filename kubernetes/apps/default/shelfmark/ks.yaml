@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app ephemera
+  name: &app shelfmark
   namespace: &namespace default
 spec:
   targetNamespace: *namespace
@@ -13,7 +13,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/default/ephemera/app
+  path: ./kubernetes/apps/default/shelfmark/app
   components:
     - ../../../../components/gatus/guarded
   # - ../../../../components/nfs-scaler
