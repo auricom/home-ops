@@ -35,8 +35,14 @@ spec:
             image:
               repository: ghcr.io/lycheeorg/lychee
               tag: v7.3.1@sha256:626d72fe208face3a576ab71ec35b5bfb0ac21cbfaa884660bd5ea1bb3244371
+            command: [sh, -c]
+            args: |
+              chmod -R 0775 /app/public/uploads || true
+              chmod -R 0775 /app/storage/tmp || true
+
+              exec /usr/local/bin/entrypoint.sh
             env:
-              APP_TIMEZONE: ${TIMEZONE}
+              TIMEZONE: ${TIMEZONE}
               APP_NAME: Lychee
               APP_ENV: production
               APP_DEBUG: false
@@ -53,6 +59,7 @@ spec:
               REDIS_HOST: dragonfly.database.svc.cluster.local.
               REDIS_PORT: 6379
               TRUSTED_PROXIES: "*"
+              LYCHEE_MAX_EXECUTION_TIME: 0
             envFrom:
               - secretRef:
                   name: lychee-secret
@@ -107,7 +114,6 @@ spec:
             app:
               - path: /app/storage/database
                 subPath: db
-
               - path: /app/public/uploads
                 subPath: uploads
               - path: /app/storage/app
