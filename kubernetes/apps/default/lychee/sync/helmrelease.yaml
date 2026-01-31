@@ -43,7 +43,7 @@ spec:
                 if [[ $LYCHEE_POD == *"lychee"* ]]; then
                   kubectl exec --stdin --container app $LYCHEE_POD -- chmod -R 775 /app/storage/tmp/
                   kubectl exec --stdin --container app $LYCHEE_POD -- chmod -R 775 /app/public/uploads/
-                  kubectl exec --stdin --container app $LYCHEE_POD -- php artisan lychee:sync /mnt/storage/photo/Gallery/* --skip_duplicates=1
+                  kubectl exec --stdin --container app $LYCHEE_POD -- /bin/sh -c 'for item in /mnt/storage/photo/Gallery/*; do php artisan lychee:sync "$item" --skip_duplicates=1; done'
                 else
                   echo "lychee deployment not found"
                   exit 1
