@@ -78,7 +78,7 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 180
                   timeoutSeconds: 1
                   periodSeconds: 10
                   failureThreshold: 30
