@@ -29,29 +29,14 @@ spec:
       tandoor:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          migrations:
-            image:
-              repository: vabene1111/recipes
-              tag: 2.4.1@sha256:4ab9052b3f25bbb1185349282720b176b95973fc93e565eac0dc991ce695a19b
-            envFrom: &envFrom
-              - secretRef:
-                  name: tandoor-secret
-            command:
-            - sh
-            - -c
-            - |
-              set -e
-              source /opt/recipes/venv/bin/activate
-              echo "Updating database"
-              python3 /opt/recipes/manage.py migrate
-              python3 /opt/recipes/manage.py collectstatic --noinput
         containers:
           app:
             image:
               repository: vabene1111/recipes
               tag: 2.4.1@sha256:4ab9052b3f25bbb1185349282720b176b95973fc93e565eac0dc991ce695a19b
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: tandoor-secret
             env:
               DEBUG: "0"
               ALLOWED_HOSTS: "*"
@@ -63,17 +48,6 @@ spec:
               FRACTION_PREF_DEFAULT: "0"
               COMMENT_PREF_DEFAULT: "1"
               SHOPPING_MIN_AUTOSYNC_INTERVAL: "5"
-            command:
-              - /opt/recipes/venv/bin/gunicorn
-              - -b
-              - :8888
-              - --access-logfile
-              - "-"
-              - --error-logfile
-              - "-"
-              - --log-level
-              - INFO
-              - recipes.wsgi
             probes:
               liveness: &probes
                 enabled: true
