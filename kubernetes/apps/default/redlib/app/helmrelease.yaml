@@ -20,24 +20,24 @@ spec:
   values:
     defaultPodOptions:
       enableServiceLinks: false
-      securityContext:
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
-        fsGroupChangePolicy: OnRootMismatch
-        runAsNonRoot: true
+      # securityContext:
+      #   runAsUser: 65534
+      #   runAsGroup: 65534
+      #   fsGroup: 65534
+      #   fsGroupChangePolicy: OnRootMismatch
+      #   runAsNonRoot: true
     controllers:
       redlib:
         strategy: RollingUpdate
         containers:
           app:
             image:
-              # repository: ghcr.io/auricom/redlib
-              # tag: rolling@sha256:4d2655db02165605945fa8d8938f02d8b8b0f0dc0e30a0bb56a1481813ed4454
-              repository: git.ptr.moe/baalajimaestro/redlib
-              tag: latest@sha256:43edfc71d7e3c91c7fad617881dc7c279c382981aefdf466906308a859651886
-            env:
-              REDLIB_ARTI_PATH: /tmp/arti
+              repository: ghcr.io/auricom/redlib
+              tag: rolling@sha256:bf3ae56923e1f6fbfbc3240ac9d6bbc86c52a8003a29c0ab48e9db394579766b
+              # repository: git.ptr.moe/baalajimaestro/redlib
+              # tag: latest@sha256:43edfc71d7e3c91c7fad617881dc7c279c382981aefdf466906308a859651886
+            # env:
+            #   REDLIB_ARTI_PATH: /tmp/arti
             probes:
               liveness: &probes
                 enabled: true
@@ -75,8 +75,8 @@ spec:
               - name: *app
                 port: *port
 
-    persistence:
-      tmpfs:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp/arti
+    # persistence:
+    #   tmpfs:
+    #     type: emptyDir
+    #     globalMounts:
+    #       - path: /tmp/arti
