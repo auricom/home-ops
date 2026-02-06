@@ -10,44 +10,25 @@ spec:
     name: app-template
   interval: 30m
   values:
-    configMaps:
-      config:
-        data:
-          mosquitto-0.conf: |
-            listener 1883
-            allow_anonymous true
-            log_type error
-            log_type warning
-          mosquitto-1.conf: |
-            listener 1883
-            allow_anonymous true
-            log_type error
-            log_type warning
-            connection mosquitto-bridge
-            address mosquitto-0.mosquitto.database.svc.cluster.local:1883
-            clientid mosquitto-bridge
-            topic # both 0
-
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       mosquitto:
-        type: statefulset
-        replicas: 2
-        pod:
-          securityContext:
-            runAsUser: 2000
-            runAsGroup: 2000
-            runAsNonRoot: true
-            fsGroup: 2000
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
               repository: public.ecr.aws/docker/library/eclipse-mosquitto
-              tag: 2.0.22
-            command:
-              - sh
-              - -c
-            args:
-              - exec mosquitto -c "/config/$(hostname).conf"
+              tag: 2.0.22@sha256:6852da90a65dfff7aa3a1c8b249e92bb83c17ea8bbcce56bedff8707332a1a29
+            env:
+              TZ: ${TIMEZONE}
             probes:
               liveness:
                 enabled: true
@@ -76,10 +57,13 @@ spec:
 
     persistence:
       config:
+        existingClaim: "{{ .Release.Name }}"
+      config-file:
         type: configMap
-        identifier: config
+        name: "{{ .Release.Name }}-configmap"
         globalMounts:
-          - path: /config
+          - path: /mosquitto/config/mosquitto.conf
+            subPath: mosquitto.conf
 
     service:
       app:
