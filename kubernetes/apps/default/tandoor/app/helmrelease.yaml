@@ -73,7 +73,7 @@ spec:
           nginx:
             image:
               repository: nginxinc/nginx-unprivileged
-              tag: 1.29.3-alpine@sha256:7445ca31ca290543d404a36051a0dfe5575913381d5646e62b9ac4c3f8afef8f
+              tag: 1.29.5-alpine@sha256:a731ba0194833ae0f80994a4ae08988aa95fdcc88f4f991340ce160770cf2b6d
             resources:
               requests:
                 cpu: 100m
