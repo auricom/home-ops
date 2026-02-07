@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/analogj/scrutiny
-              tag: master-web@sha256:125a09bebd536bd808bd5a0b69aac15128b8ccf1fafa92b2931b667076bf4eb0
+              tag: master-web@sha256:7f2423d53df13ca4c789c67dcb63a6afae35c6d0170b8576d0aa64468665a4d8
             env:
               TZ: ${TIMEZONE}
               SCRUTINY_WEB_INFLUXDB_HOST: influx.database.svc.cluster.local
