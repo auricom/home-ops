@@ -43,7 +43,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /status
                     port: &port 80
                   initialDelaySeconds: 30
                   periodSeconds: 10
