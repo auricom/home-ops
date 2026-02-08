@@ -24,8 +24,10 @@ spec:
           port: 8888
       path: /api/authz/ext-authz/
       headersToBackend:
-        - 'remote-*'
-        - 'authelia-*'
+        - Remote-User
+        - Remote-Groups
+        - Remote-Name
+        - Remote-Email
   targetRefs:
     - group: ${EXT_AUTH_GROUP:-gateway.networking.k8s.io}
       kind: ${EXT_AUTH_KIND:-HTTPRoute}
