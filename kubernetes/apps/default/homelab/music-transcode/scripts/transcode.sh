@@ -92,7 +92,7 @@ checkForVariable TRANSCODE_INPUT_DIR
 checkForVariable TRANSCODE_OUTPUT_DIR
 
 # Set defaults if not defined
-export TRANSCODE_DB="${TRANSCODE_DB:-${TRANSCODE_OUTPUT_DIR}.transcode}"
+export TRANSCODE_DB="${TRANSCODE_DB:-${TRANSCODE_OUTPUT_DIR}/.transcode}"
 export TRANSCODE_FREAC_BIN="${TRANSCODE_FREAC_BIN:-/app/freaccmd}"
 export TRANSCODE_COVER_EXTENSIONS="${TRANSCODE_COVER_EXTENSIONS:-png jpg}"
 export TRANSCODE_MUSIC_EXTENSIONS="${TRANSCODE_MUSIC_EXTENSIONS:-flac opus mp3 ogg wma m4a wav}"

@@ -52,8 +52,8 @@ spec:
                     wget "https://hc-ping.com/$HEALTHCHECKS_ID" -T 10 -t 5 -O /dev/null
                 fi
             env:
-              TRANSCODE_INPUT_DIR: /mnt/music/
-              TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded/
+              TRANSCODE_INPUT_DIR: /mnt/music
+              TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded
               TRANSCODE_FREAC_BIN: /app/freaccmd
             envFrom:
               - secretRef:
