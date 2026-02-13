@@ -1,7 +1,7 @@
 ---
 connectivity:
   checker:
-    target: 192.168.169.100:53
+    target: 1.1.1.1:53
     interval: 1m
 
 endpoints:
