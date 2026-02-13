@@ -1,7 +1,7 @@
 ---
 connectivity:
   checker:
-    target: 192.168.8.1:53
+    target: 192.168.169.100:53
     interval: 1m
 
 endpoints:
@@ -17,7 +17,6 @@ endpoints:
       - type: pushover
 
 metrics: true
-
 
 storage:
   type: sqlite
