@@ -17,6 +17,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_SUBDOMAIN: docs
   prune: true
   retryInterval: 2m
   sourceRef:
