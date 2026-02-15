@@ -35,6 +35,7 @@ resources:
   - ./lychee/ks.yaml
   - ./mesh-organizer/ks.yaml
   - ./navidrome/ks.yaml
+  - ./openclaw/ks.yaml
   - ./opengist/ks.yaml
   - ./paperless/ks.yaml
   - ./prowlarr/ks.yaml
