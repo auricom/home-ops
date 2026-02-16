@@ -34,9 +34,7 @@ resources:
   - ./lms/ks.yaml
   - ./lychee/ks.yaml
   - ./mesh-organizer/ks.yaml
-  - ./nanobot/ks.yaml
   - ./navidrome/ks.yaml
-  - ./openclaw/ks.yaml
   - ./opengist/ks.yaml
   - ./paperless/ks.yaml
   - ./prowlarr/ks.yaml
@@ -60,4 +58,5 @@ resources:
   - ./vaultwarden/ks.yaml
   - ./vikunja/ks.yaml
   - ./webhook/ks.yaml
+  - ./zeroclaw/ks.yaml
   - ./zigbee2mqtt/ks.yaml
