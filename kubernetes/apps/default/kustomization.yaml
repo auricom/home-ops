@@ -60,4 +60,5 @@ resources:
   - ./vaultwarden/ks.yaml
   - ./vikunja/ks.yaml
   - ./webhook/ks.yaml
+  - ./zeroclaw/ks.yaml
   - ./zigbee2mqtt/ks.yaml
