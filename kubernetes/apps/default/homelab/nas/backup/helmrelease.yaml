@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/python
-              tag: rolling@sha256:4c40ef6c628e28ee0ea6e0e7c484eff65a2850bf603b671357a1ca791c31f584
+              tag: rolling@sha256:7d05e03650c4589ef003ecae64fcdd870a31f34690b0790a36cb90af9f9486d7
             command:
               - /bin/bash
               - -c
