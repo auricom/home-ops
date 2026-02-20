@@ -41,10 +41,21 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+            startup:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /
+                  port: *port
+                initialDelaySeconds: 300
+                timeoutSeconds: 1
+                periodSeconds: 10
+                failureThreshold: 30
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: [ALL]}
+              capabilities: { drop: [ALL] }
             resources:
               requests:
                 cpu: 10m
