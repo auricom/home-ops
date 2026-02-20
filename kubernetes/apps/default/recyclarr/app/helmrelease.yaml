@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/recyclarr/recyclarr
-              tag: 8.0.1@sha256:d9dcb82a2a23cb07b9c0caf7e4f8cb15b558390d953d591f5d35a68e12ff6bd7
+              tag: 8.4.0@sha256:cf1afc960655fb7a4b2b84eba851df95407e57efb71eed8d0a173254b48d8335
             env:
               TZ: ${TIMEZONE}
             envFrom:
