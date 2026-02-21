@@ -32,14 +32,14 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           app:
-            image:
+            image: &image
               repository: ghcr.io/auricom/zeroclaw
               tag: 0.1.4@sha256:a4ff8341345613fe4941d7e5bb99ab73dd4b2f59d30c89060bf7f54df0c15fb7
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
                   name: zeroclaw-secret
-            probes:
-              liveness: &probes
+            probes: &probes
+              liveness: &probe
                 enabled: true
                 custom: true
                 spec:
@@ -50,21 +50,28 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-              readiness: *probes
+              readiness: *probe
               startup:
                 enabled: false
-            securityContext:
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
                 drop:
                   - ALL
-            resources:
+            resources: &resources
               requests:
                 cpu: 100m
                 memory: 400Mi
               limits:
                 memory: 1Gi
+          channel:
+            image: *image
+            envFrom: *envFrom
+            probes: *probes
+            securityContext: *securityContext
+            resources: *resources
+            command: [zeroclaw, channel, start]
           code-server:
             image:
               repository: ghcr.io/coder/code-server
@@ -129,6 +136,8 @@ spec:
         advancedMounts:
           zeroclaw:
             app:
+              - path: /zeroclaw-data
+            channel:
               - path: /zeroclaw-data
             code-server:
               - path: /config
