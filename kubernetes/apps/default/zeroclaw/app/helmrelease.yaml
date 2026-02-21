@@ -34,7 +34,7 @@ spec:
           app:
             image: &image
               repository: ghcr.io/auricom/zeroclaw
-              tag: 0.1.4@sha256:a4ff8341345613fe4941d7e5bb99ab73dd4b2f59d30c89060bf7f54df0c15fb7
+              tag: 0.1.4@sha256:6f7ff997e2fde8eea2768851685cd681b341a498ff677c6c8e7bdeeae61dfd9f
             envFrom: &envFrom
               - secretRef:
                   name: zeroclaw-secret
