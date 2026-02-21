@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app zeroclaw-sync-agents
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      zeroclaw-sync-agents:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "0 */6 * * *"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/auricom/kubectl
+              tag: 1.35@sha256:c2fcb851d86167c71cedd0ca0fe9b9715ead0bc51a4e62537fe18342b00bd144
+            command:
+              - /bin/bash
+              - -c
+              - |
+                #!/bin/bash
+
+                set -o errexit
+                set -o nounset
+
+                result=$(kubectl get pod --selector app.kubernetes.io/name=zeroclaw --output custom-columns=:metadata.name --namespace default)
+                ZEROCLAW_POD=$(echo $result | awk '{ print $NF }')
+                if [[ $ZEROCLAW_POD == *"zeroclaw"* ]]; then
+                  kubectl exec $ZEROCLAW_POD -c app --namespace default -- sh -c '
+                    if [ -d /zeroclaw-data/workspace/.auricom/agents/.git ]; then
+                      git -C /zeroclaw-data/workspace/.auricom/agents pull
+                    else
+                      mkdir -p /zeroclaw-data/workspace/.auricom
+                      git clone https://github.com/auricom/agents /zeroclaw-data/workspace/.auricom/agents
+                    fi
+                  '
+                else
+                  echo "zeroclaw deployment not found"
+                  exit 1
+                fi
+    service:
+      app:
+        controller: *app
+        enabled: false
+    serviceAccount:
+      zeroclaw-sync-agents: {}
+    rbac:
+      roles:
+        zeroclaw-sync-agents:
+          type: ClusterRole
+          rules:
+            - apiGroups: [""]
+              resources: ["pods", "pods/log", "pods/exec", "pods/ephemeralcontainers"]
+              verbs: ["get", "list", "create", "update", "patch"]
+      bindings:
+        zeroclaw-sync-agents:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: zeroclaw-sync-agents
+          subjects:
+            - identifier: zeroclaw-sync-agents
