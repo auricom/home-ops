@@ -143,6 +143,14 @@ spec:
               - path: /config
               - path: /mnt/code-server
                 subPath: code-server
+      bot-private-key:
+        type: secret
+        name: zeroclaw-secret
+        defaultMode: 0400
+        globalMounts:
+          - path: /zeroclaw-data/workspace/.auricom/secrets/bot-private-key
+            readOnly: true
+            subPath: BOT_PRIVATE_KEY
       tmpfs:
         type: emptyDir
         advancedMounts:
