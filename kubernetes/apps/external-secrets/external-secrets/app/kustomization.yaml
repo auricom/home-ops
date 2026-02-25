@@ -6,6 +6,7 @@ namespace: kube-system
 resources:
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
+  - ./ocirepository.yaml
 configMapGenerator:
   - name: external-secrets-values
     files:

@@ -6,6 +6,7 @@ resources:
   - ./clustersecretstore.yaml
   - ./helmrelease.yaml
   - ./secret.sops.yaml
+  - ./ocirepository.yaml
 configMapGenerator:
   - name: external-secrets-stores-values
     files:
