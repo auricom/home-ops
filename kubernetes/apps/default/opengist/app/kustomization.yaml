@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: default
 resources:
   - ./helmrelease.yaml
+  - ./ocirepository.yaml
 configMapGenerator:
   - name: opengist-configmap
     files:

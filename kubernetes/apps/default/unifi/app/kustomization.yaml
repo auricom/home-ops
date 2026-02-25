@@ -7,3 +7,4 @@ resources:
   - ./certificate.yaml
   - ./helmrelease.yaml
   - ./pushsecret.yaml
+  - ./ocirepository.yaml

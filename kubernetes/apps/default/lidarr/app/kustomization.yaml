@@ -6,6 +6,7 @@ namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./ocirepository.yaml
 configMapGenerator:
   - name: lidarr-pushover
     files:
