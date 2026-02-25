@@ -6,3 +6,4 @@ resources:
   - helmrelease.yaml
   - podmonitor.yaml
   - servicemonitor.yaml
+  - ./ocirepository.yaml

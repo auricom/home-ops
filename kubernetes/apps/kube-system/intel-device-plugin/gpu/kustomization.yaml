@@ -6,3 +6,4 @@ namespace: kube-system
 resources:
   - ./gpu-rule.yaml
   - ./helmrelease.yaml
+  - ./ocirepository.yaml
