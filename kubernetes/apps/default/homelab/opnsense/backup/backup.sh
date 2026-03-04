@@ -6,6 +6,10 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
+log() {
+    gum log --time=rfc3339 --structured --level "$@"
+}
+
 # Cleanup temporary files on script exit
 trap 'rm -f "/tmp/${config_filename}"' EXIT
 
@@ -16,16 +20,16 @@ fi
 
 config_filename="$(date "+%Y%m%d-%H%M%S").xml"
 
-echo "Download Opnsense config file ..."
+log info "Download Opnsense config file ..."
 curl -fsSL \
     --user "${OPNSENSE_KEY}:${OPNSENSE_SECRET}" \
     --output "/tmp/${config_filename}" \
     "${OPNSENSE_URL}/api/core/backup/download/this"
 
-echo "Copy backup to NFS share ..."
+log info "Copy backup to NFS share ..."
 cp "/tmp/${config_filename}" "/mnt/nfs/opnsense/${config_filename}"
 
-echo "Cleaning up backups older than 90 days ..."
+log info "Cleaning up backups older than 90 days ..."
 find "/mnt/nfs/opnsense/" -name "*.xml" -type f -mtime +90 -delete
 
 # Send completion ping to healthchecks

@@ -11,21 +11,20 @@ set -o pipefail
 export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
 
-# Create a logging function
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+    gum log --time=rfc3339 --structured --level "$@"
 }
 
 checkForVariable() {
     if [[ -z "${!1:-}" ]]; then
-        log "ERROR: $1 environment variable is not set"
+        log error "$1 environment variable is not set"
         exit 1
     fi
 }
 
 cleanup() {
     local exit_code=$?
-    log "Cleaning up..."
+    log info "Cleaning up..."
     [[ -f "$TRANSCODE_INPUT_DIR/.fdignore" ]] && rm -f "$TRANSCODE_INPUT_DIR/.fdignore"
     [[ -f "$TRANSCODE_OUTPUT_DIR/.fdignore" ]] && rm -f "$TRANSCODE_OUTPUT_DIR/.fdignore"
     exit $exit_code
@@ -47,7 +46,7 @@ manage_execution_time() {
 
 fd_safe() {
     local cmd_args=("$@")
-    log "DEBUG: Executing fd command: $TRANSCODE_FD_BIN ${cmd_args[*]}"
+    log debug "Executing fd command: $TRANSCODE_FD_BIN ${cmd_args[*]}"
 
     local output
     local exit_code
@@ -57,21 +56,21 @@ fd_safe() {
         exit_code=0
         # If there's output and it's not just whitespace, log it
         if [[ -n "${output// }" ]]; then
-            log "DEBUG: fd command output: $output"
+            log debug "fd command output: $output"
         fi
     else
         exit_code=$?
-        log "ERROR: fd command failed with exit code $exit_code"
-        log "ERROR: Command was: $TRANSCODE_FD_BIN ${cmd_args[*]}"
-        log "ERROR: Working directory: $(pwd)"
-        log "ERROR: fd output/error: $output"
+        log error "fd command failed with exit code $exit_code"
+        log error "Command was: $TRANSCODE_FD_BIN ${cmd_args[*]}"
+        log error "Working directory: $(pwd)"
+        log error "fd output/error: $output"
 
         # Additional debugging info
-        log "DEBUG: TRANSCODE_FD_BIN=$TRANSCODE_FD_BIN"
-        log "DEBUG: TRANSCODE_FD_FILTERS=$TRANSCODE_FD_FILTERS"
-        log "DEBUG: Current directory contents:"
+        log debug "TRANSCODE_FD_BIN=$TRANSCODE_FD_BIN"
+        log debug "TRANSCODE_FD_FILTERS=$TRANSCODE_FD_FILTERS"
+        log debug "Current directory contents:"
         ls -la . | head -10 | while read -r line; do
-            log "DEBUG:   $line"
+            log debug "  $line"
         done
 
         exit 1
@@ -79,7 +78,7 @@ fd_safe() {
 }
 
 trap cleanup EXIT
-trap 'log "Script interrupted by user"; exit 1' INT TERM
+trap 'log warn "Script interrupted by user"; exit 1' INT TERM
 
 # Initialize variables with defaults
 export MODE_DELETE=false
@@ -110,18 +109,18 @@ fi
 # Validate directories and files
 for dir in "$TRANSCODE_INPUT_DIR" "$TRANSCODE_OUTPUT_DIR"; do
     if [[ ! -d "$dir" ]]; then
-        log "ERROR: Directory $dir does not exist"
+        log error "Directory $dir does not exist"
         exit 1
     fi
 done
 
 if [[ ! -f "$TRANSCODE_FREAC_BIN" ]]; then
-    log "ERROR: Binary $TRANSCODE_FREAC_BIN does not exist"
+    log error "Binary $TRANSCODE_FREAC_BIN does not exist"
     exit 1
 fi
 
 if [[ ! -f "$(pwd)/transcode_exclude.cfg" ]]; then
-    log "ERROR: transcode_exclude.cfg file is missing"
+    log error "transcode_exclude.cfg file is missing"
     exit 1
 fi
 
@@ -133,7 +132,7 @@ else
 fi
 
 command -v "$TRANSCODE_FD_BIN" >/dev/null 2>&1 || {
-    log "ERROR: $TRANSCODE_FD_BIN is required but not installed"
+    log error "$TRANSCODE_FD_BIN is required but not installed"
     exit 1
 }
 
@@ -146,23 +145,23 @@ mkdir -p "$TRANSCODE_DB"
 while getopts ':frcd' OPTION; do
     case "$OPTION" in
         f)
-            log "INFO: FULL MODE"
+            log info "FULL MODE"
             export TRANSCODE_FD_FILTERS=""
             ;;
         r)
-            log "INFO: DELETE MODE"
+            log info "DELETE MODE"
             export MODE_DELETE=true
             ;;
         c)
-            log "INFO: CHECKSUM MODE"
+            log info "CHECKSUM MODE"
             export MODE_CHECKSUM=true
             ;;
         d)
-            log "INFO: DRY RUN MODE"
+            log info "DRY RUN MODE"
             export MODE_DRY_RUN=true
             ;;
         ?)
-            log "script usage: $(basename "$0") [-f] [-r] [-c] [-d]"
+            log error "script usage: $(basename "$0") [-f] [-r] [-c] [-d]"
             exit 1
             ;;
     esac
@@ -173,24 +172,24 @@ transcode() {
     local output_file="$2"
     local md5_file="$3"
 
-    log "##: Processing file $input_file..."
+    log info "Processing file $input_file..."
     if [[ $MODE_DRY_RUN == false ]]; then
         local output
         if ! output=$("$TRANSCODE_FREAC_BIN" --encoder=opus --bitrate 96 "$input_file" -o "$output_file" 2>&1); then
-            log "ERROR: Transcoding failed for $input_file"
-            log "$output"
+            log error "Transcoding failed for $input_file"
+            log error "$output"
             return 1
         fi
 
         if echo "$output" | grep -q "Could not process"; then
-            log "ERROR: Could not process $input_file"
-            log "$output"
+            log error "Could not process $input_file"
+            log error "$output"
             return 1
         fi
 
         mkdir -p "$(dirname "$md5_file")"
         md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
-        log "Successfully transcoded: $input_file -> $output_file"
+        log info "Successfully transcoded: $input_file -> $output_file"
     fi
 }
 
@@ -200,16 +199,16 @@ write_cue() {
     local replacement_string="$3"
     local md5_file="$4"
 
-    log "##: writing $input_file"
+    log info "Writing $input_file"
     if [[ $MODE_DRY_RUN == false ]]; then
         if ! sed -i "/FILE/c $replacement_string" "$output_file"; then
-            log "ERROR: writing cuefile $output_file"
+            log error "Writing cuefile $output_file failed"
             return 1
         fi
 
         mkdir -p "$(dirname "$md5_file")"
         md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
-        log "Successfully wrote cue: $output_file"
+        log info "Successfully wrote cue: $output_file"
     fi
 }
 
@@ -218,16 +217,16 @@ write_jpg() {
     local output_file="$2"
     local md5_file="$3"
 
-    log "##: converting cover $input_file"
+    log info "Converting cover $input_file"
     if [[ $MODE_DRY_RUN == false ]]; then
         if ! convert "$input_file" -resize 1000 -quality 75 "$output_file"; then
-            log "ERROR: converting cover $input_file"
+            log error "Converting cover $input_file failed"
             return 1
         fi
 
         mkdir -p "$(dirname "$md5_file")"
         md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
-        log "Successfully converted cover: $input_file -> $output_file"
+        log info "Successfully converted cover: $input_file -> $output_file"
     fi
 }
 
@@ -249,11 +248,11 @@ process_file() {
             # Check if we need to process this file
             if [[ ! -f "$md5_filename" ]]; then
                 process_file=true
-                log "Processing new file: $val"
+                log info "Processing new file: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
                 if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
                     process_file=true
-                    log "File changed, reprocessing: $val"
+                    log info "File changed, reprocessing: $val"
                 fi
             fi
 
@@ -275,11 +274,11 @@ process_file() {
             # Check if we need to process this file
             if [[ ! -f "$md5_filename" ]]; then
                 process_file=true
-                log "Processing new file: $val"
+                log info "Processing new file: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
                 if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
                     process_file=true
-                    log "File changed, reprocessing: $val"
+                    log info "File changed, reprocessing: $val"
                 fi
             fi
 
@@ -301,11 +300,11 @@ process_file() {
             # Check if we need to process this file
             if [[ ! -f "$md5_filename" ]]; then
                 process_file=true
-                log "Processing new cuefile: $val"
+                log info "Processing new cuefile: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
                 if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
                     process_file=true
-                    log "Cuefile changed, reprocessing: $val"
+                    log info "Cuefile changed, reprocessing: $val"
                 fi
             fi
 
@@ -321,10 +320,10 @@ directory_structure() {
     local dryrun_flag=""
     [[ $MODE_DRY_RUN == true ]] && dryrun_flag="--dry-run"
 
-    log "INFO: Creating directory structure with rsync..."
+    log info "Creating directory structure with rsync..."
     if ! rsync -rvz $dryrun_flag --exclude-from="./transcode_exclude.cfg" \
         --include="*/" --exclude="*" "$TRANSCODE_INPUT_DIR/" "$TRANSCODE_OUTPUT_DIR/"; then
-        log "ERROR: rsync failed"
+        log error "rsync failed"
         return 1
     fi
 }
@@ -337,87 +336,85 @@ export -f write_jpg
 export -f process_file
 
 convert_covers() {
-    log "INFO: Looking for covers to convert..."
-    log "DEBUG: Changing to directory: $TRANSCODE_INPUT_DIR"
+    log info "Looking for covers to convert..."
+    log debug "Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
     for ext in $TRANSCODE_COVER_EXTENSIONS; do
-        log "INFO: Searching for .$ext files..."
-        log "DEBUG: Processing extension: $ext"
-        log "DEBUG: FD filters: $TRANSCODE_FD_FILTERS"
+        log info "Searching for .$ext files..."
+        log debug "FD filters: $TRANSCODE_FD_FILTERS"
 
         # Create a temporary script for processing
         local temp_script=$(mktemp)
-        log "DEBUG: Created temp script: $temp_script"
+        log debug "Created temp script: $temp_script"
         cat > "$temp_script" << 'EOF'
 #!/bin/bash
 process_file "$1" "$2" "$3"
 EOF
         chmod +x "$temp_script"
 
-        log "DEBUG: About to run fd_safe for covers with extension $ext"
+        log debug "About to run fd_safe for covers with extension $ext"
         fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} "$ext" cover \;
-        log "DEBUG: Completed fd_safe for covers with extension $ext"
+        log debug "Completed fd_safe for covers with extension $ext"
         rm -f "$temp_script"
     done
 }
 
 convert_music() {
-    log "INFO: Looking for music to transcode..."
-    log "DEBUG: Changing to directory: $TRANSCODE_INPUT_DIR"
+    log info "Looking for music to transcode..."
+    log debug "Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
     for ext in $TRANSCODE_MUSIC_EXTENSIONS; do
-        log "INFO: Searching for .$ext files..."
-        log "DEBUG: Processing extension: $ext"
-        log "DEBUG: FD filters: $TRANSCODE_FD_FILTERS"
+        log info "Searching for .$ext files..."
+        log debug "FD filters: $TRANSCODE_FD_FILTERS"
 
         # Create a temporary script for processing
         local temp_script=$(mktemp)
-        log "DEBUG: Created temp script: $temp_script"
+        log debug "Created temp script: $temp_script"
         cat > "$temp_script" << 'EOF'
 #!/bin/bash
 process_file "$1" "$2" "$3"
 EOF
         chmod +x "$temp_script"
 
-        log "DEBUG: About to run fd_safe for music with extension $ext"
+        log debug "About to run fd_safe for music with extension $ext"
         fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} "$ext" music \;
-        log "DEBUG: Completed fd_safe for music with extension $ext"
+        log debug "Completed fd_safe for music with extension $ext"
         rm -f "$temp_script"
     done
 }
 
 fix_cuefiles() {
-    log "INFO: Looking for cuefiles..."
-    log "DEBUG: Changing to directory: $TRANSCODE_INPUT_DIR"
+    log info "Looking for cuefiles..."
+    log debug "Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
-    log "DEBUG: FD filters: $TRANSCODE_FD_FILTERS"
+    log debug "FD filters: $TRANSCODE_FD_FILTERS"
 
     # Create a temporary script for processing
     local temp_script=$(mktemp)
-    log "DEBUG: Created temp script: $temp_script"
+    log debug "Created temp script: $temp_script"
     cat > "$temp_script" << 'EOF'
 #!/bin/bash
 process_file "$1" "$2" "$3"
 EOF
     chmod +x "$temp_script"
 
-    log "DEBUG: About to run fd_safe for cue files"
+    log debug "About to run fd_safe for cue files"
     fd_safe --extension cue $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} cue cue \;
-    log "DEBUG: Completed fd_safe for cue files"
+    log debug "Completed fd_safe for cue files"
     rm -f "$temp_script"
 }
 
 remove_absent_from_source() {
-    log "INFO: Looking for files to remove from output that no longer exist in source..."
-    log "DEBUG: Changing to directory: $TRANSCODE_DB"
+    log info "Looking for files to remove from output that no longer exist in source..."
+    log debug "Changing to directory: $TRANSCODE_DB"
     cd "$TRANSCODE_DB" || exit 1
 
     # Create a temporary script file for the removal operation
     local temp_script=$(mktemp)
-    log "DEBUG: Created temp script: $temp_script"
+    log debug "Created temp script: $temp_script"
     cat > "$temp_script" << 'EOF'
 #!/bin/bash
 val="$1"
@@ -428,7 +425,7 @@ source_path="$TRANSCODE_INPUT_DIR/$filename"
 
 if [[ ! -e "$source_path" ]]; then
     if ! find "$TRANSCODE_INPUT_DIR/$(dirname "$filename")" -maxdepth 1 -name "$(basename "$filename")*" 2>/dev/null | grep -q .; then
-        echo "[$(date "+%Y-%m-%d %H:%M:%S")] INFO: Confirmed - Transcoded file $filename doesnt have a source file: delete"
+        log info "Confirmed - Transcoded file $filename doesnt have a source file: delete"
         if [[ $MODE_DELETE == true && $MODE_DRY_RUN == false ]]; then
             rm -f "$TRANSCODE_OUTPUT_DIR/$filename"*
             rm -f "$TRANSCODE_DB/$filename"*
@@ -438,13 +435,13 @@ fi
 EOF
     chmod +x "$temp_script"
 
-    log "DEBUG: About to run fd command for md5 files in removal check"
-    log "DEBUG: Command: $TRANSCODE_FD_BIN --extension md5 -x $temp_script {} \\;"
+    log debug "About to run fd command for md5 files in removal check"
+    log debug "Command: $TRANSCODE_FD_BIN --extension md5 -x $temp_script {} \\;"
     "$TRANSCODE_FD_BIN" --extension md5 -x "$temp_script" {} \;
-    log "DEBUG: Completed fd command for md5 files in removal check"
+    log debug "Completed fd command for md5 files in removal check"
     rm -f "$temp_script"
 
-    log "INFO: removing empty directories..."
+    log info "Removing empty directories..."
     if [[ $MODE_DRY_RUN == false ]]; then
         find "$TRANSCODE_OUTPUT_DIR" -type d -empty -delete 2>/dev/null || true
         find "$TRANSCODE_DB" -type d -empty -delete 2>/dev/null || true

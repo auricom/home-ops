@@ -27,8 +27,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/auricom/kubectl
-              tag: 1.35@sha256:c2fcb851d86167c71cedd0ca0fe9b9715ead0bc51a4e62537fe18342b00bd144
+              repository: ghcr.io/auricom/toolbox
+              tag: rolling@sha256:f20dd5709090c251ffe374083531a36a96aec0620e57a926e8ca9466fd73d68d
             command:
               - /bin/bash
               - -c
@@ -61,7 +61,8 @@ spec:
           type: ClusterRole
           rules:
             - apiGroups: [""]
-              resources: ["pods", "pods/log", "pods/exec", "pods/ephemeralcontainers"]
+              resources:
+                ["pods", "pods/log", "pods/exec", "pods/ephemeralcontainers"]
               verbs: ["get", "list", "create", "update", "patch"]
             - apiGroups: ["apps"]
               resources: ["deployments"]
