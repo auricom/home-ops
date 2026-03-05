@@ -1,0 +1,7 @@
+sonarr:
+  - name: tv
+    url: http://sonarr.default.svc.cluster.local.:8080
+    api_key: ${SONARR_API_KEY}
+    seasonpackerr:
+      enabled: true
+      hourly_job: false
