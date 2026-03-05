@@ -23,6 +23,7 @@ spec:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
+          home-ops.io/test-flow: "2026-03-05"
         containers:
           app:
             image:
