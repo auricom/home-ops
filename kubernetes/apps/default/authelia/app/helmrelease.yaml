@@ -32,7 +32,7 @@ spec:
           type: RuntimeDefault
     controllers:
       authelia:
-        replicas: 1
+        replicas: 6
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
