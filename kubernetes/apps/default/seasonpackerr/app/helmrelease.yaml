@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app seasonpackerr
+  namespace: default
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: seasonpackerr
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      seasonpackerr:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: 0 */12 * * * # Every 12 hours
+        containers:
+          app:
+            image:
+              repository: ghcr.io/hollanbm/seasonpackerr
+              tag: 1.0.0
+            envFrom:
+              - secretRef:
+                  name: seasonpackerr-secret
+            resources:
+              requests:
+                cpu: 20m
+                memory: 256M
+    service:
+      app:
+        controller: *app
+        enabled: false
+    persistence:
+      scripts:
+        type: configMap
+        name: seasonpackerr-configmap
+        defaultMode: 0444 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /config/config.yml
+            subPath: config.yml
+            readOnly: true
