@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/booklore-app/booklore
-              tag: v1.18.5@sha256:44a39097fcf69e7373b51df0459da052640d07459fb02b429f2c47cceaa32485
+              tag: v2.0.6@sha256:fa229a1469b17a44161144655190f27bb9036b909a31584e26ca828c30bd37dd
             env:
               TZ: ${TIMEZONE}
               USER_ID: "1000"
