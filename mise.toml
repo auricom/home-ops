@@ -1,0 +1,6 @@
+[tools]
+helm = "latest"
+talosctl = "latest"
+flux2 = "latest"
+kubectl = "latest"
+helmfile = "latest"

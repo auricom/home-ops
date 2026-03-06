@@ -3,12 +3,12 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app jellyseerr
+  name: &app seerr
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: jellyseerr
+    name: seerr
   install:
     remediation:
       retries: 3
@@ -19,21 +19,21 @@ spec:
       retries: 3
   values:
     controllers:
-      jellyseerr:
+      seerr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/fallenbagel/jellyseerr
-              tag: 2.7.3@sha256:9cc9e9ee6cd5cf5a23feb45c37742ba34cfd6314d81d259cddb373a97ac92cdd
+              repository: ghcr.io/seerr-team/seerr
+              tag: v3.1.0@sha256:b35ba0461c4a1033d117ac1e5968fd4cbe777899e4cbfbdeaf3d10a42a0eb7e9
             env:
               TZ: ${TIMEZONE}
               LOG_LEVEL: "info"
               PORT: &port 8080
             # envFrom:
             #   - secretRef:
-            #       name: jellyseerr-secret
+            #       name: seerr-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -59,11 +59,10 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1001
-        runAsGroup: 1001
-        fsGroup: 1001
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
     service:
       app:
         controller: *app
@@ -90,13 +89,5 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /app/config
-      config-cache:
-        existingClaim: jellyseerr-cache
-        globalMounts:
-          - path: /app/config/cache
-      config-logs:
-        type: emptyDir
-        globalMounts:
-          - path: /app/config/logs
       tmp:
         type: emptyDir

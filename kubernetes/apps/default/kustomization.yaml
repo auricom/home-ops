@@ -23,7 +23,6 @@ resources:
   - ./homebox/ks.yaml
   - ./homelab/ks.yaml
   - ./jellyfin/ks.yaml
-  - ./jellyseerr/ks.yaml
   - ./joplin/ks.yaml
   - ./komf/ks.yaml
   - ./komga/ks.yaml
@@ -47,6 +46,7 @@ resources:
   - ./renamarr/ks.yaml
   - ./resilio-sync/ks.yaml
   - ./sabnzbd/ks.yaml
+  - ./seerr/ks.yaml
   - ./sharry/ks.yaml
   - ./shelfmark/ks.yaml
   - ./sonarr/ks.yaml
