@@ -7,7 +7,7 @@ set -o pipefail
 set -o xtrace
 
 log() {
-    gum log --time=rfc3339 --structured --level "$@"
+    gum log --structured --level "$@"
 }
 
 # Cleanup temporary files on script exit

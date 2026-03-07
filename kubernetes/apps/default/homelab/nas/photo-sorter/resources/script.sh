@@ -11,7 +11,7 @@ ORPHAN_COUNT=0
 
 
 log() {
-    gum log --time=rfc3339 --structured --level "$@"
+    gum log --structured --level "$@"
 }
 
 
