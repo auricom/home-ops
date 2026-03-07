@@ -12,7 +12,7 @@ export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
 
 log() {
-    gum log --time=rfc3339 --structured --level "$@"
+    gum log --structured --level "$@"
 }
 
 checkForVariable() {
