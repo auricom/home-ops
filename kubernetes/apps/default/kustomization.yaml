@@ -26,7 +26,6 @@ resources:
   - ./joplin/ks.yaml
   - ./komf/ks.yaml
   - ./komga/ks.yaml
-  - ./libmedium/ks.yaml
   - ./lidarr/ks.yaml
   - ./linkding/ks.yaml
   - ./lldap/ks.yaml
