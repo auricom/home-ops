@@ -7,13 +7,12 @@ metadata:
 spec:
   extAuth:
     headersToExtAuth:
-      - X-Forwarded-For # this is here so we can get the real IP
-      - X-Forwarded-Proto
-      - authorization
-      - header-authorization
-      - proxy-authorization
-      - accept
-      - cookie
+      - "X-Forwarded-For" # this is here so we can get the real IP
+      - "accept"
+      - "cookie"
+      - "authorization"
+      - "proxy-authorization"
+      - "x-forwarded-proto"
     failOpen: false
     http:
       backendRefs:
@@ -28,9 +27,6 @@ spec:
         - Remote-Groups
         - Remote-Name
         - Remote-Email
-      headersToDownstream:
-        - Location
-        - Set-Cookie
   targetRefs:
     - group: ${EXT_AUTH_GROUP:-gateway.networking.k8s.io}
       kind: ${EXT_AUTH_KIND:-HTTPRoute}

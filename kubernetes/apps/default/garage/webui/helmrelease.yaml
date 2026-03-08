@@ -54,6 +54,10 @@ spec:
             port: &port 3909
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: "https://garage.${SECRET_EXTERNAL_DOMAIN}/i/"
+            conditions: ["[STATUS] == 401"]
         hostnames: ["garage.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
