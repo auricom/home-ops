@@ -17,7 +17,6 @@ spec:
     - name: volsync
       namespace: volsync
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
@@ -25,7 +24,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_PATH: /web/index.html
       VOLSYNC_CAPACITY: 20Gi
   prune: true
   retryInterval: 2m

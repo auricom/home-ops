@@ -12,7 +12,6 @@ spec:
   dependsOn:
     - name: kube-prometheus-stack-crds
   components:
-    - ../../../../components/gatus/guarded
   interval: 1h
   path: ./kubernetes/apps/observability/pushgateway/app
   postBuild:

@@ -17,14 +17,12 @@ spec:
     - name: gateway-api-crds
       namespace: network
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/authelia/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: auth
   prune: true
   retryInterval: 2m
   sourceRef:

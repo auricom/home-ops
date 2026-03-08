@@ -10,14 +10,12 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/freshrss/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_PATH: /i/
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   retryInterval: 2m

@@ -11,13 +11,11 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/ext-auth
-    - ../../../../components/gatus/external
   interval: 1h
   path: ./kubernetes/apps/default/redlib/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_STATUS: "401"
   prune: true
   retryInterval: 2m
   sourceRef:

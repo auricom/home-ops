@@ -15,7 +15,6 @@ spec:
     - name: volsync
       namespace: volsync
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/home-assistant/app
@@ -46,7 +45,6 @@ spec:
   dependsOn:
     - name: home-assistant
   components:
-    - ../../../../components/gatus/guarded
   interval: 1h
   path: ./kubernetes/apps/default/home-assistant/code
   postBuild:

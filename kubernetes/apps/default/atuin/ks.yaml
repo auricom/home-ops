@@ -10,14 +10,12 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/atuin/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: sh
       VOLSYNC_CAPACITY: 5Gi
   prune: true
   retryInterval: 2m

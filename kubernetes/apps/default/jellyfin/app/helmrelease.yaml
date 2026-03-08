@@ -99,6 +99,10 @@ spec:
             port: &port 8096
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: "https://jellyfin.${SECRET_EXTERNAL_DOMAIN}/web/index.html"
+            conditions: ["[STATUS] == 200"]
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: external

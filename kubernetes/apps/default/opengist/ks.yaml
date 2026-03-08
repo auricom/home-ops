@@ -15,7 +15,6 @@ spec:
     - name: volsync
       namespace: volsync
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/opengist/app

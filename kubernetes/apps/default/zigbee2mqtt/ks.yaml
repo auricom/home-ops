@@ -20,7 +20,6 @@ spec:
       namespace: volsync
   components:
     - ../../../../components/ext-auth
-    - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/zigbee2mqtt/app
@@ -28,8 +27,6 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 2Gi
-      GATUS_STATUS: "401"
-      GATUS_SUBDOMAIN: zigbee
   prune: true
   retryInterval: 2m
   sourceRef:

@@ -11,7 +11,6 @@ spec:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/resilio-sync/claude
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
@@ -23,7 +22,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_STATUS: "401"
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   retryInterval: 2m
@@ -47,7 +45,6 @@ spec:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/resilio-sync/helene
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
@@ -59,7 +56,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_STATUS: "401"
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   retryInterval: 2m

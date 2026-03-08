@@ -13,15 +13,12 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/nfs-scaler
   interval: 1h
   path: ./kubernetes/apps/default/garage/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_STATUS: "403"
-      GATUS_SUBDOMAIN: s3
   prune: true
   retryInterval: 2m
   sourceRef:

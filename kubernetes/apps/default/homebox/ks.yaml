@@ -17,7 +17,6 @@ spec:
     - name: volsync
       namespace: volsync
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/default/homebox/app

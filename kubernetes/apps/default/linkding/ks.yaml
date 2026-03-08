@@ -10,7 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/volsync
   dependsOn:
     - name: external-secrets-stores
@@ -20,7 +19,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: links
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   retryInterval: 2m

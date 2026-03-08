@@ -17,7 +17,6 @@ spec:
     - name: volsync
       namespace: volsync
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
