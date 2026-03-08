@@ -19,26 +19,24 @@ spec:
   values:
     controllers:
       gatus:
+        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          init-config:
+          gatus-sidecar:
             image:
-              repository: ghcr.io/home-operations/k8s-sidecar
-              tag: 2.5.0@sha256:ae958215a6124c6d09dbf6cf568dc72176791bfba8630f4300d4eaaf1caa5b10
-            env:
-              FOLDER: /config
-              LABEL: gatus.io/enabled
-              NAMESPACE: ALL
-              RESOURCE: both
-              UNIQUE_FILENAMES: true
-              METHOD: WATCH
-            restartPolicy: Always
+              repository: ghcr.io/home-operations/gatus-sidecar
+              tag: 0.0.13@sha256:40d549ea5ae89acac94bdf4cee1233e718a96c6e382c67f7e28de688511169d2
+            args:
+              - --auto-httproute
+              - --enable-httproute
+              - --enable-service
             resources:
               requests:
                 cpu: 10m
               limits:
-                memory: 512Mi
+                memory: 64Mi
+            restartPolicy: Always
         containers:
           app:
             image:
@@ -51,7 +49,7 @@ spec:
               GATUS_WEB_PORT: &port 8090
             envFrom:
               - secretRef:
-                  name: gatus-secret
+                  name: "{{ .Release.Name }}-secret"
             probes:
               liveness: &probes
                 enabled: true
@@ -74,16 +72,19 @@ spec:
                 cpu: 100m
               limits:
                 memory: 256Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              storageClass: rook-ceph-block
+              accessMode: ReadWriteOnce
+              size: 5Gi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1022
-        runAsGroup: 1022
-        fsGroup: 1022
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        sysctls:
-          - name: net.ipv4.ping_group_range
-            value: 0 2147483647
     service:
       app:
         controller: *app
@@ -114,23 +115,34 @@ spec:
         gatus:
           type: ClusterRole
           rules:
-            - apiGroups: [""]
-              resources: ["configmaps", "secrets"]
-              verbs: ["get", "watch", "list"]
+            - apiGroups:
+                - ""
+              resources:
+                - services
+              verbs:
+                - get
+                - watch
+                - list
+            - apiGroups:
+                - gateway.networking.k8s.io
+              resources:
+                - gateways
+                - httproutes
+              verbs:
+                - get
+                - watch
+                - list
       bindings:
         gatus:
           type: ClusterRoleBinding
           roleRef:
             identifier: *app
           subjects:
-            - identifier: gatus
+            - identifier: *app
     persistence:
-      config:
-        existingClaim: *app
       config-file:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
         globalMounts:
           - path: /config/config.yaml
             subPath: config.yaml
-            readOnly: true
