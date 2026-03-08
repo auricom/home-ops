@@ -28,6 +28,9 @@ spec:
         - Remote-Groups
         - Remote-Name
         - Remote-Email
+      headersToDownstream:
+        - Location
+        - Set-Cookie
   targetRefs:
     - group: ${EXT_AUTH_GROUP:-gateway.networking.k8s.io}
       kind: ${EXT_AUTH_KIND:-HTTPRoute}
