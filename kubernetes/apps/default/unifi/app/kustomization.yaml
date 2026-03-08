@@ -6,5 +6,5 @@ resources:
   - ./backendtlspolicy.yaml
   - ./certificate.yaml
   - ./helmrelease.yaml
-  - ./pushsecret.yaml
+  # - ./pushsecret.yaml
   - ./ocirepository.yaml
