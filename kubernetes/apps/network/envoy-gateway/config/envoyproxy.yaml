@@ -20,6 +20,7 @@ spec:
       envoyDeployment:
         replicas: 2
         container:
+          image: mirror.gcr.io/envoyproxy/envoy:v1.36.4
           resources:
             requests:
               cpu: 150m
@@ -28,4 +29,4 @@ spec:
               cpu: 500m
               memory: 1Gi
       envoyService:
-        externalTrafficPolicy: Cluster # cilium l2 announce doesn't support externalTrafficPolicy: Local
+        externalTrafficPolicy: Local
