@@ -36,6 +36,7 @@ resources:
   - ./opengist/ks.yaml
   - ./paperless/ks.yaml
   - ./prowlarr/ks.yaml
+  - ./prpilot/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
   - ./radarr-archive/ks.yaml

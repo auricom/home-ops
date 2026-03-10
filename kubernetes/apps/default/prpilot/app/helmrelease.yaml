@@ -1,0 +1,117 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app prpilot
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: prpilot
+  interval: 15m
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  driftDetection:
+    mode: enabled
+    ignore:
+      - paths:
+          - /spec/containers/resources/limits
+        target:
+          kind: Pod
+  values:
+    controllers:
+      prpilot:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/auricom/prpilot
+              tag: rolling@sha256:19bbd8d8e93ef9531d6d7a711ac2126be41b19aa9d8b06dfc9285866e00a6e11
+            env:
+              PORT: &port 8080
+              PUBLIC_BASE_URL: &host https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}
+              LOG_LEVEL: info
+              REPO_OWNER: auricom
+              REPO_NAMES: home-ops,containers,agents
+              REPO_BASE_BRANCH: main
+              REPO_ROOTS: /workspace/repositories
+              SESSION_DIR: /workspace/sessions
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 100m
+                memory: 52M
+              limits:
+                memory: 512M
+            securityContext:
+              allowPrivilegeEscalation: false
+              # readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+    defaultPodOptions:
+      securityContext:
+        # runAsGroup: 65534
+        # runAsUser: 65534
+        # runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
+        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      workspace:
+        existingClaim: *app
+        globalMounts:
+          - path: /workspace
