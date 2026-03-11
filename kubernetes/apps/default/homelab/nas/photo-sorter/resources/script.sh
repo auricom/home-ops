@@ -19,20 +19,20 @@ log() {
 log_processed_file() {
     local source_file="$1"
     local dest_file="$2"
-    ((PROCESSED_COUNT++))
+    ((++PROCESSED_COUNT))
 }
 
 
 log_skipped_file() {
     local file="$1"
     local reason="$2"
-    ((SKIPPED_COUNT++))
+    ((++SKIPPED_COUNT))
 }
 
 
 log_existing_file() {
     local file="$1"
-    ((EXISTING_COUNT++))
+    ((++EXISTING_COUNT))
 }
 
 cleanup_orphans() {
@@ -46,7 +46,7 @@ cleanup_orphans() {
             log info "Removing broken symlink: $symlink"
             rm "$symlink"  # Remove the broken symlink
             log info "Removed symlink $symlink."
-            ((ORPHAN_COUNT++))
+            ((++ORPHAN_COUNT))
         fi
     done
 }
