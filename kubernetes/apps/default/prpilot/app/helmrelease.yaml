@@ -41,12 +41,15 @@ spec:
             env:
               PORT: &port 8080
               PUBLIC_BASE_URL: &host https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}
-              LOG_LEVEL: info
+              LOG_LEVEL: INFO
               REPO_OWNER: auricom
               REPO_NAMES: home-ops,containers,agents
               REPO_BASE_BRANCH: main
               REPO_ROOTS: /workspace/repositories
               SESSION_DIR: /workspace/sessions
+            envFrom:
+              - secretRef:
+                  name: prpilot-secret
             probes:
               liveness:
                 enabled: true
@@ -83,9 +86,9 @@ spec:
 
     defaultPodOptions:
       securityContext:
-        # runAsGroup: 65534
-        # runAsUser: 65534
-        # runAsNonRoot: true
+        runAsGroup: 65534
+        runAsUser: 65534
+        runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
 
