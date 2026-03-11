@@ -27,8 +27,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/auricom/freac
-              tag: 1.1.7@sha256:197523400996a023d6c6217bb0b5f42b37fbe07938677862148194e365b177b0
+              repository: ghcr.io/auricom/music-transcode
+              tag: rolling@sha256:de2929e9cf510430cb906217d062436226a3711c2210238e483030077d0dd2bf
             command:
               - /bin/bash
               - -c

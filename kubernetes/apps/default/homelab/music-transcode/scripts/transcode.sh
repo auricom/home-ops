@@ -45,6 +45,15 @@ manage_execution_time() {
     fi
 }
 
+# Run a command at idle CPU and IO priority where supported
+run_low_priority() {
+    if command -v ionice >/dev/null 2>&1; then
+        ionice -c3 nice -n 19 "$@"
+    else
+        nice -n 19 "$@"
+    fi
+}
+
 fd_safe() {
     local cmd_args=("$@")
     log debug "Executing fd command: $TRANSCODE_FD_BIN ${cmd_args[*]}"
@@ -93,7 +102,7 @@ checkForVariable TRANSCODE_OUTPUT_DIR
 
 # Set defaults if not defined
 export TRANSCODE_DB="${TRANSCODE_DB:-${TRANSCODE_OUTPUT_DIR}/.transcode}"
-export TRANSCODE_FREAC_BIN="${TRANSCODE_FREAC_BIN:-/app/freaccmd}"
+export TRANSCODE_JOBS="${TRANSCODE_JOBS:-$(nproc)}"
 export TRANSCODE_COVER_EXTENSIONS="${TRANSCODE_COVER_EXTENSIONS:-png jpg}"
 export TRANSCODE_MUSIC_EXTENSIONS="${TRANSCODE_MUSIC_EXTENSIONS:-flac opus mp3 ogg wma m4a wav}"
 if [[ -n "${TRANSCODE_FD_FILTERS+x}" ]]; then
@@ -115,11 +124,6 @@ for dir in "$TRANSCODE_INPUT_DIR" "$TRANSCODE_OUTPUT_DIR"; do
     fi
 done
 
-if [[ ! -f "$TRANSCODE_FREAC_BIN" ]]; then
-    log error "Binary $TRANSCODE_FREAC_BIN does not exist"
-    exit 1
-fi
-
 if [[ ! -f "$(pwd)/transcode_exclude.cfg" ]]; then
     log error "transcode_exclude.cfg file is missing"
     exit 1
@@ -137,7 +141,15 @@ command -v "$TRANSCODE_FD_BIN" >/dev/null 2>&1 || {
     exit 1
 }
 
-export LD_LIBRARY_PATH="$(dirname "$TRANSCODE_FREAC_BIN")"
+command -v ffmpeg >/dev/null 2>&1 || {
+    log error "ffmpeg is required but not installed"
+    exit 1
+}
+
+command -v xxh128sum >/dev/null 2>&1 || {
+    log error "xxh128sum is required but not installed (install xxhash package)"
+    exit 1
+}
 
 # Create transcode DB directory if it doesn't exist
 mkdir -p "$TRANSCODE_DB"
@@ -171,25 +183,21 @@ done
 transcode() {
     local input_file="$1"
     local output_file="$2"
-    local md5_file="$3"
+    local hash_file="$3"
+    local file_hash="$4"
 
     log info "Processing file $input_file..."
     if [[ $MODE_DRY_RUN == false ]]; then
         local output
-        if ! output=$("$TRANSCODE_FREAC_BIN" --encoder=opus --bitrate 96 "$input_file" -o "$output_file" 2>&1); then
+        if ! output=$(run_low_priority ffmpeg -i "$input_file" -c:a libopus -b:a 96k -vn -y \
+                -loglevel error "$output_file" 2>&1); then
             log error "Transcoding failed for $input_file"
             log error "$output"
             return 1
         fi
 
-        if echo "$output" | grep -q "Could not process"; then
-            log error "Could not process $input_file"
-            log error "$output"
-            return 1
-        fi
-
-        mkdir -p "$(dirname "$md5_file")"
-        md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
+        mkdir -p "$(dirname "$hash_file")"
+        echo "$file_hash" > "$hash_file"
         log info "Successfully transcoded: $input_file -> $output_file"
     fi
 }
@@ -198,7 +206,8 @@ write_cue() {
     local input_file="$1"
     local output_file="$2"
     local replacement_string="$3"
-    local md5_file="$4"
+    local hash_file="$4"
+    local file_hash="$5"
 
     log info "Writing $input_file"
     if [[ $MODE_DRY_RUN == false ]]; then
@@ -207,8 +216,8 @@ write_cue() {
             return 1
         fi
 
-        mkdir -p "$(dirname "$md5_file")"
-        md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
+        mkdir -p "$(dirname "$hash_file")"
+        echo "$file_hash" > "$hash_file"
         log info "Successfully wrote cue: $output_file"
     fi
 }
@@ -216,17 +225,21 @@ write_cue() {
 write_jpg() {
     local input_file="$1"
     local output_file="$2"
-    local md5_file="$3"
+    local hash_file="$3"
+    local file_hash="$4"
 
     log info "Converting cover $input_file"
     if [[ $MODE_DRY_RUN == false ]]; then
-        if ! convert "$input_file" -resize 1000 -quality 75 "$output_file"; then
+        local output
+        if ! output=$(run_low_priority ffmpeg -i "$input_file" \
+                -vf "scale=1000:-2" -q:v 4 -y -loglevel error "$output_file" 2>&1); then
             log error "Converting cover $input_file failed"
+            log error "$output"
             return 1
         fi
 
-        mkdir -p "$(dirname "$md5_file")"
-        md5sum "$input_file" | cut -d' ' -f1 > "$md5_file"
+        mkdir -p "$(dirname "$hash_file")"
+        echo "$file_hash" > "$hash_file"
         log info "Successfully converted cover: $input_file -> $output_file"
     fi
 }
@@ -239,79 +252,81 @@ process_file() {
     case "$type" in
         cover)
             local filename="$TRANSCODE_OUTPUT_DIR/${val%.*}.jpg"
-            local md5_filename="$TRANSCODE_DB/${val}.md5"
-            local process_file=false
+            local hash_filename="$TRANSCODE_DB/${val}.md5"
+            local do_process=false
+            local current_hash=""
 
-            # Create output directory if it doesn't exist
             mkdir -p "$(dirname "$filename")"
-            mkdir -p "$(dirname "$md5_filename")"
+            mkdir -p "$(dirname "$hash_filename")"
 
-            # Check if we need to process this file
-            if [[ ! -f "$md5_filename" ]]; then
-                process_file=true
+            if [[ ! -f "$hash_filename" ]]; then
+                do_process=true
                 log info "Processing new file: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
-                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
-                    process_file=true
+                current_hash=$(xxh128sum "$val" | cut -d' ' -f1)
+                if [[ "$(cat "$hash_filename" 2>/dev/null)" != "$current_hash" ]]; then
+                    do_process=true
                     log info "File changed, reprocessing: $val"
                 fi
             fi
 
-            if [[ $process_file == true ]]; then
-                write_jpg "$val" "$filename" "$md5_filename"
+            if [[ $do_process == true ]]; then
+                [[ -z "$current_hash" ]] && current_hash=$(xxh128sum "$val" | cut -d' ' -f1)
+                write_jpg "$val" "$filename" "$hash_filename" "$current_hash"
             fi
             ;;
 
         music)
-            local filebasename="$TRANSCODE_OUTPUT_DIR/${val%.*}"
-            local filename="${filebasename}.opus"
-            local md5_filename="$TRANSCODE_DB/${val}.md5"
-            local process_file=false
+            local filename="$TRANSCODE_OUTPUT_DIR/${val%.*}.opus"
+            local hash_filename="$TRANSCODE_DB/${val}.md5"
+            local do_process=false
+            local current_hash=""
 
-            # Create output directory if it doesn't exist
             mkdir -p "$(dirname "$filename")"
-            mkdir -p "$(dirname "$md5_filename")"
+            mkdir -p "$(dirname "$hash_filename")"
 
-            # Check if we need to process this file
-            if [[ ! -f "$md5_filename" ]]; then
-                process_file=true
+            if [[ ! -f "$hash_filename" ]]; then
+                do_process=true
                 log info "Processing new file: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
-                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
-                    process_file=true
+                current_hash=$(xxh128sum "$val" | cut -d' ' -f1)
+                if [[ "$(cat "$hash_filename" 2>/dev/null)" != "$current_hash" ]]; then
+                    do_process=true
                     log info "File changed, reprocessing: $val"
                 fi
             fi
 
-            if [[ $process_file == true ]]; then
-                transcode "$val" "$filename" "$md5_filename"
+            if [[ $do_process == true ]]; then
+                [[ -z "$current_hash" ]] && current_hash=$(xxh128sum "$val" | cut -d' ' -f1)
+                transcode "$val" "$filename" "$hash_filename" "$current_hash"
             fi
             ;;
 
         cue)
             local output_file="$TRANSCODE_OUTPUT_DIR/$val"
-            local md5_filename="$TRANSCODE_DB/${val}.md5"
+            local hash_filename="$TRANSCODE_DB/${val}.md5"
             local replacement_text_string="FILE \"$(basename "${val%.*}").opus\" MP3"
-            local process_file=false
+            local do_process=false
+            local current_hash=""
 
-            # Create output directory if it doesn't exist
             mkdir -p "$(dirname "$output_file")"
-            mkdir -p "$(dirname "$md5_filename")"
+            mkdir -p "$(dirname "$hash_filename")"
 
-            # Check if we need to process this file
-            if [[ ! -f "$md5_filename" ]]; then
-                process_file=true
+            if [[ ! -f "$hash_filename" ]]; then
+                do_process=true
                 log info "Processing new cuefile: $val"
             elif [[ $MODE_CHECKSUM == true ]]; then
-                if [[ ! -f "$md5_filename" ]] || [[ "$(cat "$md5_filename" 2>/dev/null)" != "$(md5sum "$val" | cut -d' ' -f1)" ]]; then
-                    process_file=true
+                current_hash=$(xxh128sum "$val" | cut -d' ' -f1)
+                if [[ "$(cat "$hash_filename" 2>/dev/null)" != "$current_hash" ]]; then
+                    do_process=true
                     log info "Cuefile changed, reprocessing: $val"
                 fi
             fi
 
-            if [[ $process_file == true ]]; then
+            if [[ $do_process == true ]]; then
+                [[ -z "$current_hash" ]] && current_hash=$(xxh128sum "$val" | cut -d' ' -f1)
                 cp -p "$val" "$output_file"
-                write_cue "$val" "$output_file" "$replacement_text_string" "$md5_filename"
+                write_cue "$val" "$output_file" "$replacement_text_string" "$hash_filename" "$current_hash"
             fi
             ;;
     esac
@@ -322,15 +337,16 @@ directory_structure() {
     [[ $MODE_DRY_RUN == true ]] && dryrun_flag="--dry-run"
 
     log info "Creating directory structure with rsync..."
-    if ! rsync -rvz $dryrun_flag --exclude-from="./transcode_exclude.cfg" \
+    if ! rsync -rq $dryrun_flag --exclude-from="./transcode_exclude.cfg" \
         --include="*/" --exclude="*" "$TRANSCODE_INPUT_DIR/" "$TRANSCODE_OUTPUT_DIR/"; then
         log error "rsync failed"
         return 1
     fi
 }
 
-# Export functions so they're available to subshells
+# Export functions so they're available to subshells via bash -c
 export -f log
+export -f run_low_priority
 export -f transcode
 export -f write_cue
 export -f write_jpg
@@ -344,20 +360,11 @@ convert_covers() {
     for ext in $TRANSCODE_COVER_EXTENSIONS; do
         log info "Searching for .$ext files..."
         log debug "FD filters: $TRANSCODE_FD_FILTERS"
-
-        # Create a temporary script for processing
-        local temp_script=$(mktemp)
-        log debug "Created temp script: $temp_script"
-        cat > "$temp_script" << 'EOF'
-#!/bin/bash
-process_file "$1" "$2" "$3"
-EOF
-        chmod +x "$temp_script"
-
         log debug "About to run fd_safe for covers with extension $ext"
-        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} "$ext" cover \;
+        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f \
+            -j "$TRANSCODE_JOBS" \
+            -x bash -c 'process_file "$1" "$2" "$3"' _ {} "$ext" cover \;
         log debug "Completed fd_safe for covers with extension $ext"
-        rm -f "$temp_script"
     done
 }
 
@@ -369,20 +376,11 @@ convert_music() {
     for ext in $TRANSCODE_MUSIC_EXTENSIONS; do
         log info "Searching for .$ext files..."
         log debug "FD filters: $TRANSCODE_FD_FILTERS"
-
-        # Create a temporary script for processing
-        local temp_script=$(mktemp)
-        log debug "Created temp script: $temp_script"
-        cat > "$temp_script" << 'EOF'
-#!/bin/bash
-process_file "$1" "$2" "$3"
-EOF
-        chmod +x "$temp_script"
-
         log debug "About to run fd_safe for music with extension $ext"
-        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} "$ext" music \;
+        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f \
+            -j "$TRANSCODE_JOBS" \
+            -x bash -c 'process_file "$1" "$2" "$3"' _ {} "$ext" music \;
         log debug "Completed fd_safe for music with extension $ext"
-        rm -f "$temp_script"
     done
 }
 
@@ -392,55 +390,43 @@ fix_cuefiles() {
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
     log debug "FD filters: $TRANSCODE_FD_FILTERS"
-
-    # Create a temporary script for processing
-    local temp_script=$(mktemp)
-    log debug "Created temp script: $temp_script"
-    cat > "$temp_script" << 'EOF'
-#!/bin/bash
-process_file "$1" "$2" "$3"
-EOF
-    chmod +x "$temp_script"
-
     log debug "About to run fd_safe for cue files"
-    fd_safe --extension cue $TRANSCODE_FD_FILTERS --type f -x "$temp_script" {} cue cue \;
+    fd_safe --extension cue $TRANSCODE_FD_FILTERS --type f \
+        -j "$TRANSCODE_JOBS" \
+        -x bash -c 'process_file "$1" "$2" "$3"' _ {} cue cue \;
     log debug "Completed fd_safe for cue files"
-    rm -f "$temp_script"
 }
 
 remove_absent_from_source() {
     log info "Looking for files to remove from output that no longer exist in source..."
-    log debug "Changing to directory: $TRANSCODE_DB"
-    cd "$TRANSCODE_DB" || exit 1
 
-    # Create a temporary script file for the removal operation
-    local temp_script=$(mktemp)
-    log debug "Created temp script: $temp_script"
-    cat > "$temp_script" << 'EOF'
-#!/bin/bash
-val="$1"
-[[ -z "$val" ]] && exit 0
+    # Build source file index once to avoid per-file find invocations
+    local source_list
+    source_list=$(mktemp)
+    log debug "Building source file list into $source_list"
+    "$TRANSCODE_FD_BIN" --type f "$TRANSCODE_INPUT_DIR" | \
+        sed "s|^${TRANSCODE_INPUT_DIR}/||" | sort > "$source_list"
+    log debug "Source file list: $(wc -l < "$source_list") files"
 
-filename="$(dirname "$val")/$(basename "$val" .md5)"
-source_path="$TRANSCODE_INPUT_DIR/$filename"
+    cd "$TRANSCODE_DB" || { rm -f "$source_list"; exit 1; }
 
-if [[ ! -e "$source_path" ]]; then
-    if ! find "$TRANSCODE_INPUT_DIR/$(dirname "$filename")" -maxdepth 1 -name "$(basename "$filename")*" 2>/dev/null | grep -q .; then
-        log info "Confirmed - Transcoded file $filename doesnt have a source file: delete"
-        if [[ $MODE_DELETE == true && $MODE_DRY_RUN == false ]]; then
-            rm -f "$TRANSCODE_OUTPUT_DIR/$filename"*
-            rm -f "$TRANSCODE_DB/$filename"*
+    "$TRANSCODE_FD_BIN" --extension md5 --type f | while read -r val; do
+        [[ -z "$val" ]] && continue
+        local filename="${val%.md5}"
+        local base="${filename%.*}"
+
+        # Check exact source match, then any file sharing the same base name (handles format changes)
+        if ! grep -qF "$filename" "$source_list" && \
+           ! grep -qF "${base}." "$source_list"; then
+            log info "Confirmed - Transcoded file $filename doesn't have a source file: delete"
+            if [[ $MODE_DELETE == true && $MODE_DRY_RUN == false ]]; then
+                rm -f "$TRANSCODE_OUTPUT_DIR/$filename"*
+                rm -f "$TRANSCODE_DB/$filename"*
+            fi
         fi
-    fi
-fi
-EOF
-    chmod +x "$temp_script"
+    done
 
-    log debug "About to run fd command for md5 files in removal check"
-    log debug "Command: $TRANSCODE_FD_BIN --extension md5 -x $temp_script {} \\;"
-    "$TRANSCODE_FD_BIN" --extension md5 -x "$temp_script" {} \;
-    log debug "Completed fd command for md5 files in removal check"
-    rm -f "$temp_script"
+    rm -f "$source_list"
 
     log info "Removing empty directories..."
     if [[ $MODE_DRY_RUN == false ]]; then
