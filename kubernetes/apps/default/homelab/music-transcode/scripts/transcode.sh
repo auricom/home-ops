@@ -406,7 +406,7 @@ remove_absent_from_source() {
 
     cd "$TRANSCODE_DB" || { rm -f "$source_list"; exit 1; }
 
-    "$TRANSCODE_FD_BIN" --extension md5 --type f | while read -r val; do
+    "$TRANSCODE_FD_BIN" --extension hash --type f | while read -r val; do
         [[ -z "$val" ]] && continue
         local filename="${val%.hash}"
         local base="${filename%.*}"
