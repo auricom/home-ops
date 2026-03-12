@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: immich-configmap
+data:
+  # URLS
+  IMMICH_SERVER_URL: http://immich.default.svc.cluster.local:2283
+  IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local:3003
+  PUBLIC_IMMICH_SERVER_URL: https://immich.${SECRET_EXTERNAL_DOMAIN}
+  # SETTINGS
+  IMMICH_LOG_LEVEL: log
+  UPLOAD_LOCATION: /data
+  THUMB_LOCATION: /data/thumbs
+  ENCODED_VIDEO_LOCATION: /data/encoded-video
+  PROFILE_LOCATION: /data/profile
+  BACKUP_LOCATION: /data/backups
+  # REDIS
+  REDIS_HOSTNAME: dragonfly.database.svc.cluster.local.
+  REDIS_DBINDEX: "6"
+  REDIS_PORT: "6379"

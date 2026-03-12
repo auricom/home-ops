@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app immich
+  name: &app immich-machine-learning
 spec:
   interval: 1h
   chartRef:
@@ -18,22 +18,21 @@ spec:
       strategy: rollback
       retries: 3
   dependsOn:
-    - name: immich-database
+    - name: immich
   values:
     controllers:
-      immich:
+      immich-machine-learning:
         annotations:
           reloader.stakater.com/auto: "true"
         strategy: RollingUpdate
         containers:
           app:
             image:
-              repository: ghcr.io/immich-app/immich-server
-              tag: v2.5.6@sha256:aa163d2e1cc2b16a9515dd1fef901e6f5231befad7024f093d7be1f2da14341a
+              repository: ghcr.io/immich-app/immich-machine-learning
+              tag: v2.5.6-openvino@sha256:fec6fd64c322b962a7f9830be805096c569b658d99b7732c43e0d7ea472b6e8f
             env:
               TZ: ${TIMEZONE}
-              IMMICH_WORKERS_INCLUDE: api
-              IMMICH_METRICS_INCLUDE: all
+              MPLCONFIGDIR: /cache/matplotlib
             envFrom:
               - configMapRef:
                   name: immich-configmap
@@ -45,34 +44,29 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /server-info/ping
-                    port: &port 2283
+                    path: /ping
+                    port: &port 3003
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 5
               readiness: *probes
               startup:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/server/ping
-                    port: *port
-                  failureThreshold: 30
-                  periodSeconds: 5
-                  successThreshold: 1
-                  timeoutSeconds: 1
+                enabled: false
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
+              claims:
+                - name: gpu
               requests:
                 cpu: 10m
-                memory: 150Mi
+                memory: 250Mi
+                gpu.intel.com/i915: 1
               limits:
-                memory: 500Mi
+                memory: 4000Mi
+                gpu.intel.com/i915: 1
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
@@ -86,22 +80,6 @@ spec:
         ports:
           http:
             port: *port
-          metrics:
-            port: 8081
-    route:
-      app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 200"]
-        hostnames: ["photos.${SECRET_EXTERNAL_DOMAIN}"]
-        parentRefs:
-          - name: external
-            namespace: network
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     persistence:
       library:
         enabled: true
@@ -110,3 +88,14 @@ spec:
         path: /mnt/vol1/apps/immich
         globalMounts:
           - path: /data
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          immich-machine-learning:
+            app:
+              - path: /cache
+                subPath: cache
+              - path: /.cache
+                subPath: dotCache
+              - path: /tmp
+                subPath: tmp

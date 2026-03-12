@@ -34,6 +34,8 @@ spec:
             env:
               PGDATA: /var/lib/postgresql/data
             envFrom:
+              - configMapRef:
+                  name: immich-configmap
               - secretRef:
                   name: immich-secret
             resources:
