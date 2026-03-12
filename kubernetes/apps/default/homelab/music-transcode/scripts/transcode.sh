@@ -23,12 +23,14 @@ checkForVariable() {
     fi
 }
 
+LOCK_ACQUIRED=false
+
 cleanup() {
     local exit_code=$?
     log info "Cleaning up..."
     [[ -f "$TRANSCODE_INPUT_DIR/.fdignore" ]] && rm -f "$TRANSCODE_INPUT_DIR/.fdignore"
     [[ -f "$TRANSCODE_OUTPUT_DIR/.fdignore" ]] && rm -f "$TRANSCODE_OUTPUT_DIR/.fdignore"
-    [[ -f "${TRANSCODE_OUTPUT_DIR}/.transcode.lock" ]] && rm -f "${TRANSCODE_OUTPUT_DIR}/.transcode.lock"
+    [[ "$LOCK_ACQUIRED" == true ]] && [[ -f "${TRANSCODE_OUTPUT_DIR}/.transcode.lock" ]] && rm -f "${TRANSCODE_OUTPUT_DIR}/.transcode.lock"
     exit $exit_code
 }
 
@@ -126,11 +128,20 @@ for dir in "$TRANSCODE_INPUT_DIR" "$TRANSCODE_OUTPUT_DIR"; do
 done
 
 LOCK_FILE="$TRANSCODE_OUTPUT_DIR/.transcode.lock"
+LOCK_MAX_AGE=64800  # 18 hours in seconds
+
 if [ -f "$LOCK_FILE" ]; then
-    log info "Lock file exists, another instance is running. Exiting."
-    exit 0
+    lock_age=$(( $(date +%s) - $(date -r "$LOCK_FILE" +%s) ))
+    if (( lock_age < LOCK_MAX_AGE )); then
+        log info "Lock file exists (age: ${lock_age}s), another instance is running. Exiting."
+        exit 0
+    else
+        log info "Stale lock file found (age: ${lock_age}s). Removing."
+        rm -f "$LOCK_FILE"
+    fi
 fi
 touch "$LOCK_FILE"
+LOCK_ACQUIRED=true
 
 if [[ ! -f "$(pwd)/transcode_exclude.cfg" ]]; then
     log error "transcode_exclude.cfg file is missing"
@@ -400,8 +411,8 @@ remove_absent_from_source() {
     local source_list
     source_list=$(mktemp)
     log debug "Building source file list into $source_list"
-    "$TRANSCODE_FD_BIN" --type f "$TRANSCODE_INPUT_DIR" | \
-        sed "s|^${TRANSCODE_INPUT_DIR}/||" | sort > "$source_list"
+    "$TRANSCODE_FD_BIN" --base-directory "$TRANSCODE_INPUT_DIR" --type f | \
+        sort > "$source_list"
     log debug "Source file list: $(wc -l < "$source_list") files"
 
     cd "$TRANSCODE_DB" || { rm -f "$source_list"; exit 1; }
