@@ -28,6 +28,7 @@ cleanup() {
     log info "Cleaning up..."
     [[ -f "$TRANSCODE_INPUT_DIR/.fdignore" ]] && rm -f "$TRANSCODE_INPUT_DIR/.fdignore"
     [[ -f "$TRANSCODE_OUTPUT_DIR/.fdignore" ]] && rm -f "$TRANSCODE_OUTPUT_DIR/.fdignore"
+    [[ -f "${TRANSCODE_OUTPUT_DIR}/.transcode.lock" ]] && rm -f "${TRANSCODE_OUTPUT_DIR}/.transcode.lock"
     exit $exit_code
 }
 
@@ -123,6 +124,13 @@ for dir in "$TRANSCODE_INPUT_DIR" "$TRANSCODE_OUTPUT_DIR"; do
         exit 1
     fi
 done
+
+LOCK_FILE="$TRANSCODE_OUTPUT_DIR/.transcode.lock"
+if [ -f "$LOCK_FILE" ]; then
+    log info "Lock file exists, another instance is running. Exiting."
+    exit 0
+fi
+touch "$LOCK_FILE"
 
 if [[ ! -f "$(pwd)/transcode_exclude.cfg" ]]; then
     log error "transcode_exclude.cfg file is missing"
@@ -252,7 +260,7 @@ process_file() {
     case "$type" in
         cover)
             local filename="$TRANSCODE_OUTPUT_DIR/${val%.*}.jpg"
-            local hash_filename="$TRANSCODE_DB/${val}.md5"
+            local hash_filename="$TRANSCODE_DB/${val}.hash"
             local do_process=false
             local current_hash=""
 
@@ -278,7 +286,7 @@ process_file() {
 
         music)
             local filename="$TRANSCODE_OUTPUT_DIR/${val%.*}.opus"
-            local hash_filename="$TRANSCODE_DB/${val}.md5"
+            local hash_filename="$TRANSCODE_DB/${val}.hash"
             local do_process=false
             local current_hash=""
 
@@ -304,7 +312,7 @@ process_file() {
 
         cue)
             local output_file="$TRANSCODE_OUTPUT_DIR/$val"
-            local hash_filename="$TRANSCODE_DB/${val}.md5"
+            local hash_filename="$TRANSCODE_DB/${val}.hash"
             local replacement_text_string="FILE \"$(basename "${val%.*}").opus\" MP3"
             local do_process=false
             local current_hash=""
@@ -354,47 +362,35 @@ export -f process_file
 
 convert_covers() {
     log info "Looking for covers to convert..."
-    log debug "Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
     for ext in $TRANSCODE_COVER_EXTENSIONS; do
         log info "Searching for .$ext files..."
-        log debug "FD filters: $TRANSCODE_FD_FILTERS"
-        log debug "About to run fd_safe for covers with extension $ext"
-        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f \
+        "$TRANSCODE_FD_BIN" --extension "$ext" $TRANSCODE_FD_FILTERS --type f \
             -j "$TRANSCODE_JOBS" \
             -x bash -c 'process_file "$1" "$2" "$3"' _ {} "$ext" cover \;
-        log debug "Completed fd_safe for covers with extension $ext"
     done
 }
 
 convert_music() {
     log info "Looking for music to transcode..."
-    log debug "Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
     for ext in $TRANSCODE_MUSIC_EXTENSIONS; do
         log info "Searching for .$ext files..."
-        log debug "FD filters: $TRANSCODE_FD_FILTERS"
-        log debug "About to run fd_safe for music with extension $ext"
-        fd_safe --extension "$ext" $TRANSCODE_FD_FILTERS --type f \
+        "$TRANSCODE_FD_BIN" --extension "$ext" $TRANSCODE_FD_FILTERS --type f \
             -j "$TRANSCODE_JOBS" \
             -x bash -c 'process_file "$1" "$2" "$3"' _ {} "$ext" music \;
-        log debug "Completed fd_safe for music with extension $ext"
     done
 }
 
 fix_cuefiles() {
     log info "Looking for cuefiles..."
-    log debug "Changing to directory: $TRANSCODE_INPUT_DIR"
     cd "$TRANSCODE_INPUT_DIR" || exit 1
 
-    log debug "FD filters: $TRANSCODE_FD_FILTERS"
-    log debug "About to run fd_safe for cue files"
-    fd_safe --extension cue $TRANSCODE_FD_FILTERS --type f \
+    "$TRANSCODE_FD_BIN" --extension cue $TRANSCODE_FD_FILTERS --type f \
         -j "$TRANSCODE_JOBS" \
         -x bash -c 'process_file "$1" "$2" "$3"' _ {} cue cue \;
-    log debug "Completed fd_safe for cue files"
 }
 
 remove_absent_from_source() {
@@ -412,7 +408,7 @@ remove_absent_from_source() {
 
     "$TRANSCODE_FD_BIN" --extension md5 --type f | while read -r val; do
         [[ -z "$val" ]] && continue
-        local filename="${val%.md5}"
+        local filename="${val%.hash}"
         local base="${filename%.*}"
 
         # Check exact source match, then any file sharing the same base name (handles format changes)
