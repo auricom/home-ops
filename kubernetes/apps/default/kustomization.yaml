@@ -22,6 +22,7 @@ resources:
   - ./home-assistant/ks.yaml
   - ./homebox/ks.yaml
   - ./homelab/ks.yaml
+  - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./joplin/ks.yaml
   - ./komf/ks.yaml

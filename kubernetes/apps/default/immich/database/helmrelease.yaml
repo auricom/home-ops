@@ -1,0 +1,122 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app immich-database
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: immich
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+    controllers:
+      primary:
+        type: statefulset
+        containers:
+          postgresql:
+            image:
+              repository: ghcr.io/immich-app/postgres
+              tag: 17-vectorchord0.4.3@sha256:79b95b795f0911e95ffa4d092a2162c4d81a984d5629bc8f786afe0bc0657671
+            env:
+              PGDATA: /var/lib/postgresql/data
+            envFrom:
+              - secretRef:
+                  name: immich-secret
+            resources:
+              requests:
+                cpu: 500m
+                memory: 512Mi
+              limits:
+                cpu: 750m
+                memory: 768Mi
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+          # metrics:
+          #   image:
+          #     repository: quay.io/prometheuscommunity/postgres-exporter
+          #     tag: v0.19.1@sha256:e96064f876226d94bb6ce48a4c4b3dd76edba91168ec1ab024e5c4b959310b0f
+          #   env:
+          #     DATA_SOURCE_URI: localhost:5432/postgres?sslmode=disable
+          #     DATA_SOURCE_USER: immich
+          #     DATA_SOURCE_PASS: ${SECRET_IMMICH_DB_PASSWORD}
+          #   resources:
+          #     requests:
+          #       cpu: 100m
+          #       memory: 128Mi
+          #     limits:
+          #       cpu: 150m
+          #       memory: 192Mi
+          #   probes:
+          #     liveness:
+          #       enabled: true
+          #     readiness:
+          #       enabled: true
+        initContainers:
+          init-postgres-permissions:
+            image:
+              repository: alpine
+              tag: 3.23@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
+            command:
+              - /bin/sh
+              - -c
+              - |
+                chown -R 999:999 $PGDATA
+                chmod 700 $PGDATA
+            env:
+              PGDATA: /var/lib/postgresql/data
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+          # # Init Container for Major PostgreSQL Upgrades, not needed permanently
+          # pgautoupgrade:
+          #   image:
+          #     repository: ghcr.io/pumba98/pgautoupgrade-vchord
+          #     tag: 17-debian-v0.3.0
+          #   # securityContext:
+          #   #   runAsUser: 0
+          #   #   runAsGroup: 0
+          #   env:
+          #     PGAUTO_ONESHOT: yes
+          #     POSTGRES_USER: immich
+          #     POSTGRES_DB: immich
+          #     PGDATA: /var/lib/postgresql/data
+    service:
+      primary:
+        controller: primary
+        ports:
+          postgresql:
+            port: 5432
+      # metrics:
+      #   controller: primary
+      #   ports:
+      #     metrics:
+      #       port: 9187
+    persistence:
+      data:
+        existingClaim: immich-database
+        globalMounts:
+          - path: /var/lib/postgresql/data
+            subPath: data
+    # serviceMonitor:
+    #   main:
+    #     enabled: true
+    #     serviceName: immich-postgresql-metrics
+    #     endpoints:
+    #       - port: metrics
