@@ -28,6 +28,13 @@ spec:
         target:
           kind: Pod
   values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       prpilot:
         annotations:
@@ -83,14 +90,6 @@ spec:
               allowPrivilegeEscalation: false
               # readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-
-    defaultPodOptions:
-      securityContext:
-        runAsGroup: 65534
-        runAsUser: 65534
-        runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
 
     service:
       app:
