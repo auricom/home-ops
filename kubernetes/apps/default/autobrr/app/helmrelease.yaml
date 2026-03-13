@@ -42,7 +42,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /api/healthz/readiness
                     port: *port
                   periodSeconds: 10
                   timeoutSeconds: 5
@@ -52,15 +52,15 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
