@@ -5,196 +5,30 @@ kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: kube-prometheus-stack
-      version: 75.6.0
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-      interval: 5m
-  install:
-    crds: Skip
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    crds: Skip
-    remediation:
-      strategy: rollback
-      retries: 3
-  dependsOn:
-    - name: kube-prometheus-stack-crds
-      namespace: observability
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
+  chartRef:
+    kind: OCIRepository
+    name: kube-prometheus-stack
+  interval: 1h
+  valuesFrom:
+    - kind: ConfigMap
+      name: flux-metrics-configmap
+      valuesKey: flux-metrics.yaml
   values:
-    crds:
-      enabled: false
-    ###
-    ### Component values
-    ###
-    kubeApiServer:
-      enabled: true
-      serviceMonitor:
-        metricRelabelings:
-          - action: replace
-            sourceLabels:
-              - node
-            targetLabel: instance
-
-    kubeProxy:
-      enabled: false
-    kubeControllerManager:
-      enabled: false
-    kubeEtcd:
-      enabled: false
-    kubeScheduler:
-      enabled: false
-
-    kubeStateMetrics:
-      metricLabelsAllowlist:
-        - persistentvolumeclaims=[*]
-      prometheus:
-        monitor:
-          enabled: true
-          relabelings:
-            - action: replace
-              regex: (.*)
-              replacement: $1
-              sourceLabels:
-                - __meta_kubernetes_pod_node_name
-              targetLabel: kubernetes_node
-
-    grafana:
-      enabled: false
-      forceDeployDashboards: true
-
-    prometheus-node-exporter:
-      resources:
-        requests:
-          cpu: 23m
-          memory: 64M
-        limits:
-          memory: 64M
-      prometheus:
-        monitor:
-          enabled: true
-          relabelings:
-            - action: replace
-              regex: (.*)
-              replacement: $1
-              sourceLabels:
-                - __meta_kubernetes_pod_node_name
-              targetLabel: kubernetes_node
-    ###
-    ### Prometheus operator values
-    ###
-    prometheusOperator:
-      prometheusConfigReloader:
-        resources:
-          requests:
-            cpu: 100m
-            memory: 50Mi
-          limits:
-            cpu: 300m
-            memory: 100Mi
-
-    ###
-    ### Prometheus instance values
-    ###
-    prometheus:
+    cleanPrometheusOperatorObjectNames: true
+    alertmanager:
       route:
         main:
           enabled: true
-          hostnames: ["prometheus.${SECRET_EXTERNAL_DOMAIN}"]
+          hostnames:
+            - alertmanager.${SECRET_EXTERNAL_DOMAIN}
           parentRefs:
             - name: internal
               namespace: network
               sectionName: https
-      prometheusSpec:
-        replicas: 2
-        replicaExternalLabelName: replica
-        scrapeInterval: 1m # Must match interval in Grafana Helm chart
-        podMonitorSelector: &selector
-          matchLabels: null
-        probeSelector: *selector
-        ruleSelector: *selector
-        scrapeConfigSelector: *selector
-        serviceMonitorSelector: *selector
-        retention: 14d
-        retentionSize: 50GB
-        enableAdminAPI: true
-        walCompression: true
-        storageSpec:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: rook-ceph-block
-              resources:
-                requests:
-                  storage: 60Gi
-    alertmanager:
-      config:
-        global:
-          resolve_timeout: 5m
-        receivers:
-          - name: "null"
-          - name: pushover
-            pushover_configs:
-              - user_key: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_USER_KEY}
-                token: ${SECRET_KUBE_PROMETHEUS_STACK_ALERTMANAGER_PUSHOVER_TOKEN}
-                send_resolved: true
-                html: true
-                priority: |-
-                  {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
-                url_title: View in Alert Manager
-                title: |-
-                  [{{ .Status | toUpper -}}
-                  {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
-                  ] {{ .CommonLabels.alertname }}
-                message: |-
-                  {{- range .Alerts }}
-                    {{- if ne .Labels.severity "" }}
-                      <b>Severity:</b> <i>{{ .Labels.severity }}</i>
-                    {{- else }}
-                      <b>Severity:</b> <i>N/A</i>
-                    {{- end }}
-                    {{- if ne .Annotations.description "" }}
-                      <b>Description:</b> <i>{{ .Annotations.description }}</i>
-                    {{- else if ne .Annotations.summary "" }}
-                      <b>Summary:</b> <i>{{ .Annotations.summary }}</i>
-                    {{- else if ne .Annotations.message "" }}
-                      <b>Message:</b> <i>{{ .Annotations.message }}</i>
-                    {{- else }}
-                      <b>Description:</b> <i>N/A</i>
-                    {{- end }}
-                    {{- if gt (len .Labels.SortedPairs) 0 }}
-                      <b>Details:</b>
-                      {{- range .Labels.SortedPairs }}
-                        • <b>{{ .Name }}:</b> <i>{{ .Value }}</i>
-                      {{- end }}
-                    {{- end }}
-                  {{- end }}
-        route:
-          receiver: pushover
-          routes:
-            - receiver: "null"
-              matchers:
-                - alertname =~ "InfoInhibitor|Watchdog|RebootScheduled"
-            - receiver: pushover
-              matchers:
-                - severity = "critical"
-              continue: true
-        inhibit_rules:
-          - source_matchers:
-              - severity = "critical"
-            target_matchers:
-              - severity = "warning"
-            equal: [alertname, namespace]
       alertmanagerSpec:
-        replicas: 1
-        podAntiAffinity: hard
+        alertmanagerConfiguration:
+          name: alertmanager
+        externalUrl: https://alertmanager.${SECRET_EXTERNAL_DOMAIN}
         storage:
           volumeClaimTemplate:
             spec:
@@ -202,21 +36,83 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
+    kubeEtcd:
+      service:
+        selector:
+          component: kube-apiserver # etcd runs on control plane nodes
+    kubeProxy:
+      enabled: false
+    prometheus:
       route:
         main:
           enabled: true
-          hostnames: ["alertmanager.${SECRET_EXTERNAL_DOMAIN}"]
+          hostnames:
+            - prometheus.${SECRET_EXTERNAL_DOMAIN}
           parentRefs:
             - name: internal
               namespace: network
               sectionName: https
-      prometheus:
-        monitor:
-          enabled: true
-          relabelings:
-            - action: replace
-              regex: (.*)
-              replacement: $1
-              sourceLabels:
-                - __meta_kubernetes_pod_node_name
-              targetLabel: kubernetes_node
+      prometheusSpec:
+        externalUrl: https://prometheus.${SECRET_EXTERNAL_DOMAIN}
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        retention: 14d
+        retentionSize: 50GB
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 2000Mi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: rook-ceph-block
+              resources:
+                requests:
+                  storage: 50Gi
+    prometheus-node-exporter:
+      fullnameOverride: node-exporter
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+    grafana:
+      enabled: false
+      forceDeployDashboards: true
+      operator:
+        dashboardsConfigMapRefEnabled: true
+        folder: observability
+        matchLabels:
+          dashboards: grafana
+    additionalPrometheusRulesMap:
+      dockerhub-rules:
+        groups:
+          - name: dockerhub
+            rules:
+              - alert: DockerhubRateLimitRisk
+                annotations:
+                  summary: There are {{ $value }} containers pulling from Dockerhub. This may lead to rate limiting.
+                expr: count(time() - container_last_seen{image=~"(docker.io).*",container!=""} < 30) > 100
+                labels:
+                  severity: critical
+      oom-rules:
+        groups:
+          - name: oom
+            rules:
+              - alert: OomKilled
+                annotations:
+                  summary: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.
+                expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+                labels:
+                  severity: critical
+      zfs-rules:
+        groups:
+          - name: zfs
+            rules:
+              - alert: ZfsUnexpectedPoolState
+                annotations:
+                  summary: ZFS pool {{$labels.zpool}} on {{$labels.instance}} is in a unexpected state {{$labels.state}}
+                expr: node_zfs_zpool_state{state!="online"} > 0
+                labels:
+                  severity: critical

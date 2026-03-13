@@ -7,8 +7,10 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - pikvm.${SECRET_INTERNAL_DOMAIN}:9100
         - opnsense.${SECRET_INTERNAL_DOMAIN}:9273
+        - pikvm.${SECRET_INTERNAL_DOMAIN}:9100
+        - storage.${SECRET_INTERNAL_DOMAIN}:9100
+        - storage.${SECRET_INTERNAL_DOMAIN}:9633
   metricsPath: /metrics
   relabelings:
     - action: replace
