@@ -15,6 +15,7 @@ spec:
     - name: volsync
       namespace: volsync
   components:
+    - ../../../../components/ext-auth
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
   interval: 1h
