@@ -8,6 +8,7 @@ components:
 resources:
   - ./atuin/ks.yaml
   - ./authelia/ks.yaml
+  - ./autobrr/ks.yaml
   - ./bazarr/ks.yaml
   - ./booklore/ks.yaml
   - ./bookstack/ks.yaml
