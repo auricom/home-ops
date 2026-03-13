@@ -16,7 +16,6 @@ resources:
   - ./exercisediary/ks.yaml
   - ./filebrowser/ks.yaml
   - ./flaresolverr/ks.yaml
-  - ./flood/ks.yaml
   - ./freshrss/ks.yaml
   - ./garage/ks.yaml
   - ./home-assistant/ks.yaml
