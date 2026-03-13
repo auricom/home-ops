@@ -38,6 +38,7 @@ resources:
   - ./prowlarr/ks.yaml
   - ./prpilot/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./qui/ks.yaml
   - ./radarr/ks.yaml
   - ./radarr-archive/ks.yaml
   - ./readeck/ks.yaml
