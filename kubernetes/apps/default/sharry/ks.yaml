@@ -18,6 +18,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 2Gi
+      VOLSYNC_SCHEDULE: "52 */12 * * *"
   prune: true
   retryInterval: 2m
   sourceRef:
