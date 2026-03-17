@@ -86,6 +86,13 @@ spec:
         path: /mnt/vol1/apps/immich
         globalMounts:
           - path: /data
+      external:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/photo/Gallery
+        globalMounts:
+          - path: /external
       tmpfs:
         type: emptyDir
         advancedMounts:
