@@ -14,3 +14,4 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./pushgateway/ks.yaml
   - ./scrutiny/ks.yaml
+  - ./smartctl-exporter/ks.yaml
