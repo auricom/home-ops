@@ -3,7 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - helmrelease.yaml
-  - podmonitor.yaml
-  - servicemonitor.yaml
+  - ./grafanadashboard.yaml
+  - ./helmrelease.yaml
+  - ./podmonitor.yaml
+  - ./servicemonitor.yaml
   - ./ocirepository.yaml

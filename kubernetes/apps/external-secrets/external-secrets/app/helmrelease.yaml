@@ -16,6 +16,9 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  values:
+    grafanaDashboard:
+      enabled: true
   valuesFrom:
     - kind: ConfigMap
       name: external-secrets-values
