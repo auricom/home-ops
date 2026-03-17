@@ -33,7 +33,6 @@ spec:
     controllers:
       authelia:
         replicas: 1
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
