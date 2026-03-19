@@ -90,7 +90,7 @@ spec:
         enabled: true
         type: nfs
         server: 192.168.9.10
-        path: /mnt/vol1/photo/Gallery
+        path: "/mnt/vol1/photo/Lightroom Export"
         globalMounts:
           - path: /external
       tmpfs:
