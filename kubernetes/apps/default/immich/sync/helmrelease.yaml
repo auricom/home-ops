@@ -1,0 +1,70 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app immich-sync
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: immich
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: immich
+  values:
+    controllers:
+      immich-sync:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/salvoxia/immich-folder-album-creator
+              tag: 0.25.1@sha256:ff00791765eccc294f7a916f6551a6a0690e513a21de53e2a572b553571cd4f7
+            env:
+              ALBUM_NAME_POST_REGEX1: '[\d]+_|\d+\s\w{3}'
+              API_URL: http://immich.default.svc.cluster.local.:2283/api
+              ROOT_PATH: /external_libs
+              SHARE_WITH: Hélène
+              SHARE_ROLE: viewer
+              TZ: ${TIMEZONE}
+              UNATTENDED: 1
+            envFrom:
+              - secretRef:
+                  name: immich-sync-secret
+            probes:
+              liveness: &probes
+                enabled: false
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 150Mi
+              limits:
+                memory: 2Gi
+    service:
+      app:
+        controller: *app
+        enabled: false
+    persistence:
+      external:
+        enabled: true
+        type: nfs
+        server: 192.168.9.10
+        path: /mnt/vol1/photo/Export
+        globalMounts:
+          - path: /external_libs
