@@ -39,6 +39,7 @@ spec:
               SHARE_ROLE: viewer
               TZ: ${TIMEZONE}
               UNATTENDED: 1
+              ALBUM_ORDER: asc
             envFrom:
               - secretRef:
                   name: immich-sync-secret
