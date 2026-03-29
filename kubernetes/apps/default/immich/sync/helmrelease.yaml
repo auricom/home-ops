@@ -35,16 +35,16 @@ spec:
               - python3
               - /script/immich_auto_album.py
             args:
-              - --root-path=/external_libs
               - --api-key-type=literal
-              - --api-key=$API_KEY
               - --unattended
               - --album-order=asc
               - --album-separator=""
               - --share-with=Hélène=viewer
               - --album-name-post-regex='[\d]+_[\d]+_'
               - --album-name-post-regex="'_' ' '"
+              - /external_libs
               - http://immich.default.svc.cluster.local.:2283/api
+              - $API_KEY
             envFrom:
               - secretRef:
                   name: immich-sync-secret
