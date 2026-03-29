@@ -25,26 +25,22 @@ spec:
         type: cronjob
         cronjob:
           concurrencyPolicy: Forbid
-          schedule: "45 7 * * *"
+          schedule: "@daily"
         containers:
           app:
             image:
               repository: ghcr.io/salvoxia/immich-folder-album-creator
               tag: 0.25.2@sha256:79b82f9818ded34c8dcfc5df0502126fdaff698b94ddad4b20ac1f0c3a7dcba2
-            command:
-              - python3
-              - /script/immich_auto_album.py
-            args:
-              - --api-key-type=literal
-              - --unattended
-              - --album-order=asc
-              - --album-separator=""
-              - --share-with=Hélène=viewer
-              - --album-name-post-regex='[\d]+_[\d]+_'
-              - --album-name-post-regex="'_' ' '"
-              - /external_libs
-              - http://immich.default.svc.cluster.local.:2283/api
-              - $API_KEY
+            env:
+              ALBUM_NAME_POST_REGEX1: "'(\\d+_)+'"
+              ALBUM_NAME_POST_REGEX2: "'_' ' '"
+              API_URL: http://immich.default.svc.cluster.local.:2283/api
+              ROOT_PATH: /external_libs
+              SHARE_WITH: Hélène
+              SHARE_ROLE: viewer
+              TZ: ${TIMEZONE}
+              UNATTENDED: 1
+              ALBUM_ORDER: asc
             envFrom:
               - secretRef:
                   name: immich-sync-secret
