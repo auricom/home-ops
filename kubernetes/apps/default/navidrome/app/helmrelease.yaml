@@ -20,9 +20,6 @@ spec:
   values:
     defaultPodOptions:
       enableServiceLinks: false
-      securityContext:
-        runAsUser: 568
-        runAsGroup: 568
     controllers:
       navidrome:
         containers:
