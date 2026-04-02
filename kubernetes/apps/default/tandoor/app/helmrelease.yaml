@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: vabene1111/recipes
-              tag: 2.6.1@sha256:22a93021d14c1f4b0f7a3eebac22f3cddba4328b7a43861630881a4008d09d8d
+              tag: 2.6.2@sha256:96708d9df195457b3194fcfde2aa4a814f3fe28cbb90d0045789555d0d1e8da6
             envFrom:
               - secretRef:
                   name: tandoor-secret
