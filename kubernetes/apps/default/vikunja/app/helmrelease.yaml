@@ -32,14 +32,14 @@ spec:
           app:
             image:
               repository: vikunja/vikunja
-              tag: 0.24.6@sha256:ed1f3ed467fecec0b57e9de7bc6607f8bbcbb23ffced6a81f5dfefc794cdbe3b
+              tag: 2.2.2@sha256:a96c20c0997bae4a445bf717002328524c5449c2b64391032c671ff4e1d8b2fa
             envFrom:
               - secretRef:
                   name: vikunja-secret
             env:
               VIKUNJA_DATABASE_TYPE: sqlite
               VIKUNJA_DATABASE_PATH: /db/vikunja.db
-              VIKUNJA_SERVICE_PUBLICURL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+              VIKUNJA_SERVICE_PUBLICURL: https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}
               VIKUNJA_MAILER_ENABLED: "true"
               VIKUNJA_MAILER_HOST: smtp-relay.default.svc.cluster.local.
               VIKUNJA_MAILER_PORT: "2525"
