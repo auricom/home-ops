@@ -108,3 +108,5 @@ spec:
         path: /mnt/vol1/video/.qbittorrent
         globalMounts:
           - path: /mnt/storage/video/.qbittorrent
+      tmp:
+        type: emptyDir
