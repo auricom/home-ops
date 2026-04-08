@@ -6,6 +6,7 @@ namespace: default
 components:
   - ../../components/common
 resources:
+  - ./agregarr/ks.yaml
   - ./atuin/ks.yaml
   - ./authelia/ks.yaml
   - ./autobrr/ks.yaml
