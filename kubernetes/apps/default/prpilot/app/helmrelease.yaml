@@ -103,6 +103,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
+            url: https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}/readyz
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: external
