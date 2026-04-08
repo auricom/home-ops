@@ -81,6 +81,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
+            url: "http://qui.default.svc.cluster.local.:8080/health"
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
           - name: internal
