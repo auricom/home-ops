@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: dxflrs/garage
-              tag: v2.2.0@sha256:45a61ce3f7c9c24fc23d9ed2b09b27ed560ab87b34605d175d5c588f539c24e4
+              tag: v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690
             env:
               TZ: "${TIMEZONE}"
             envFrom:
