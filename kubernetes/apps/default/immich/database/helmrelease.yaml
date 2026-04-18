@@ -30,7 +30,7 @@ spec:
           postgresql:
             image:
               repository: ghcr.io/immich-app/postgres
-              tag: 17-vectorchord0.5.3@sha256:9508d83434c69eb0e5618e5abfb01e8ac76c2b96499e989fad68344f663b45aa
+              tag: 18-vectorchord0.5.3@sha256:b2f93fb4d9c1c0c720d6bf61e26f237f0aed12dcb4109dfb447ef7ae9dc209ce
             env:
               PGDATA: /var/lib/postgresql/data
             envFrom:
