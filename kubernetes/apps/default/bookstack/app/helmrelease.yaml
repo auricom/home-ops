@@ -59,7 +59,7 @@ spec:
           mariadb:
             image:
               repository: lscr.io/linuxserver/mariadb
-              tag: 11.4.9
+              tag: 11.4.10
             env:
               TZ: ${TIMEZONE}
               MYSQL_USER: bookstack
