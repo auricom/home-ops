@@ -43,11 +43,33 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: &app home-assistant
-  dependsOn:
-    - name: home-assistant
-  components:
   interval: 1h
   path: ./kubernetes/apps/default/home-assistant/code
+  postBuild:
+    substitute:
+      APP: *app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: sensy-one-zone-editor
+  namespace: &namespace default
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app home-assistant
+  interval: 1h
+  path: ./kubernetes/apps/default/home-assistant/sensy-one-zone-editor
   postBuild:
     substitute:
       APP: *app
