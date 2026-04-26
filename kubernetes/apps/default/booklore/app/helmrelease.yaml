@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/grimmory-tools/grimmory
-              tag: v3.0.0@sha256:0130c338d4c1186f2f6b6acdc4a7ee56388dfdab9cb0b9a23ac0fc91b79e7d75
+              tag: v3.0.2@sha256:4557a78321add7d70bef7c0b89c2617c8c023246ae39698bc2cbe636f8c97f9b
             env:
               TZ: ${TIMEZONE}
               USER_ID: "1000"
