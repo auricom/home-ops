@@ -31,7 +31,7 @@ spec:
           main:
             image:
               repository: rook/ceph
-              tag: v1.19.4@sha256:f0f307d7fce0ba2bc60d15e446b9fafddf1153492398fd653d10708f9874bf31
+              tag: v1.19.5@sha256:f1d114a3edba5eb735250a1a56f4ebe6688cbb2f9c1f51fc67b1c28df88a6e7b
             command: [/usr/local/bin/toolbox.sh]
             env:
               ROOK_CEPH_USERNAME:
