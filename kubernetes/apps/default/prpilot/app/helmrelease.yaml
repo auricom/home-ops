@@ -44,7 +44,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/prpilot
-              tag: rolling@sha256:f4f7a1777d4db08f4ccb9343d461f1712cc7a5450d51f66b8b0db872ad3b1a9e
+              tag: rolling@sha256:5ec9dc4ea96e8ca71589406c046f306012f47a4dd732e7056e79f82c69ff8280
             env:
               PORT: &port 8080
               PUBLIC_BASE_URL: &host https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}
