@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: lscr.io/linuxserver/bookstack
-              tag: 26.03.20260315
+              tag: 26.05.20260601
             env:
               TZ: ${TIMEZONE}
               PUID: "1000"
