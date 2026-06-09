@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/hollanbm/renamarr
-              tag: 2.2.0@sha256:6bf386d780679cd626313d9aa9360e9de984d1402d9c2b0467099692a402ed34
+              tag: 3.0.0@sha256:c11fae0fd5e808817c6f3639abce25a246ea560cf7099de9d8b498e61c0befa7
             envFrom:
               - secretRef:
                   name: renamarr-secret
