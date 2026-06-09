@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: homeylab/bookstack-file-exporter
-              tag: 2.1.0@sha256:14f359cf01b93e82bfad19f62a82b83def2b8b1dd1b53e40b070672cd0d2f1f8
+              tag: 2.2.0@sha256:93e7a9c643de90330766a9b1c4815515ff2eae10dc4d292d8a9cd7f417f26f1d
             env:
               LOG_LEVEL: info
             envFrom:
