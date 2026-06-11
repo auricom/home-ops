@@ -18,6 +18,15 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       dragonfly-operator:
         replicas: 1
@@ -64,10 +73,6 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: [ALL] }
         pod:
-          securityContext:
-            runAsUser: 65534
-            runAsGroup: 65534
-            runAsNonRoot: true
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
