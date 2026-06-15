@@ -20,6 +20,10 @@ spec:
   values:
     defaultPodOptions:
       automountServiceAccountToken: true
+      labels:
+        # required for the operator to determine a primary in each deployed cluster
+        # ref: https://deepwiki.com/dragonflydb/dragonfly-operator/2.2-manual-installation#namespace-resource
+        control-plane: controller-manager
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
@@ -27,6 +31,13 @@ spec:
         fsGroup: 65534
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
     controllers:
       dragonfly-operator:
         replicas: 1
@@ -72,14 +83,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: [ALL] }
-        pod:
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: kubernetes.io/hostname
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: *app
     service:
       app:
         controller: *app
