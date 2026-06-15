@@ -12,6 +12,9 @@ spec:
   values:
     config:
       repo: github://auricom/home-ops
+      statusChecks: true
+      prComments: true
+      publicUrl: https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}
     secret:
       existingSecret: konflate-webhook-token-secret
     httpRoute:
