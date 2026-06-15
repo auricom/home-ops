@@ -37,7 +37,7 @@ session:
       authelia_url: https://auth.${SECRET_EXTERNAL_DOMAIN}
       default_redirection_url: https://${SECRET_EXTERNAL_DOMAIN}
   redis:
-    host: dragonfly.database.svc.cluster.local.
+    host: authelia-dragonfly.default.svc.cluster.local.
     port: 6379
     database_index: 2
 

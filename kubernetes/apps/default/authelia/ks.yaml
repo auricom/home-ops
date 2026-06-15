@@ -10,8 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: dragonfly-cluster
-      namespace: database
+    - name: authelia-database
     - name: external-secrets-stores
       namespace: external-secrets
     - name: gateway-api-crds
@@ -24,6 +23,31 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_SCHEDULE: "12 */12 * * *"
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app authelia-database
+  namespace: &namespace default
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: dragonfly
+      namespace: database
+  interval: 1h
+  path: ./kubernetes/apps/default/authelia/database
   prune: true
   retryInterval: 2m
   sourceRef:
