@@ -23,7 +23,9 @@ spec:
     controllers:
       immich-machine-learning:
         annotations:
+          configmap.reloader.stakater.com/reload: &configMap immich-configmap
           reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: &secret immich-secret
         strategy: RollingUpdate
         containers:
           app:
@@ -35,9 +37,9 @@ spec:
               MPLCONFIGDIR: /cache/matplotlib
             envFrom:
               - configMapRef:
-                  name: immich-configmap
+                  name: *configMap
               - secretRef:
-                  name: immich-secret
+                  name: *secret
             probes:
               liveness: &probes
                 enabled: true

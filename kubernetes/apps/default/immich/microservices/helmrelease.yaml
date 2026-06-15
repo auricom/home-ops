@@ -23,7 +23,9 @@ spec:
     controllers:
       immich-microservices:
         annotations:
+          configmap.reloader.stakater.com/reload: &configMap immich-configmap
           reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: &secret immich-secret
         strategy: RollingUpdate
         containers:
           app:
@@ -35,9 +37,9 @@ spec:
               IMMICH_WORKERS_EXCLUDE: api
             envFrom:
               - configMapRef:
-                  name: immich-configmap
+                  name: *configMap
               - secretRef:
-                  name: immich-secret
+                  name: *secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

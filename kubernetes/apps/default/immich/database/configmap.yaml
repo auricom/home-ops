@@ -16,6 +16,5 @@ data:
   PROFILE_LOCATION: /data/profile
   BACKUP_LOCATION: /data/backups
   # REDIS
-  REDIS_HOSTNAME: dragonfly.database.svc.cluster.local.
-  REDIS_DBINDEX: "6"
+  REDIS_HOSTNAME: immich-dragonfly.default.svc.cluster.local.
   REDIS_PORT: "6379"
