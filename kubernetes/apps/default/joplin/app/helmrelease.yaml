@@ -27,7 +27,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       joplin:
-        strategy: RollingUpdate
         containers:
           app:
             image:
