@@ -1,0 +1,11 @@
+#!/bin/bash
+# {{ ansible_managed }}
+# Applies ethtool tuning for 10GbE interfaces on link-up
+
+{% for iface in truenas_10gbe_interfaces %}
+if [ -e "/sys/class/net/{{ iface }}" ]; then
+    ethtool -G {{ iface }} rx {{ truenas_10gbe_ring_rx }} tx {{ truenas_10gbe_ring_tx }}
+    ethtool -K {{ iface }} tso {{ 'on' if truenas_10gbe_tso else 'off' }} gro {{ 'on' if truenas_10gbe_gro else 'off' }} lro {{ 'on' if truenas_10gbe_lro else 'off' }}
+    ethtool -C {{ iface }} rx-usecs {{ truenas_10gbe_coalesce_rx_usecs }} tx-usecs {{ truenas_10gbe_coalesce_tx_usecs }} rx-frames {{ truenas_10gbe_coalesce_rx_frames }} tx-frames {{ truenas_10gbe_coalesce_tx_frames }}
+fi
+{% endfor %}

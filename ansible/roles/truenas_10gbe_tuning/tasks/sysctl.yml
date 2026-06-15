@@ -1,0 +1,11 @@
+---
+- name: sysctl | apply network tuning parameters
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+    sysctl_set: true
+    state: present
+    reload: true
+  loop: "{{ truenas_10gbe_sysctl | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}={{ item.value }}"

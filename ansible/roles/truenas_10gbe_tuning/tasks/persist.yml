@@ -1,0 +1,21 @@
+---
+- name: persist | write sysctl drop-in for 10GbE tuning
+  ansible.builtin.template:
+    src: 99-10gbe-tuning.conf.j2
+    dest: /etc/sysctl.d/99-10gbe-tuning.conf
+    mode: "0644"
+  notify: reload sysctl
+
+- name: persist | ensure networkd-dispatcher routable.d directory exists
+  ansible.builtin.file:
+    path: /etc/networkd-dispatcher/routable.d
+    state: directory
+    mode: "0755"
+  when: ansible_facts['distribution'] == "Debian"
+
+- name: persist | write networkd dispatcher script for ethtool on link-up
+  ansible.builtin.template:
+    src: 10gbe-ethtool.sh.j2
+    dest: /etc/networkd-dispatcher/routable.d/50-10gbe-ethtool.sh
+    mode: "0755"
+  when: ansible_facts['distribution'] == "Debian"

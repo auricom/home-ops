@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+# 10GbE network tuning - managed by Ansible role truenas_10gbe_tuning
+{% for key, value in truenas_10gbe_sysctl.items() %}
+{{ key }} = {{ value }}
+{% endfor %}

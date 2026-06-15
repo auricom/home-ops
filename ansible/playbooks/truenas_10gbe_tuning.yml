@@ -1,0 +1,9 @@
+---
+- hosts: storage
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  roles:
+    - role: truenas_10gbe_tuning
+      tags:
+        - 10gbe-tuning

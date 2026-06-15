@@ -1,0 +1,25 @@
+---
+- name: validate interfaces are defined
+  ansible.builtin.assert:
+    that:
+      - truenas_10gbe_interfaces | length > 0
+    fail_msg: "truenas_10gbe_interfaces must define at least one NIC (e.g. ['eth0'])"
+
+- name: validate interfaces exist on the host
+  ansible.builtin.assert:
+    that:
+      - item in ansible_facts['interfaces']
+    fail_msg: "Interface '{{ item }}' not found. Available: {{ ansible_facts['interfaces'] | join(', ') }}"
+  loop: "{{ truenas_10gbe_interfaces }}"
+
+- ansible.builtin.include_tasks: sysctl.yml
+  tags:
+    - sysctl
+
+- ansible.builtin.include_tasks: ethtool.yml
+  tags:
+    - ethtool
+
+- ansible.builtin.include_tasks: persist.yml
+  tags:
+    - persist

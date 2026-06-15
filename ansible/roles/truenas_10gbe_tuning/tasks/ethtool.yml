@@ -1,0 +1,42 @@
+---
+- name: ethtool | query current ring parameters
+  ansible.builtin.command: ethtool -g {{ item }}
+  changed_when: false
+  register: _ring_info
+  loop: "{{ truenas_10gbe_interfaces }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: ethtool | set RX/TX ring buffer sizes
+  ansible.builtin.command: >-
+    ethtool -G {{ item.item }} rx {{ truenas_10gbe_ring_rx }} tx {{ truenas_10gbe_ring_tx }}
+  when: >-
+    _ring_info.results
+      | selectattr('item', 'equalto', item.item)
+      | map(attribute='stdout_lines')
+      | first
+      | select('search', 'RX.*' + truenas_10gbe_ring_rx | string)
+      | list
+      | length == 0
+  loop: "{{ _ring_info.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: ethtool | configure offloading features
+  ansible.builtin.command: >-
+    ethtool -K {{ item }}
+      tso {{ 'on' if truenas_10gbe_tso else 'off' }}
+      gro {{ 'on' if truenas_10gbe_gro else 'off' }}
+      lro {{ 'on' if truenas_10gbe_lro else 'off' }}
+  changed_when: true
+  loop: "{{ truenas_10gbe_interfaces }}"
+
+- name: ethtool | configure interrupt coalescing
+  ansible.builtin.command: >-
+    ethtool -C {{ item }}
+      rx-usecs {{ truenas_10gbe_coalesce_rx_usecs }}
+      tx-usecs {{ truenas_10gbe_coalesce_tx_usecs }}
+      {{ ('rx-frames ' + truenas_10gbe_coalesce_rx_frames | string) if truenas_10gbe_coalesce_rx_frames | int > 0 else '' }}
+      {{ ('tx-frames ' + truenas_10gbe_coalesce_tx_frames | string) if truenas_10gbe_coalesce_tx_frames | int > 0 else '' }}
+  changed_when: true
+  loop: "{{ truenas_10gbe_interfaces }}"

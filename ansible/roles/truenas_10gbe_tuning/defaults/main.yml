@@ -1,0 +1,42 @@
+---
+truenas_10gbe_interfaces: []
+
+truenas_10gbe_ring_rx: 4096
+truenas_10gbe_ring_tx: 4096
+
+truenas_10gbe_tso: true
+truenas_10gbe_gro: true
+truenas_10gbe_lro: false
+
+truenas_10gbe_coalesce_rx_usecs: 50
+truenas_10gbe_coalesce_tx_usecs: 50
+truenas_10gbe_coalesce_rx_frames: 0
+truenas_10gbe_coalesce_tx_frames: 0
+
+truenas_10gbe_sysctl:
+  net.core.rmem_max: 16777216
+  net.core.wmem_max: 16777216
+  net.core.rmem_default: 1048576
+  net.core.wmem_default: 1048576
+  net.core.optmem_max: 65536
+  net.core.netdev_max_backlog: 5000
+  net.core.somaxconn: 1024
+  net.ipv4.tcp_rmem: "4096 1048576 16777216"
+  net.ipv4.tcp_wmem: "4096 1048576 16777216"
+  net.ipv4.tcp_congestion_control: bbr
+  net.ipv4.tcp_mtu_probing: 1
+  net.ipv4.tcp_fastopen: 3
+  net.ipv4.tcp_slow_start_after_idle: 0
+  net.ipv4.tcp_no_metrics_save: 1
+  net.ipv4.tcp_sack: 1
+  net.ipv4.tcp_timestamps: 1
+  net.ipv4.tcp_window_scaling: 1
+  net.ipv4.tcp_max_syn_backlog: 8192
+  # net.ipv4.tcp_max_tw_reuse: 8192
+  net.ipv4.tcp_fin_timeout: 15
+  net.ipv4.tcp_keepalive_intvl: 30
+  net.ipv4.tcp_keepalive_probes: 5
+  net.ipv4.tcp_keepalive_time: 300
+  net.ipv4.tcp_syn_retries: 2
+  net.ipv4.tcp_retries2: 5
+  net.core.default_qdisc: fq
