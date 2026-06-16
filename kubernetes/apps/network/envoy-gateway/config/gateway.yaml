@@ -12,6 +12,7 @@ spec:
     name: envoy
     namespace: network
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/gateway_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
@@ -29,7 +30,7 @@ spec:
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
-      lbipam.cilium.io/ips: 192.168.169.121
+      lbipam.cilium.io/ips: 192.168.169.127
   listeners:
     - name: http
       protocol: HTTP
