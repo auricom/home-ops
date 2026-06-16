@@ -11,9 +11,6 @@ spec:
       app.kubernetes.io/name: *app
   interval: 1h
   path: ./kubernetes/apps/network/envoy-gateway/app
-  dependsOn:
-    - name: gateway-api-crds
-      namespace: *namespace
   prune: true
   sourceRef:
     kind: GitRepository
