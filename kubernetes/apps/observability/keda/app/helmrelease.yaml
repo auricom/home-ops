@@ -9,8 +9,6 @@ spec:
     kind: OCIRepository
     name: keda
   interval: 1h
-  driftDetection:
-    mode: enabled
   values:
     enableServiceLinks: false
     prometheus:

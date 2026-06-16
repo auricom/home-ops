@@ -13,8 +13,6 @@ spec:
     - name: authelia-database
     - name: external-secrets-stores
       namespace: external-secrets
-    - name: gateway-api-crds
-      namespace: network
   components:
     - ../../../../components/volsync
   interval: 1h

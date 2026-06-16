@@ -9,8 +9,6 @@ spec:
     kind: OCIRepository
     name: kube-prometheus-stack
   interval: 1h
-  driftDetection:
-    mode: enabled
   valuesFrom:
     - kind: ConfigMap
       name: flux-metrics-configmap

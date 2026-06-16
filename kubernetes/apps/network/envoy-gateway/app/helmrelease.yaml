@@ -9,8 +9,6 @@ spec:
     kind: OCIRepository
     name: envoy-gateway
   interval: 1h
-  driftDetection:
-    mode: enabled
   values:
     global:
       imageRegistry: mirror.gcr.io

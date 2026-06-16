@@ -20,8 +20,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  driftDetection:
-    mode: enabled
     ignore:
       - paths:
           - /spec/containers/resources/limits

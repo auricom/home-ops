@@ -34,8 +34,6 @@ spec:
     crds: CreateReplace
     remediation:
       retries: 3
-  driftDetection:
-    mode: enabled
   uninstall:
     keepHistory: false
   values:

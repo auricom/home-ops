@@ -9,8 +9,6 @@ spec:
     kind: OCIRepository
     name: grafana-operator
   interval: 1h
-  driftDetection:
-    mode: enabled
   values:
     dashboard:
       enabled: true

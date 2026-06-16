@@ -6,8 +6,6 @@ metadata:
   name: &app konflate
 spec:
   interval: 1h
-  driftDetection:
-    mode: enabled
   chartRef:
     kind: OCIRepository
     name: konflate

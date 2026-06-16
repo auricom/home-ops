@@ -18,8 +18,6 @@ spec:
     crds: CreateReplace
     remediation:
       retries: 3
-  driftDetection:
-    mode: enabled
   values:
     manager:
       devices:

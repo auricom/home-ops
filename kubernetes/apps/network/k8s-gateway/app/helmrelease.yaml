@@ -16,8 +16,6 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  driftDetection:
-    mode: enabled
   values:
     fullnameOverride: k8s-gateway
     domain: "${SECRET_EXTERNAL_DOMAIN}"
