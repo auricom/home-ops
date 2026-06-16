@@ -22,6 +22,8 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  driftDetection:
+    mode: enabled
   dependsOn:
     - name: rook-ceph-operator
       namespace: rook-ceph

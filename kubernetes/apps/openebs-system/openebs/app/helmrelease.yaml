@@ -30,6 +30,8 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  driftDetection:
+    mode: enabled
   values:
     localpv-provisioner:
       localpv:

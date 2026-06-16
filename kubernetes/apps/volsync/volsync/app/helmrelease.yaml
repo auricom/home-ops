@@ -9,6 +9,8 @@ spec:
     kind: OCIRepository
     name: volsync
   interval: 1h
+  driftDetection:
+    mode: enabled
   values:
     fullnameOverride: volsync # Required for volsync-perfectra1n fork
     image: &image

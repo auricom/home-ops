@@ -18,6 +18,8 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  driftDetection:
+    mode: enabled
   values:
     controllers:
       bookstack:

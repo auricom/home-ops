@@ -9,6 +9,8 @@ spec:
     kind: OCIRepository
     name: tuppr
   interval: 1h
+  driftDetection:
+    mode: enabled
   values:
     replicaCount: 2
     monitoring:

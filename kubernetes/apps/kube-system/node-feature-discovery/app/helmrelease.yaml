@@ -18,6 +18,8 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 5
+  driftDetection:
+    mode: enabled
   values:
     worker:
       annotations:

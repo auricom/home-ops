@@ -17,6 +17,8 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  driftDetection:
+    mode: enabled
   dependsOn:
     - name: lldap
     - name: smtp-relay

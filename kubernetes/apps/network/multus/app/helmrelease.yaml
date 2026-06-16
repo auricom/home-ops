@@ -17,6 +17,8 @@ spec:
     remediation:
       retries: 3
       strategy: rollback
+  driftDetection:
+    mode: enabled
   uninstall:
     keepHistory: false
   values:
