@@ -7,7 +7,7 @@ metadata:
 spec:
   hostnames: ["rook.${SECRET_EXTERNAL_DOMAIN}"]
   parentRefs:
-    - name: internal
+    - name: envoy-internal
       namespace: network
       sectionName: https
   rules:

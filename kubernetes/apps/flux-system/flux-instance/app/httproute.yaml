@@ -9,7 +9,7 @@ metadata:
 spec:
   hostnames: ["flux-webhook.${SECRET_EXTERNAL_DOMAIN}"]
   parentRefs:
-    - name: external
+    - name: envoy-external
       namespace: network
       sectionName: https
   rules:

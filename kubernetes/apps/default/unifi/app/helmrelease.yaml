@@ -84,7 +84,7 @@ spec:
             conditions: ["[STATUS] == 200"]
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
-          - name: internal
+          - name: envoy-internal
             namespace: network
             sectionName: https
         rules:
@@ -102,7 +102,7 @@ spec:
           - path: /unifi
       cert:
         type: secret
-        name: '${SECRET_EXTERNAL_DOMAIN/./-}-unifi'
+        name: "${SECRET_EXTERNAL_DOMAIN/./-}-unifi"
         advancedMounts:
           unifi:
             app:

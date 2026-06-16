@@ -1,41 +1,45 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/gatewayclass_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: envoy-gateway
+  name: envoy
 spec:
   controllerName: gateway.envoyproxy.io/gatewayclass-controller
   parametersRef:
     group: gateway.envoyproxy.io
     kind: EnvoyProxy
-    name: config
+    name: envoy
     namespace: network
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/gateway_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: internal
+  name: envoy-internal
   annotations:
-    external-dns.alpha.kubernetes.io/target: &host internal.${SECRET_EXTERNAL_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: &hostname internal.${SECRET_EXTERNAL_DOMAIN}
+    gatus.home-operations.com/endpoint: |-
+      group: internal
+      guarded: true
+      ui:
+        hide-hostname: true
+        hide-url: true
 spec:
-  gatewayClassName: envoy-gateway
+  gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: *host
-      io.cilium/lb-ipam-ips: 192.168.169.121
+      external-dns.alpha.kubernetes.io/hostname: *hostname
+      lbipam.cilium.io/ips: 192.168.169.121
   listeners:
     - name: http
       protocol: HTTP
       port: 80
-      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
       allowedRoutes:
         namespaces:
           from: Same
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
       allowedRoutes:
         namespaces:
           from: All
@@ -44,31 +48,33 @@ spec:
           - kind: Secret
             name: ${SECRET_EXTERNAL_DOMAIN//./-}-tls
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/gateway_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/gateway_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: external
+  name: envoy-external
   annotations:
-    external-dns.alpha.kubernetes.io/target: &host external.${SECRET_EXTERNAL_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: &hostname external.${SECRET_EXTERNAL_DOMAIN}
+    gatus.home-operations.com/endpoint: |-
+      client:
+        dns-resolver: tcp://1.1.1.1:53
+      group: external
 spec:
-  gatewayClassName: envoy-gateway
+  gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: *host
-      io.cilium/lb-ipam-ips: 192.168.169.122
+      external-dns.alpha.kubernetes.io/hostname: *hostname
+      lbipam.cilium.io/ips: 192.168.169.126
   listeners:
     - name: http
       protocol: HTTP
       port: 80
-      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
       allowedRoutes:
         namespaces:
           from: Same
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
       allowedRoutes:
         namespaces:
           from: All

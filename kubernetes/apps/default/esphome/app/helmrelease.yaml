@@ -74,7 +74,7 @@ spec:
               - "12321"
               - /config
             env:
-              ESPHOME_VERSION: "{{ (split \"@\" .Values.controllers.esphome.containers.app.image.tag)._0 }}"
+              ESPHOME_VERSION: '{{ (split "@" .Values.controllers.esphome.containers.app.image.tag)._0 }}'
               GIT_AUTHOR_NAME: auricom
             resources:
               requests:
@@ -106,7 +106,7 @@ spec:
             conditions: ["[STATUS] == 401"]
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
-          - name: internal
+          - name: envoy-internal
             namespace: network
             sectionName: https
         rules:

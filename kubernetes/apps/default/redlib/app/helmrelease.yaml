@@ -70,7 +70,7 @@ spec:
             conditions: ["[STATUS] == 401"]
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
-          - name: external
+          - name: envoy-external
             namespace: network
             sectionName: https
         rules:

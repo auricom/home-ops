@@ -23,26 +23,26 @@ spec:
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              # Intel N100
-              - key: feature.node.kubernetes.io/cpu-model.id
-                operator: In
-                values:
-                - "190"
+            - weight: 1
+              preference:
+                matchExpressions:
+                  # Intel N100
+                  - key: feature.node.kubernetes.io/cpu-model.id
+                    operator: In
+                    values:
+                      - "190"
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-      #         # Intel N100
-      #         - key: feature.node.kubernetes.io/cpu-model.id
-      #           operator: In
-      #           values:
-      #           - "190"
-              - key: intel.feature.node.kubernetes.io/gpu
-                operator: In
-                values:
-                - "true"
+              - matchExpressions:
+                  #         # Intel N100
+                  #         - key: feature.node.kubernetes.io/cpu-model.id
+                  #           operator: In
+                  #           values:
+                  #           - "190"
+                  - key: intel.feature.node.kubernetes.io/gpu
+                    operator: In
+                    values:
+                      - "true"
       enableServiceLinks: false
       securityContext:
         runAsUser: 568
@@ -105,7 +105,7 @@ spec:
             conditions: ["[STATUS] == 200"]
         hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
         parentRefs:
-          - name: external
+          - name: envoy-external
             namespace: network
             sectionName: https
         rules:

@@ -1,16 +1,10 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/charts/gateway-helm/crds/generated/gateway.envoyproxy.io_envoyproxies.yaml
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/envoyproxy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
 metadata:
-  name: config
+  name: envoy
 spec:
-  # ipFamily: DualStack
-  telemetry:
-    metrics:
-      prometheus: {}
-  shutdown:
-    drainTimeout: 300s
   logging:
     level:
       default: info
@@ -21,12 +15,18 @@ spec:
         replicas: 2
         container:
           image: mirror.gcr.io/envoyproxy/envoy:v1.38.2
+          # imageRepository: mirror.gcr.io/envoyproxy/envoy
           resources:
             requests:
-              cpu: 150m
-              memory: 640Mi
+              cpu: 100m
             limits:
-              cpu: 500m
-              memory: 1Gi
+              memory: 2Gi
       envoyService:
         externalTrafficPolicy: Local
+  shutdown:
+    drainTimeout: 180s
+  telemetry:
+    metrics:
+      prometheus:
+        compression:
+          type: Zstd

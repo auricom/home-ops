@@ -91,7 +91,7 @@ service:
 # ingress:
 #   app:
 #     enabled: true
-#     className: internal
+#     classname: envoy-internal
 #     hosts:
 #       - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
 #         paths:
