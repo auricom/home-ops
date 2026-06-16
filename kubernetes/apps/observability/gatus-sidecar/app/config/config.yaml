@@ -1,7 +1,7 @@
 ---
 connectivity:
   checker:
-    target: 1.1.1.1:53
+    target: 192.168.8.1:53
     interval: 1m
 
 metrics: true
@@ -25,14 +25,16 @@ ui:
 alerting:
   pushover:
     application-token: ${CUSTOM_PUSHOVER_APP_TOKEN}
-    user-key: ${CUSTOM_PUSHOVER_USER_KEY}
-    priority: 1
-    resolved-priority: 0
     default-alert:
       description: health-check failed
+      failure-threshold: 3
+      minimum-reminder-interval: 1h
       send-on-resolved: true
-      failure-threshold: 5
-      success-threshold: 3
+      success-threshold: 2
+    priority: 1
+    resolved-priority: 0
+    title: Gatus
+    user-key: ${CUSTOM_PUSHOVER_USER_KEY}
 
 web:
   port: ${GATUS_WEB_PORT}

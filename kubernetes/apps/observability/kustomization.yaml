@@ -8,7 +8,7 @@ components:
 resources:
   - ./apprise/ks.yaml
   - ./blackbox-exporter/ks.yaml
-  - ./gatus/ks.yaml
+  - ./gatus-sidecar/ks.yaml
   - ./grafana/ks.yaml
   - ./keda/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
