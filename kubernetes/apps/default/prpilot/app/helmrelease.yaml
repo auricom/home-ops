@@ -20,11 +20,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-    ignore:
-      - paths:
-          - /spec/containers/resources/limits
-        target:
-          kind: Pod
   values:
     defaultPodOptions:
       enableServiceLinks: false
