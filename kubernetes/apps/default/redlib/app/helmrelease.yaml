@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/redlib
-              tag: rolling@sha256:cfa334c14dd8d602576fe080a6fb1c0343a6c2899aa84ef06af0aba0ac85a40e
+              tag: rolling@sha256:c9064d82d6f223d0bb69d01ea38c75d6bc1192371bf10c46909bd5de3e953f9c
               # repository: git.ptr.moe/baalajimaestro/redlib
               # tag: latest@sha256:43edfc71d7e3c91c7fad617881dc7c279c382981aefdf466906308a859651886
             # env:
