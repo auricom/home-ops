@@ -63,8 +63,8 @@ spec:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
-              JELLYFIN_PublishedServerUrl: &loadBalancerIP ${CLUSTER_LB_JELLYFIN}
-              TZ: ${TIMEZONE}
+              JELLYFIN_PublishedServerUrl: &loadBalancerIP 192.168.169.110
+              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true
@@ -101,9 +101,9 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            url: "https://jellyfin.${SECRET_EXTERNAL_DOMAIN}/web/index.html"
+            url: "https://jellyfin.xpander.ovh/web/index.html"
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-external
             namespace: network

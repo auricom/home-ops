@@ -77,7 +77,7 @@
   - [ ] `app/externalsecret.yaml`
   - [ ] `app/ocirepository.yaml`
 - [ ] Expose webhook route:
-  - [ ] Hostname `pi.home-ops.${SECRET_EXTERNAL_DOMAIN}`
+  - [ ] Hostname `pi.home-ops.xpander.ovh`
 - [ ] Configure app env in Helm values:
   - [ ] Repo owner/name
   - [ ] Base branch = `main`

@@ -28,7 +28,7 @@ spec:
               repository: ghcr.io/home-operations/prowlarr
               tag: 2.4.0.5397@sha256:8a140c9104c754a272f5e0d1dfcb32a06f07946a431a45c1083a16344f531748
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               PROWLARR__APP__INSTANCENAME: Prowlarr
               PROWLARR__APP__THEME: dark
               PROWLARR__LOG__DBENABLED: "False"
@@ -80,7 +80,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

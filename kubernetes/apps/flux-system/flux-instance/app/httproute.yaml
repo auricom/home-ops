@@ -7,7 +7,7 @@ metadata:
   annotations:
     gatus.home-operations.com/endpoint: 'conditions: ["[STATUS] == 404"]'
 spec:
-  hostnames: ["flux-webhook.${SECRET_EXTERNAL_DOMAIN}"]
+  hostnames: ["flux-webhook.xpander.ovh"]
   parentRefs:
     - name: envoy-external
       namespace: network

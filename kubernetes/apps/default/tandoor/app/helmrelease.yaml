@@ -41,7 +41,7 @@ spec:
               DEBUG: "0"
               ALLOWED_HOSTS: "*"
               GUNICORN_MEDIA: "0"
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               DB_ENGINE: django.db.backends.sqlite3
               POSTGRES_DB: /opt/recipes/data/tandoor.sqlite
               TANDOOR_PORT: &tandoorPort 8888
@@ -92,7 +92,7 @@ spec:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+          - "{{ .Release.Name }}.xpander.ovh"
         parentRefs:
           - name: envoy-internal
             namespace: network

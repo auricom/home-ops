@@ -7,7 +7,7 @@ data:
   # URLS
   IMMICH_SERVER_URL: http://immich.default.svc.cluster.local:2283
   IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local:3003
-  PUBLIC_IMMICH_SERVER_URL: https://immich.${SECRET_EXTERNAL_DOMAIN}
+  PUBLIC_IMMICH_SERVER_URL: https://immich.xpander.ovh
   # SETTINGS
   IMMICH_LOG_LEVEL: log
   UPLOAD_LOCATION: /data

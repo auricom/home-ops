@@ -21,7 +21,8 @@ spec:
     - name: scrutiny
   values:
     defaultPodOptions:
-      automountServiceAccountToken: false
+      automountServiceAccountToken:
+        false
         # capabilities:
         #   add: ["SYS_RAWIO"] # allow access to smartctl
     controllers:
@@ -38,7 +39,7 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: spec.nodeName
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
             securityContext:
               privileged: true
             resources:

@@ -93,7 +93,7 @@ service:
 #     enabled: true
 #     classname: envoy-internal
 #     hosts:
-#       - host: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+#       - host: &host "{{ .Release.Name }}.xpander.ovh"
 #         paths:
 #           - path: /
 #             service:

@@ -29,7 +29,7 @@ spec:
               repository: ghcr.io/home-operations/radarr
               tag: 6.2.1.10461@sha256:0756fffa75b30219e3dbac8d027a5389f53cbb34ae83fa4b0976c1b0524c8eb1
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               RADARR__APP__INSTANCENAME: Radarr-archive
               RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External
@@ -37,7 +37,7 @@ spec:
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__PORT: &port 8080
-              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.xpander.ovh"
               RADARR__UPDATE__BRANCH: develop
               PUSHOVER_DEBUG: "false"
               PUSHOVER_PRIORITY: "0"
@@ -84,7 +84,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

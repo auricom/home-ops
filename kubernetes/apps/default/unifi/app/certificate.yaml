@@ -3,15 +3,15 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: '${SECRET_EXTERNAL_DOMAIN/./-}-unifi'
+  name: xpander-ovh-unifi
 spec:
-  secretName: '${SECRET_EXTERNAL_DOMAIN/./-}-unifi'
+  secretName: xpander-ovh-unifi
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: 'unifi.${SECRET_EXTERNAL_DOMAIN}'
+  commonName: "unifi.xpander.ovh"
   dnsNames:
-    - 'unifi.${SECRET_EXTERNAL_DOMAIN}'
+    - unifi.xpander.ovh
   keystores:
     jks:
       create: true

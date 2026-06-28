@@ -30,7 +30,7 @@ spec:
               tag: 2.8.3@sha256:b5a6defe3462a7bba13342bb878b20504f3699644a442039dad21285edca0082
             env:
               WEBHOOK__PORT: &port 8080
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: webhook-secret
@@ -61,7 +61,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

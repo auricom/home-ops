@@ -20,7 +20,7 @@ spec:
               repository: ghcr.io/autobrr/qui
               tag: v1.20.0@sha256:946e96a158d847a01b5d0055aeadfc1998fff021974d0d5b1e61ccd7fb199450
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               QUI__AUTH_DISABLED: true
               QUI__I_ACKNOWLEDGE_THIS_IS_A_BAD_IDEA: true
               QUI__AUTH_DISABLED_ALLOWED_CIDRS: 0.0.0.0/0
@@ -81,7 +81,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

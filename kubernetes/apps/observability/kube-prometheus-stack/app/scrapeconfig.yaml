@@ -7,10 +7,10 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - opnsense.${SECRET_INTERNAL_DOMAIN}:9273
-        - pikvm.${SECRET_INTERNAL_DOMAIN}:9100
-        - storage.${SECRET_INTERNAL_DOMAIN}:9100
-        - storage.${SECRET_INTERNAL_DOMAIN}:9633
+        - opnsense.feisar.ovh:9273
+        - pikvm.feisar.ovh:9100
+        - storage.feisar.ovh:9100
+        - storage.feisar.ovh:9633
   metricsPath: /metrics
   relabelings:
     - action: replace
@@ -25,7 +25,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - storage.${SECRET_INTERNAL_DOMAIN}:9633
+        - storage.feisar.ovh:9633
   metricsPath: /metrics
   relabelings:
     - action: replace
@@ -39,7 +39,7 @@ metadata:
   name: &name pikvm
 spec:
   staticConfigs:
-    - targets: ["pikvm.${SECRET_INTERNAL_DOMAIN}"]
+    - targets: ["pikvm.feisar.ovh"]
   metricsPath: /api/export/prometheus/metrics
   basicAuth:
     username:

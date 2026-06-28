@@ -4,44 +4,6 @@
 
 Assume this repository is publicly accessible. Do not commit or propose changes that introduce personally identifiable information or sensitive infrastructure details.
 
-### PII Protection Rules
-
-Never commit any of the following:
-
-| Prohibited | Use Instead | Example |
-| --- | --- | --- |
-| Real names | Pseudonyms or variables | `${USERNAME}` |
-| Email addresses | Secret variables | `${SECRET_CLUSTER_DOMAIN_EMAIL}` |
-| Public hostnames/domains | Secret variables | `app.${SECRET_EXTERNAL_DOMAIN}` |
-| Public IP addresses | SOPS secret variables (add a `SECRET_*` entry) | `${SECRET_PUBLIC_IP}` |
-| Private domain names | `SECRET_*` variables | `${SECRET_INTERNAL_DOMAIN}` |
-
-Allowed in this repository:
-- RFC1918 IP addresses (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
-- Hostnames used only inside the cluster (e.g. `svc.cluster.local`)
-- Hardware model names and non-sensitive vendor references
-
-### Secret and Variable Reference
-
-All sensitive values are stored in SOPS-encrypted secrets and injected via Flux or External Secrets. Prefer these variables instead of hardcoding:
-
-| Variable | Purpose | Location |
-| --- | --- | --- |
-| `${SECRET_DOMAIN}` | Base domain for email or app config | `kubernetes/components/common/vars/cluster-secrets.sops.yaml` |
-| `${SECRET_EXTERNAL_DOMAIN}` | Public ingress domain | `kubernetes/components/common/vars/cluster-secrets.sops.yaml` |
-| `${SECRET_INTERNAL_DOMAIN}` | Internal DNS domain | `kubernetes/components/common/vars/cluster-secrets.sops.yaml` |
-| `${SECRET_CLUSTER_DOMAIN_EMAIL}` | ACME/cluster email | `kubernetes/components/common/vars/cluster-secrets.sops.yaml` |
-| `${SECRET_CLOUDFLARE_TUNNEL_ID}` | Cloudflare Tunnel ID | `kubernetes/components/common/vars/cluster-secrets.sops.yaml` |
-
-Non-secret cluster values (e.g. load balancer IPs, time zone, CIDRs) live in `kubernetes/components/common/vars/cluster-settings.yaml`.
-
-### Secret Handling Rules
-
-- Encrypt all secrets with SOPS following `.sops.yaml` rules.
-- Use `*.sops.yaml` (or other `*.sops.*`) for Kubernetes, Ansible, and Terraform secrets.
-- Do not commit plaintext secrets or credentials anywhere.
-- App secrets should use External Secrets with `ClusterSecretStore` named `onepassword-connect`.
-
 ## CRITICAL CONTEXT
 
 This repository manages home infrastructure as code.

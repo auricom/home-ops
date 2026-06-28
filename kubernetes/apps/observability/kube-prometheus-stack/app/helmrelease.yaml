@@ -20,7 +20,7 @@ spec:
         main:
           enabled: true
           hostnames:
-            - alertmanager.${SECRET_EXTERNAL_DOMAIN}
+            - alertmanager.xpander.ovh
           parentRefs:
             - name: envoy-internal
               namespace: network
@@ -28,7 +28,7 @@ spec:
       alertmanagerSpec:
         alertmanagerConfiguration:
           name: alertmanager
-        externalUrl: https://alertmanager.${SECRET_EXTERNAL_DOMAIN}
+        externalUrl: https://alertmanager.xpander.ovh
         storage:
           volumeClaimTemplate:
             spec:
@@ -47,13 +47,13 @@ spec:
         main:
           enabled: true
           hostnames:
-            - prometheus.${SECRET_EXTERNAL_DOMAIN}
+            - prometheus.xpander.ovh
           parentRefs:
             - name: envoy-internal
               namespace: network
               sectionName: https
       prometheusSpec:
-        externalUrl: https://prometheus.${SECRET_EXTERNAL_DOMAIN}
+        externalUrl: https://prometheus.xpander.ovh
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

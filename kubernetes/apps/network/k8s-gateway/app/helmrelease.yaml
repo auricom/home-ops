@@ -18,12 +18,12 @@ spec:
       retries: 3
   values:
     fullnameOverride: k8s-gateway
-    domain: "${SECRET_EXTERNAL_DOMAIN}"
+    domain: "xpander.ovh"
     ttl: 1
     service:
       type: LoadBalancer
       port: 53
       annotations:
-        io.cilium/lb-ipam-ips: ${CLUSTER_LB_K8SGATEWAY}
+        io.cilium/lb-ipam-ips: 192.168.169.100
       externalTrafficPolicy: Cluster
     watchedResources: [HTTPRoute, Service]

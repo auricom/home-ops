@@ -26,9 +26,9 @@ spec:
               repository: freshrss/freshrss
               tag: 1.29.1@sha256:ab6b363102ccdbc39f6a62db926f567c61a5289bf25ba460f1c34423d8cc1a4d
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               CRON_MIN: 18,48
-              DOMAIN: "freshrss.${SECRET_EXTERNAL_DOMAIN}"
+              DOMAIN: "freshrss.xpander.ovh"
               LISTEN: &port 8080
             probes:
               liveness:
@@ -51,9 +51,9 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            url: "https://freshrss.${SECRET_EXTERNAL_DOMAIN}/i/"
+            url: "https://freshrss.xpander.ovh/i/"
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

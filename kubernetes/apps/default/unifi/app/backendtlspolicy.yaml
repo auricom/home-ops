@@ -6,10 +6,10 @@ metadata:
   name: unifi-backend-tls
 spec:
   targetRefs:
-    - group: ''
+    - group: ""
       kind: Service
       name: unifi
       sectionName: https
   validation:
     wellKnownCACertificates: System
-    hostname: unifi.${SECRET_EXTERNAL_DOMAIN}
+    hostname: unifi.xpander.ovh

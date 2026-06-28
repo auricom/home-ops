@@ -7,18 +7,16 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
     privateKeySecretRef:
       name: letsencrypt-production
     solvers:
       - dns01:
           cloudflare:
-            email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
             apiTokenSecretRef:
               name: cloudflare-secret
               key: CLOUDFLARE_TOKEN
         selector:
-          dnsZones: ["${SECRET_EXTERNAL_DOMAIN}"]
+          dnsZones: ["xpander.ovh"]
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/clusterissuer_v1.json
 apiVersion: cert-manager.io/v1
@@ -28,15 +26,13 @@ metadata:
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
     privateKeySecretRef:
       name: letsencrypt-staging
     solvers:
       - dns01:
           cloudflare:
-            email: "${SECRET_CLUSTER_DOMAIN_EMAIL}"
             apiTokenSecretRef:
               name: cloudflare-secret
               key: CLOUDFLARE_TOKEN
         selector:
-          dnsZones: ["${SECRET_EXTERNAL_DOMAIN}"]
+          dnsZones: ["xpander.ovh"]

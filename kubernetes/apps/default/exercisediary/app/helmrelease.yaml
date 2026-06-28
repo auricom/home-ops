@@ -26,7 +26,7 @@ spec:
               repository: aceberg/exercisediary
               tag: 0.1.9@sha256:bfa75741bf347faf8fe859c90e6db5440e9e51c1ced1e27a66f50e6b77c8ab71
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               PORT: &port 8851
               THEME: darkly # optional, default: grass
               COLOR: dark # optional, default: light
@@ -47,7 +47,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

@@ -28,9 +28,9 @@ spec:
               repository: ghcr.io/lldap/lldap
               tag: v0.6.3@sha256:2a8454b668c1aba7157e832eab0e242e1e7eb5fb7591d7e7774ba05286511ca8
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               LLDAP_HTTP_PORT: &port 8080
-              LLDAP_HTTP_URL: https://lldap.${SECRET_EXTERNAL_DOMAIN}
+              LLDAP_HTTP_URL: https://lldap.xpander.ovh
               LLDAP_LDAP_PORT: &ldapPort 5389
               LLDAP_LDAP_BASE_DN: dc=home,dc=arpa
             envFrom:
@@ -56,7 +56,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

@@ -18,7 +18,7 @@ kind: Gateway
 metadata:
   name: envoy-internal
   annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname internal.${SECRET_EXTERNAL_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: &hostname internal.xpander.ovh
     gatus.home-operations.com/endpoint: |-
       group: internal
       guarded: true
@@ -47,7 +47,7 @@ spec:
       tls:
         certificateRefs:
           - kind: Secret
-            name: ${SECRET_EXTERNAL_DOMAIN//./-}-tls
+            name: xpander-ovh-tls
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/gateway_v1.json
 apiVersion: gateway.networking.k8s.io/v1
@@ -55,7 +55,7 @@ kind: Gateway
 metadata:
   name: envoy-external
   annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname external.${SECRET_EXTERNAL_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: &hostname external.xpander.ovh
     gatus.home-operations.com/endpoint: |-
       client:
         dns-resolver: tcp://1.1.1.1:53
@@ -82,4 +82,4 @@ spec:
       tls:
         certificateRefs:
           - kind: Secret
-            name: ${SECRET_EXTERNAL_DOMAIN//./-}-tls
+            name: xpander-ovh-tls

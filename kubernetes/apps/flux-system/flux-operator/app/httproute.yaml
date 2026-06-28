@@ -6,7 +6,7 @@ metadata:
   name: flux-operator
 spec:
   hostnames:
-    - flux-operator.${SECRET_EXTERNAL_DOMAIN}
+    - flux-operator.xpander.ovh
   parentRefs:
     - name: envoy-internal
       namespace: network

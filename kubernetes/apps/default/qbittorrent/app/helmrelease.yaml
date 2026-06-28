@@ -32,7 +32,7 @@ spec:
               repository: ghcr.io/home-operations/qbittorrent
               tag: 5.2.1@sha256:8d58d9ad18a1fb5e556e68bde7ac06046847cc97069257f01d2e1ec0d27ff019
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               QBITTORRENT__PORT: &port 8080
               QBITTORRENT__BT_PORT: &port-bt 58462
             resources:
@@ -64,7 +64,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

@@ -14,7 +14,7 @@ spec:
     gatus:
       delayStartSeconds: "5"
       env:
-        TZ: ${TIMEZONE}
+        TZ: Europe/Paris
       envFrom:
         - secretRef:
             name: "{{ .Release.Name }}-secret"
@@ -30,8 +30,8 @@ spec:
       annotations:
         gatus.home-operations.com/enabled: "false"
       hostnames:
-        - "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
-        - status.${SECRET_EXTERNAL_DOMAIN}
+        - "{{ .Release.Name }}.xpander.ovh"
+        - status.xpander.ovh
       parentRefs:
         - name: envoy-external
           namespace: network

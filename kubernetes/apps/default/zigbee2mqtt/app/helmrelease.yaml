@@ -27,7 +27,7 @@ spec:
               tag: 2.12.0@sha256:1debff565ab6841417bd9f7ce8ad44f8c5f25a8b02a24ce3fd79e4779a4763a5
               pullPolicy: IfNotPresent
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               ZIGBEE2MQTT_DATA: /config
               ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
               ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: warning
@@ -38,7 +38,7 @@ spec:
               ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
               ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: "true"
               ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: &port 8080
-              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee.${SECRET_EXTERNAL_DOMAIN}"
+              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee.xpander.ovh"
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC: homeassistant
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
               ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: "true"
@@ -89,7 +89,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
-        hostnames: ["zigbee.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["zigbee.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

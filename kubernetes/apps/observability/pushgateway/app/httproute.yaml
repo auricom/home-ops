@@ -9,7 +9,7 @@ metadata:
       conditions: ["[STATUS] == 200"]
 spec:
   hostnames:
-    - pushgateway.${SECRET_EXTERNAL_DOMAIN}
+    - pushgateway.xpander.ovh
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway

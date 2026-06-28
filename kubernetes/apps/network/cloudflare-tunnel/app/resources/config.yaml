@@ -1,10 +1,10 @@
 ---
 originRequest:
-  originServerName: external.${SECRET_EXTERNAL_DOMAIN}
+  originServerName: external.xpander.ovh
 
 ingress:
-  - hostname: "${SECRET_EXTERNAL_DOMAIN}"
+  - hostname: "xpander.ovh"
     service: &svc https://envoy-network-external-b1d9befd.network.svc.cluster.local:443
-  - hostname: "*.${SECRET_EXTERNAL_DOMAIN}"
+  - hostname: "*.xpander.ovh"
     service: *svc
   - service: http_status:404

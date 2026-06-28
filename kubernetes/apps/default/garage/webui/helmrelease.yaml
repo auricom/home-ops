@@ -56,9 +56,9 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            url: "https://garage.${SECRET_EXTERNAL_DOMAIN}/i/"
+            url: "https://garage.xpander.ovh/i/"
             conditions: ["[STATUS] == 401"]
-        hostnames: ["garage.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["garage.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

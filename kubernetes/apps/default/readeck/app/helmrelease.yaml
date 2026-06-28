@@ -28,14 +28,14 @@ spec:
               repository: codeberg.org/readeck/readeck
               tag: 0.22.3@sha256:ed1c513f8e1d59b1d38fda324ac279eeb65afd0327907e498061ec9fd2f31c15
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               READECK_LOG_LEVEL: info
               READECK_DEV_MODE: "false"
               READECK_SERVER_HOST: 0.0.0.0
               READECK_SERVER_PORT: &port 8080
               READECK_SERVER_PREFIX: /
               READECK_USE_X_FORWARDED: "true"
-              READECK_ALLOWED_HOSTS: &host "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"
+              READECK_ALLOWED_HOSTS: &host "{{ .Release.Name }}.xpander.ovh"
             resources:
               requests:
                 cpu: 10m
@@ -53,7 +53,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

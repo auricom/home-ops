@@ -29,10 +29,10 @@ spec:
               repository: lscr.io/linuxserver/bookstack
               tag: 26.05.20260608
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               PUID: "1000"
               PGID: "1000"
-              APP_URL: "https://docs.${SECRET_DOMAIN}"
+              APP_URL: "https://docs.xpander.ovh"
               QUEUE_CONNECTION: database
             envFrom:
               - secretRef:
@@ -61,7 +61,7 @@ spec:
               repository: lscr.io/linuxserver/mariadb
               tag: 11.4.12
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               MYSQL_USER: bookstack
               MYSQL_PASSWORD:
                 valueFrom:
@@ -85,7 +85,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["docs.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["docs.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

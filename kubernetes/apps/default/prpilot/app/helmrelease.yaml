@@ -40,7 +40,7 @@ spec:
               tag: rolling@sha256:6a3401e2a0c4c14e590dc6d8da4341827d13f3091d8ae4c3b1e9e2bbd5fce11d
             env:
               PORT: &port 8080
-              PUBLIC_BASE_URL: &host https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}
+              PUBLIC_BASE_URL: &host https://{{ .Release.Name }}.xpander.ovh
               LOG_LEVEL: INFO
               REPO_OWNER: auricom
               REPO_NAMES: home-ops,containers,agents
@@ -96,8 +96,8 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-            url: https://{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}/readyz
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+            url: https://{{ .Release.Name }}.xpander.ovh/readyz
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-external
             namespace: network

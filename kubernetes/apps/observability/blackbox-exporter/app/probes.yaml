@@ -11,9 +11,9 @@ spec:
   targets:
     staticConfig:
       static:
-        - pikvm.${SECRET_INTERNAL_DOMAIN}
-        # - homeassistant.${SECRET_INTERNAL_DOMAIN}
-        - zigbee-controller.${SECRET_INTERNAL_DOMAIN}
+        - pikvm.feisar.ovh
+        # - homeassistant.feisar.ovh
+        - zigbee-controller.feisar.ovh
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/probe_v1.json
 apiVersion: monitoring.coreos.com/v1
@@ -27,4 +27,4 @@ spec:
   targets:
     staticConfig:
       static:
-        - storage.${SECRET_INTERNAL_DOMAIN}:2049
+        - storage.feisar.ovh:2049

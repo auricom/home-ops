@@ -41,7 +41,7 @@ spec:
     sources: ["crd", "gateway-httproute"]
     txtOwnerId: default
     txtPrefix: k8s.
-    domainFilters: ["${SECRET_EXTERNAL_DOMAIN}"]
+    domainFilters: ["xpander.ovh"]
     serviceMonitor:
       enabled: true
     podAnnotations:

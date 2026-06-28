@@ -17,6 +17,9 @@ spec:
   postBuild:
     substitute:
       APP: *app
+    substituteFrom:
+      - kind: Secret
+        name: cloudflare-tunnel-id-secret
   prune: true
   retryInterval: 2m
   sourceRef:

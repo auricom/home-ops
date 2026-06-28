@@ -63,7 +63,7 @@ spec:
                 secretKeyRef:
                   name: homelab-nas-backup-secret
                   key: STORAGE_HEALTHCHECKS_ID
-              HOST: storage.${SECRET_INTERNAL_DOMAIN}
+              HOST: storage.feisar.ovh
     service:
       app:
         controller: *app
@@ -79,7 +79,7 @@ spec:
             readOnly: true
       nfs:
         type: nfs
-        path: /mnt/vol1/apps/homelab_backups/truenas/storage.${SECRET_INTERNAL_DOMAIN}
+        path: /mnt/vol1/apps/homelab_backups/truenas/storage.feisar.ovh
         server: 192.168.9.10
         globalMounts:
           - path: /mnt/nfs

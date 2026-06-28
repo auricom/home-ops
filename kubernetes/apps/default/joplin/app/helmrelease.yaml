@@ -33,14 +33,14 @@ spec:
               repository: joplin/server
               tag: 3.7.1
             env:
-              APP_BASE_URL: https://joplin.${SECRET_EXTERNAL_DOMAIN}
+              APP_BASE_URL: https://joplin.xpander.ovh
               APP_PORT: &port 8080
               MAILER_ENABLED: 1
               MAILER_HOST: smtp-relay.default.svc.cluster.local.
               MAILER_PORT: 2525
               MAILER_SECURITY: none
               MAILER_NOREPLY_NAME: JoplinServer
-              MAILER_NOREPLY_EMAIL: joplin@${SECRET_DOMAIN}
+              MAILER_NOREPLY_EMAIL: joplin@xpander.ovh
               DB_CLIENT: sqlite3
               SQLITE_DATABASE: /data/db.sqlite3
             resources:
@@ -58,7 +58,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-external
             namespace: network

@@ -1,12 +1,12 @@
 komga:
   eventListener:
     enabled: true # if disabled will not connect to komga and won't pick up newly added entries
-    libraries: [ ]  # listen to all events if empty
+    libraries: [] # listen to all events if empty
   notifications:
-    libraries: [ ]  # Will send notifications if any notification source is enabled. If empty will send notifications for all libraries
+    libraries: [] # Will send notifications if any notification source is enabled. If empty will send notifications for all libraries
   metadataUpdate:
     default:
-      updateModes: [ API ] # can use multiple options at once. available options are API, COMIC_INFO
+      updateModes: [API] # can use multiple options at once. available options are API, COMIC_INFO
       aggregate: true # if enabled will search and aggregate metadata from all configured providers
       mergeTags: true # if true and aggregate is enabled will merge tags from all providers
       mergeGenres: true # if true and aggregate is enabled will merge genres from all providers
@@ -29,17 +29,17 @@ database:
   file: ./database.sqlite # database file location.
 
 metadataProviders:
-  malClientId: "${SECRET_KOMF_MAL_CLIENT_ID}" # required for mal provider. See https://myanimelist.net/forum/?topicid=1973077
+  # malClientId: "${SECRET_KOMF_MAL_CLIENT_ID}" # required for mal provider. See https://myanimelist.net/forum/?topicid=1973077
   defaultProviders:
     mangaUpdates:
       priority: 10
       enabled: true
       mediaType: "MANGA" # filter used in matching. Can be NOVEL or MANGA. MANGA type includes everything except novels
-      authorRoles: [ "WRITER" ] # roles that will be mapped to author role
-      artistRoles: [ "PENCILLER","INKER","COLORIST","LETTERER","COVER" ] # roles that will be mapped to artist role
+      authorRoles: ["WRITER"] # roles that will be mapped to author role
+      artistRoles: ["PENCILLER", "INKER", "COLORIST", "LETTERER", "COVER"] # roles that will be mapped to artist role
     mal:
       priority: 20
-      enabled: true
+      enabled: false
       mediaType: "MANGA" # filter used in matching. Can be NOVEL or MANGA. MANGA type includes everything except novels
     nautiljon:
       priority: 30

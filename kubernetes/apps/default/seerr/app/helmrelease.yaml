@@ -28,7 +28,7 @@ spec:
               repository: ghcr.io/seerr-team/seerr
               tag: v3.3.0@sha256:c92d2dc117f62185e7bcb88cd56efd374ea79210eaf433275449e8d5988eb5a8
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               LOG_LEVEL: "info"
               PORT: &port 8080
             # envFrom:
@@ -74,11 +74,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames:
-          [
-            "{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}",
-            "requests.${SECRET_EXTERNAL_DOMAIN}",
-          ]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh", "requests.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

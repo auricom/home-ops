@@ -33,8 +33,8 @@ spec:
               - /bin/bash
               - /app/backup.sh
             env:
-              OPNSENSE_URL: "https://opnsense.${SECRET_INTERNAL_DOMAIN}"
-              S3_URL: "https://s3.${SECRET_EXTERNAL_DOMAIN}"
+              OPNSENSE_URL: "https://opnsense.feisar.ovh"
+              S3_URL: "https://s3.xpander.ovh"
             envFrom:
               - secretRef:
                   name: homelab-opnsense-backup-secret

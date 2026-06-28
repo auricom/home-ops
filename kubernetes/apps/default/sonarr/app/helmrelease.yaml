@@ -30,7 +30,7 @@ spec:
               repository: ghcr.io/home-operations/sonarr
               tag: 4.0.18.2976@sha256:d0f2a003abfe9d9847931522778722deb05ed87da11d621818065d34e655a59b
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               SONARR__APP__INSTANCENAME: Sonarr
               SONARR__APP__THEME: dark
               SONARR__AUTH__METHOD: External
@@ -82,7 +82,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

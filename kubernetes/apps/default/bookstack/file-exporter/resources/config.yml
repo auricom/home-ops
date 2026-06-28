@@ -1,7 +1,7 @@
-host: "https://docs.${SECRET_DOMAIN}"
+host: "https://docs.xpander.ovh"
 formats:
-- markdown
-- pdf
+  - markdown
+  - pdf
 assets:
   export_images: true
   export_attachments: true

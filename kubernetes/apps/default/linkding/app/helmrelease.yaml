@@ -60,7 +60,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["links.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["links.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network
