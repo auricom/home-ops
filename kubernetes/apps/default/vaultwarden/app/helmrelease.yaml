@@ -32,7 +32,7 @@ spec:
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments
               DOMAIN: "https://vaultwarden.${SECRET_EXTERNAL_DOMAIN}"
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               SIGNUPS_ALLOWED: "false"
               WEBSOCKET_ENABLED: "true"
               WEBSOCKET_ADDRESS: 0.0.0.0

@@ -63,8 +63,8 @@ spec:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
-              JELLYFIN_PublishedServerUrl: &loadBalancerIP ${CLUSTER_LB_JELLYFIN}
-              TZ: ${TIMEZONE}
+              JELLYFIN_PublishedServerUrl: &loadBalancerIP 192.168.169.110
+              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true

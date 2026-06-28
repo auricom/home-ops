@@ -41,7 +41,7 @@ spec:
               DEBUG: "0"
               ALLOWED_HOSTS: "*"
               GUNICORN_MEDIA: "0"
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               DB_ENGINE: django.db.backends.sqlite3
               POSTGRES_DB: /opt/recipes/data/tandoor.sqlite
               TANDOOR_PORT: &tandoorPort 8888

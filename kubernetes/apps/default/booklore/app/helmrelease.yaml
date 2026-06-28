@@ -28,7 +28,7 @@ spec:
               repository: ghcr.io/grimmory-tools/grimmory
               tag: v3.2.1@sha256:3a137463037388abc0dccb6ebfe5224f7711e8434bfe653b15818de22e8cbb5b
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               USER_ID: "1000"
               GROUP_ID: "1000"
               BOOKLORE_PORT: &port 6060
@@ -60,7 +60,7 @@ spec:
               repository: lscr.io/linuxserver/mariadb
               tag: 11.4.12
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               MYSQL_USER: booklore
               MYSQL_PASSWORD:
                 valueFrom:

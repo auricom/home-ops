@@ -30,7 +30,7 @@ spec:
               repository: ghcr.io/analogj/scrutiny
               tag: master-web@sha256:192656ce791dc3e5bda7f7bf81cd3cb9f77ab2cde42a9bd0d8cac442b7e8bee1
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               SCRUTINY_WEB_INFLUXDB_HOST: influx.database.svc.cluster.local
             envFrom:
               - secretRef:

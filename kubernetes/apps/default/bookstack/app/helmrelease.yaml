@@ -29,7 +29,7 @@ spec:
               repository: lscr.io/linuxserver/bookstack
               tag: 26.05.20260608
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               PUID: "1000"
               PGID: "1000"
               APP_URL: "https://docs.${SECRET_DOMAIN}"
@@ -61,7 +61,7 @@ spec:
               repository: lscr.io/linuxserver/mariadb
               tag: 11.4.12
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               MYSQL_USER: bookstack
               MYSQL_PASSWORD:
                 valueFrom:

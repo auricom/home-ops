@@ -38,7 +38,7 @@ spec:
               ROOT_PATH: /external_libs
               SHARE_WITH: Hélène
               SHARE_ROLE: viewer
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               UNATTENDED: 1
               ALBUM_ORDER: asc
             envFrom:

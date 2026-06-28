@@ -28,7 +28,7 @@ spec:
               repository: codeberg.org/readeck/readeck
               tag: 0.22.3@sha256:ed1c513f8e1d59b1d38fda324ac279eeb65afd0327907e498061ec9fd2f31c15
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               READECK_LOG_LEVEL: info
               READECK_DEV_MODE: "false"
               READECK_SERVER_HOST: 0.0.0.0

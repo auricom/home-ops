@@ -26,7 +26,7 @@ spec:
               repository: freshrss/freshrss
               tag: 1.29.1@sha256:ab6b363102ccdbc39f6a62db926f567c61a5289bf25ba460f1c34423d8cc1a4d
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               CRON_MIN: 18,48
               DOMAIN: "freshrss.${SECRET_EXTERNAL_DOMAIN}"
               LISTEN: &port 8080

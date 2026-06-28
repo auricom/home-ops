@@ -35,7 +35,7 @@ spec:
               repository: ghcr.io/crutonjohn/lidarr-plugins
               tag: 2.14.5.4825@sha256:cbc19c6184b7655089a16593ad8f1b89d1da8f4e81dd450e3c194b9e4905f699
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               LIDARR__APP__INSTANCENAME: Lidarr
               LIDARR__SERVER__PORT: &port 8080
               LIDARR__AUTH__METHOD: External

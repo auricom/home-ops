@@ -28,7 +28,7 @@ spec:
               repository: public.ecr.aws/docker/library/eclipse-mosquitto
               tag: 2.0.22@sha256:914f529386804c8278a4e581526b9be5e1604df44b30daabc70aa97dcefe5268
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
             probes:
               liveness:
                 enabled: true

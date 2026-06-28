@@ -28,7 +28,7 @@ spec:
               repository: ghcr.io/navidrome/navidrome
               tag: 0.62.0@sha256:c4b5cb36a790b3eb63ca6a68bbe2fe149c2d7fa2e586f7a480e61db630e6664b
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               ND_DATAFOLDER: /config
               ND_ENABLEGRAVATAR: "true"
               ND_LOGLEVEL: info

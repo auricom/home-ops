@@ -14,7 +14,7 @@ spec:
     gatus:
       delayStartSeconds: "5"
       env:
-        TZ: ${TIMEZONE}
+        TZ: Europe/Paris
       envFrom:
         - secretRef:
             name: "{{ .Release.Name }}-secret"

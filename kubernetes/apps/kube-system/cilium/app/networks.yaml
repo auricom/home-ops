@@ -18,7 +18,7 @@ spec:
             values:
               - will-match-and-announce-all-services
       neighbors:
-        - peerAddress: ${LOCAL_LAN_OPNSENSE}/24
+        - peerAddress: 192.168.8.1/24
           peerASN: 64512
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumloadbalancerippool_v2.json
@@ -28,4 +28,4 @@ metadata:
   name: main-pool
 spec:
   blocks:
-    - cidr: ${CILIUM_BGP_SVC_RANGE}
+    - cidr: 192.168.169.0/24

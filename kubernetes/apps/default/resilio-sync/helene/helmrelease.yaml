@@ -35,7 +35,7 @@ spec:
               tag: 3.1.2@sha256:a954ef8b4e14e8348b74a51ef0a00c3fd88a10c3765ead3049f47b1404130ebe
             env:
               - name: TZ
-                value: "${TIMEZONE}"
+                value: "Europe/Paris"
             resources:
               requests:
                 cpu: 250m
