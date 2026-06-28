@@ -1,26 +1,23 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app onepassword-connect
+  name: onepassword-connect
 spec:
-  interval: 30m
   chartRef:
     kind: OCIRepository
     name: onepassword-connect
-  maxHistory: 2
-  install:
-    createNamespace: true
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
-  uninstall:
-    keepHistory: false
-  valuesFrom:
-    - kind: ConfigMap
-      name: external-secrets-stores-values
+  interval: 1h
+  values:
+    connect:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      api:
+        httpPort: 80
+        imageRepository: ghcr.io/1password/connect-api
+        serviceMonitor:
+          enabled: true
+      credentialsName: onepassword-connect-credentials-secret
+      sync:
+        imageRepository: ghcr.io/1password/connect-sync

@@ -4,12 +4,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./clustersecretstore.yaml
+  - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./secret.sops.yaml
   - ./ocirepository.yaml
-configMapGenerator:
-  - name: external-secrets-stores-values
-    files:
-      - values.yaml=./helm/values.yaml
-configurations:
-  - ./helm/kustomizeconfig.yaml
