@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/prpilot
-              tag: rolling@sha256:6a3401e2a0c4c14e590dc6d8da4341827d13f3091d8ae4c3b1e9e2bbd5fce11d
+              tag: rolling@sha256:817014238082b7b9aa9c8b5ac838925f19abed3eceb03479dd7f2b7739e8bd0c
             env:
               PORT: &port 8080
               PUBLIC_BASE_URL: &host https://{{ .Release.Name }}.xpander.ovh
