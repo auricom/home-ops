@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/resilio-sync
-              tag: 3.1.2@sha256:a954ef8b4e14e8348b74a51ef0a00c3fd88a10c3765ead3049f47b1404130ebe
+              tag: 3.1.2@sha256:075f8247c46c579532b333319063140b23019f64ae91e53acf40372ca999f40d
             env:
               - name: TZ
                 value: "Europe/Paris"
