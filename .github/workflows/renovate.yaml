@@ -1,65 +1,88 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Renovate"
+name: Renovate
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .renovaterc.json5
+      - .renovate/**.json5
+  schedule:
+    - cron: 20 * * * *
   workflow_dispatch:
     inputs:
       dryRun:
         description: Dry Run
-        default: "false"
-        required: false
+        type: boolean
+        default: false
+        required: true
       logLevel:
         description: Log Level
+        type: choice
         default: debug
-        required: false
-  schedule:
-    - cron: "0 * * * *"
-  push:
-    branches: ["main"]
-    paths:
-      - .github/renovate.json5
-      - .github/renovate/**.json5
+        options:
+          - debug
+          - info
+        required: true
+      version:
+        description: Renovate Version
+        default: latest
+        required: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
 
-# Retrieve BOT_USER_ID via `curl -s "https://api.github.com/users/${BOT_USERNAME}%5Bbot%5D" | jq .id`
-env:
-  RENOVATE_ONBOARDING_CONFIG_FILE_NAME: .github/renovate.json5
-  RENOVATE_AUTODISCOVER: true
-  RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
-  RENOVATE_USERNAME: "${{ secrets.BOT_USERNAME }}[bot]"
-  RENOVATE_GIT_AUTHOR: "${{ secrets.BOT_USERNAME }} <${{ secrets.BOT_USER_ID }}+${{ secrets.BOT_USERNAME }}[bot]@users.noreply.github.com>"
-  WORKFLOW_RENOVATE_DRY_RUN: false
-  WORKFLOW_RENOVATE_LOG_LEVEL: debug
+permissions:
+  contents: read
 
 jobs:
-  renovate:
+  main:
     name: Renovate
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
     steps:
+      - name: Load Secrets
+        id: load-secrets
+        uses: 1password/load-secrets-action@3a12b0ab99d9cd590a3e9b5a90ea017210ed9556 # v4.0.1 # zizmor: ignore[unpinned-tools]
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          GITHUB_BOT_APP_CLIENT_ID: op://kubernetes/feisar-bot-auricom-github/GITHUB_BOT_APP_CLIENT_ID
+          GITHUB_BOT_APP_PRIVATE_KEY: op://kubernetes/feisar-bot-auricom-github/GITHUB_BOT_APP_PRIVATE_KEY
+
       - name: Generate Token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: app-token
         with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+          client-id: ${{ steps.load-secrets.outputs.GITHUB_BOT_APP_CLIENT_ID }}
+          private-key: ${{ steps.load-secrets.outputs.GITHUB_BOT_APP_PRIVATE_KEY }}
+          permission-checks: write
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+          permission-statuses: write
+          permission-vulnerability-alerts: read
+          permission-workflows: write
 
-      - name: Checkout Default Branch
-        uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          token: "${{ steps.app-token.outputs.token }}"
+          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
 
-      - name: Override Default Config
-        shell: bash
-        run: |
-          echo "RENOVATE_DRY_RUN=${{ github.event.inputs.dryRun || env.WORKFLOW_RENOVATE_DRY_RUN }}" >> "${GITHUB_ENV}"
-          echo "LOG_LEVEL=${{ github.event.inputs.logLevel || env.WORKFLOW_RENOVATE_LOG_LEVEL }}" >> "${GITHUB_ENV}"
-
-      - name: Renovate
-        uses: renovatebot/github-action@6d859fc95779be83a0335ca704879b47e5d79641 # v46.1.16
+      - name: Run Renovate
+        uses: renovatebot/github-action@dd5302ec17783b2fc721b19ae7209b57b1587765 # v46.1.17
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository }}
+          RENOVATE_DRY_RUN: ${{ inputs.dryRun }}
+          RENOVATE_INTERNAL_CHECKS_FILTER: strict
+          RENOVATE_PLATFORM: github
+          RENOVATE_PLATFORM_COMMIT: true
         with:
-          configurationFile: "${{ env.RENOVATE_ONBOARDING_CONFIG_FILE_NAME }}"
-          token: "${{ steps.app-token.outputs.token }}"
+          token: ${{ steps.app-token.outputs.token }}
+          renovate-version: ${{ inputs.version || 'latest' }}
