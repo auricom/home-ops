@@ -1,7 +1,0 @@
----
-configs:
-  kresus@mailrise.home.arpa:
-    mailrise:
-      title_template: "KRESUS"
-    urls:
-      - !env_var PUSHOVER_KRESUS
