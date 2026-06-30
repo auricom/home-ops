@@ -12,17 +12,17 @@ spec:
       "plugins": [
         {
           "type": "macvlan",
-          "master": "eth0",
+          "master": "bond0.12",
           "mode": "bridge",
-          "vlan": 12,
           "ipam": {
             "type": "static",
-            "addresses": [
-              {"address": "192.168.12.10/24","gateway": "192.168.12.1"}
             "routes": [
-              {"dst": " 192.168.12.0/22", "gw": "192.168.12.1"}
+              {"dst": "0.0.0.0/0", "gw": "192.168.12.1"}
             ]
           }
+        },
+        {
+          "type": "sbr"
         }
       ]
     }
