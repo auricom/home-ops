@@ -18,7 +18,6 @@ resources:
   - ./filebrowser/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./freshrss/ks.yaml
-  - ./garage/ks.yaml
   - ./home-assistant/ks.yaml
   - ./homebox/ks.yaml
   - ./homelab/ks.yaml
