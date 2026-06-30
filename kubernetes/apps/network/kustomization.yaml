@@ -11,4 +11,4 @@ resources:
   - ./envoy-gateway/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./multus/ks.yaml
-  - ./opnsense-dns/ks.yaml
+  # - ./opnsense-dns/ks.yaml
