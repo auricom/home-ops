@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app opnsense-dns
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: opnsense-dns
+  values:
+    fullnameOverride: *app
+    # logLevel: debug
+    podAnnotations:
+      secret.reloader.stakater.com/reload: &secret opnsense-dns-secret
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/crutonjohn/external-dns-opnsense-webhook
+          tag: main@sha256:92bc3f6cedbc964a15902117f25ef42d87f74742ee9c4ed4900085d3edc56857
+        env:
+          - name: OPNSENSE_SKIP_TLS_VERIFY
+            value: "true" # optional
+          - name: LOG_LEVEL
+            value: debug
+          - name: OPNSENSE_HOST
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OPNSENSE_HOST
+          - name: OPNSENSE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OPNSENSE_API_KEY
+          - name: OPNSENSE_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OPNSENSE_API_SECRET
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+    extraArgs:
+      - --gateway-name=envoy-internal
+      - --ignore-ingress-tls-spec
+    policy: upsert-only
+    registry: txt
+    txtOwnerId: k8s-internal
+    triggerLoopOnEvent: true
+    sources: ["crd", "gateway-httproute"]
+    domainFilters: ["xpander.ovh"]
+    serviceMonitor:
+      enabled: true
