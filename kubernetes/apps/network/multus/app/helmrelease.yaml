@@ -5,101 +5,17 @@ kind: HelmRelease
 metadata:
   name: multus
 spec:
-  interval: 30m
   chartRef:
     kind: OCIRepository
     name: multus
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-      strategy: rollback
-  uninstall:
-    keepHistory: false
+  interval: 1h
   values:
-    controllers:
-      multus:
-        type: daemonset
-        containers:
-          app:
-            image:
-              repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-              tag: v4.3.0@sha256:ec4e5dfe12b675e4dcbf4e9cd14892f7b4c8ac27aa0dc93cf2e9be0bdd7d764a
-            command:
-              - /thin_entrypoint
-            args:
-              - --cleanup-config-on-exit
-            securityContext:
-              privileged: true
-            resources:
-              requests:
-                cpu: 10m
-                memory: 32Mi
-              limits:
-                memory: 256Mi
-        initContainers:
-          cni-plugins:
-            image:
-              repository: ghcr.io/home-operations/cni-plugins
-              tag: 1.9.1@sha256:8ed5338f49966ca08b79d4ca754bc16af449b5375867f922890a680da2a4402d
-        serviceAccount:
-          identifier: multus
-    persistence:
-      etc-cni-net-d:
-        type: hostPath
-        hostPath: /etc/cni/net.d
-        globalMounts:
-          - path: /host/etc/cni/net.d
-      opt-cni-bin:
-        type: hostPath
-        hostPath: /opt/cni/bin
-        globalMounts:
-          - path: /host/opt/cni/bin
-    rbac:
-      roles:
-        multus:
-          type: ClusterRole
-          rules:
-            - apiGroups:
-                - "k8s.cni.cncf.io"
-              resources:
-                - "*"
-              verbs:
-                - "*"
-            - apiGroups:
-                - ""
-              resources:
-                - "pods"
-                - "pods/status"
-              verbs:
-                - "get"
-                - "update"
-            - apiGroups:
-                - ""
-                - "events.k8s.io"
-              resources:
-                - "events"
-              verbs:
-                - "create"
-                - "patch"
-                - "update"
-      bindings:
-        multus:
-          type: ClusterRoleBinding
-          roleRef:
-            identifier: multus
-          subjects:
-            - identifier: multus
-    serviceAccount:
-      multus:
-        enabled: true
-    defaultPodOptions:
-      hostNetwork: true
-      automountServiceAccountToken: true
-      # tolerations:
-      #   - key: "node-role.kubernetes.io/control-plane"
-      #     operator: "Exists"
-      #     effect: "NoSchedule"
+    cni:
+      binPath: /opt/cni/bin
+      netPath: /etc/cni/net.d
+    multus:
+      resources:
+        requests:
+          cpu: 10m
+        limits:
+          memory: 512Mi
