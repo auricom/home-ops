@@ -99,55 +99,55 @@ spec:
       name: csi-ceph-blockpool
       deletionPolicy: Delete
       isDefault: true
-    # cephFileSystems:
-    #   - name: ceph-filesystem
-    #     spec:
-    #       metadataPool:
-    #         replicated:
-    #           size: 3
-    #       dataPools:
-    #         - failureDomain: host
-    #           replicated:
-    #             size: 3
-    #       metadataServer:
-    #         activeCount: 1
-    #         activeStandby: true
-    #         placement:
-    #           topologySpreadConstraints:
-    #             - maxSkew: 1
-    #               topologyKey: kubernetes.io/hostname
-    #               whenUnsatisfiable: DoNotSchedule
-    #               labelSelector:
-    #                 matchLabels:
-    #                   app.kubernetes.io/name: ceph-mds
-    #                   app.kubernetes.io/part-of: ceph-filesystem
-    #         priorityClassName: system-cluster-critical
-    #         resources:
-    #           requests:
-    #             cpu: 100m
-    #             memory: 1Gi
-    #           limits:
-    #             memory: 4Gi
-    #     storageClass:
-    #       enabled: true
-    #       name: ceph-filesystem
-    #       allowVolumeExpansion: true
-    #       isDefault: false
-    #       parameters:
-    #         csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-    #         csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
-    #         csi.storage.k8s.io/controller-publish-secret-name: rook-csi-cephfs-provisioner
-    #         csi.storage.k8s.io/controller-publish-secret-namespace: "{{ .Release.Namespace }}"
-    #         csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-    #         csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
-    #         csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-    #         csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
-    #       pool: data0
-    #       reclaimPolicy: Delete
-    #       volumeBindingMode: Immediate
-    # cephFileSystemVolumeSnapshotClass:
-    #   enabled: true
-    #   name: csi-ceph-filesystem
-    #   deletionPolicy: Delete
-    #   isDefault: false
-    # cephObjectStores: []
+    cephFileSystems:
+      - name: ceph-filesystem
+        spec:
+          metadataPool:
+            replicated:
+              size: 3
+          dataPools:
+            - failureDomain: host
+              replicated:
+                size: 3
+          metadataServer:
+            activeCount: 1
+            activeStandby: true
+            placement:
+              topologySpreadConstraints:
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: ceph-mds
+                      app.kubernetes.io/part-of: ceph-filesystem
+            priorityClassName: system-cluster-critical
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+        storageClass:
+          enabled: true
+          name: ceph-filesystem
+          allowVolumeExpansion: true
+          isDefault: false
+          parameters:
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/controller-publish-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-publish-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
+          pool: data0
+          reclaimPolicy: Delete
+          volumeBindingMode: Immediate
+    cephFileSystemVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-filesystem
+      deletionPolicy: Delete
+      isDefault: false
+    cephObjectStores: []
