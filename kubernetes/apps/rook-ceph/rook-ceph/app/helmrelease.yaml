@@ -38,21 +38,13 @@ spec:
     keepHistory: false
   values:
     csi:
-      enableVolumeGroupSnapshot: false # TODO: enable this when v1beta1 CRDs are available
       cephFSKernelMountOptions: ms_mode=prefer-crc
-      enableLiveness: true
-      serviceMonitor:
-        enabled: true
-    crds:
-      enabled: true
-    pspEnable: false
-    enableDiscoveryDaemon: true
     image:
       repository: ghcr.io/rook/ceph
     monitoring:
       enabled: true
     resources:
       requests:
-        cpu: 10m
-        memory: 128Mi
+        cpu: 100m # unchangable
+        memory: 128Mi # unchangable
       limits: {}
