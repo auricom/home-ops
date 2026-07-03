@@ -1,0 +1,21 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph-csi-drivers
+  namespace: rook-ceph
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: rook-ceph-cluster
+  interval: 1h
+  values:
+    operatorConfig:
+      driverSpecDefaults:
+        deployCsiAddons: true
+    drivers:
+      nfs:
+        enabled: true
+        name: rook-ceph.nfs.csi.ceph.com
+      nvmeof:
+        enabled: false
