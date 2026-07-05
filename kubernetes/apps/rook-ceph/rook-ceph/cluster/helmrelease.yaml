@@ -10,48 +10,6 @@ spec:
     name: rook-ceph-cluster
   interval: 1h
   values:
-    cephClusterSpec:
-      cleanupPolicy:
-        wipeDevicesFromOtherClusters: true
-      crashCollector:
-        disable: false
-      csi:
-        readAffinity:
-          enabled: false # https://github.com/ceph/ceph-csi/issues/5772
-      dashboard:
-        enabled: true
-        urlPrefix: /
-        ssl: false
-        prometheusEndpoint: http://prometheus-operated.o11y.svc.cluster.local:9090
-      mgr:
-        modules:
-          - name: pg_autoscaler
-            enabled: true
-      network:
-        connections:
-          requireMsgr2: true
-      resources:
-        osd:
-          limits:
-            memory: 8Gi # Required for bootstrap
-      storage:
-        useAllNodes: false
-        useAllDevices: false
-        config:
-          osdsPerDevice: "1"
-        nodes:
-          # - name: talos-node-1
-          #   devices:
-          #     - name: sda
-          - name: talos-node-2
-            devices:
-              - name: sda
-          - name: talos-node-3
-            devices:
-              - name: sda
-          - name: talos-node-4
-            devices:
-              - name: sda
     monitoring:
       enabled: true
       createPrometheusRules: true
@@ -66,6 +24,78 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
+    cephClusterSpec:
+      cephConfig:
+        global:
+          bdev_async_discard_threads: "1" # quote
+          bdev_enable_discard: "true" # quote
+          bluestore_cache_size_ssd: "4294967296" # 4Gi
+          device_failure_prediction_mode: local # requires mgr module
+          mon_warn_on_slow_ping_ratio: "0.5"
+          osd_class_update_on_start: "false" # quote
+          osd_client_watch_timeout: "60"
+          osd_memory_target: "4294967296" # 4Gi
+        mgr:
+          mgr/crash/warn_recent_interval: "7200" # 2 hours (default is 1209600 = 2 weeks)
+      cleanupPolicy:
+        wipeDevicesFromOtherClusters: true
+      crashCollector:
+        disable: false
+      csi:
+        readAffinity:
+          enabled: true
+      dashboard:
+        enabled: true
+        urlPrefix: /
+        ssl: false
+        prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
+      mgr:
+        modules:
+          - name: diskprediction_local
+            enabled: true
+          - name: insights
+            enabled: true
+          - name: pg_autoscaler
+            enabled: true
+          - name: rook
+            enabled: true
+      network:
+        provider: host
+        connections:
+          requireMsgr2: true
+      resources:
+        mgr:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            memory: 2Gi
+        osd:
+          requests:
+            cpu: 1000m
+          limits:
+            memory: 8Gi
+            cpu: 2000m
+      storage:
+        useAllNodes: false
+        # useAllDevices: false
+        nodes:
+          # - name: talos-node-1
+          #   devices:
+          #     - name: sda
+          - name: talos-node-2
+            devices:
+              - name: sda
+          - name: talos-node-3
+            devices:
+              - name: sda
+          - name: talos-node-4
+            devices:
+              - name: sda
+        config:
+          osdsPerDevice: "1"
+          bluestore_block_db_size: "214748364800" # 200Gi
+          # devicePathFilter: /dev/disk/by-id/nvme-SPCC_M.2_PCIe_SSD_*
     cephBlockPools:
       - name: ceph-blockpool
         spec:
@@ -74,80 +104,29 @@ spec:
             size: 3
         storageClass:
           enabled: true
-          name: rook-ceph-block
-          allowVolumeExpansion: true
+          name: ceph-block
           isDefault: true
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          volumeBindingMode: Immediate
           mountOptions:
+            - noatime
             - discard
           parameters:
-            compression_algorithm: zstd
             compression_mode: passive
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-publish-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/controller-publish-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
-            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+            compression_algorithm: zstd
+            imageFormat: "2"
+            imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
             csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
-            imageFeatures: deep-flatten,exclusive-lock,fast-diff,layering,object-map
-            imageFormat: "2"
-          reclaimPolicy: Delete
-          volumeBindingMode: Immediate
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/fstype: xfs
     cephBlockPoolsVolumeSnapshotClass:
       enabled: true
       name: csi-ceph-blockpool
-      deletionPolicy: Delete
-      isDefault: true
-    cephFileSystems:
-      - name: ceph-filesystem
-        spec:
-          metadataPool:
-            replicated:
-              size: 3
-          dataPools:
-            - failureDomain: host
-              replicated:
-                size: 3
-          metadataServer:
-            activeCount: 1
-            activeStandby: true
-            placement:
-              topologySpreadConstraints:
-                - maxSkew: 1
-                  topologyKey: kubernetes.io/hostname
-                  whenUnsatisfiable: DoNotSchedule
-                  labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/name: ceph-mds
-                      app.kubernetes.io/part-of: ceph-filesystem
-            priorityClassName: system-cluster-critical
-            resources:
-              requests:
-                cpu: 100m
-                memory: 1Gi
-              limits:
-                memory: 4Gi
-        storageClass:
-          enabled: true
-          name: ceph-filesystem
-          allowVolumeExpansion: true
-          isDefault: false
-          parameters:
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-publish-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-publish-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
-          pool: data0
-          reclaimPolicy: Delete
-          volumeBindingMode: Immediate
-    cephFileSystemVolumeSnapshotClass:
-      enabled: true
-      name: csi-ceph-filesystem
-      deletionPolicy: Delete
       isDefault: false
-    cephObjectStores: []
+      deletionPolicy: Delete
+    cephFileSystems: []
