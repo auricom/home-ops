@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/toolbox
-              tag: rolling@sha256:87240edad6ba59f7e02a7e7f7fda6999814022aa1e3a79c71aa417f0fcac1183
+              tag: rolling@sha256:43e14f215c0f3f83774f9281e78c87b8127c6f7a312b2280cac5e5de63501be4
             command:
               - /bin/bash
               - /app/backup.sh
