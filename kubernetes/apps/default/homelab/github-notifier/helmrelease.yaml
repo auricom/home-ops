@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/toolbox
-              tag: rolling@sha256:fcc0f0601a9b6cd201602d6fd450834aee2ed6d93c52088f0d9df6fc2ff780d1
+              tag: rolling@sha256:12c3f93876325b1bb35f3807a428b87bcab54c457b028b277eff0df1b40836d3
             command:
               - python
               - /app/github-notifier.py
