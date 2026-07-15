@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v2.7.5-openvino@sha256:71cd5a681823c4b818f4b24b3f05816eccc3d085559e7615f695bde77e64f1f2
+              tag: v3.0.3-openvino@sha256:42295f06067186ee62f8bc20379c72a263e600b8ad22dc9fb22385712d00944e
             env:
               TZ: Europe/Paris
               MPLCONFIGDIR: /cache/matplotlib
