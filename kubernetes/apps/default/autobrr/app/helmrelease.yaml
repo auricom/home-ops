@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/autobrr/autobrr
-              tag: v1.81.0@sha256:491e3e1a81fe5ced6b542621e49985d0dea58d23257684b0b19d881761736303
+              tag: v1.82.1@sha256:63a014b42992ada7e03fa1bbd4f02ad02d96665b172bf42106ccfcb7e23144d8
             env:
               AUTOBRR__HOST: 0.0.0.0
               AUTOBRR__PORT: &port 8080
