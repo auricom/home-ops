@@ -12,6 +12,7 @@ resources:
   - ./grafana/ks.yaml
   - ./keda/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
+  - ./nut-exporter/ks.yaml
   - ./pushgateway/ks.yaml
-  - ./scrutiny/ks.yaml
   - ./smartctl-exporter/ks.yaml
+  - ./unpoller/ks.yaml
