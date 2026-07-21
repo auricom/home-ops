@@ -1,0 +1,90 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app esphome
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: esphome
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      esphome:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/donetick/donetick
+              tag: v0.1.75@sha256:5c207a86e5425052e9ffe5286f96f71babfe57337760d303a5fb56a856790d11
+            env:
+              TZ: Europe/Paris
+              DT_ENV: selfhosted
+              DT_NAME: Donetick
+              DT_DATABASE_TYPE: sqlite
+              DT_SERVER_CORS_ALLOW_ORIGINS: https://{{ .Release.Name }}.${SECRET_DOMAIN}
+              DT_EMAIL_HOST: smtp-relay.networking.svc.cluster.local
+              DT_EMAIL_PORT: 2525
+              DT_EMAIL_EMAIL: donetick@xpander.ovh
+              DT_SERVER_PORT: &port 2021
+              DT_IS_USER_CREATION_DISABLED: false
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/ping
+                    port: *port
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 100Mi
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.xpander.ovh"
+        parentRefs:
+          - name: envoy-external
+            namespace: networking
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /donetick-data
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /.cache
