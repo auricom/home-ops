@@ -94,91 +94,91 @@ spec:
       booklore:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/booklore
         globalMounts:
           - path: /mnt/vol1/apps/booklore
       bookstack:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/bookstack
         globalMounts:
           - path: /mnt/vol1/apps/bookstack
       homelab-backups:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/homelab_backups
         globalMounts:
           - path: /mnt/vol1/apps/homelab_backups
       paperless:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/paperless
         globalMounts:
           - path: /mnt/vol1/apps/paperless
       downloads:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/downloads
         globalMounts:
           - path: /mnt/vol1/downloads
       claude:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/home/claude
         globalMounts:
           - path: /mnt/vol1/home/claude
       helene:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/home/helene
         globalMounts:
           - path: /mnt/vol1/home/helene
       music:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/music
         globalMounts:
           - path: /mnt/vol1/music
       music-transcoded:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/music_transcoded
         globalMounts:
           - path: /mnt/vol1/music_transcoded
       photo:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/photo
         globalMounts:
           - path: /mnt/vol1/photo
       piracy:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/piracy
         globalMounts:
           - path: /mnt/vol1/piracy
       shared-documents:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/shared-documents
         globalMounts:
           - path: /mnt/vol1/shared-documents
       video:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/video
         globalMounts:
           - path: /mnt/vol1/video

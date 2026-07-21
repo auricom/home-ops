@@ -81,7 +81,7 @@ spec:
             subPath: sharry.conf
       nfs:
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/sharry
         globalMounts:
           - path: /mnt/vol1/apps/sharry

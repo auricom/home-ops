@@ -52,7 +52,7 @@ spec:
             readOnly: true
       dump:
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/bookstack
         globalMounts:
           - path: /export/dump

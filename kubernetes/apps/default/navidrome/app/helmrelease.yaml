@@ -73,7 +73,7 @@ spec:
           - path: /config
       music:
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/music
         globalMounts:
           - path: /mnt/vol1/music

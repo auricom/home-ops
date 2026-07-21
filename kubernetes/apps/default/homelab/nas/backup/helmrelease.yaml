@@ -80,6 +80,6 @@ spec:
       nfs:
         type: nfs
         path: /mnt/vol1/apps/homelab_backups/truenas/storage.feisar.ovh
-        server: 192.168.9.10
+        server: 192.168.18.10
         globalMounts:
           - path: /mnt/nfs

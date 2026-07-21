@@ -72,6 +72,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/nfs-scaler
   dependsOn:
     - name: volsync
       namespace: volsync
@@ -100,6 +102,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/nfs-scaler
   dependsOn:
     - name: volsync
       namespace: volsync

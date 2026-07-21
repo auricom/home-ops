@@ -109,7 +109,7 @@ spec:
                 subPath: db
       books-claude:
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/booklore/claude
         advancedMounts:
           booklore:
@@ -117,7 +117,7 @@ spec:
               - path: /mnt/claude/books
       bookdrop-claude:
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/booklore/ingest
         advancedMounts:
           booklore:

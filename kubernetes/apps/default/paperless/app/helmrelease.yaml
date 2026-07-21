@@ -83,28 +83,28 @@ spec:
       data:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/paperless/data
         globalMounts:
           - path: /usr/src/paperless/data
       media:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/paperless/media
         globalMounts:
           - path: /usr/src/paperless/media
       consume:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/paperless/watch
         globalMounts:
           - path: /usr/src/paperless/consume
       export:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/apps/paperless/export
         globalMounts:
           - path: /usr/src/paperless/export

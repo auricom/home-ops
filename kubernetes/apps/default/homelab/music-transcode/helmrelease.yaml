@@ -82,12 +82,12 @@ spec:
       music:
         type: nfs
         path: /mnt/vol1/music
-        server: 192.168.9.10
+        server: 192.168.18.10
         globalMounts:
           - path: /mnt/music
       music-transcoded:
         type: nfs
         path: /mnt/vol1/music_transcoded
-        server: 192.168.9.10
+        server: 192.168.18.10
         globalMounts:
           - path: /mnt/music_transcoded

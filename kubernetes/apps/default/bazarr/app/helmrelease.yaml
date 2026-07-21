@@ -111,7 +111,7 @@ spec:
       video:
         enabled: true
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/video
         globalMounts:
           - path: /mnt/storage/video

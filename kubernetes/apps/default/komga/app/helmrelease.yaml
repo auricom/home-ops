@@ -64,7 +64,7 @@ spec:
           - path: /config
       comics:
         type: nfs
-        server: 192.168.9.10
+        server: 192.168.18.10
         path: /mnt/vol1/home/claude/comics
         globalMounts:
           - path: /mnt/storage/home/claude/comics
