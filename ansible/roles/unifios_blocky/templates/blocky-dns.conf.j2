@@ -1,0 +1,2 @@
+{% for domain in unifios_blocky_dnsmasq_bypass_domains %}local=/{{ domain }}/
+{% endfor %}server=127.0.0.1#{{ unifios_blocky_dns_port }}

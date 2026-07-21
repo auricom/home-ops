@@ -1,0 +1,10 @@
+---
+unifios_blocky_dnsmasq_bypass_domains:
+  - xpander.ovh
+  - feisar.ovh
+  - cluster.local
+  - internal
+
+unifios_blocky_mariadb_host: 192.168.9.10
+unifios_blocky_mariadb_port: 3306
+unifios_blocky_mariadb_name: blocky

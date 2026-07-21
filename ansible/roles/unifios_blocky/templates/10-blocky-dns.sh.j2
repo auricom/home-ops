@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Wait for dnsmasq to fully initialize
+sleep 30
+
+mkdir -p {{ unifios_blocky_dnsmasq_conf_dir }}
+cat > {{ unifios_blocky_dnsmasq_conf_dir }}/{{ unifios_blocky_dnsmasq_conf_file }} << 'DNSCONF'
+{% for domain in unifios_blocky_dnsmasq_bypass_domains %}local=/{{ domain }}/
+{% endfor %}server=127.0.0.1#{{ unifios_blocky_dns_port }}
+DNSCONF
+
+# Restart dnsmasq to pick up config
+killall dnsmasq
+
+echo "Blocky DNS configured"

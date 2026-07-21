@@ -1,0 +1,21 @@
+---
+- ansible.builtin.include_tasks: install.yml
+  tags:
+    - install
+
+- ansible.builtin.include_tasks: configure.yml
+  tags:
+    - configure
+
+- ansible.builtin.include_tasks: dnsmasq.yml
+  tags:
+    - dnsmasq
+
+- ansible.builtin.include_tasks: on_boot.yml
+  tags:
+    - on-boot
+
+- ansible.builtin.include_tasks: verify.yml
+  when: unifios_blocky_verify | bool
+  tags:
+    - verify

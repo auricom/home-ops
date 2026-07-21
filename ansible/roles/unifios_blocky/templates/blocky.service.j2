@@ -1,0 +1,15 @@
+[Unit]
+Description=Blocky DNS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ unifios_blocky_install_dir }}
+ExecStartPre=/bin/sleep 5
+ExecStart={{ unifios_blocky_binary }} --config {{ unifios_blocky_config_file }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

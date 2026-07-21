@@ -1,0 +1,17 @@
+---
+- name: dnsmasq | ensure dnsmasq conf.d directory exists
+  ansible.builtin.file:
+    path: "{{ unifios_blocky_dnsmasq_conf_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: dnsmasq | configure dnsmasq to forward to blocky
+  ansible.builtin.template:
+    src: blocky-dns.conf.j2
+    dest: "{{ unifios_blocky_dnsmasq_conf_dir }}/{{ unifios_blocky_dnsmasq_conf_file }}"
+    mode: "0644"
+  notify: restart dnsmasq
+
+- name: dnsmasq | restart dnsmasq to apply forwarding
+  ansible.builtin.command: killall dnsmasq
+  changed_when: true

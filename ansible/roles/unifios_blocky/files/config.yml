@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/0xERR0R/blocky/refs/tags/v0.33.0/docs/config.schema.json
+caching:
+  minTime: 2m
+  maxTime: 1h
+  maxItemsCount: 0
+  prefetching: true
+  prefetchExpires: 1h
+  prefetchThreshold: 30
+  prefetchMaxItemsCount: 0
+  cacheTimeNegative: -1
+  exclude:
+    - '/(^|\\.)feisar\\.ovh$/'
+    - '/(^|\\.)xpander\\.ovh$/'
+    - '/\\.internal$/'
+    - '/(^|\\.)cluster\\.local$/'
+    - '/(^|\\.)in-addr\\.arpa$/'
+
+log:
+  level: info
+
+connectIPVersion: dual
+minTlsServeVersion: 1.3
+ports:
+  dns: 5335
+  http: 4000
+
+prometheus:
+  enable: true
+
+conditional:
+  fallbackUpstream: false
+
+customDNS:
+  filterUnmappedTypes: true
+  customTTL: 24h
+  mapping:
+    unifi.feisar.ovh: 192.168.16.1
+
+# ClientLookup is set to blocky so it can conditionally forward it to coredns/apt/house DHCP
+clientLookup:
+  upstream: 127.0.0.1
+  clients:
+    localhost:
+      - 127.0.0.1
+
+# To resolve devices behind coredns
+ecs:
+  useAsClient: true
+  forward: false
+
+bootstrapDns:
+  - 8.8.8.8
+  - 1.1.1.1
+  - 9.9.9.9
+  - 2620:fe::fe
+  - 2606:4700:4700::1111
+  - 2001:4860:4860::8888
+
+upstreams:
+  groups:
+    default:
+      - quic://dns.quad9.net
+      - quic://p0.freedns.controld.com
+      # TODO: swap to DoQ when it's supported by these
+      - https://doh.opendns.com/dns-query
+      - https://cloudflare-dns.com/dns-query
+
+blocking:
+  denylists:
+    ads:
+      - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/pro.txt
+    security:
+      - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/tif.mini.txt
+  allowlists:
+    ads: []
+
+queryLog:
+  type: console
+  # type: mysql
+  # target: "{{ unifios_blocky_mariadb_user }}:{{ unifios_blocky_mariadb_password }}@tcp({{ unifios_blocky_mariadb_host }}:{{ unifios_blocky_mariadb_port }})/{{ unifios_blocky_mariadb_name }}?charset=utf8mb4&parseTime=True&loc=Local"
+  logRetentionDays: 90
+  creationAttempts: 5
+  creationCooldown: 10s
+  flushInterval: 30s

@@ -1,0 +1,9 @@
+---
+- hosts: unifios
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  roles:
+    - role: unifios_blocky
+      tags:
+        - blocky

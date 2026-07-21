@@ -1,0 +1,17 @@
+---
+- name: on-boot | download unifios on-boot-script installer
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/unifi-utilities/unifios-utilities/HEAD/on-boot-script-2.x/remote_install.sh"
+    dest: /tmp/unifios-on-boot-install.sh
+    mode: "0755"
+
+- name: on-boot | install unifios on-boot-script
+  ansible.builtin.command: /bin/bash /tmp/unifios-on-boot-install.sh
+  register: _on_boot_install
+  changed_when: true
+
+- name: on-boot | render blocky dnsmasq on-boot script
+  ansible.builtin.template:
+    src: 10-blocky-dns.sh.j2
+    dest: "{{ unifios_blocky_on_boot_dir }}/{{ unifios_blocky_on_boot_script }}"
+    mode: "0755"

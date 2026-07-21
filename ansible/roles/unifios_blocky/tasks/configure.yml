@@ -1,0 +1,23 @@
+---
+- name: configure | deploy static blocky configuration
+  ansible.builtin.copy:
+    src: config.yml
+    dest: "{{ unifios_blocky_config_file }}"
+    mode: "0644"
+  notify: restart blocky
+
+- name: configure | render blocky systemd service
+  ansible.builtin.template:
+    src: blocky.service.j2
+    dest: "/etc/systemd/system/{{ unifios_blocky_systemd_service }}.service"
+    mode: "0644"
+  notify:
+    - reload systemd
+    - restart blocky
+
+- name: configure | enable and start blocky
+  ansible.builtin.systemd:
+    name: "{{ unifios_blocky_systemd_service }}"
+    enabled: true
+    state: started
+    daemon_reload: true

@@ -1,0 +1,17 @@
+unifios_blocky_mariadb_user: ENC[AES256_GCM,data:uvfGZwEY,iv:FVugC+aqAccnTdLOaiBkPzbUpe7+lL12Z+/nzzjm2tA=,tag:9h8DasuYvW/gl5Fq5DoMXg==,type:str]
+unifios_blocky_mariadb_password: ENC[AES256_GCM,data:VD5aBJw4JvuCHvU5uIqeJxEEMKB3773ru+qglWRY,iv:afZrUyQmUDpWJaKnhe76jbIWUUUpczvFxvya+doy7Es=,tag:i0hx+YmqI2N59ZGZlm7Qzg==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvWHE3dkZmUFUwZWVLdkNr
+            TzhRTnovSG1zaVJHQUpROVdNbGdOSm9ubVhZCmV2Rzh1cm90U1VmaE1oMDRnUWx5
+            NE42bndublZFbEdkUXBNMFd1MG1oK1kKLS0tIGZiZ3BrVm81SFpBTllaOHNrL0VZ
+            SVBNdDQ4VHJqVXdCdkNRSjJ6YW93QUUK7kHSN8qC5cpghHf6JMwthHUnZ7mmncLY
+            QDV1+XRHcth58xVzPtd+EmfzvtH4gbD3Pe3Ck16hJxtHsNDxZ97Ufw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1hhurqwmfvl9m3vh3hk8urulfzcdsrep2ax2neazqt435yhpamu3qj20asg
+    lastmodified: "2026-07-20T21:46:41Z"
+    mac: ENC[AES256_GCM,data:YEuPjKN9HgydPiM0TPViEtolZxSbuniTJCHeITQUzen0RGWkciGCSKLAqxZEY80boJT5woCHaapFhuVAHSg9RKenHooFV3MUhq8V2nl30bU6LxsPFk9aRIdAeaTNFKOhyo9SZm40c+PmZabhva/IvnKUJstJeAcVx1JeyKTZmP4=,iv:j0WvM1u3sv54F8loCiIb0fXSxUbbSqbMUQNivxpar8s=,tag:JryQ5rochEgKAU5LM1C0IA==,type:str]
+    unencrypted_suffix: _unencrypted
+    version: 3.13.2

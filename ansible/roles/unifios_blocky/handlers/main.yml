@@ -1,0 +1,14 @@
+---
+- name: reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: restart blocky
+  ansible.builtin.systemd:
+    name: "{{ unifios_blocky_systemd_service }}"
+    state: restarted
+    enabled: true
+
+- name: restart dnsmasq
+  ansible.builtin.command: killall dnsmasq
+  changed_when: true

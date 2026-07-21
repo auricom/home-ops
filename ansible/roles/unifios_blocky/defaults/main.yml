@@ -1,0 +1,22 @@
+---
+# renovate: datasource=github-releases depName=0xERR0R/blocky extractVersion=^v(?<version>.*)$
+unifios_blocky_version: "0.33.0"
+unifios_blocky_arch: "arm64"
+unifios_blocky_install_dir: "/data/blocky"
+unifios_blocky_logs_dir: "{{ unifios_blocky_install_dir }}/logs"
+unifios_blocky_binary: "{{ unifios_blocky_install_dir }}/blocky"
+unifios_blocky_config_file: "{{ unifios_blocky_install_dir }}/config.yml"
+unifios_blocky_systemd_service: "blocky"
+
+unifios_blocky_dns_port: 5335
+unifios_blocky_http_port: 4000
+
+unifios_blocky_dnsmasq_conf_dir: /run/dnsmasq.dhcp.conf.d
+unifios_blocky_dnsmasq_conf_file: blocky.conf
+
+unifios_blocky_dnsmasq_bypass_domains: []
+
+unifios_blocky_on_boot_dir: /data/on_boot.d
+unifios_blocky_on_boot_script: "10-blocky-dns.sh"
+
+unifios_blocky_verify: false

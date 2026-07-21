@@ -1,0 +1,45 @@
+---
+- name: install | ensure blocky directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ unifios_blocky_install_dir }}"
+    - "{{ unifios_blocky_logs_dir }}"
+
+- name: install | check installed blocky version
+  ansible.builtin.shell: "{{ unifios_blocky_binary }} version 2>&1"
+  register: _blocky_version
+  changed_when: false
+  failed_when: false
+
+- name: install | download blocky release tarball
+  ansible.builtin.get_url:
+    url: "https://github.com/0xERR0R/blocky/releases/download/v{{ unifios_blocky_version }}/blocky_v{{ unifios_blocky_version }}_Linux_{{ unifios_blocky_arch }}.tar.gz"
+    dest: "/tmp/blocky_v{{ unifios_blocky_version }}_Linux_{{ unifios_blocky_arch }}.tar.gz"
+    mode: "0644"
+  when: >-
+    _blocky_version.rc != 0
+    or (unifios_blocky_version not in _blocky_version.stdout)
+
+- name: install | extract blocky binary
+  ansible.builtin.unarchive:
+    src: "/tmp/blocky_v{{ unifios_blocky_version }}_Linux_{{ unifios_blocky_arch }}.tar.gz"
+    dest: "{{ unifios_blocky_install_dir }}"
+    remote_src: true
+  when: >-
+    _blocky_version.rc != 0
+    or (unifios_blocky_version not in _blocky_version.stdout)
+  notify: restart blocky
+
+- name: install | ensure blocky binary is executable
+  ansible.builtin.file:
+    path: "{{ unifios_blocky_binary }}"
+    mode: "0755"
+    state: file
+
+- name: install | remove downloaded tarball
+  ansible.builtin.file:
+    path: "/tmp/blocky_v{{ unifios_blocky_version }}_Linux_{{ unifios_blocky_arch }}.tar.gz"
+    state: absent
