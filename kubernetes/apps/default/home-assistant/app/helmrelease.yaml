@@ -56,7 +56,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.6.4@sha256:29d953e7be59a0c3cceefad839138d3a57c7b9efb81c800a51d8453d5913cc12
+              tag: 2026.7.3@sha256:7a6951bc274d802206d9ab2e76885fec8ba4f41707ae31d81207ebe5c73b84fb
             env:
               TZ: "Europe/Paris"
               HASS_HTTP_TRUSTED_PROXY_1: 192.168.8.0/22
