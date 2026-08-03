@@ -58,7 +58,7 @@ spec:
           mariadb:
             image:
               repository: lscr.io/linuxserver/mariadb
-              tag: 11.4.12
+              tag: 11.8.8
             env:
               TZ: Europe/Paris
               MYSQL_USER: booklore
