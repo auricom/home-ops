@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: vaultwarden/server
-              tag: 1.36.0@sha256:d626d04934cd1192ad8ced1adb975099fca78cec33ab467d2d3c923cde7f3b0c
+              tag: 1.37.1@sha256:ebdfe70701c60ac0c28c697e787cea767d7972940b786037b29fe0d507f821e8
             env:
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
