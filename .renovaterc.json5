@@ -1,6 +1,17 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["github>home-operations/renovate-presets#2.2.0", ":timezone(Europe/Paris)"],
+  extends: [
+    "github>home-operations/renovate-presets#8.1.0",
+    "github>home-operations/renovate-presets//apps/grafanaDashboards.json5#8.1.0",
+    "github>home-operations/renovate-presets//apps/talosFactory.json5#8.1.0",
+      ":timezone(Europe/Paris)"
+      ],
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["before 3am on the first day of the month"],
+    commitMessageExtra: "({{manager}})",
+    additionalBranchPrefix: "{{manager}}-",
+  },
   packageRules: [
     // Auto-merge rules
     {
