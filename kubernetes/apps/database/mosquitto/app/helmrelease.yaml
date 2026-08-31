@@ -8,7 +8,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: mosquitto
-  interval: 30m
+  interval: 1h
   values:
     defaultPodOptions:
       securityContext:
@@ -68,9 +68,6 @@ spec:
     service:
       app:
         controller: *app
-        type: LoadBalancer
-        loadBalancerIP: 192.168.169.123
-        externalTrafficPolicy: Local
         ports:
           mqtt:
             port: 1883

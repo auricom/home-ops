@@ -3,50 +3,35 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app blackbox-exporter
+  name: blackbox-exporter
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: prometheus-blackbox-exporter
-      version: 11.0.0
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+  chartRef:
+    kind: OCIRepository
+    name: blackbox-exporter
+  interval: 1h
   values:
-    fullnameOverride: *app
-    securityContext:
-      readOnlyRootFilesystem: true
-      allowPrivilegeEscalation: false
-      capabilities:
-        add: [NET_RAW]
+    fullnameOverride: blackbox-exporter
     config:
       modules:
         http_2xx:
           prober: http
           timeout: 5s
           http:
-            valid_http_versions: [HTTP/1.1, HTTP/2.0]
+            valid_http_versions:
+              - HTTP/1.1
+              - HTTP/2.0
             follow_redirects: true
-            preferred_ip_protocol: ipv4
+            preferred_ip_protocol: ip4
         icmp:
           prober: icmp
           timeout: 5s
           icmp:
-            preferred_ip_protocol: ipv4
+            preferred_ip_protocol: ip4
         tcp_connect:
           prober: tcp
           timeout: 5s
           tcp:
-            preferred_ip_protocol: ipv4
+            preferred_ip_protocol: ip4
     serviceMonitor:
       enabled: true
       selfMonitor:
@@ -54,7 +39,7 @@ spec:
     prometheusRule:
       enabled: true
       rules:
-        - alert: BlackboxProbeFailed
+        - alert: LanProbeFailed
           expr: |-
             probe_success{service="blackbox-exporter-lan"} == 0
           for: 15m

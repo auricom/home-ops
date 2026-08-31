@@ -5,17 +5,27 @@ kind: HelmRelease
 metadata:
   name: flux-operator
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: flux-operator
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: flux-operator-values
+  interval: 1h
+  values:
+    serviceMonitor:
+      create: true
+    web:
+      config:
+        authentication:
+          type: Anonymous
+          anonymous:
+            username: flux
+            groups:
+              - flux-admin
+      httpRoute:
+        enabled: true
+        hostnames:
+          - flux-operator.xpander.ovh
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+      networkPolicy:
+        create: false

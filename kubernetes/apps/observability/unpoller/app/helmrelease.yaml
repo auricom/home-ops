@@ -26,7 +26,7 @@ spec:
               tag: v3.3.1@sha256:9dcccdc931a6830735f6978caf8cd67699b0dc33e37cf9ef4638611791c4df62
             env:
               TZ: Europe/Paris
-              UP_UNIFI_DEFAULT_URL: https://192.168.16.1
+              UP_UNIFI_DEFAULT_URL: https://192.168.30.1
               UP_PROMETHEUS_HTTP_LISTEN: 0.0.0.0:80
               UP_INFLUXDB_DISABLE: true
             envFrom:

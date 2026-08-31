@@ -5,4 +5,5 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./podmonitor.yaml
+  - ./pvc.yaml
   - ./ocirepository.yaml

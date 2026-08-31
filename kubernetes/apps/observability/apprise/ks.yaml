@@ -3,17 +3,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app apprise
-  namespace: &namespace observability
+  name: apprise
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   interval: 1h
   path: ./kubernetes/apps/observability/apprise/app
   postBuild:
     substitute:
-      APP: *app
       VOLSYNC_CAPACITY: 1Gi
   prune: true
   retryInterval: 2m
@@ -21,6 +16,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
-  timeout: 5m
+  targetNamespace: observability
   wait: false

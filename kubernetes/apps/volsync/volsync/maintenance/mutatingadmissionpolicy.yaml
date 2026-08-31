@@ -1,14 +1,14 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0/mutatingadmissionpolicybinding-admissionregistration-v1beta1.json
-apiVersion: admissionregistration.k8s.io/v1beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.36.0/mutatingadmissionpolicybinding-admissionregistration-v1.json
+apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingAdmissionPolicyBinding
 metadata:
   name: kopia-maintenance-nfs
 spec:
   policyName: kopia-maintenance-nfs
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0/mutatingadmissionpolicy-admissionregistration-v1beta1.json
-apiVersion: admissionregistration.k8s.io/v1beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.36.0/mutatingadmissionpolicy-admissionregistration-v1.json
+apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingAdmissionPolicy
 metadata:
   name: kopia-maintenance-nfs
@@ -44,7 +44,7 @@ spec:
               value: Object.spec.template.spec.volumes{
                 name: "repository",
                 nfs: Object.spec.template.spec.volumes.nfs{
-                  server: "192.168.18.10",
+                  server: "192.168.30.10",
                   path: "/mnt/vol1/apps/volsync"
                 }
               }

@@ -9,23 +9,22 @@ spec:
   chartRef:
     kind: OCIRepository
     name: home-assistant
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     defaultPodOptions:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name": "iot",
+            "namespace": "kube-system",
+            "ips": ["192.168.32.231/22"],
+            "mac": "3e:59:e4:f7:43:08"
+          }]
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 0
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-      nodeSelector:
-        nodo.feature.node.kubernetes.io/rflink: "true"
       affinity:
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -43,15 +42,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
           secret.reloader.stakater.com/reload: home-assistant-db-secret
-        pod:
-          annotations:
-            k8s.v1.cni.cncf.io/networks: |
-              [{
-                "name": "iot",
-                "namespace": "network",
-                "ips": ["192.168.12.230/22"],
-                "mac": "3e:59:e4:f7:43:08"
-              }]
         containers:
           app:
             image:
@@ -59,36 +49,49 @@ spec:
               tag: 2026.6.4@sha256:29d953e7be59a0c3cceefad839138d3a57c7b9efb81c800a51d8453d5913cc12
             env:
               TZ: "Europe/Paris"
-              HASS_HTTP_TRUSTED_PROXY_1: 192.168.8.0/22
-              HASS_HTTP_TRUSTED_PROXY_2: 10.10.0.0/24
-              HASS_HTTP_TRUSTED_PROXY_3: 10.95.0.0/16
+              HASS_HTTP_TRUSTED_PROXY_1: 192.168.16.0/21
+              HASS_HTTP_TRUSTED_PROXY_2: 10.42.0.0/16
+              HASS_HTTP_TRUSTED_PROXY_3: 10.43.0.0/16
             envFrom:
               - secretRef:
                   name: home-assistant-secret
             probes:
               liveness:
-                enabled: false
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
               readiness:
-                enabled: false
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: &port 8123
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
               startup:
-                enabled: false
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
-                memory: 128Mi
               limits:
-                memory: 4Gi
-            securityContext:
-              privileged: true
+                memory: 2Gi
     service:
       app:
-        controller: *app
-        # type: LoadBalancer
-        # loadBalancerIP: 192.168.169.107
-        # externalTrafficPolicy: Local
         ports:
           http:
-            port: &port 8123
+            appProtocol: kubernetes.io/ws
+            port: *port
     route:
       app:
         annotations:
@@ -104,15 +107,13 @@ spec:
               - name: *app
                 port: *port
     persistence:
-      config:
-        enabled: true
-        existingClaim: *app
-        globalMounts:
-          - path: /config
-      usb:
-        enabled: true
-        type: hostPath
-        hostPath: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
-        hostPathType: CharDevice
-        globalMounts:
-          - path: /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_5503731323735171A241-if00
+        config:
+          existingClaim: "{{ .Release.Name }}"
+          globalMounts:
+            - path: /config
+        config-cache:
+          existingClaim: "{{ .Release.Name }}-cache"
+          globalMounts:
+            - path: /config/.venv
+        tmp:
+          type: emptyDir

@@ -7,7 +7,6 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - opnsense.feisar.ovh:9273
         - pikvm.feisar.ovh:9100
         - storage.feisar.ovh:9100
         - storage.feisar.ovh:9633

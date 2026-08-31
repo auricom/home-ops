@@ -4,15 +4,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: kube-system
 components:
-  - ../../components/common
+  - ../../components/alerts
 resources:
+  - ./namespace.yaml
   - ./cilium/ks.yaml
   - ./coredns/ks.yaml
   - ./descheduler/ks.yaml
-  - ./intel-device-plugin/ks.yaml
-  - ./kubelet-csr-approver/ks.yaml
+  - ./generic-device-plugin/ks.yaml
   - ./metrics-server/ks.yaml
-  - ./node-feature-discovery/ks.yaml
+  - ./multus/ks.yaml
   - ./reloader/ks.yaml
-  - ./spegel/ks.yaml
   - ./snapshot-controller/ks.yaml
+  - ./spegel/ks.yaml

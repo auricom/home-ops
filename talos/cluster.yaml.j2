@@ -1,0 +1,178 @@
+---
+version: v1alpha1
+machine:
+  type: controlplane
+  ca:
+    crt: op://kubernetes/talos/MACHINE_CA_CRT
+  features:
+    apidCheckExtKeyUsage: true
+    diskQuotaSupport: true
+    rbac: true
+  token: op://kubernetes/talos/MACHINE_TOKEN
+cluster:
+  ca:
+    crt: op://kubernetes/talos/CLUSTER_CA_CRT
+  clusterName: k8s
+  controlPlane:
+    endpoint: https://k8s.internal:6443
+  token: op://kubernetes/talos/CLUSTER_TOKEN
+---
+apiVersion: v1alpha1
+kind: BondConfig
+name: bond0
+links:
+  - net0
+bondMode: active-backup
+mtu: 9000
+---
+apiVersion: v1alpha1
+kind: DHCPv4Config
+name: bond0
+clientIdentifier: mac
+---
+apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.30
+vlanID: 30
+parent: bond0
+mtu: 9000
+---
+apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.32
+vlanID: 32
+parent: bond0
+mtu: 9000
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+hostDNS:
+  enabled: true
+  forwardKubeDNSToHost: true # Requires Cilium socketLB features
+  resolveMemberNames: true
+---
+apiVersion: v1alpha1
+kind: DiscoveryServiceConfig
+name: default
+endpoint: https://discovery.talos.dev/
+---
+apiVersion: v1alpha1
+kind: DiscoveryIdentityConfig
+clusterID: op://kubernetes/talos/CLUSTER_ID
+clusterSecret: op://kubernetes/talos/CLUSTER_SECRET
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+installer:
+  image: factory.talos.dev/metal-installer/{{ schematic }}:v1.14.0-rc.2
+provisioning:
+  diskSelector:
+    match: disk.model == "Micron_7450_MTFDKBG960TFR"
+  wipe: false
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: local-hostpath
+volumeType: disk
+provisioning:
+  diskSelector:
+    match: disk.model == "SAMSUNG MZ1LB960HAJQ-00007"
+---
+apiVersion: v1alpha1
+kind: FilesystemTrimConfig
+interval: 168h0m0s
+---
+apiVersion: v1alpha1
+kind: FilesystemScrubConfig
+interval: 168h0m0s
+---
+apiVersion: v1alpha1
+kind: WatchdogTimerConfig
+device: /dev/watchdog0
+timeout: 5m
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nbd
+---
+apiVersion: v1alpha1
+kind: SysctlConfig
+params:
+  fs.inotify.max_user_instances: 8192      # Watchdog
+  fs.inotify.max_user_watches: 1048576     # Watchdog
+  net.core.default_qdisc: fq               # 10Gb/s
+  net.core.netdev_max_backlog: 50000       # 10Gb/s
+  net.core.somaxconn: 65535                # 10Gb/s
+  net.core.rmem_max: 67108864              # 10Gb/s | Cloudflared / QUIC
+  net.core.wmem_max: 67108864              # 10Gb/s | Cloudflared / QUIC
+  net.ipv4.ip_local_port_range: 1024 65535 # Increase port ranges
+  net.ipv4.ping_group_range: 0 2147483647  # Ping non-root
+  net.ipv4.tcp_congestion_control: bbr     # 10Gb/s
+  net.ipv4.tcp_fastopen: 3                 # Send and accept data in the opening SYN packet
+  net.ipv4.tcp_fin_timeout: 15             # Faster timeouts
+  net.ipv4.tcp_max_syn_backlog: 65535      # 10Gb/s
+  net.ipv4.tcp_mtu_probing: 1              # 10Gb/s | Jumbo frames
+  net.ipv4.tcp_notsent_lowat: 131072       # 10Gb/s
+  net.ipv4.tcp_slow_start_after_idle: 0    # 10Gb/s
+  net.ipv4.tcp_tw_reuse: 1                 # Reuse sockets in TIME_WAIT
+  net.ipv4.tcp_window_scaling: 1           # 10Gb/s
+  net.ipv4.tcp_rmem: 4096 131072 67108864  # 10Gb/s
+  net.ipv4.tcp_wmem: 4096 16384 67108864   # 10Gb/s
+  sunrpc.tcp_slot_table_entries: 128       # 10Gb/s | NFS
+  sunrpc.tcp_max_slot_table_entries: 128   # 10Gb/s | NFS
+---
+apiVersion: v1alpha1
+kind: EtcFileConfig
+name: nfsmount.conf
+mode: 0o644
+contents: |
+  [ NFSMount_Global_Options ]
+  nfsvers=4.2
+  hard=True
+  nconnect=16
+  noatime=True
+  rsize=1048576
+  wsize=1048576
+---
+apiVersion: v1alpha1
+kind: CRICustomizationConfig
+name: containerd
+content: |
+  [plugins."io.containerd.cri.v1.images"]
+    discard_unpacked_layers = false
+  [plugins."io.containerd.cri.v1.runtime"]
+    device_ownership_from_security_context = true
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - 192.168.30.0/23
+labels:
+  node.kubernetes.io/gpu: "true"
+  topology.kubernetes.io/region: main
+---
+apiVersion: v1alpha1
+kind: KubeletConfig
+config:
+  crashLoopBackOff:
+    maxContainerRestartPeriod: 60s
+  imageMaximumGCAge: 168h
+  maxParallelImagePulls: 3
+  serializeImagePulls: false
+  shutdownGracePeriod: 90s
+  shutdownGracePeriodCriticalPods: 60s
+defaultRuntimeSeccompProfileEnabled: true
+image: ghcr.io/siderolabs/kubelet:v1.37.0
+---
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+dnsDomain: cluster.local
+podSubnets:
+  - 10.42.0.0/16
+serviceSubnets:
+  - 10.43.0.0/16
+---
+apiVersion: v1alpha1
+kind: KubePrismConfig
+port: 7445

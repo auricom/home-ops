@@ -1,0 +1,40 @@
+---
+connectivity:
+  checker:
+    target: 192.168.30.1:53
+    interval: 1m
+
+metrics: true
+
+storage:
+  type: sqlite
+  path: ${GATUS_CONFIG_PATH}/sqlite.db
+  caching: true
+
+ui:
+  title: Status | Gatus
+  header: Status
+  logo: https://avatars.githubusercontent.com/u/27022259
+  link: https://github.com/auricom
+  buttons:
+    - name: Github
+      link: https://github.com/auricom
+    - name: Homelab
+      link: https://github.com/auricom/home-ops
+
+alerting:
+  pushover:
+    application-token: ${CUSTOM_PUSHOVER_APP_TOKEN}
+    default-alert:
+      description: health-check failed
+      failure-threshold: 3
+      minimum-reminder-interval: 1h
+      send-on-resolved: true
+      success-threshold: 2
+    priority: 1
+    resolved-priority: 0
+    title: Gatus
+    user-key: ${CUSTOM_PUSHOVER_USER_KEY}
+
+web:
+  port: ${GATUS_WEB_PORT}

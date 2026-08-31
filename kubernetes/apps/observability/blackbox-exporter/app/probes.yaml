@@ -11,16 +11,17 @@ spec:
   targets:
     staticConfig:
       static:
+        - nvr.feisar.ovh
         - pikvm.feisar.ovh
-        # - homeassistant.feisar.ovh
         - zigbee-controller.feisar.ovh
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
-  name: tcp
+  name: nfs
 spec:
+  jobName: nfs_probe
   module: tcp_connect
   prober:
     url: blackbox-exporter.observability.svc.cluster.local:9115
@@ -28,3 +29,7 @@ spec:
     staticConfig:
       static:
         - storage.feisar.ovh:2049
+  metricRelabelings:
+    - targetLabel: service
+      replacement: blackbox-exporter
+      action: replace

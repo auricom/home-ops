@@ -1,19 +1,24 @@
 #!/usr/bin/env -S just --justfile
 
+set default-script
+set lazy
 set quiet
-set shell := ['bash', '-eu', '-o', 'pipefail', '-c']
+set shell := ['bash', '-euo', 'pipefail', '-c']
 
-[doc('Bootstrap Recipes')]
-mod bootstrap '.just/bootstrap.just'
+# Bootstrap Recipes
+[group: 'Bootstrap']
+mod bootstrap "bootstrap"
 
-[doc('Kubernetes Recipes')]
-mod kube '.just/kube.just'
+# Kube Recipes
+[group: 'Kube']
+mod kube "kubernetes"
 
 [doc('Sync Recipes')]
 mod sync '.just/sync.just'
 
-[doc('Talos Recipes')]
-mod talos '.just/talos.just'
+# Talos Recipes
+[group: 'Talos']
+mod talos "talos"
 
 [doc('Volsync')]
 mod volsync '.just/volsync.just'
@@ -22,6 +27,14 @@ mod volsync '.just/volsync.just'
 default:
     just --list
 
-[positional-arguments, private]
+[private]
 log lvl msg *args:
-    gum log -t rfc3339 -s -l "{{lvl}}" "{{msg}}" {{args}}
+    gum log -t rfc3339 -s -l "{{ lvl }}" "{{ msg }}" {{ args }}
+
+[private]
+template file *args:
+    injected_file="$(mktemp)"
+    trap 'rm -f "$injected_file"' EXIT
+    minijinja-cli "{{ file }}" {{ args }} | op inject >"$injected_file"
+    test -s "$injected_file" || { echo 'op inject produced no output; sign in with `op signin` first' >&2; exit 1; }
+    vals eval -f "$injected_file" | yq -P

@@ -1,18 +1,20 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/kustomization.json
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: observability
+
 components:
-  - ../../components/common
+  - ../../components/alerts
+
 resources:
+  - ./namespace.yaml
   - ./apprise/ks.yaml
   - ./blackbox-exporter/ks.yaml
   - ./gatus-sidecar/ks.yaml
-  - ./grafana/ks.yaml
-  - ./keda/ks.yaml
+  - ./grafana-operator/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
-  - ./nut-exporter/ks.yaml
-  - ./pushgateway/ks.yaml
+  - ./prometheus-adapter/ks.yaml
+  - ./silence-operator/ks.yaml
   - ./smartctl-exporter/ks.yaml
   - ./unpoller/ks.yaml

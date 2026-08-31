@@ -3,23 +3,16 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &name reloader
+  name: reloader
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: reloader
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
-    fullnameOverride: *name
+    fullnameOverride: reloader
     reloader:
-      reloadStrategy: annotations
+      readOnlyRootFileSystem: true
       podMonitor:
         enabled: true
         namespace: "{{ .Release.Namespace }}"

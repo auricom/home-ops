@@ -4,28 +4,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: snapshot-controller
-  namespace: kube-system
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: snapshot-controller
-  install:
-    crds: CreateReplace
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    crds: CreateReplace
-    remediation:
-      retries: 3
-  dependsOn:
-    - name: rook-ceph-operator
-      namespace: rook-ceph
+  interval: 1h
   values:
-    controller:
-      replicaCount: 1
+    replicaCount: 2
+    monitoring:
       serviceMonitor:
-        create: true
-    webhook:
-      enabled: false
+        enabled: true

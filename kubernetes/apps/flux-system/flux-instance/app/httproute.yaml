@@ -5,7 +5,8 @@ kind: HTTPRoute
 metadata:
   name: github-webhook
   annotations:
-    gatus.home-operations.com/endpoint: 'conditions: ["[STATUS] == 404"]'
+    gatus.home-operations.com/endpoint: |-
+      conditions: ["[STATUS] == 404"]
 spec:
   hostnames: ["flux-webhook.xpander.ovh"]
   parentRefs:

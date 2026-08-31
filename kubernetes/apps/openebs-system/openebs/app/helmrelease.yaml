@@ -1,43 +1,32 @@
 ---
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/helmrepository_v1beta2.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: openebs
-spec:
-  interval: 2h
-  url: https://openebs.github.io/openebs
----
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: openebs
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: openebs
-      version: 4.5.1
-      sourceRef:
-        kind: HelmRepository
-        name: openebs
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+  chartRef:
+    kind: OCIRepository
+    name: openebs
+  interval: 1h
   values:
+    preUpgradeHook:
+      enabled: false
     localpv-provisioner:
+      analytics:
+        enabled: false
       localpv:
         image:
           registry: quay.io/
-          repository: openebs/provisioner-localpv
+        basePath: &basePath /var/mnt/local-hostpath
       hostpathClass:
+        enabled: true
         name: openebs-hostpath
+        isDefaultClass: false
+        basePath: *basePath
+      helperPod:
+        image:
+          registry: quay.io/
     openebs-crds:
       csi:
         volumeSnapshots:
@@ -61,4 +50,6 @@ spec:
     loki:
       enabled: false
     alloy:
+      enabled: false
+    minio:
       enabled: false

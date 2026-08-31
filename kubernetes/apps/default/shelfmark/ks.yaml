@@ -4,18 +4,11 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app shelfmark
-  namespace: &namespace default
 spec:
-  targetNamespace: *namespace
-  dependsOn:
-    - name: volsync
-      namespace: volsync
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
+  targetNamespace: default
   path: ./kubernetes/apps/default/shelfmark/app
   components:
-    - ../../../../components/nfs-scaler
+    - ../../../../components/zeroscaler
     - ../../../../components/volsync
   prune: true
   sourceRef:
@@ -23,8 +16,7 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: true
-  interval: 30m
-  timeout: 3m
+  interval: 1h
   postBuild:
     substitute:
       APP: *app

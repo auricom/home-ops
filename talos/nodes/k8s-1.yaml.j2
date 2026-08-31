@@ -1,0 +1,15 @@
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: k8s-1
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  topology.kubernetes.io/zone: m
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: net0
+selector:
+    match: glob("38:05:25:33:6c:79", mac(link.permanent_addr))

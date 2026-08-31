@@ -40,7 +40,7 @@ spec:
       app:
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: 192.168.169.116
+        loadBalancerIP: 192.168.69.116
         externalTrafficPolicy: Local
         ports:
           http:
@@ -79,19 +79,19 @@ spec:
           - path: /config
       music:
         type: nfs
-        server: 192.168.18.10
+        server: 192.168.30.10
         path: /mnt/vol1/music
         globalMounts:
           - path: *claude-music
       music-helene:
         type: nfs
-        server: 192.168.18.10
+        server: 192.168.30.10
         path: /mnt/vol1/home/helene/Musique
         globalMounts:
           - path: /mnt/helene-musique
       playlists:
         type: nfs
-        server: 192.168.18.10
+        server: 192.168.30.10
         path: /mnt/vol1/music/.lms
         globalMounts:
           - path: *playlists

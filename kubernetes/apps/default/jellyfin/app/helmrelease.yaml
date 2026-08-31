@@ -20,29 +20,6 @@ spec:
       retries: 3
   values:
     defaultPodOptions:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              preference:
-                matchExpressions:
-                  # Intel N100
-                  - key: feature.node.kubernetes.io/cpu-model.id
-                    operator: In
-                    values:
-                      - "190"
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  #         # Intel N100
-                  #         - key: feature.node.kubernetes.io/cpu-model.id
-                  #           operator: In
-                  #           values:
-                  #           - "190"
-                  - key: intel.feature.node.kubernetes.io/gpu
-                    operator: In
-                    values:
-                      - "true"
       enableServiceLinks: false
       securityContext:
         runAsUser: 568
@@ -63,7 +40,7 @@ spec:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
-              JELLYFIN_PublishedServerUrl: &loadBalancerIP 192.168.169.110
+              JELLYFIN_PublishedServerUrl: &loadBalancerIP 192.168.69.110
               TZ: Europe/Paris
             probes:
               liveness: &probes
@@ -82,17 +59,15 @@ spec:
                 enabled: false
             resources:
               requests:
-                gpu.intel.com/i915: 1
                 cpu: 100m
                 memory: 512Mi
               limits:
-                gpu.intel.com/i915: 1
                 memory: 4Gi
     service:
       app:
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: 192.168.169.110
+        loadBalancerIP: *loadBalancerIP
         externalTrafficPolicy: Local
         ports:
           http:
@@ -121,21 +96,21 @@ spec:
       music:
         enabled: true
         type: nfs
-        server: 192.168.18.10
+        server: 192.168.30.10
         path: /mnt/vol1/music
         globalMounts:
           - path: /mnt/storage/music
       photo:
         enabled: true
         type: nfs
-        server: 192.168.18.10
+        server: 192.168.30.10
         path: /mnt/vol1/photo
         globalMounts:
           - path: /mnt/storage/photo
       video:
         enabled: true
         type: nfs
-        server: 192.168.18.10
+        server: 192.168.30.10
         path: /mnt/vol1/video
         globalMounts:
           - path: /mnt/storage/video

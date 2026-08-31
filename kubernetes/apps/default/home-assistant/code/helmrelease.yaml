@@ -17,9 +17,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: home-assistant
-      namespace: default
   values:
     #   nodeSelector:
     #     nodo.feature.node.kubernetes.io/rflink: "true"

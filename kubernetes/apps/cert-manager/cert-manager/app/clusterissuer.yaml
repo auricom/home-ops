@@ -13,7 +13,7 @@ spec:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              name: cloudflare-secret
+              name: cloudflare-issuer-secret
               key: CLOUDFLARE_TOKEN
         selector:
           dnsZones: ["xpander.ovh"]
@@ -32,7 +32,7 @@ spec:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              name: cloudflare-secret
+              name: cloudflare-issuer-secret
               key: CLOUDFLARE_TOKEN
         selector:
           dnsZones: ["xpander.ovh"]

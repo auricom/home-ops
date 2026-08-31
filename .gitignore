@@ -1,4 +1,3 @@
-### SOPS ###
-.decrypted~*
-### KUBECONFIG ###
-provision
+.envrc
+kubernetes/kubeconfig
+talos/talosconfig

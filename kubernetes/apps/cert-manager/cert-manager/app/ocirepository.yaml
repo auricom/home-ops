@@ -10,10 +10,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: v1.17.1
-  url: oci://ghcr.io/home-operations/charts-mirror/cert-manager
-  verify:
-    provider: cosign
-    matchOIDCIdentity:
-      - issuer: "^https://token.actions.githubusercontent.com$"
-        subject: "^https://github.com/home-operations/charts-mirror.*$"
+    tag: v1.21.1
+  url: oci://quay.io/jetstack/charts/cert-manager

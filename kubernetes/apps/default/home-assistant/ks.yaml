@@ -4,16 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app home-assistant
-  namespace: &namespace default
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
-    - name: volsync
-      namespace: volsync
   components:
     - ../../../../components/volsync
   interval: 1h
@@ -24,38 +15,30 @@ spec:
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_SCHEDULE: "8 */12 * * *"
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
-  timeout: 5m
+  targetNamespace: default
   wait: false
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: home-assistant-code
-  namespace: &namespace default
+  name: &app home-assistant-code
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: &app home-assistant
   interval: 1h
   path: ./kubernetes/apps/default/home-assistant/code
   postBuild:
     substitute:
       APP: *app
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
-  timeout: 5m
+  targetNamespace: default
   wait: false
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -63,7 +46,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: sensy-one-zone-editor
-  namespace: &namespace default
 spec:
   commonMetadata:
     labels:
@@ -74,11 +56,9 @@ spec:
     substitute:
       APP: *app
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
-  timeout: 5m
+  targetNamespace: default
   wait: false

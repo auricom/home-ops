@@ -63,7 +63,7 @@ spec:
                 </small>
               {{- end }}
             {{- end }}
-          # monospace: false
+          monospace: false
           priority: |-
             {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
           sendResolved: true

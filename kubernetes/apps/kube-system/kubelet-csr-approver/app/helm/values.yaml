@@ -1,8 +1,0 @@
----
-replicas: 1
-providerRegex: ^talos-node-\d$
-bypassDnsResolution: true
-metrics:
-  enable: true
-  serviceMonitor:
-    enabled: true

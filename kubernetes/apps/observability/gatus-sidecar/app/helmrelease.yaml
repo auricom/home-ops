@@ -1,3 +1,4 @@
+---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -45,7 +46,7 @@ spec:
           path: config.yaml
     persistence:
       enabled: true
-      storageClass: rook-ceph-block
+      storageClass: ceph-block
       accessMode: ReadWriteOnce
       size: 5Gi
     resources:

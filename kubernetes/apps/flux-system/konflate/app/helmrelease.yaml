@@ -1,20 +1,22 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app konflate
+  name: konflate
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: konflate
+  interval: 1h
   values:
     config:
       repo: github://auricom/home-ops
       statusChecks: true
       prComments: true
       publicUrl: https://{{ .Release.Name }}.xpander.ovh
+      mcp: true
+      verifyImages: true
     secret:
       existingSecret: konflate-webhook-token-secret
     httpRoute:
@@ -34,4 +36,4 @@ spec:
       requests:
         cpu: 50m
       limits:
-        memory: 4Gi
+        memory: 1Gi

@@ -4,14 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app recyclarr
-  namespace: &namespace default
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  dependsOn:
-    - name: radarr
-    - name: sonarr
   components:
     - ../../../../components/volsync
   interval: 1h
@@ -22,11 +15,9 @@ spec:
       VOLSYNC_CAPACITY: 2Gi
       VOLSYNC_SCHEDULE: "2 1,13 * * *"
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
-  timeout: 5m
+  targetNamespace: default
   wait: false

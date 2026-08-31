@@ -1,14 +1,16 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/kustomization.json
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: network
+
 components:
-  - ../../components/common
+  - ../../components/alerts
+
 resources:
-  - ./cloudflare-dns/ks.yaml
+  - ./namespace.yaml
+  - ./certificates/ks.yaml
   - ./cloudflare-tunnel/ks.yaml
+  - ./cloudflare-dns/ks.yaml
   - ./envoy-gateway/ks.yaml
-  - ./k8s-gateway/ks.yaml
-  - ./multus/ks.yaml
-  # - ./opnsense-dns/ks.yaml
+  - ./unifi-dns/ks.yaml

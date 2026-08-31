@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app elegoo-cc2-webui
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: elegoo-cc2-webui
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      mesh-organizer:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/nyakaspeter/elegoo-cc2-webui
+              tag: main@sha256:08194b0445d2e8994be283d6c9f16dd8f4fc259c855ec9ba978ad7dfb10e82ae
+            env:
+              PRINTER_HOST: 192.168.32.50
+            envFrom:
+              - secretRef:
+                  name: elegoo-cc2-webui-secret
+            resources:
+              requests:
+                memory: 250Mi
+                cpu: 15m
+              limits:
+                memory: 512Mi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 8080
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
+        hostnames: ["cc2.xpander.ovh"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
