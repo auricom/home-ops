@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: codeberg.org/readeck/readeck
-              tag: 0.22.3@sha256:ed1c513f8e1d59b1d38fda324ac279eeb65afd0327907e498061ec9fd2f31c15
+              tag: 0.23.2@sha256:32bd82e457a3a9a3fffb161f55cfebf0fd7ffbc87ddf2fe7a321361905348f0a
             env:
               TZ: "Europe/Paris"
               READECK_LOG_LEVEL: info
