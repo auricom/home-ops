@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/sensy-one/zone-editor
-              tag: latest@sha256:3c90503f569749e97759b6186b9608208cebb9127e6740913cb856af3cad9574
+              tag: latest@sha256:472f64b24175a0df95d5cac031aebb643ea387a38cc803d6fff7c0d9cc5c52a2
             envFrom:
               - secretRef:
                   name: sensy-one-zone-editor-secret
