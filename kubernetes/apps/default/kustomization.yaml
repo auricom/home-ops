@@ -15,6 +15,7 @@ resources:
   - ./bazarr/ks.yaml
   - ./booklore/ks.yaml
   - ./bookstack/ks.yaml
+  - ./donetick/ks.yaml
   - ./elegoo-cc2-webui/ks.yaml
   - ./esphome/ks.yaml
   - ./exercisediary/ks.yaml

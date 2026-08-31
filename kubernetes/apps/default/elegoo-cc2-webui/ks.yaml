@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: elegoo-cc2-webui
 spec:
-  dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/default/elegoo-cc2-webui/app
   prune: true

@@ -29,7 +29,7 @@ database:
   file: ./database.sqlite # database file location.
 
 metadataProviders:
-  # malClientId: "${SECRET_KOMF_MAL_CLIENT_ID}" # required for mal provider. See https://myanimelist.net/forum/?topicid=1973077
+  # malClientId: "SECRET_KOMF_MAL_CLIENT_ID" # required for mal provider. See https://myanimelist.net/forum/?topicid=1973077
   defaultProviders:
     mangaUpdates:
       priority: 10

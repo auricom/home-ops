@@ -19,7 +19,7 @@ spec:
       retries: 3
   values:
     controllers:
-      mesh-organizer:
+      elegoo-cc2-webui:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -43,7 +43,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8080
+            port: &port 8080
     route:
       app:
         annotations:
