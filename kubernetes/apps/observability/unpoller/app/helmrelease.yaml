@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: ghcr.io/unpoller/unpoller
-              tag: v3.3.1@sha256:9dcccdc931a6830735f6978caf8cd67699b0dc33e37cf9ef4638611791c4df62
+              tag: v5.2.2@sha256:368126bce83af861109e1889d19786071cbf43fc39ef42026910b9717c20a107
             env:
               TZ: Europe/Paris
               UP_UNIFI_DEFAULT_URL: https://192.168.30.1
