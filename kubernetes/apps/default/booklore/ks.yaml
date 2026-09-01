@@ -9,7 +9,7 @@ spec:
   path: ./kubernetes/apps/default/booklore/app
   components:
     - ../../../../components/zeroscaler
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
   prune: true
   sourceRef:
     kind: GitRepository

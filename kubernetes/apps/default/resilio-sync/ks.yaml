@@ -9,7 +9,7 @@ spec:
   path: ./kubernetes/apps/default/resilio-sync/claude
   components:
     - ../../../../components/zeroscaler
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
   interval: 1h
   postBuild:
     substitute:
@@ -33,7 +33,7 @@ spec:
   path: ./kubernetes/apps/default/resilio-sync/helene
   components:
     - ../../../../components/zeroscaler
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
   interval: 1h
   postBuild:
     substitute:

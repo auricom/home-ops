@@ -8,7 +8,7 @@ spec:
   components:
     - ../../../../components/ext-auth
     - ../../../../components/zeroscaler
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
   interval: 1h
   path: ./kubernetes/apps/default/qui/app
   postBuild:

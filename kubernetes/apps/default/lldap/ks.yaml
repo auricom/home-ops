@@ -6,7 +6,7 @@ metadata:
   name: &app lldap
 spec:
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
   interval: 1h
   path: ./kubernetes/apps/default/lldap/app
   postBuild:

@@ -6,7 +6,7 @@ metadata:
   name: &app authelia
 spec:
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
   interval: 1h
   path: ./kubernetes/apps/default/authelia/app
   postBuild:
