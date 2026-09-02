@@ -5,8 +5,6 @@ kind: Kustomization
 metadata:
   name: kopia
 spec:
-  dependsOn:
-    - name: volsync
   interval: 1h
   path: ./kubernetes/apps/volsync/kopia/app
   postBuild:

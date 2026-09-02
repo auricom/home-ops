@@ -20,7 +20,6 @@ resources:
   - ./donetick/ks.yaml
   - ./elegoo-cc2-webui/ks.yaml
   - ./esphome/ks.yaml
-  - ./exercisediary/ks.yaml
   - ./filebrowser/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./freshrss/ks.yaml
@@ -37,8 +36,6 @@ resources:
   - ./lldap/ks.yaml
   - ./lms/ks.yaml
   - ./mesh-organizer/ks.yaml
-  - ./navidrome/ks.yaml
-  - ./opengist/ks.yaml
   - ./paperless/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
