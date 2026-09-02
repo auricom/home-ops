@@ -103,12 +103,16 @@ spec:
       tmpfs:
         type: emptyDir
         globalMounts:
+          - path: /.gunicorn
+            subPath: gunicorn
           - path: /cache
             subPath: cache
           - path: /tmp
             subPath: tmp
           - path: /run
             subPath: run
+          - path: /var/log
+            subPath: log
       ingest:
         type: nfs
         server: &nas 192.168.30.10
