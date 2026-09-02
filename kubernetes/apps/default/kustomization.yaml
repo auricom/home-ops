@@ -6,7 +6,7 @@ namespace: default
 
 components:
   - ../../components/alerts
-  # - ../../components/kopiur/secret
+  - ../../components/kopiur/secret
 
 resources:
   - ./namespace.yaml
