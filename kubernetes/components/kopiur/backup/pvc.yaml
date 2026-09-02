@@ -6,10 +6,10 @@ metadata:
 spec:
   accessModes:
     - ${KOPIUR_ACCESSMODES:=ReadWriteOnce}
-  # dataSourceRef:
-  #   apiGroup: kopiur.home-operations.com
-  #   kind: Restore
-  #   name: ${APP}
+  dataSourceRef:
+    apiGroup: kopiur.home-operations.com
+    kind: Restore
+    name: ${APP}
   resources:
     requests:
       storage: ${KOPIUR_CAPACITY:=5Gi}

@@ -6,6 +6,7 @@ namespace: default
 
 components:
   - ../../components/alerts
+  # - ../../components/kopiur/secret
 
 resources:
   - ./namespace.yaml
@@ -13,6 +14,7 @@ resources:
   - ./authelia/ks.yaml
   - ./autobrr/ks.yaml
   - ./bazarr/ks.yaml
+  - ./bookboss/ks.yaml
   - ./booklore/ks.yaml
   - ./bookstack/ks.yaml
   - ./donetick/ks.yaml

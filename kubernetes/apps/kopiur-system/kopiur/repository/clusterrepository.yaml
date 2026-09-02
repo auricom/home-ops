@@ -14,7 +14,7 @@ spec:
           name: kopiur-repository-secret
           namespace: kopiur-system
       bucket: kopiur
-      endpoint: storage.feisar.ovh:30292
+      endpoint: storage.feisar.ovh:30188
   encryption:
     passwordSecretRef:
       name: kopiur-repository-secret
