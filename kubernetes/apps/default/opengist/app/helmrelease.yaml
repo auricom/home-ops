@@ -8,18 +8,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: opengist
-  interval: 15m
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+  interval: 1h
   values:
     controllers:
       opengist:
@@ -30,7 +19,7 @@ spec:
           app:
             image:
               repository: ghcr.io/thomiceli/opengist
-              tag: 1.13.1@sha256:dddc26031d1320ebb4bc5b913b3c42a9cb84c7528192d387f99ddcbbe57b0085
+              tag: 1.15.2@sha256:7edc91273ee7d10a17406da8a08c803158baaff984c39b789c1313473d068f21
             command: # double "$$" escape flux substitutions
               - ./opengist
             args:
