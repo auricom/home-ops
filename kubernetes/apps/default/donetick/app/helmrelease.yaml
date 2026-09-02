@@ -83,7 +83,8 @@ spec:
           - "{{ .Release.Name }}.xpander.ovh"
         parentRefs:
           - name: envoy-external
-            namespace: networking
+            namespace: network
+            sectionName: https
     persistence:
       data:
         existingClaim: *app
