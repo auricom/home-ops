@@ -27,8 +27,6 @@ kind: Kustomization
 metadata:
   name: &app bookstack-file-exporter
 spec:
-  dependsOn:
-    - name: bookstack
   interval: 1h
   path: ./kubernetes/apps/default/bookstack/file-exporter
   postBuild:
