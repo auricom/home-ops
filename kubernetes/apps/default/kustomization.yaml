@@ -49,7 +49,6 @@ resources:
   - ./resilio-sync/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./seerr/ks.yaml
-  - ./sharry/ks.yaml
   - ./shelfmark/ks.yaml
   - ./sonarr/ks.yaml
   - ./spoolman/ks.yaml
