@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: sissbruecker/linkding
-              tag: 1.45.0@sha256:61b2eb9eed8e5772a473fb7f1f8923e046cb8cbbeb50e88150afd5ff287d4060
+              tag: 1.46.2@sha256:0c0a9a04c7ebd644293c37f98710872fe7cdff0ea1ff7fd9be4d235e4c4678d2
             envFrom:
               - secretRef:
                   name: linkding-secret
