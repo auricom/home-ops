@@ -32,7 +32,7 @@ spec:
             image:
               # https://hub.docker.com/r/caronc/apprise
               repository: docker.io/caronc/apprise
-              tag: v1.5.0@sha256:43673bf62faa88148298d52664b37b4860189555db0b251b54d79a3ef3a173cf
+              tag: v1.5.3@sha256:6a9f18155b8ae6ae3439d4139e17946d3e0afe27340213c1dcf15f730c42a394
             env:
               TZ: "${TIMEZONE:=Etc/UTC}"
             probes:
