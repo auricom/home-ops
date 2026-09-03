@@ -12,7 +12,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_SCHEDULE: "28 */12 * * *"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -27,8 +26,6 @@ kind: Kustomization
 metadata:
   name: &app bookstack-file-exporter
 spec:
-  dependsOn:
-    - name: bookstack
   interval: 1h
   path: ./kubernetes/apps/default/bookstack/file-exporter
   postBuild:

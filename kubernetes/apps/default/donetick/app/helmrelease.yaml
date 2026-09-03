@@ -32,7 +32,7 @@ spec:
               DT_ENV: selfhosted
               DT_NAME: Donetick
               DT_DATABASE_TYPE: sqlite
-              DT_SERVER_CORS_ALLOW_ORIGINS: https://{{ .Release.Name }}.xpander.ovh
+              DT_SERVER_CORS_ALLOW_ORIGINS: https://{{ .Release.Name }}.xpander.ovh,https://localhost,http://localhost,http://127.0.0.1
               DT_EMAIL_HOST: smtp-relay.networking.svc.cluster.local
               DT_EMAIL_PORT: 2525
               DT_EMAIL_EMAIL: donetick@xpander.ovh
@@ -83,7 +83,8 @@ spec:
           - "{{ .Release.Name }}.xpander.ovh"
         parentRefs:
           - name: envoy-external
-            namespace: networking
+            namespace: network
+            sectionName: https
     persistence:
       data:
         existingClaim: *app

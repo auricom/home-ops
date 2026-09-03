@@ -22,11 +22,11 @@ spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
-        fsGroup: 568
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        runAsGroup: 568
+        runAsGroup: 1000
         runAsNonRoot: true
-        runAsUser: 568
+        runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
     controllers:
@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: ghcr.io/calibrain/shelfmark
-              tag: v1.3.2@sha256:8700c1d3b6bb94e1b5f9482bac12e39652ed737de02f256920e1ad982a7ac0f1
+              tag: v1.3.15@sha256:9602290324993c801b319d3166b202b96bd9039af2416f0916dae03a5bdca815
             command:
               - gunicorn
             args:
@@ -103,12 +103,16 @@ spec:
       tmpfs:
         type: emptyDir
         globalMounts:
+          - path: /.gunicorn
+            subPath: gunicorn
           - path: /cache
             subPath: cache
           - path: /tmp
             subPath: tmp
           - path: /run
             subPath: run
+          - path: /var/log
+            subPath: log
       ingest:
         type: nfs
         server: &nas 192.168.30.10

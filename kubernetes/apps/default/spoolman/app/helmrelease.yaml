@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/donkie/spoolman
-              tag: 0.23.1@sha256:c798bcc19194949962044459e4b43c09d667d084ae9c2c2e0187a42c36d43d9e
+              tag: 0.26.1@sha256:cf9b41e17b93ce7d4ca584d9809142f8918fd290f2cd7d3b8b12ff76c75482f0
             command:
               - uvicorn
               - spoolman.main:app

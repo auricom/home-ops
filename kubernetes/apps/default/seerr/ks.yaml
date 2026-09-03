@@ -13,7 +13,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_SCHEDULE: "10 */12 * * *"
   prune: true
   sourceRef:

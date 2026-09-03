@@ -33,8 +33,9 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 10Gi
-      VOLSYNC_SCHEDULE: "46 */12 * * *"
+      KOPIUR_CAPACITY: 10Gi
+      KOPIUR_PUID: "999"
+      KOPIUR_PGID: "999"
   prune: true
   sourceRef:
     kind: GitRepository

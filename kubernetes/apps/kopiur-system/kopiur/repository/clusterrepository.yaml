@@ -13,8 +13,11 @@ spec:
         secretRef:
           name: kopiur-repository-secret
           namespace: kopiur-system
-      bucket: kopiur
-      endpoint: storage.feisar.ovh:30292
+      bucket: kopiur-k8s
+      endpoint: storage.feisar.ovh:30188
+      region: garage
+      tls:
+        disableTls: true
   encryption:
     passwordSecretRef:
       name: kopiur-repository-secret

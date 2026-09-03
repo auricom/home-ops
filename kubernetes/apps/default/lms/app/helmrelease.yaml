@@ -26,10 +26,12 @@ spec:
           app:
             image:
               repository: ghcr.io/lms-community/lyrionmusicserver
-              tag: stable@sha256:e7865195d91df554760df3957bed91044f650b80c3fc2783d425c487b68c7185
+              tag: 9.1.2@sha256:617b9b2239dfcec1e93c9efb7fea825c819f4d09c588ef54e150a48526eaee25
             env:
               AUDIO_DIR: &claude-music /mnt/claude-musique
               PLAYLIST_DIR: &playlists /mnt/playlists
+              PUID: "1000"
+              PGID: "1000"
             resources:
               requests:
                 memory: 250Mi

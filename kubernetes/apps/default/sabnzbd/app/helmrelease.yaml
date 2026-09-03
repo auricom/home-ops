@@ -17,11 +17,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: volsync
-      namespace: volsync
   values:
     defaultPodOptions:
       securityContext:
@@ -37,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/sabnzbd
-              tag: 5.0.4@sha256:457be5fad7b83c338a981f1945e1ecae2dedd0cc81cdd2992673b0dc84fc2890
+              tag: 5.1.2@sha256:8172dc78c4e70baf88b18afca851bf77487e2e22802a6bd3502d7ef211dfb8fd
             env:
               TZ: "Europe/Paris"
               SABNZBD__PORT: &port 8080

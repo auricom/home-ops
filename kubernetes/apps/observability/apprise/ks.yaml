@@ -7,9 +7,6 @@ metadata:
 spec:
   interval: 1h
   path: ./kubernetes/apps/observability/apprise/app
-  postBuild:
-    substitute:
-      VOLSYNC_CAPACITY: 1Gi
   prune: true
   retryInterval: 2m
   sourceRef:

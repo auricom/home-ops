@@ -9,21 +9,13 @@ spec:
   chartRef:
     kind: OCIRepository
     name: tandoor
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 0
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       tandoor:
@@ -42,6 +34,8 @@ spec:
               ALLOWED_HOSTS: "*"
               GUNICORN_MEDIA: "0"
               TZ: Europe/Paris
+              PUID: "1000"
+              PGID: "1000"
               DB_ENGINE: django.db.backends.sqlite3
               POSTGRES_DB: /opt/recipes/data/tandoor.sqlite
               TANDOOR_PORT: &tandoorPort 8888

@@ -46,7 +46,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.6.4@sha256:29d953e7be59a0c3cceefad839138d3a57c7b9efb81c800a51d8453d5913cc12
+              tag: 2026.9.0@sha256:f795a47fa14a5b109cc524b7f7e8b3d9ab95665d0482d9a11b794b6ad8425baa
             env:
               TZ: "Europe/Paris"
               HASS_HTTP_TRUSTED_PROXY_1: 192.168.16.0/21
@@ -56,27 +56,15 @@ spec:
               - secretRef:
                   name: home-assistant-secret
             probes:
-              liveness:
-                enabled: true
-                spec:
-                  periodSeconds: 30
-                  timeoutSeconds: 5
-                  failureThreshold: 5
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /healthz
-                    port: &port 8123
-                  periodSeconds: 10
-                  timeoutSeconds: 5
-                  failureThreshold: 5
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
-                  periodSeconds: 10
+                  periodSeconds: 5
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -91,7 +79,7 @@ spec:
         ports:
           http:
             appProtocol: kubernetes.io/ws
-            port: *port
+            port: &port 8123
     route:
       app:
         annotations:
