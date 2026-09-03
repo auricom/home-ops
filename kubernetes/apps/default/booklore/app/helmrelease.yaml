@@ -61,6 +61,8 @@ spec:
               tag: 11.4.12
             env:
               TZ: Europe/Paris
+              PUID: "1000"
+              PGID: "1000"
               MYSQL_USER: booklore
               MYSQL_PASSWORD:
                 valueFrom:
