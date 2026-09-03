@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: amd-device-plugin
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: amd-device-plugin
+  interval: 1h
+  values:
+    controllers:
+      amd-device-plugin:
+        type: daemonset
+        containers:
+          app:
+            workingDir: /root
+            command: ["./k8s-device-plugin"]
+            args:
+              - "logtostderr=true"
+              - "stderrthreshold=INFO"
+              - "-v=5"
+            env:
+              TZ: Europe/Paris
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 100Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+      priorityClassName: system-node-critical
+    service:
+      app:
+        enabled: false
+        controller: amd-device-plugin
+    persistence:
+      sys:
+        enabled: true
+        type: hostPath
+        hostPath: /sys
+      device-plugins:
+        enabled: true
+        type: hostPath
+        hostPath: /var/lib/kubelet/device-plugins

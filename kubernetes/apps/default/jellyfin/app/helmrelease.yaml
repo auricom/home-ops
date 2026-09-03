@@ -10,14 +10,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: jellyfin
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     defaultPodOptions:
       enableServiceLinks: false
@@ -62,6 +54,7 @@ spec:
                 cpu: 100m
                 memory: 512Mi
               limits:
+                amd.com/gpu: 1
                 memory: 4Gi
     service:
       app:
