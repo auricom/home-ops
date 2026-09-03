@@ -9,5 +9,5 @@ spec:
     name: ${APP}
   schedule:
     cron: 0 * * * *
-    jitter: 30m
+    jitter: 10m
     runOnCreate: false

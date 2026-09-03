@@ -22,11 +22,11 @@ spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
-        fsGroup: 568
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        runAsGroup: 568
+        runAsGroup: 1000
         runAsNonRoot: true
-        runAsUser: 568
+        runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
     controllers:
