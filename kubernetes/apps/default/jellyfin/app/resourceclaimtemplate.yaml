@@ -1,0 +1,15 @@
+---
+apiVersion: resource.k8s.io/v1
+kind: ResourceClaimTemplate
+metadata:
+  name: jellyfin-gpu
+spec:
+  spec:
+    devices:
+      requests:
+        - name: gpu
+          exactly:
+            deviceClassName: gpu.amd.com
+            selectors:
+              - cel:
+                  expression: device.attributes["gpu.amd.com"].deviceID == '0x13c0'
