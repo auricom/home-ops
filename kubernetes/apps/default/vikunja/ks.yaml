@@ -12,7 +12,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_SCHEDULE: "22 1,13 * * *"
+      KOPIUR_PGID: "0"
   prune: true
   sourceRef:
     kind: GitRepository
