@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: gotson/komga
-              tag: 1.24.4@sha256:dae630271561b642d47c9723803ec77900d1f0a803fbe6a42da69db5b21ebaeb
+              tag: 1.26.3@sha256:6c2a967bbe9acefd05933b2eb498f34afe96a83c6f7f8ab0acb512a1bb3ab50f
             env:
               TZ: "Europe/Paris"
               SERVER_PORT: &port 8080
