@@ -4,8 +4,8 @@
     "github>home-operations/renovate-presets#8.1.0",
     "github>home-operations/renovate-presets//apps/grafanaDashboards.json5#8.1.0",
     "github>home-operations/renovate-presets//apps/talosFactory.json5#8.1.0",
-      ":timezone(Europe/Paris)"
-      ],
+    ":timezone(Europe/Paris)",
+  ],
   lockFileMaintenance: {
     enabled: true,
     schedule: ["before 3am on the first day of the month"],
@@ -13,12 +13,19 @@
     additionalBranchPrefix: "{{manager}}-",
   },
   packageRules: [
+    // Ignore dependencies without a Renovate-compatible version source
+    {
+      description: "Ignore 1Password CLI version lookup",
+      matchManagers: ["mise"],
+      matchPackageNames: ["1password/cli"],
+      enabled: false,
+    },
     // Auto-merge rules
     {
       description: "Auto-merge trusted OCI digests",
       matchDatasources: ["docker"],
       matchUpdateTypes: ["digest"],
-      matchPackageNames: ["/auricom/","/home-operations/"],
+      matchPackageNames: ["/auricom/", "/home-operations/"],
       automerge: true,
       automergeType: "pr",
       ignoreTests: false,
