@@ -31,6 +31,7 @@ talos = "1.14.0-rc.2"
 yq = "4.53.6"
 zizmor = "1.30.0"
 kustomize = "latest"
+rclone = "latest"
 
 [settings]
 python.uv_venv_auto = "source"

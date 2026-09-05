@@ -1,31 +1,25 @@
 #!/usr/bin/env -S just --justfile
 
+set minimum-version := '1.55.0'
+
+set default-list
 set default-script
 set lazy
 set quiet
+set script-interpreter := ['bash', '-euo', 'pipefail']
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 # Bootstrap Recipes
-[group: 'Bootstrap']
+[group('Bootstrap')]
 mod bootstrap "bootstrap"
 
 # Kube Recipes
-[group: 'Kube']
+[group('Kube')]
 mod kube "kubernetes"
 
-[doc('Sync Recipes')]
-mod sync '.just/sync.just'
-
 # Talos Recipes
-[group: 'Talos']
+[group('Talos')]
 mod talos "talos"
-
-[doc('Volsync')]
-mod volsync '.just/volsync.just'
-
-[private]
-default:
-    just --list
 
 [private]
 log lvl msg *args:
@@ -33,8 +27,4 @@ log lvl msg *args:
 
 [private]
 template file *args:
-    injected_file="$(mktemp)"
-    trap 'rm -f "$injected_file"' EXIT
-    minijinja-cli "{{ file }}" {{ args }} | op inject >"$injected_file"
-    test -s "$injected_file" || { echo 'op inject produced no output; sign in with `op signin` first' >&2; exit 1; }
-    vals eval -f "$injected_file" | yq -P
+    minijinja-cli "{{ file }}" {{ args }} | op inject
