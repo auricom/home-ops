@@ -9,16 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: immich
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
-  dependsOn:
-    - name: immich
   values:
     controllers:
       immich-sync:

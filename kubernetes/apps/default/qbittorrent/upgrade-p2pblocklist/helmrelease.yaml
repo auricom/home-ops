@@ -9,14 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: qbittorrent-upgrade-p2pblocklist
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     controllers:
       qbittorrent-upgrade-p2pblocklist:
@@ -61,8 +53,7 @@ spec:
           type: ClusterRole
           rules:
             - apiGroups: [""]
-              resources:
-                ["pods", "pods/log", "pods/exec", "pods/ephemeralcontainers"]
+              resources: ["pods", "pods/log", "pods/exec", "pods/ephemeralcontainers"]
               verbs: ["get", "list", "create", "update", "patch"]
             - apiGroups: ["apps"]
               resources: ["deployments"]
