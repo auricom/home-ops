@@ -72,6 +72,8 @@ spec:
           mqtt:
             port: 1883
       mosquitto:
+        annotations:
+          lbipam.cilium.io/ips: 192.168.69.125
         controller: *app
         type: LoadBalancer
         externalTrafficPolicy: Local
