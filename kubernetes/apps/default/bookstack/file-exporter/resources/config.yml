@@ -5,7 +5,7 @@ formats:
 assets:
   export_images: true
   export_attachments: true
-  modify_markdown: false
+  modify_links: false
   export_meta: false
 keep_last: 5
 notifications:
