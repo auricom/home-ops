@@ -24,10 +24,10 @@ spec:
               SERVER_PORT: &port 8080
             resources:
               requests:
-                memory: 4282M
+                memory: 512Mi
                 cpu: 15m
               limits:
-                memory: 4282M
+                memory: 2Gi
     service:
       app:
         controller: *app

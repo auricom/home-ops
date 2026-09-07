@@ -28,10 +28,10 @@ spec:
                   name: komf-secret
             resources:
               requests:
-                memory: 4282M
                 cpu: 15m
+                memory: 256Mi
               limits:
-                memory: 4282M
+                memory: 1Gi
     service:
       app:
         controller: *app

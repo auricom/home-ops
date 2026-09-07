@@ -1,0 +1,21 @@
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: Restore
+metadata:
+  name: bookstack-drill
+  namespace: default
+spec:
+  source:
+    fromPolicy:
+      name: bookstack
+      offset: 0 # latest snapshot
+  target:
+    pvc:
+      name: bookstack-drill # throwaway — delete it after you've checked it
+      storageClassName: ceph-block
+      capacity: 5Gi
+      accessModes:
+        - ReadWriteOnce
+  policy:
+    # A drill that finds NO snapshot is a FAILED drill — that's the whole alarm.
+    onMissingSnapshot: Fail
+    waitTimeout: 10m

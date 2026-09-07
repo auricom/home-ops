@@ -72,6 +72,7 @@ spec:
             resources:
               requests:
                 cpu: 10m
+                memory: 512Mi
               limits:
                 memory: 2Gi
     service:
@@ -95,13 +96,13 @@ spec:
               - name: *app
                 port: *port
     persistence:
-        config:
-          existingClaim: "{{ .Release.Name }}"
-          globalMounts:
-            - path: /config
-        config-cache:
-          existingClaim: "{{ .Release.Name }}-cache"
-          globalMounts:
-            - path: /config/.venv
-        tmp:
-          type: emptyDir
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /config
+      config-cache:
+        existingClaim: "{{ .Release.Name }}-cache"
+        globalMounts:
+          - path: /config/.venv
+      tmp:
+        type: emptyDir

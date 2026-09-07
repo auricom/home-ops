@@ -27,8 +27,8 @@ spec:
                   name: mesh-organizer-secret
             resources:
               requests:
-                memory: 250Mi
                 cpu: 15m
+                memory: 32Mi
               limits:
                 memory: 512Mi
     service:
