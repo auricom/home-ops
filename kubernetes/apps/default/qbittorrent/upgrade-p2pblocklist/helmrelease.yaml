@@ -10,6 +10,8 @@ spec:
     kind: OCIRepository
     name: qbittorrent-upgrade-p2pblocklist
   values:
+    defaultPodOptions:
+      automountServiceAccountToken: true
     controllers:
       qbittorrent-upgrade-p2pblocklist:
         type: cronjob
@@ -50,7 +52,7 @@ spec:
     rbac:
       roles:
         qbittorrent-upgrade-p2pblocklist:
-          type: ClusterRole
+          type: Role
           rules:
             - apiGroups: [""]
               resources: ["pods", "pods/log", "pods/exec", "pods/ephemeralcontainers"]
@@ -60,7 +62,7 @@ spec:
               verbs: ["get", "list", "patch", "update"]
       bindings:
         gatus:
-          type: ClusterRoleBinding
+          type: RoleBinding
           roleRef:
             identifier: qbittorrent-upgrade-p2pblocklist
           subjects:
