@@ -26,7 +26,8 @@ spec:
               repository: docker.io/caronc/apprise
               tag: v1.5.4@sha256:c5ea17408c10fd84c8fdb05a421114a1a677b16343c274bf9b1a55701b530829
             env:
-              TZ: "${TIMEZONE:=Etc/UTC}"
+              TZ: "Europe/Paris"
+              APPRISE_WORKER_COUNT: 1
             probes:
               liveness:
                 enabled: true
