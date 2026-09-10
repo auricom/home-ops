@@ -3,7 +3,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: home-assistant-code
+  name: home-assistant-mcp
 spec:
   interval: 15m
   layerSelector:

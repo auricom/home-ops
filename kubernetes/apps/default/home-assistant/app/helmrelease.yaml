@@ -86,7 +86,9 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
+        hostnames:
+          - "{{ .Release.Name }}.xpander.ovh"
+          - hass.xpander.ovh
         parentRefs:
           - name: envoy-internal
             namespace: network
