@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/esphome
-              tag: 2026.8.2@sha256:fd996aa9f5cc094450afe00d4ca71dad7dd12589802760ef23bd1430ee3e803b
+              tag: 2026.8.2@sha256:7f7177e01695edf2621be62df8f39e4f9b0057444cb8a7429bd84289e58ffc86
             # env:
             #   ESPHOME_DASHBOARD_USE_PING: true
             probes:
