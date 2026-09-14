@@ -9,7 +9,6 @@ spec:
     - targets:
         - pikvm.feisar.ovh:9100
         - storage.feisar.ovh:9100
-        - storage.feisar.ovh:9633
   metricsPath: /metrics
   relabelings:
     - action: replace

@@ -12,7 +12,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_SCHEDULE: "44 */12 * * *"
   prune: true
   sourceRef:
     kind: GitRepository

@@ -13,7 +13,6 @@ spec:
     substitute:
       APP: *app
       KOPIUR_CAPACITY: 5Gi
-      VOLSYNC_SCHEDULE: "30 1,13 * * *"
   prune: true
   sourceRef:
     kind: GitRepository
