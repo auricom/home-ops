@@ -66,7 +66,7 @@ kind: Service
 metadata:
   name: kube-api
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: k8s.xpander.ovh
+    external-dns.kubernetes.io/hostname: k8s.xpander.ovh
     lbipam.cilium.io/ips: 192.168.69.120
 spec:
   type: LoadBalancer
