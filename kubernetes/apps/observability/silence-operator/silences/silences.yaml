@@ -55,3 +55,23 @@ spec:
   matchers:
     - name: alertname
       value: KubeHpaMaxedOut
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/observability.giantswarm.io/silence_v1alpha2.json
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: Silence
+metadata:
+  name: info-inhibitor
+spec:
+  matchers:
+    - name: alertname
+      value: InfoInhibitor
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/observability.giantswarm.io/silence_v1alpha2.json
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: Silence
+metadata:
+  name: watchdog
+spec:
+  matchers:
+    - name: alertname
+      value: Watchdog
