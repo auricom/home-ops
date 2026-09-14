@@ -8,7 +8,7 @@ resources:
   - ./ocirepository.yaml
   - ./prometheusrule.yaml
 configMapGenerator:
-  - name: gatus-sidecar-configmap
+  - name: gatus-configmap
     files:
       - config.yaml=./resources/config.yaml
 generatorOptions:

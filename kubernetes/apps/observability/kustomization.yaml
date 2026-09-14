@@ -11,7 +11,7 @@ resources:
   - ./namespace.yaml
   - ./apprise/ks.yaml
   - ./blackbox-exporter/ks.yaml
-  - ./gatus-sidecar/ks.yaml
+  - ./gatus/ks.yaml
   - ./grafana-operator/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./prometheus-adapter/ks.yaml

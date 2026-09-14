@@ -6,7 +6,7 @@ metadata:
   name: gatus-sidecar
 spec:
   interval: 1h
-  path: ./kubernetes/apps/observability/gatus-sidecar/app
+  path: ./kubernetes/apps/observability/gatus/app
   prune: true
   sourceRef:
     kind: GitRepository
