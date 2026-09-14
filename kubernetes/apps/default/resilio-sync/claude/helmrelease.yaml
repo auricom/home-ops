@@ -47,9 +47,6 @@ spec:
             port: 55555
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 401"]
         hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
           - name: envoy-internal

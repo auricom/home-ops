@@ -77,9 +77,6 @@ spec:
             port: *port
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 401"]
         hostnames: ["zigbee.xpander.ovh"]
         parentRefs:
           - name: envoy-internal

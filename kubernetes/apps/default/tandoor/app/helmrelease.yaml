@@ -82,9 +82,6 @@ spec:
             port: &port 8080
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 200"]
         hostnames:
           - "{{ .Release.Name }}.xpander.ovh"
         parentRefs:
