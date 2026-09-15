@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: &app bookorbit
 spec:
+  components:
+    - ../../../../components/kopiur/backup
   interval: 1h
   path: "./kubernetes/apps/default/bookorbit/app"
   postBuild:
@@ -29,7 +31,7 @@ spec:
   path: ./kubernetes/apps/default/bookorbit/database
   postBuild:
     substitute:
-      APP: bookorbit
+      APP: *app
   prune: true
   sourceRef:
     kind: GitRepository

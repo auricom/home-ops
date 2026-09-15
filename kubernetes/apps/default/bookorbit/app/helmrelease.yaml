@@ -59,16 +59,6 @@ spec:
               limits:
                 memory: 2Gi
     defaultPodOptions:
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app.kubernetes.io/instance
-                    operator: In
-                    values:
-                      - bookorbit-database
-              topologyKey: kubernetes.io/hostname
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -86,7 +76,7 @@ spec:
       app:
         parentRefs:
           - name: envoy-internal
-            namespace: networking
+            namespace: network
             sectionName: https
         hostnames:
           - "{{ .Release.Name }}.xpander.ovh"
@@ -99,7 +89,6 @@ spec:
         existingClaim: bookorbit
         globalMounts:
           - path: /data
-            subPath: data
       nfs:
         type: nfs
         server: 192.168.30.10

@@ -10,19 +10,6 @@ spec:
     kind: OCIRepository
     name: bookorbit-database
   values:
-    defaultPodOptions:
-      affinity:
-        podAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/instance
-                      operator: In
-                      values:
-                        - bookorbit
-                topologyKey: kubernetes.io/hostname
     controllers:
       primary:
         type: statefulset
@@ -90,10 +77,9 @@ spec:
       #       port: 9187
     persistence:
       data:
-        existingClaim: bookorbit
+        existingClaim: *app
         globalMounts:
           - path: /var/lib/postgresql/data
-            subPath: db
     # serviceMonitor:
     #   main:
     #     enabled: true
