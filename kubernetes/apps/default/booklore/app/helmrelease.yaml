@@ -73,6 +73,11 @@ spec:
         ports:
           http:
             port: *port
+      mariadb:
+        controller: *app
+        ports:
+          http:
+            port: 3306
     route:
       app:
         hostnames: ["{{ .Release.Name }}.xpander.ovh"]
@@ -82,7 +87,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: booklore-app
                 port: *port
             timeouts:
               request: 0s
