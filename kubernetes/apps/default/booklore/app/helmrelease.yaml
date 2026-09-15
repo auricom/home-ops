@@ -73,6 +73,11 @@ spec:
         ports:
           http:
             port: *port
+      mariadb:
+        controller: *app
+        ports:
+          http:
+            port: 3306
     route:
       app:
         hostnames: ["{{ .Release.Name }}.xpander.ovh"]
