@@ -11,6 +11,7 @@ spec:
   interval: 1h
   values:
     fullnameOverride: *app
+    # logLevel: &logLevel debug
     provider:
       name: webhook
       webhook:
@@ -18,8 +19,10 @@ spec:
           repository: ghcr.io/home-operations/external-dns-unifi-webhook
           tag: 0.10.12@sha256:5338b99662e2e15048b4e14b49e17279d384970fdcb3c29169f509f806f49cbe
         env:
+          # - name: LOG_LEVEL
+          #   value: *logLevel
           - name: UNIFI_HOST
-            value: https://unifi.feisar.ovh
+            value: https://192.168.30.1
           - name: UNIFI_API_KEY
             valueFrom:
               secretKeyRef:
@@ -41,9 +44,13 @@ spec:
     policy: sync
     sources:
       - gateway-httproute
+      - gateway-grpcroute
+      - gateway-tlsroute
+      - gateway-tcproute
+      - gateway-udproute
       - service
-    txtOwnerId: main
-    txtPrefix: k8s.main.%{record_type}-
+    txtOwnerId: default
+    txtPrefix: k8s.%{record_type}-
     domainFilters:
       - xpander.ovh
     serviceMonitor:
