@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bookorbit
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: bookorbit
+  interval: 30m
+  values:
+    controllers:
+      bookorbit:
+        annotations:
+          secret.reloader.stakater.com/reload: bookorbit-secret,bookorbit-database-secret
+        containers:
+          app:
+            image:
+              repository: ghcr.io/bookorbit/bookorbit
+              tag: 2.10.0@sha256:5058da021067ce0ef455e66f74d03f0bb20d920661fe120060e3c364ae29853b
+            env:
+              TZ: Europe/Paris
+              NODE_ENV: production
+              PORT: &port 3000
+              APP_URL: https://bookorbit.xpander.ovh
+              LIBRARY_BROWSE_ROOT: /books
+              BOOK_DOCK_PATH: /bookdrop
+              BOOKORBIT_FIX_PERMISSIONS: "true"
+              NODE_MAX_OLD_SPACE_SIZE: "1536"
+              PUID: "1000"
+              PGID: "1000"
+            envFrom:
+              - secretRef:
+                  name: bookorbit-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/instance
+                    operator: In
+                    values:
+                      - bookorbit-database
+              topologyKey: kubernetes.io/hostname
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      app:
+        controller: bookorbit
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - "{{ .Release.Name }}.xpander.ovh"
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+    persistence:
+      data:
+        existingClaim: bookorbit
+        globalMounts:
+          - path: /data
+            subPath: data
+      nfs:
+        type: nfs
+        server: 192.168.30.10
+        path: /mnt/vol1/apps/bookorbit
+        advancedMounts:
+          bookorbit:
+            app:
+              - path: /books
+                subPath: books
+              - path: /bookdrop
+                subPath: bookdrop
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

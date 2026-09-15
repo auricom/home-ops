@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app bookorbit-database
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: bookorbit-database
+  values:
+    defaultPodOptions:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/instance
+                      operator: In
+                      values:
+                        - bookorbit
+                topologyKey: kubernetes.io/hostname
+    controllers:
+      primary:
+        type: statefulset
+        containers:
+          postgresql:
+            image:
+              repository: pgvector/pgvector
+              tag: pg18@sha256:2ba9ca5f2e7daa0f0e7723cba1ee9167bab54efd3640516a44ac1a928dd67e7a
+            env:
+              PGDATA: /var/lib/postgresql/data/pgdata
+            envFrom:
+              - secretRef:
+                  name: bookorbit-database-secret
+            resources:
+              requests:
+                cpu: 500m
+                memory: 512Mi
+              limits:
+                cpu: 750m
+                memory: 768Mi
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+        initContainers:
+          init-postgres-permissions:
+            image:
+              repository: alpine
+              tag: 3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+            command:
+              - /bin/sh
+              - -c
+              - |
+                chown -R 999:999 $PGDATA
+                chmod 700 $PGDATA
+            env:
+              PGDATA: /var/lib/postgresql/data
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+          # # Init Container for Major PostgreSQL Upgrades, not needed permanently
+          # pgautoupgrade:
+          #   image:
+          #     repository: ghcr.io/pumba98/pgautoupgrade-vchord
+          #     tag: 17-debian-v0.3.0
+          #   # securityContext:
+          #   #   runAsUser: 0
+          #   #   runAsGroup: 0
+          #   env:
+          #     PGAUTO_ONESHOT: yes
+          #     POSTGRES_USER: immich
+          #     POSTGRES_DB: immich
+          #     PGDATA: /var/lib/postgresql/data
+    service:
+      primary:
+        controller: primary
+        ports:
+          postgresql:
+            port: 5432
+      # metrics:
+      #   controller: primary
+      #   ports:
+      #     metrics:
+      #       port: 9187
+    persistence:
+      data:
+        existingClaim: bookorbit
+        globalMounts:
+          - path: /var/lib/postgresql/data
+            subPath: db
+    # serviceMonitor:
+    #   main:
+    #     enabled: true
+    #     serviceName: immich-postgresql-metrics
+    #     endpoints:
+    #       - port: metrics
