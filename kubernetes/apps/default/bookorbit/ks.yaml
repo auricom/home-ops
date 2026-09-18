@@ -6,6 +6,7 @@ metadata:
   name: &app bookorbit
 spec:
   components:
+    - ../../../../components/zeroscaler
     - ../../../../components/kopiur/backup
   interval: 1h
   path: "./kubernetes/apps/default/bookorbit/app"

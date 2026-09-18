@@ -14,8 +14,6 @@ resources:
   - ./authelia/ks.yaml
   - ./autobrr/ks.yaml
   - ./bazarr/ks.yaml
-  - ./bookboss/ks.yaml
-  - ./booklore/ks.yaml
   - ./bookorbit/ks.yaml
   - ./bookstack/ks.yaml
   - ./donetick/ks.yaml
