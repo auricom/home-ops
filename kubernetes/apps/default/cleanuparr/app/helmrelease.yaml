@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app cleanuparr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: cleanuparr
+  values:
+    controllers:
+      cleanuparr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/cleanuparr/cleanuparr
+              tag: 2.10.6@sha256:8136c3beda7aa217012657e0ee31f0473ff4ae7e54a156730ff04523987fa815
+            env:
+              TZ: "Europe/Paris"
+              DOWNLOAD_CLIENT: disabled
+              QUEUECLEANER__ENABLED: true
+              QUEUECLEANER__IMPORT_FAILED_MAX_STRIKES: 3
+              QUEUECLEANER__STALLED_MAX_STRIKES: 3
+              QUEUECLEANER__DOWNLOADING_METADATA_MAX_STRIKES: 3
+              QUEUECLEANER__STALLED_RESET_STRIKES_ON_PROGRESS: true
+              SONARR__ENABLED: true
+              SONARR__INSTANCES__0__URL: http://sonarr.default.svc.cluster.local.:8080
+              RADARR__ENABLED: true
+              RADARR__INSTANCES__0__URL: http://radarr.default.svc.cluster.local:8080
+              PORT: &port 9705
+            envFrom:
+              - secretRef:
+                  name: cleanuparr-secret
+            resources:
+              requests:
+                cpu: 15m
+                memory: 352Mi
+              limits:
+                memory: 446Mi
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups:
+          - 65539
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /config
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          cleanuparr:
+            app:
+              - path: /tmp
+                subPath: tmp
+      downloads:
+        type: nfs
+        server: 192.168.30.10
+        path: /mnt/vol1/downloads
+        globalMounts:
+          - path: /mnt/storage/downloads
+      music-qbittorrent:
+        type: nfs
+        server: 192.168.30.10
+        path: /mnt/vol1/music/.qbittorrent
+        globalMounts:
+          - path: /mnt/storage/music/.qbittorrent
+      video-qbittorrent:
+        type: nfs
+        server: 192.168.30.10
+        path: /mnt/vol1/video/.qbittorrent
+        globalMounts:
+          - path: /mnt/storage/video/.qbittorrent
