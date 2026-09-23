@@ -55,7 +55,7 @@ spec:
                 secretKeyRef:
                   name: homelab-nas-backup-secret
                   key: STORAGE_HEALTHCHECKS_ID
-              HOST: storage.feisar.ovh
+              HOST: 192.168.30.10
     service:
       app:
         controller: *app

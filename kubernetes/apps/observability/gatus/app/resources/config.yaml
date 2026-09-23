@@ -32,7 +32,7 @@ connectivity:
     # Infrastructure
     - name: storage
       group: infrastructure
-      url: "icmp://storage.feisar.ovh"
+      url: "icmp://storage.feisar.ovh."
       interval: 1m
       conditions:
         - "[CONNECTED] == true"

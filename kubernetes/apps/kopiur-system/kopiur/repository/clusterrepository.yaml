@@ -14,7 +14,7 @@ spec:
           name: kopiur-repository-secret
           namespace: kopiur-system
       bucket: kopiur-k8s
-      endpoint: storage.feisar.ovh:30188
+      endpoint: 192.168.30.10:30188
       region: garage
       tls:
         disableTls: true

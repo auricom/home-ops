@@ -7,8 +7,8 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - pikvm.feisar.ovh:9100
-        - storage.feisar.ovh:9100
+        - pikvm.feisar.ovh.:9100
+        - storage.feisar.ovh.:9100
   metricsPath: /metrics
   relabelings:
     - action: replace
@@ -23,7 +23,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - storage.feisar.ovh:9633
+        - storage.feisar.ovh.:9633
   metricsPath: /metrics
   relabelings:
     - action: replace
