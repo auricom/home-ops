@@ -85,3 +85,15 @@ spec:
     - action: replace
       targetLabel: job
       replacement: adguard-exporter
+  metricRelabelings:
+    - action: replace
+      sourceLabels: ["server"]
+      regex: 'http(|s)://([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}).*'
+      replacement: $2
+      targetLabel: server
+    - action: drop
+      sourceLabels: ["__name__", "name", "client"]
+      regex: 'adguard_top_clients;localhost;127\.0\.0\.1'
+    - action: drop
+      sourceLabels: ["__name__", "domain"]
+      regex: 'adguard_top_queried_domains;\.'
