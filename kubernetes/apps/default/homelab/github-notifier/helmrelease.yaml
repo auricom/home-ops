@@ -10,6 +10,27 @@ spec:
     kind: OCIRepository
     name: homelab-github-notifier
   values:
+    externalSecrets:
+      homelab-github-notifier:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              # pushover
+              PUSHOVER_USER_KEY: " {{ .PUSHOVER_USER_KEY }}"
+              # pushover-notifier
+              HEALTHCHECKS_ID: "{{ .GITHUB_RELEASES_HEALTHCHECKS_ID }}"
+              PUSHOVER_APP_TOKEN: "{{ .PUSHOVER_APP_TOKEN }}"
+              # github
+              GITHUB_API_TOKEN: "{{ .GITHUB_API_TOKEN }}"
+        dataFrom:
+          - extract:
+              key: pushover
+          - extract:
+              key: pushover-notifier
     defaultPodOptions:
       securityContext:
         runAsUser: 65532
@@ -32,8 +53,8 @@ spec:
               - python
               - /app/github-notifier.py
             envFrom:
-              - secretRef:
-                  name: homelab-github-notifier-secret
+              - externalSecretRef:
+                  identifier: homelab-github-notifier
     service:
       app:
         controller: *app

@@ -10,6 +10,22 @@ spec:
     kind: OCIRepository
     name: sensy-one-zone-editor
   values:
+    externalSecrets:
+      sensy-one-zone-editor:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              HA_TOKEN: "{{ .SENSY_ONE_TOKEN }}"
+              HA_URL: "https://home-assistant.{{ .SECRET_EXTERNAL_DOMAIN }}"
+        dataFrom:
+          - extract:
+              key: generic
+          - extract:
+              key: home-assistant
     controllers:
       sensy-one-zone-editor:
         annotations:
@@ -20,8 +36,8 @@ spec:
               repository: ghcr.io/sensy-one/zone-editor
               tag: latest@sha256:472f64b24175a0df95d5cac031aebb643ea387a38cc803d6fff7c0d9cc5c52a2
             envFrom:
-              - secretRef:
-                  name: sensy-one-zone-editor-secret
+              - externalSecretRef:
+                  identifier: sensy-one-zone-editor
             probes:
               liveness:
                 enabled: false

@@ -10,6 +10,23 @@ spec:
     kind: OCIRepository
     name: lidarr
   values:
+    externalSecrets:
+      lidarr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              LIDARR__API_KEY: "{{ .LIDARR__API_KEY }}"
+              PUSHOVER_API_TOKEN: "{{ .LIDARR_PUSHOVER_TOKEN }}"
+              PUSHOVER_USER_KEY: "{{ .PUSHOVER_USER_KEY }}"
+        dataFrom:
+          - extract:
+              key: pushover
+          - extract:
+              key: lidarr
     defaultPodOptions:
       securityContext:
         runAsUser: 1000
@@ -36,8 +53,8 @@ spec:
               PUSHOVER_APP_URL: &host "{{ .Release.Name }}.xpander.ovh"
               PUSHOVER_PRIORITY: "0"
             envFrom:
-              - secretRef:
-                  name: lidarr-secret
+              - externalSecretRef:
+                  identifier: lidarr
             resources:
               requests:
                 cpu: 10m

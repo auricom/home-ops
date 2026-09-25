@@ -11,6 +11,15 @@ spec:
     kind: OCIRepository
     name: smtp-relay
   values:
+    externalSecrets:
+      smtp-relay:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        dataFrom:
+          - extract:
+              # SMTP_DOMAIN, SMTP_USERNAME, SMTP_PASSWORD
+              key: smtp-relay
     controllers:
       smtp-relay:
         strategy: RollingUpdate
@@ -27,8 +36,8 @@ spec:
               SMTP_SERVER: smtp.fastmail.com
               SMTP_PORT: "587"
             envFrom:
-              - secretRef:
-                  name: smtp-relay-secret
+              - externalSecretRef:
+                  identifier: smtp-relay
             resources:
               requests:
                 cpu: 10m

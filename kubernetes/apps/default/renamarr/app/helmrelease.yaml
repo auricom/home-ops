@@ -11,6 +11,24 @@ spec:
     kind: OCIRepository
     name: renamarr
   values:
+    externalSecrets:
+      renamarr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              RADARR_API_KEY: "{{ .RADARR__API_KEY }}"
+              SONARR_API_KEY: "{{ .SONARR__API_KEY }}"
+        dataFrom:
+          - extract:
+              key: radarr
+              property: RADARR__API_KEY
+          - extract:
+              key: sonarr
+              property: SONARR__API_KEY
     controllers:
       renamarr:
         type: cronjob
@@ -23,8 +41,8 @@ spec:
               repository: ghcr.io/hollanbm/renamarr
               tag: 4.0.0@sha256:27cf6cfe73a4d370527deaf26b4a4ebe390bd5008ac0a009f991358b26cbbf84
             envFrom:
-              - secretRef:
-                  name: renamarr-secret
+              - externalSecretRef:
+                  identifier: renamarr
             resources:
               requests:
                 cpu: 20m

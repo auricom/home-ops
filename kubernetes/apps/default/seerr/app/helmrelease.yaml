@@ -10,6 +10,18 @@ spec:
     kind: OCIRepository
     name: seerr
   values:
+    externalSecrets:
+      seerr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              API_KEY: "{{ .SEERR_API_KEY }}"
+        dataFrom:
+          - extract:
+              key: jellyseerr
     controllers:
       seerr:
         annotations:
@@ -24,8 +36,8 @@ spec:
               LOG_LEVEL: "info"
               PORT: &port 8080
             # envFrom:
-            #   - secretRef:
-            #       name: seerr-secret
+            #   - externalSecretRef:
+            #       identifier: seerr
             probes:
               liveness: &probes
                 enabled: true

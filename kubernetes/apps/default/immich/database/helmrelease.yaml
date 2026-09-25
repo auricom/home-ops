@@ -10,6 +10,25 @@ spec:
     kind: OCIRepository
     name: immich
   values:
+    externalSecrets:
+      immich-database:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              # App
+              JWT_SECRET: "{{ .IMMICH__JWT_SECRET }}"
+              # Database
+              DB_HOSTNAME: &dbhost "immich-database.default.svc.cluster.local."
+              DB_PORT: "5432"
+              DB_USERNAME: &dbuser "{{ .IMMICH__POSTGRES_USER }}"
+              DB_PASSWORD: &dbpass "{{ .IMMICH__POSTGRES_PASSWORD }}"
+              DB_DATABASE_NAME: immich
+        dataFrom:
+          - extract:
+              key: immich
     defaultPodOptions:
       securityContext:
         runAsUser: 999
@@ -28,8 +47,8 @@ spec:
             envFrom:
               - configMapRef:
                   name: immich-configmap
-              - secretRef:
-                  name: immich-secret
+              - externalSecretRef:
+                  identifier: immich-database
             resources:
               requests:
                 cpu: 500m

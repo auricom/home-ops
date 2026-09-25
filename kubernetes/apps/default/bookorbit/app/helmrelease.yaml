@@ -10,10 +10,26 @@ spec:
     name: bookorbit
   interval: 30m
   values:
+    externalSecrets:
+      bookorbit:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              JWT_SECRET: "{{ .BOOKORBIT_JWT_SECRET }}"
+              SETUP_BOOTSTRAP_TOKEN: "{{ .BOOKORBIT_SETUP_BOOTSTRAP_TOKEN }}"
+              EMAIL_ENCRYPTION_KEY: "{{ .BOOKORBIT_EMAIL_ENCRYPTION_KEY }}"
+              MIGRATION_ENCRYPTION_KEY: "{{ .BOOKORBIT_MIGRATION_ENCRYPTION_KEY }}"
+              BOOK_REQUEST_ENCRYPTION_KEY: "{{ .BOOKORBIT_BOOK_REQUEST_ENCRYPTION_KEY }}"
+        dataFrom:
+          - extract:
+              key: bookorbit
     controllers:
       bookorbit:
         annotations:
-          secret.reloader.stakater.com/reload: bookorbit-secret,bookorbit-database-secret
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
@@ -31,10 +47,10 @@ spec:
               PUID: "1000"
               PGID: "1000"
             envFrom:
+              - externalSecretRef:
+                  identifier: bookorbit
               - secretRef:
-                  name: bookorbit-secret
-              - secretRef:
-                  name: bookorbit-database-secret
+                  name: bookorbit-database
             probes:
               liveness: &probes
                 enabled: true

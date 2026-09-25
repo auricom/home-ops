@@ -10,6 +10,19 @@ spec:
     kind: OCIRepository
     name: vaultwarden
   values:
+    externalSecrets:
+      vaultwarden:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              ADMIN_TOKEN: "{{ .VAULTWARDEN_ADMIN_TOKEN }}"
+        dataFrom:
+          - extract:
+              key: vaultwarden
     controllers:
       vaultwarden:
         annotations:
@@ -35,8 +48,8 @@ spec:
               SMTP_PORT: 2525
               SMTP_SECURITY: "off"
             envFrom:
-              - secretRef:
-                  name: vaultwarden-secret
+              - externalSecretRef:
+                  identifier: vaultwarden
             resources:
               requests:
                 cpu: 100m

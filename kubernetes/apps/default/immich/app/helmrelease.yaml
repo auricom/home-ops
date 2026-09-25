@@ -30,7 +30,7 @@ spec:
               - configMapRef:
                   name: immich-configmap
               - secretRef:
-                  name: immich-secret
+                  name: immich-database
             probes:
               liveness: &probes
                 enabled: true

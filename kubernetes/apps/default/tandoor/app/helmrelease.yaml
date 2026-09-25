@@ -10,6 +10,18 @@ spec:
     kind: OCIRepository
     name: tandoor
   values:
+    externalSecrets:
+      tandoor:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              SECRET_KEY: "{{ .TANDOOR_SECRET_KEY }}"
+        dataFrom:
+          - extract:
+              key: tandoor
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
@@ -27,8 +39,8 @@ spec:
               repository: vabene1111/recipes
               tag: 2.6.15@sha256:2e759dd1478a2ed119ee474e28522079fb1cfa50b3fd25cba89f6b9a67abad72
             envFrom:
-              - secretRef:
-                  name: tandoor-secret
+              - externalSecretRef:
+                  identifier: tandoor
             env:
               DEBUG: "0"
               ALLOWED_HOSTS: "*"

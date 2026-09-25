@@ -10,6 +10,19 @@ spec:
     kind: OCIRepository
     name: elegoo-cc2-webui
   values:
+    externalSecrets:
+      elegoo-cc2-webui:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              ACCESS_CODE: "{{.access_code}}"
+        dataFrom:
+          - extract:
+              key: elegoo-cc2-webui
     controllers:
       elegoo-cc2-webui:
         annotations:
@@ -22,8 +35,8 @@ spec:
             env:
               PRINTER_HOST: 192.168.32.50
             envFrom:
-              - secretRef:
-                  name: elegoo-cc2-webui-secret
+              - externalSecretRef:
+                  identifier: elegoo-cc2-webui
             resources:
               requests:
                 memory: 250Mi

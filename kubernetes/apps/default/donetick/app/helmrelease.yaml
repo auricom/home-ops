@@ -10,6 +10,19 @@ spec:
     kind: OCIRepository
     name: donetick
   values:
+    externalSecrets:
+      donetick:
+        refreshInterval: 5m
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              DT_JWT_SECRET: "{{ .DONETICK_JWT_SECRET }}"
+        dataFrom:
+          - extract:
+              key: donetick
     controllers:
       donetick:
         annotations:
@@ -32,8 +45,8 @@ spec:
               DT_SQLITE_PATH: /donetick-data/donetick.db
               DT_IS_USER_CREATION_DISABLED: false
             envFrom:
-              - secretRef:
-                  name: "{{ .Release.Name }}-secret"
+              - externalSecretRef:
+                  identifier: donetick
             probes:
               liveness: &probes
                 enabled: true

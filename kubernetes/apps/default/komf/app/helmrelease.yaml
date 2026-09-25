@@ -11,6 +11,15 @@ spec:
     kind: OCIRepository
     name: komf
   values:
+    externalSecrets:
+      komf:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        dataFrom:
+          - extract:
+              # KOMF_KOMGA_USER, KOMF_KOMGA_PASSWORD
+              key: komf
     controllers:
       komf:
         annotations:
@@ -24,8 +33,8 @@ spec:
               KOMF_KOMGA_BASE_URI: http://komga.default.svc.cluster.local:8080
               KOMF_LOG_LEVEL: INFO
             envFrom:
-              - secretRef:
-                  name: komf-secret
+              - externalSecretRef:
+                  identifier: komf
             resources:
               requests:
                 cpu: 15m

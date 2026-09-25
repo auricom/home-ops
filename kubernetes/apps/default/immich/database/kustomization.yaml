@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   - ./configmap.yaml
   - ./dragonfly.yaml
-  - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml

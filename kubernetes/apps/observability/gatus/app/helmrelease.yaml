@@ -10,6 +10,21 @@ spec:
     name: gatus
   interval: 1h
   values:
+    externalSecrets:
+      gatus:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              CUSTOM_PUSHOVER_APP_TOKEN: "{{ .PUSHOVER_API_TOKEN }}"
+              CUSTOM_PUSHOVER_USER_KEY: "{{ .PUSHOVER_USER_KEY }}"
+        dataFrom:
+          - extract:
+              key: gatus
+          - extract:
+              key: pushover
     defaultPodOptions:
       automountServiceAccountToken: true
       securityContext:
@@ -50,8 +65,8 @@ spec:
               GATUS_WEB_PORT: &port 80
               TZ: Europe/Paris
             envFrom:
-              - secretRef:
-                  name: "{{ .Release.Name }}-secret"
+              - externalSecretRef:
+                  identifier: gatus
             probes:
               liveness: &probes
                 enabled: true

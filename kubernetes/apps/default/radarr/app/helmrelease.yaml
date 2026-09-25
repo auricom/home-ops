@@ -10,6 +10,22 @@ spec:
     kind: OCIRepository
     name: radarr
   values:
+    externalSecrets:
+      radarr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              RADARR__AUTH__APIKEY: "{{ .RADARR__API_KEY }}"
+              PUSHOVER_API_TOKEN: "{{ .RADARR_PUSHOVER_TOKEN }}"
+              PUSHOVER_USER_KEY: "{{ .PUSHOVER_USER_KEY }}"
+        dataFrom:
+          - extract:
+              key: pushover
+          - extract:
+              key: radarr
     controllers:
       radarr:
         annotations:
@@ -34,8 +50,8 @@ spec:
               PUSHOVER_DEBUG: "false"
               PUSHOVER_PRIORITY: "0"
             envFrom:
-              - secretRef:
-                  name: radarr-secret
+              - externalSecretRef:
+                  identifier: radarr
             probes:
               liveness: &probes
                 enabled: true

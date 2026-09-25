@@ -10,6 +10,20 @@ spec:
     kind: OCIRepository
     name: linkding
   values:
+    externalSecrets:
+      linkding:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              LD_SUPERUSER_NAME: "{{ .username }}"
+              LD_SUPERUSER_PASSWORD: "{{ .password }}"
+        dataFrom:
+          - extract:
+              key: linkding
     controllers:
       linkding:
         annotations:
@@ -20,8 +34,8 @@ spec:
               repository: sissbruecker/linkding
               tag: 1.47.0@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522
             envFrom:
-              - secretRef:
-                  name: linkding-secret
+              - externalSecretRef:
+                  identifier: linkding
             probes:
               liveness: &probes
                 enabled: true

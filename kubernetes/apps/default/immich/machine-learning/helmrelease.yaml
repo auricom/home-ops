@@ -17,7 +17,7 @@ spec:
         annotations:
           configmap.reloader.stakater.com/reload: &configMap immich-configmap
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: &secret immich-secret
+          secret.reloader.stakater.com/reload: &secret immich-database
         strategy: RollingUpdate
         containers:
           app:

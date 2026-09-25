@@ -10,6 +10,19 @@ spec:
     kind: OCIRepository
     name: homebox
   values:
+    externalSecrets:
+      homebox:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              HBOX_AUTH_API_KEY_PEPPER: "{{ .HBOX_AUTH_API_KEY_PEPPER }}"
+        dataFrom:
+          - extract:
+              key: homebox
     controllers:
       homebox:
         annotations:
@@ -27,8 +40,8 @@ spec:
               HBOX_WEB_PORT: &port 7745
               HBOX_MEB_MAX_UPLOAD_SIZE: 25
             envFrom:
-              - secretRef:
-                  name: homebox-secret
+              - externalSecretRef:
+                  identifier: homebox
             probes:
               liveness: &probes
                 enabled: true
