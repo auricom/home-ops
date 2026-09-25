@@ -1,0 +1,17 @@
+#!/bin/bash
+# {{ ansible_managed }}
+set -euo pipefail
+
+tmp="$(mktemp)"
+trap 'rm -f "${tmp}"' EXIT
+
+wget -qO "${tmp}" "{{ unbound_root_hints_url }}"
+
+if [ ! -s "${tmp}" ] || ! grep -q "ROOT-SERVERS" "${tmp}"; then
+    echo "downloaded root hints look invalid, aborting" >&2
+    exit 1
+fi
+
+mv "${tmp}" "{{ unbound_root_hints_path }}"
+chown unbound:unbound "{{ unbound_root_hints_path }}"
+systemctl restart unbound

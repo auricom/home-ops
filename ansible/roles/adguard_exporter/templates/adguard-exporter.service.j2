@@ -1,0 +1,23 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Prometheus AdGuard Home exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{ adguard_exporter_user }}
+Group={{ adguard_exporter_user }}
+EnvironmentFile={{ adguard_exporter_env_file }}
+ExecStart={{ adguard_exporter_bin }}
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

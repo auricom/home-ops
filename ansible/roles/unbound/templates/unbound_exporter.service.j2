@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Prometheus unbound exporter
+After=network-online.target unbound.service
+Wants=network-online.target
+Requires=unbound.service
+
+[Service]
+Type=simple
+User={{ unbound_exporter_user }}
+Group={{ unbound_exporter_user }}
+SupplementaryGroups=unbound
+ExecStart={{ unbound_exporter_bin }} -unbound.ca "" -unbound.cert "" -unbound.host "unix://{{ unbound_exporter_control_socket }}" -web.listen-address "{{ unbound_exporter_listen_address }}"
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

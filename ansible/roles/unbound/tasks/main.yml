@@ -1,0 +1,33 @@
+---
+- name: main | template root hints update script
+  ansible.builtin.template:
+    src: update-root-hints.sh.j2
+    dest: /usr/local/bin/update-root-hints.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: main | schedule root hints refresh cron job
+  ansible.builtin.cron:
+    name: unbound root hints
+    user: root
+    minute: "{{ unbound_root_hints_cron_minute }}"
+    hour: "{{ unbound_root_hints_cron_hour }}"
+    day: "{{ unbound_root_hints_cron_day }}"
+    month: "{{ unbound_root_hints_cron_month }}"
+    job: /usr/local/bin/update-root-hints.sh
+
+- name: main | check root hints file age
+  ansible.builtin.stat:
+    path: "{{ unbound_root_hints_path }}"
+  register: _root_hints_stat
+
+- name: main | run root hints refresh now if missing or stale
+  ansible.builtin.command: /usr/local/bin/update-root-hints.sh
+  changed_when: true
+  when: >-
+    not _root_hints_stat.stat.exists or
+    ((ansible_date_time.epoch | int) - (_root_hints_stat.stat.mtime | int)) > (60 * 60 * 24 * 30 * 6)
+
+- name: main | install unbound exporter
+  ansible.builtin.import_tasks: exporter.yml

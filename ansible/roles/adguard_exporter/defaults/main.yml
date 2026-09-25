@@ -1,0 +1,27 @@
+---
+# renovate: datasource=github-tags depName=henrywhitaker3/adguard-exporter
+adguard_exporter_version: "v1.2.1"
+
+adguard_exporter_user: adguard-exporter
+adguard_exporter_bin: /usr/local/bin/adguard-exporter
+adguard_exporter_env_file: /etc/default/adguard-exporter
+adguard_exporter_bind_addr: ":9618"
+adguard_exporter_interval: "30s"
+
+# The local AdGuard Home instance; credentials come from SOPS group vars.
+adguard_exporter_server: "http://127.0.0.1:{{ adguard_web_port }}"
+adguard_exporter_username: "{{ adguard_username }}"
+adguard_exporter_password: "{{ adguard_password }}"
+
+# Built on the ansible controller, then copied to the hosts.
+adguard_exporter_build_dir: "{{ lookup('ansible.builtin.env', 'HOME') }}/.cache/ansible/adguard-exporter"
+adguard_exporter_src_dir: "{{ adguard_exporter_build_dir }}/src-{{ adguard_exporter_version }}"
+
+adguard_exporter_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+  armv7l: arm
+  armv6l: arm
+
+adguard_exporter_arch: "{{ adguard_exporter_arch_map[ansible_facts.architecture] }}"
+adguard_exporter_artifact: "{{ adguard_exporter_build_dir }}/adguard-exporter-{{ adguard_exporter_version }}-linux-{{ adguard_exporter_arch }}"

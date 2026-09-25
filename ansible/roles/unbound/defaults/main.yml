@@ -1,0 +1,31 @@
+---
+unbound_root_hints_path: /var/lib/unbound/root.hints
+unbound_root_hints_url: https://www.internic.net/domain/named.root
+
+unbound_root_hints_cron_minute: "1"
+unbound_root_hints_cron_hour: "0"
+unbound_root_hints_cron_day: "1"
+unbound_root_hints_cron_month: "*/6"
+
+unbound_identity: "Server"
+
+# renovate: datasource=github-tags depName=letsencrypt/unbound_exporter
+unbound_exporter_version: "v0.6.0"
+
+unbound_exporter_user: unbound-exporter
+unbound_exporter_bin: /usr/local/bin/unbound_exporter
+unbound_exporter_listen_address: ":9167"
+unbound_exporter_control_socket: /run/unbound.ctl
+
+# Built on the ansible controller, then copied to the hosts.
+unbound_exporter_build_dir: "{{ lookup('ansible.builtin.env', 'HOME') }}/.cache/ansible/unbound_exporter"
+unbound_exporter_src_dir: "{{ unbound_exporter_build_dir }}/src-{{ unbound_exporter_version }}"
+
+unbound_exporter_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+  armv7l: arm
+  armv6l: arm
+
+unbound_exporter_arch: "{{ unbound_exporter_arch_map[ansible_facts.architecture] }}"
+unbound_exporter_artifact: "{{ unbound_exporter_build_dir }}/unbound_exporter-{{ unbound_exporter_version }}-linux-{{ unbound_exporter_arch }}"

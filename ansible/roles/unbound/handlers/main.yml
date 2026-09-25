@@ -1,0 +1,11 @@
+---
+- name: restart unbound
+  ansible.builtin.systemd:
+    name: unbound
+    state: restarted
+
+- name: restart unbound_exporter
+  ansible.builtin.systemd:
+    name: unbound_exporter
+    state: restarted
+    daemon_reload: true

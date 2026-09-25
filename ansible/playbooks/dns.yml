@@ -1,0 +1,8 @@
+---
+- hosts: dns-servers
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  roles:
+    - { role: unbound, tags: [unbound] }
+    - { role: adguard_exporter, tags: [adguard_exporter] }

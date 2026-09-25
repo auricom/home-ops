@@ -1,0 +1,81 @@
+---
+- name: main | validate architecture is supported
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.architecture in adguard_exporter_arch_map
+    fail_msg: >-
+      Unsupported architecture '{{ ansible_facts.architecture }}' for adguard-exporter.
+      Extend adguard_exporter_arch_map to add support.
+
+- name: main | clone adguard-exporter source on controller
+  ansible.builtin.git:
+    repo: https://github.com/henrywhitaker3/adguard-exporter.git
+    dest: "{{ adguard_exporter_src_dir }}"
+    version: "{{ adguard_exporter_version }}"
+    depth: 1
+    update: false
+  delegate_to: localhost
+  become: false
+  run_once: true
+
+- name: main | build adguard-exporter on controller
+  ansible.builtin.command:
+    cmd: go build -trimpath -ldflags "-s -w" -o {{ adguard_exporter_artifact }} .
+    chdir: "{{ adguard_exporter_src_dir }}"
+    creates: "{{ adguard_exporter_artifact }}"
+  environment: >-
+    {{
+      {'CGO_ENABLED': '0', 'GOOS': 'linux', 'GOARCH': adguard_exporter_arch}
+      | combine({'GOARM': '6'} if adguard_exporter_arch == 'arm' else {})
+    }}
+  delegate_to: localhost
+  become: false
+  throttle: 1
+
+- name: main | create adguard-exporter system user
+  ansible.builtin.user:
+    name: "{{ adguard_exporter_user }}"
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+
+- name: main | install adguard-exporter binary
+  ansible.builtin.copy:
+    src: "{{ adguard_exporter_artifact }}"
+    dest: "{{ adguard_exporter_bin }}"
+    owner: root
+    group: root
+    mode: "0755"
+  notify: restart adguard-exporter
+
+- name: main | template adguard-exporter environment file
+  ansible.builtin.template:
+    src: adguard-exporter.env.j2
+    dest: "{{ adguard_exporter_env_file }}"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+  notify: restart adguard-exporter
+
+- name: main | template adguard-exporter systemd unit
+  ansible.builtin.template:
+    src: adguard-exporter.service.j2
+    dest: /etc/systemd/system/adguard-exporter.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart adguard-exporter
+
+- name: main | enable and start adguard-exporter
+  ansible.builtin.systemd:
+    name: adguard-exporter
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: main | wait for adguard-exporter to listen locally
+  ansible.builtin.wait_for:
+    host: 127.0.0.1
+    port: "{{ adguard_exporter_bind_addr.split(':')[-1] }}"
+    timeout: 30
