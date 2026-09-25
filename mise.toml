@@ -10,6 +10,7 @@ postinstall = "lefthook install"
 [tools]
 helm = "latest"
 flux2 = "latest"
+go = "latest"
 kubectl = "latest"
 helmfile = "latest"
 pipx = "latest"
