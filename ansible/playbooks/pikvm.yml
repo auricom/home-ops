@@ -1,0 +1,27 @@
+---
+- hosts: pikvm
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  vars:
+    # PiKVM has no reliable RTC, so allow NTS to bootstrap the first clock update.
+    ntp_client_nocerttimecheck: 1
+  tasks:
+    # PiKVM boots with a read-only rootfs; rw/ro are PiKVM-provided commands
+    # that remount it read-write/read-only, so config changes must be wrapped.
+    - name: main | apply pikvm configuration
+      block:
+        - name: main | remount root filesystem read-write
+          ansible.builtin.command: rw
+          changed_when: false
+
+        - name: main | install and configure ntp client
+          ansible.builtin.include_role:
+            name: ntp_client
+            apply:
+              tags: [ntp_client]
+          tags: [ntp_client]
+      always:
+        - name: main | remount root filesystem read-only
+          ansible.builtin.command: ro
+          changed_when: false

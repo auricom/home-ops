@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+# NTP client - managed by Ansible role ntp_client
+
+{% for server in ntp_client_servers %}
+server {{ server.host }} {{ server.options | join(' ') }}
+{% endfor %}
+
+driftfile /var/lib/chrony/chrony.drift
+ntsdumpdir /var/lib/chrony
+{% if ntp_client_nocerttimecheck | int > 0 %}
+nocerttimecheck {{ ntp_client_nocerttimecheck }}
+{% endif %}
+
+makestep {{ ntp_client_makestep }}
+rtcsync
+
+leapsectz right/UTC
+
+logdir /var/log/chrony

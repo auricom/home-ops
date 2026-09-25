@@ -1,0 +1,87 @@
+---
+- name: main | set system timezone
+  community.general.timezone:
+    name: "{{ ntp_client_timezone }}"
+
+- name: main | install chrony (Debian)
+  ansible.builtin.apt:
+    name: chrony
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts.os_family == 'Debian'
+
+- name: main | install chrony (Archlinux)
+  community.general.pacman:
+    name: chrony
+    state: present
+    update_cache: true
+  when: ansible_facts.os_family == 'Archlinux'
+
+- name: main | stop, disable, and mask systemd-timesyncd
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    state: stopped
+    enabled: false
+    masked: true
+  register: _ntp_client_timesyncd
+  failed_when:
+    - _ntp_client_timesyncd is failed
+    - "'Could not find the requested service' not in (_ntp_client_timesyncd.msg | default(''))"
+
+- name: main | check for dietpi.txt
+  ansible.builtin.stat:
+    path: /boot/dietpi.txt
+  register: _ntp_client_dietpi_txt
+
+- name: main | disable DietPi's own NTP handling
+  ansible.builtin.lineinfile:
+    path: /boot/dietpi.txt
+    regexp: "^CONFIG_NTP_MODE="
+    line: CONFIG_NTP_MODE=0
+  when: _ntp_client_dietpi_txt.stat.exists
+
+- name: main | template chrony configuration
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: "{{ ntp_client_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    validate: chronyd -p -f %s
+  notify: restart chrony
+
+- name: main | enable and start chrony
+  ansible.builtin.systemd:
+    name: "{{ ntp_client_service_name }}"
+    state: started
+    enabled: true
+
+- name: main | flush handlers to apply configuration before verifying
+  ansible.builtin.meta: flush_handlers
+
+- name: main | query chrony sources
+  ansible.builtin.command: chronyc -N sources
+  changed_when: false
+  register: _ntp_client_sources
+
+- name: main | assert time.cloudflare.com is configured
+  ansible.builtin.assert:
+    that:
+      - "'time.cloudflare.com' in _ntp_client_sources.stdout"
+    fail_msg: time.cloudflare.com was not found in chrony's sources; check {{ ntp_client_config_path }}.
+
+- name: main | wait for chrony to synchronize
+  ansible.builtin.command: chronyc waitsync 30
+  changed_when: false
+
+- name: main | verify configured timezone
+  ansible.builtin.command: timedatectl show --property=Timezone --value
+  changed_when: false
+  register: _ntp_client_timezone_check
+
+- name: main | assert timezone matches expectation
+  ansible.builtin.assert:
+    that:
+      - _ntp_client_timezone_check.stdout == ntp_client_timezone
+    fail_msg: "System timezone is {{ _ntp_client_timezone_check.stdout }}, expected {{ ntp_client_timezone }}."

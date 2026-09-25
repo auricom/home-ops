@@ -1,0 +1,13 @@
+---
+ntp_client_servers:
+  - host: time.cloudflare.com
+    options: [iburst, nts]
+
+ntp_client_makestep: "1.0 3"
+ntp_client_nocerttimecheck: 0
+ntp_client_timezone: Europe/Paris
+
+# Debian/DietPi ship chrony's service as "chrony" with config under /etc/chrony/;
+# Arch Linux (PiKVM) ships it as "chronyd" with a single /etc/chrony.conf.
+ntp_client_service_name: "{{ 'chronyd' if ansible_facts.os_family == 'Archlinux' else 'chrony' }}"
+ntp_client_config_path: "{{ '/etc/chrony.conf' if ansible_facts.os_family == 'Archlinux' else '/etc/chrony/chrony.conf' }}"

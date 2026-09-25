@@ -4,5 +4,6 @@
   gather_facts: true
   any_errors_fatal: true
   roles:
+    - { role: ntp_client, tags: [ntp_client] }
     - { role: unbound, tags: [unbound] }
     - { role: adguard_exporter, tags: [adguard_exporter] }
