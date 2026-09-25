@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-logs-collector
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: victoria-logs-collector
+  interval: 30m
+  values:
+    fullnameOverride: victoria-logs-collector
+    global:
+      image:
+        registry: quay.io
+    podMonitor:
+      enabled: true
+    podSecurityContext:
+      enabled: true
+      seccompProfile:
+        type: RuntimeDefault
+    remoteWrite:
+      - url: http://victoria-logs-server.observability.svc.cluster.local:9428
+        maxDiskUsagePerURL: 1GB
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+    securityContext:
+      enabled: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      readOnlyRootFilesystem: true
+    tolerations:
+      - operator: Exists
