@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: lscr.io/linuxserver/bookstack
-              tag: 26.05.20260608
+              tag: 26.09.20260924
             env:
               TZ: Europe/Paris
               PUID: "1000"
