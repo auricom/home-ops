@@ -17,6 +17,27 @@ spec:
     remediation:
       retries: 3
   values:
+    externalSecrets:
+      webhook:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              SEERR_PUSHOVER_URL: pover://{{ .PUSHOVER_USER_KEY }}@{{ .SEERR_PUSHOVER_TOKEN }}
+              RADARR_PUSHOVER_URL: pover://{{ .PUSHOVER_USER_KEY }}@{{ .RADARR_PUSHOVER_TOKEN }}
+              SONARR_PUSHOVER_URL: pover://{{ .PUSHOVER_USER_KEY }}@{{ .SONARR_PUSHOVER_TOKEN }}
+              SONARR_API_KEY: "{{ .SONARR__API_KEY }}"
+        dataFrom:
+          - extract:
+              key: seerr
+          - extract:
+              key: radarr
+          - extract:
+              key: sonarr
+          - extract:
+              key: pushover
     controllers:
       webhook:
         replicas: 2
@@ -32,8 +53,8 @@ spec:
               WEBHOOK__PORT: &port 8080
               TZ: Europe/Paris
             envFrom:
-              - secretRef:
-                  name: webhook-secret
+              - externalSecretRef:
+                  identifier: webhook
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

@@ -11,6 +11,24 @@ spec:
     kind: OCIRepository
     name: bookstack
   values:
+    externalSecrets:
+      bookstack:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              APP_KEY: "{{ .BOOKSTACK_APP_KEY }}"
+              DB_PASSWORD: "{{ .BOOKSTACK_MARIADB_PASSWORD }}"
+              DB_HOST: 127.0.0.1
+              DB_PORT: "3306"
+              DB_DATABASE: bookstack
+              DB_USERNAME: bookstack
+              DB_ROOT_PASSWORD: "{{ .BOOKSTACK_MARIADB_ROOT_PASSWORD }}"
+        dataFrom:
+          - extract:
+              key: bookstack
     controllers:
       bookstack:
         annotations:
@@ -27,8 +45,8 @@ spec:
               APP_URL: "https://docs.xpander.ovh"
               QUEUE_CONNECTION: database
             envFrom:
-              - secretRef:
-                  name: bookstack-secret
+              - externalSecretRef:
+                  identifier: bookstack
             probes:
               liveness: &probes
                 enabled: true
@@ -60,13 +78,13 @@ spec:
               MYSQL_PASSWORD:
                 valueFrom:
                   secretKeyRef:
-                    name: bookstack-secret
+                    name: bookstack
                     key: DB_PASSWORD
               MYSQL_DATABASE: bookstack
               MYSQL_ROOT_PASSWORD:
                 valueFrom:
                   secretKeyRef:
-                    name: bookstack-secret
+                    name: bookstack
                     key: DB_ROOT_PASSWORD
     service:
       app:

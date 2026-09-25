@@ -10,10 +10,40 @@ spec:
     kind: OCIRepository
     name: esphome
   values:
+    externalSecrets:
+      secrets:
+        refreshInterval: 5m
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              secrets.yaml: |-
+                wifi_ssid: "{{ .esphome_wifi_ssid }}"
+                wifi_password: "{{ .esphome_wifi_password }}"
+                wifi_fallback_password: "{{ .esphome_wifi_fallback_password }}"
+
+                api_encryption_key: "{{ .esphome_api_encryption_key }}"
+                ota_password: "{{ .esphome_ota_password }}"
+                web_password: "{{ .esphome_web_password }}"
+        dataFrom:
+          - extract:
+              key: esphome
+      deploykey:
+        refreshInterval: 5m
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        data:
+          - secretKey: id_ed25519
+            remoteRef:
+              key: esphome
+              property: github_deploy_key
     controllers:
       esphome:
         annotations:
-          secret.reloader.stakater.com/reload: esphome-secrets,esphome-deploykey
+          reloader.stakater.com/auto: "true"
         pod:
           annotations:
             k8s.v1.cni.cncf.io/networks: |
@@ -128,7 +158,7 @@ spec:
                 subPath: code-server
       secrets:
         type: secret
-        name: esphome-secrets
+        externalSecretRef: secrets
         globalMounts:
           - path: /config/secrets.yaml
             subPath: secrets.yaml
@@ -155,7 +185,7 @@ spec:
                 subPath: nonexistent
       deploy-key:
         type: secret
-        name: esphome-deploykey
+        externalSecretRef: deploykey
         defaultMode: 256
         advancedMounts:
           esphome:

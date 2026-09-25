@@ -10,6 +10,24 @@ spec:
     kind: OCIRepository
     name: lldap
   values:
+    externalSecrets:
+      lldap:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              LLDAP_JWT_SECRET: "{{ .LLDAP_JWT_SECRET }}"
+              LLDAP_KEY_SEED: "{{ .LLDAP_KEY_SEED }}"
+              LLDAP_LDAP_USER_PASS: "{{ .password }}"
+              LLDAP_LLDAP_USER_DN: "{{ .username }}"
+              LLDAP_LDAP_USER_EMAIL: "{{ .LLDAP_LDAP_USER_EMAIL }}"
+              LLDAP_SERVER_KEY_SEED: "{{ .LLDAP_SERVER_KEY_SEED }}"
+        dataFrom:
+          - extract:
+              key: lldap
     controllers:
       lldap:
         annotations:
@@ -26,8 +44,8 @@ spec:
               LLDAP_LDAP_PORT: &ldapPort 5389
               LLDAP_LDAP_BASE_DN: dc=home,dc=arpa
             envFrom:
-              - secretRef:
-                  name: lldap-secret
+              - externalSecretRef:
+                  identifier: lldap
             resources:
               requests:
                 cpu: 100m

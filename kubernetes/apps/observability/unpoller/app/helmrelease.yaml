@@ -10,6 +10,19 @@ spec:
     kind: OCIRepository
     name: unpoller
   values:
+    externalSecrets:
+      unpoller:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              UP_UNIFI_DEFAULT_API_KEY: "{{ .UNPOLLER_UNIFI_API_KEY }}"
+        dataFrom:
+          - extract:
+              key: unifi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -30,8 +43,8 @@ spec:
               UP_PROMETHEUS_HTTP_LISTEN: 0.0.0.0:80
               UP_INFLUXDB_DISABLE: true
             envFrom:
-              - secretRef:
-                  name: unpoller-secret
+              - externalSecretRef:
+                  identifier: unpoller
             probes:
               liveness: &probes
                 enabled: true

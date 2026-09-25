@@ -10,6 +10,18 @@ spec:
     kind: OCIRepository
     name: immich
   values:
+    externalSecrets:
+      immich-sync:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              API_KEY: "{{ .IMMICH__SYNC_API_KEY }}"
+        dataFrom:
+          - extract:
+              key: immich
     controllers:
       immich-sync:
         type: cronjob
@@ -32,8 +44,8 @@ spec:
               UNATTENDED: 1
               ALBUM_ORDER: asc
             envFrom:
-              - secretRef:
-                  name: immich-sync-secret
+              - externalSecretRef:
+                  identifier: immich-sync
             probes:
               liveness: &probes
                 enabled: false

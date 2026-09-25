@@ -10,6 +10,21 @@ spec:
     kind: OCIRepository
     name: homelab-nas-backup
   values:
+    externalSecrets:
+      homelab-nas-backup:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              STORAGE_TRUENAS_API_KEY: "{{ .STORAGE_TRUENAS_API_KEY }}"
+              STORAGE_HEALTHCHECKS_ID: "{{ .STORAGE_HEALTHCHECKS_ID }}"
+              STORAGE_REMOTE_TRUENAS_API_KEY: "{{ .STORAGE_REMOTE_TRUENAS_API_KEY }}"
+              STORAGE_REMOTE_HEALTHCHECKS_ID: "{{ .STORAGE_REMOTE_HEALTHCHECKS_ID }}"
+        dataFrom:
+          - extract:
+              key: truenas
     controllers:
       storage:
         type: cronjob
@@ -48,12 +63,12 @@ spec:
             env:
               API_KEY:
                 secretKeyRef:
-                  name: homelab-nas-backup-secret
+                  name: "{{ .Release.Name }}"
                   key: STORAGE_TRUENAS_API_KEY
               BACKUP_LOCATION: /mnt/nfs
               HEALTHCHECKS_ID:
                 secretKeyRef:
-                  name: homelab-nas-backup-secret
+                  name: "{{ .Release.Name }}"
                   key: STORAGE_HEALTHCHECKS_ID
               HOST: storage.feisar.ovh
     service:

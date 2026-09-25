@@ -10,6 +10,21 @@ spec:
     kind: OCIRepository
     name: bookorbit-database
   values:
+    externalSecrets:
+      bookorbit-database:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              POSTGRES_USER: "{{ .BOOKORBIT_POSTGRES_USERNAME }}"
+              POSTGRES_PASSWORD: "{{ .BOOKORBIT_POSTGRES_PASSWORD }}"
+              POSTGRES_DB: "{{ .BOOKORBIT_POSTGRES_DB_NAME }}"
+              DATABASE_URL: postgres://{{ .BOOKORBIT_POSTGRES_USERNAME}}:{{ .BOOKORBIT_POSTGRES_PASSWORD }}@bookorbit-database.default.svc.cluster.local.:5432/{{ .BOOKORBIT_POSTGRES_DB_NAME }}
+        dataFrom:
+          - extract:
+              key: bookorbit
     controllers:
       primary:
         type: statefulset
@@ -21,8 +36,8 @@ spec:
             env:
               PGDATA: /var/lib/postgresql/data/pgdata
             envFrom:
-              - secretRef:
-                  name: bookorbit-database-secret
+              - externalSecretRef:
+                  identifier: bookorbit-database
             resources:
               requests:
                 cpu: 500m

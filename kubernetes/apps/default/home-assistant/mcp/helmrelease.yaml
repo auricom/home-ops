@@ -10,6 +10,18 @@ spec:
     name: home-assistant-mcp
   interval: 1h
   values:
+    externalSecrets:
+      home-assistant-mcp:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              HOMEASSISTANT_TOKEN: "{{ .HASS_MCP_TOKEN }}"
+        dataFrom:
+          - extract:
+              key: home-assistant-mcp
     controllers:
       home-assistant-mcp:
         annotations:
@@ -30,8 +42,8 @@ spec:
               MCP_PORT: &port 80
               TZ: Europe/Paris
             envFrom:
-              - secretRef:
-                  name: "{{ .Release.Name }}-secret"
+              - externalSecretRef:
+                  identifier: home-assistant-mcp
             probes:
               liveness:
                 enabled: true

@@ -10,6 +10,31 @@ spec:
     kind: OCIRepository
     name: recyclarr
   values:
+    externalSecrets:
+      recyclarr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              PUSHOVER_URL: pover://{{ .PUSHOVER_USER_KEY }}@{{ .RECYCLARR_PUSHOVER_TOKEN }}
+              RADARR_API_KEY: "{{ .RADARR__API_KEY }}"
+              SONARR_API_KEY: "{{ .SONARR__API_KEY }}"
+        dataFrom:
+          - extract:
+              key: radarr
+              property: RADARR__API_KEY
+          - extract:
+              key: sonarr
+              property: SONARR__API_KEY
+          - extract:
+              key: recyclarr
+              property: RECYCLARR_PUSHOVER_TOKEN
+          - extract:
+              key: pushover
+              property: PUSHOVER_USER_KEY
     controllers:
       recyclarr:
         annotations:
@@ -22,8 +47,8 @@ spec:
             env:
               TZ: Europe/Paris
             envFrom:
-              - secretRef:
-                  name: recyclarr-secret
+              - externalSecretRef:
+                  identifier: recyclarr
             resources:
               requests:
                 cpu: 10m

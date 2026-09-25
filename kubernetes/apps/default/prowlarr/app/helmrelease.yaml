@@ -10,6 +10,22 @@ spec:
     kind: OCIRepository
     name: prowlarr
   values:
+    externalSecrets:
+      prowlarr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              PROWLARR__AUTH__APIKEY: "{{ .PROWLARR__API_KEY }}"
+              PUSHOVER_API_TOKEN: "{{ .PROWLARR_PUSHOVER_TOKEN }}"
+              PUSHOVER_USER_KEY: "{{ .PUSHOVER_USER_KEY }}"
+        dataFrom:
+          - extract:
+              key: pushover
+          - extract:
+              key: prowlarr
     controllers:
       prowlarr:
         annotations:
@@ -30,8 +46,8 @@ spec:
               PROWLARR__SERVER__PORT: &port 8080
               PROWLARR__UPDATE__BRANCH: develop
             envFrom:
-              - secretRef:
-                  name: prowlarr-secret
+              - externalSecretRef:
+                  identifier: prowlarr
             probes:
               liveness: &probes
                 enabled: true

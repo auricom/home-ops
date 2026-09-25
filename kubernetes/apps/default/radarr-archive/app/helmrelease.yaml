@@ -35,7 +35,7 @@ spec:
               PUSHOVER_PRIORITY: "0"
             envFrom:
               - secretRef:
-                  name: radarr-secret
+                  name: radarr
             probes:
               liveness: &probes
                 enabled: true

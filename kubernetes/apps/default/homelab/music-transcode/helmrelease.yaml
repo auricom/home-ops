@@ -10,6 +10,18 @@ spec:
     kind: OCIRepository
     name: homelab-music-transcode
   values:
+    externalSecrets:
+      homelab-music-transcode:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              HEALTHCHECKS_ID: "{{ .MUSIC_TRANSCODE_HEALTHCHECKS_ID }}"
+        dataFrom:
+          - extract:
+              key: homelab-nas
     controllers:
       music-transcode:
         type: cronjob
@@ -48,8 +60,8 @@ spec:
               TRANSCODE_OUTPUT_DIR: /mnt/music_transcoded
               TRANSCODE_FREAC_BIN: /app/freaccmd
             envFrom:
-              - secretRef:
-                  name: homelab-nas-music-transcode-secret
+              - externalSecretRef:
+                  identifier: homelab-music-transcode
     service:
       app:
         controller: *app

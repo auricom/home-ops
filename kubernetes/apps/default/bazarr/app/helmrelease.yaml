@@ -11,6 +11,20 @@ spec:
     kind: OCIRepository
     name: bazarr
   values:
+    externalSecrets:
+      bazarr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              # App
+              BAZARR__API_KEY: "{{ .BAZARR__API_KEY }}"
+        dataFrom:
+          - extract:
+              key: bazarr
     defaultPodOptions:
       securityContext:
         runAsUser: 568
@@ -29,8 +43,8 @@ spec:
             env:
               TZ: "Europe/Paris"
             envFrom:
-              - secretRef:
-                  name: bazarr-secret
+              - externalSecretRef:
+                  identifier: bazarr
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

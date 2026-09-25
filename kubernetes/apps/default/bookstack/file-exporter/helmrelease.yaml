@@ -11,6 +11,20 @@ spec:
     kind: OCIRepository
     name: bookstack-file-exporter
   values:
+    externalSecrets:
+      bookstack-file-exporter:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              BOOKSTACK_TOKEN_ID: "{{ .BOOKSTACK_TOKEN_ID }}"
+              BOOKSTACK_TOKEN_SECRET: "{{ .BOOKSTACK_TOKEN_SECRET }}"
+              APPRISE_URLS: "{{ .BOOKSTACK_APPRISE_URLS }}"
+        dataFrom:
+          - extract:
+              key: bookstack
     controllers:
       bookstack-file-exporter:
         type: cronjob
@@ -27,8 +41,8 @@ spec:
             env:
               LOG_LEVEL: info
             envFrom:
-              - secretRef:
-                  name: bookstack-file-exporter-secret
+              - externalSecretRef:
+                  identifier: bookstack-file-exporter
     service:
       app:
         controller: *app

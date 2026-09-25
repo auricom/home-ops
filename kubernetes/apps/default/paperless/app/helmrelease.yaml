@@ -10,6 +10,21 @@ spec:
     kind: OCIRepository
     name: paperless
   values:
+    externalSecrets:
+      paperless:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              PAPERLESS_ADMIN_USER: "{{ .username }}"
+              PAPERLESS_ADMIN_PASSWORD: "{{ .password }}"
+              PAPERLESS_SECRET_KEY: "{{ .PAPERLESS_SECRET_KEY }}"
+        dataFrom:
+          - extract:
+              key: paperless
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
@@ -43,8 +58,8 @@ spec:
               PAPERLESS_TIME_ZONE: Europe/Paris
               PAPERLESS_URL: https://paperless.xpander.ovh
             envFrom:
-              - secretRef:
-                  name: paperless-secret
+              - externalSecretRef:
+                  identifier: paperless
             resources:
               requests:
                 cpu: 25m

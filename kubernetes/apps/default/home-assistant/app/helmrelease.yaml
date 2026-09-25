@@ -10,6 +10,25 @@ spec:
     kind: OCIRepository
     name: home-assistant
   values:
+    externalSecrets:
+      home-assistant:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              HASS_SECRET_ELEVATION: "{{ .HASS_ELEVATION }}"
+              HASS_SECRET_LATITUDE: "{{ .HASS_LATITUDE }}"
+              HASS_SECRET_LONGITUDE: "{{ .HASS_LONGITUDE }}"
+              HASS_SECRET_URL: "https://home-assistant.{{ .SECRET_EXTERNAL_DOMAIN }}"
+              PROMETHEUS_TOKEN: "{{ .PROMETHEUS_TOKEN }}"
+        dataFrom:
+          - extract:
+              key: generic
+          - extract:
+              key: home-assistant
     defaultPodOptions:
       annotations:
         k8s.v1.cni.cncf.io/networks: |
@@ -53,8 +72,8 @@ spec:
               HASS_HTTP_TRUSTED_PROXY_2: 10.42.0.0/16
               HASS_HTTP_TRUSTED_PROXY_3: 10.43.0.0/16
             envFrom:
-              - secretRef:
-                  name: home-assistant-secret
+              - externalSecretRef:
+                  identifier: home-assistant
             probes:
               startup:
                 enabled: true

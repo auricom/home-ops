@@ -10,6 +10,15 @@ spec:
     kind: OCIRepository
     name: sabnzbd
   values:
+    externalSecrets:
+      sabnzbd:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        dataFrom:
+          - extract:
+              # SABNZBD__API_KEY, SABNZBD__NZB_KEY
+              key: sabnzbd
     defaultPodOptions:
       securityContext:
         runAsUser: 568
@@ -36,8 +45,8 @@ spec:
                 sabnzbd.default.svc.cluster.local,
                 sabnzbd.xpander.ovh
             envFrom:
-              - secretRef:
-                  name: sabnzbd-secret
+              - externalSecretRef:
+                  identifier: sabnzbd
             probes:
               liveness: &probes
                 enabled: true

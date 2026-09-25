@@ -10,6 +10,21 @@ spec:
     kind: OCIRepository
     name: cleanuparr
   values:
+    externalSecrets:
+      cleanuparr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              RADARR__INSTANCES__0__APIKEY: "{{ .RADARR__API_KEY }}"
+              SONARR__INSTANCES__0__APIKEY: "{{ .SONARR__API_KEY }}"
+        dataFrom:
+          - extract:
+              key: radarr
+          - extract:
+              key: sonarr
     controllers:
       cleanuparr:
         annotations:
@@ -33,8 +48,8 @@ spec:
               RADARR__INSTANCES__0__URL: http://radarr.default.svc.cluster.local:8080
               PORT: &port 9705
             envFrom:
-              - secretRef:
-                  name: cleanuparr-secret
+              - externalSecretRef:
+                  identifier: cleanuparr
             resources:
               requests:
                 cpu: 15m

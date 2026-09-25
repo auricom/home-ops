@@ -5,5 +5,4 @@ kind: Kustomization
 namespace: default
 resources:
   - ./ocirepository.yaml
-  # - ./externalsecret.yaml
   - ./helmrelease.yaml

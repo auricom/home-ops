@@ -22,7 +22,7 @@ spec:
       jellyfin:
         annotations:
           reloader.stakater.com/auto: "true"
-          secret.reloader.stakater.com/reload: authelia-secret
+          secret.reloader.stakater.com/reload: authelia
         containers:
           app:
             image:

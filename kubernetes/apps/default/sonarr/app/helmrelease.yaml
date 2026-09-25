@@ -11,6 +11,22 @@ spec:
     kind: OCIRepository
     name: sonarr
   values:
+    externalSecrets:
+      sonarr:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              SONARR__AUTH__APIKEY: "{{ .SONARR__API_KEY }}"
+              PUSHOVER_TOKEN: "{{ .SONARR_PUSHOVER_TOKEN }}"
+              PUSHOVER_USER_KEY: "{{ .PUSHOVER_USER_KEY }}"
+        dataFrom:
+          - extract:
+              key: pushover
+          - extract:
+              key: sonarr
     controllers:
       sonarr:
         annotations:
@@ -32,8 +48,8 @@ spec:
               SONARR__SERVER__PORT: &port 8080
               SONARR__UPDATE__BRANCH: develop
             envFrom:
-              - secretRef:
-                  name: sonarr-secret
+              - externalSecretRef:
+                  identifier: sonarr
             probes:
               liveness: &probes
                 enabled: true

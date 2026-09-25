@@ -10,6 +10,19 @@ spec:
     kind: OCIRepository
     name: mesh-organizer
   values:
+    externalSecrets:
+      mesh-organizer:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            engineVersion: v2
+            data:
+              LOCAL_ACCOUNT_PASSWORD: "{{.password}}"
+        dataFrom:
+          - extract:
+              key: mesh-organizer
     controllers:
       mesh-organizer:
         annotations:
@@ -23,8 +36,8 @@ spec:
               APP_CONFIG_PATH: /cfg/config.json
               SERVER_PORT: &port 3000
             envFrom:
-              - secretRef:
-                  name: mesh-organizer-secret
+              - externalSecretRef:
+                  identifier: mesh-organizer
             resources:
               requests:
                 cpu: 15m
