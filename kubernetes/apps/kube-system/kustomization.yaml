@@ -12,6 +12,7 @@ resources:
   - ./coredns/ks.yaml
   - ./descheduler/ks.yaml
   - ./generic-device-plugin/ks.yaml
+  - ./k8tz/ks.yaml
   - ./metrics-server/ks.yaml
   - ./multus/ks.yaml
   - ./reloader/ks.yaml

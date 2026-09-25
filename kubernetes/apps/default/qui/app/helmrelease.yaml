@@ -32,7 +32,6 @@ spec:
               repository: ghcr.io/autobrr/qui
               tag: v1.30.0@sha256:1172ca40283330445d61189263a65a31ba703770a230b9e2a913f6e57bc2dd23
             env:
-              TZ: "Europe/Paris"
               QUI__AUTH_DISABLED: true
               QUI__I_ACKNOWLEDGE_THIS_IS_A_BAD_IDEA: true
               QUI__AUTH_DISABLED_ALLOWED_CIDRS: 0.0.0.0/0

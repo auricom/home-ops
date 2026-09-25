@@ -21,7 +21,6 @@ spec:
               repository: ghcr.io/home-operations/radarr
               tag: 6.4.4.10685@sha256:be53998a2d39cfa3c3315b70c7509a6a1f2a10c3aee9337653efc9f4c970430e
             env:
-              TZ: "Europe/Paris"
               RADARR__APP__INSTANCENAME: Radarr-archive
               RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External

@@ -45,7 +45,6 @@ spec:
               DEBUG: "0"
               ALLOWED_HOSTS: "*"
               GUNICORN_MEDIA: "0"
-              TZ: Europe/Paris
               PUID: "1000"
               PGID: "1000"
               DB_ENGINE: django.db.backends.sqlite3

@@ -39,7 +39,6 @@ spec:
               repository: lscr.io/linuxserver/bookstack
               tag: 26.09.20260924
             env:
-              TZ: Europe/Paris
               PUID: "1000"
               PGID: "1000"
               APP_URL: "https://docs.xpander.ovh"
@@ -71,7 +70,6 @@ spec:
               repository: lscr.io/linuxserver/mariadb
               tag: 11.8.8
             env:
-              TZ: Europe/Paris
               PUID: "1000"
               PGID: "1000"
               MYSQL_USER: bookstack

@@ -44,7 +44,6 @@ spec:
               repository: ghcr.io/home-operations/lidarr
               tag: 3.1.6.5078@sha256:b4c60ae24ff264bcdfd8d5562982d99105c17b82c28a6986498f6fb215b7f42e
             env:
-              TZ: "Europe/Paris"
               LIDARR__APP__INSTANCENAME: Lidarr
               LIDARR__SERVER__PORT: &port 8080
               LIDARR__AUTH__METHOD: External

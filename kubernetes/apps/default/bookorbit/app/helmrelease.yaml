@@ -36,7 +36,6 @@ spec:
               repository: ghcr.io/bookorbit/bookorbit
               tag: 3.0.0@sha256:571ea47b036a8b371db9c54d54a3cea0fb96245f66c09584efac799afd339716
             env:
-              TZ: Europe/Paris
               NODE_ENV: production
               PORT: &port 3000
               APP_URL: https://bookorbit.xpander.ovh

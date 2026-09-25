@@ -25,7 +25,6 @@ spec:
               repository: ghcr.io/immich-app/immich-machine-learning
               tag: v3.2.2-openvino@sha256:4013ec28ccf6344d7ae24554743a116d7f61124b98858f5646a401d5c5df12e2
             env:
-              TZ: Europe/Paris
               MPLCONFIGDIR: /cache/matplotlib
             envFrom:
               - configMapRef:

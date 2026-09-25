@@ -20,7 +20,6 @@ spec:
               repository: gotson/komga
               tag: 1.27.1@sha256:9cf102f5fb78e2e020700c53eca757e4f4d4e347121b0a16380822760337cca9
             env:
-              TZ: "Europe/Paris"
               SERVER_PORT: &port 8080
             resources:
               requests:

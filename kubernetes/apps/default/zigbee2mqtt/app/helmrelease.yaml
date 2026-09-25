@@ -19,7 +19,6 @@ spec:
               tag: 2.14.1@sha256:fef0de769dcd04c27b3a6d277b61046eb96284bdd4198dcb1687c3a01b3020f3
               pullPolicy: IfNotPresent
             env:
-              TZ: "Europe/Paris"
               ZIGBEE2MQTT_DATA: /config
               ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
               ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: warning

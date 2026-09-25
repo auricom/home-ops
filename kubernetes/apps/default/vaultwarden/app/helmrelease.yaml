@@ -37,7 +37,6 @@ spec:
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments
               DOMAIN: "https://vaultwarden.xpander.ovh"
-              TZ: "Europe/Paris"
               SIGNUPS_ALLOWED: "false"
               WEBSOCKET_ENABLED: "true"
               WEBSOCKET_ADDRESS: 0.0.0.0

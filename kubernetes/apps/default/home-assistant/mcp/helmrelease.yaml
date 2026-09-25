@@ -40,7 +40,6 @@ spec:
               MCP_HEALTHZ: true
               MCP_HOST: 0.0.0.0
               MCP_PORT: &port 80
-              TZ: Europe/Paris
             envFrom:
               - externalSecretRef:
                   identifier: home-assistant-mcp

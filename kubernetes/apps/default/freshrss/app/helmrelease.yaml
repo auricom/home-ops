@@ -18,7 +18,6 @@ spec:
               repository: freshrss/freshrss
               tag: 1.30.0@sha256:258b8edfc8a76a61f60d2d6a14d8f8d12495d78abf38646a2137612dfa264a21
             env:
-              TZ: Europe/Paris
               PUID: 1000
               PGID: 1000
               CRON_MIN: 18,48

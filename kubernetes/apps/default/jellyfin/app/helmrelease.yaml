@@ -33,7 +33,6 @@ spec:
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
               JELLYFIN_PublishedServerUrl: &loadBalancerIP 192.168.69.110
-              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true

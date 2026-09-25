@@ -35,7 +35,6 @@ spec:
               repository: ghcr.io/cleanuparr/cleanuparr
               tag: 2.10.8@sha256:ec444338a67e429a20f6eef938e1ed771ce357ed4831765026096061a09bbbb7
             env:
-              TZ: "Europe/Paris"
               DOWNLOAD_CLIENT: disabled
               QUEUECLEANER__ENABLED: true
               QUEUECLEANER__IMPORT_FAILED_MAX_STRIKES: 3
