@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/bookorbit/bookorbit
-              tag: 3.0.0@sha256:571ea47b036a8b371db9c54d54a3cea0fb96245f66c09584efac799afd339716
+              tag: 3.1.0@sha256:78b6eac18306eb7eba0dbf6592ecdee01b15f24de9a941cb853db4a0232d7999
             env:
               NODE_ENV: production
               PORT: &port 3000
