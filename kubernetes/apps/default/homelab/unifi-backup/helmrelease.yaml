@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: homelab-unifi-backup
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: homelab-unifi-backup
+  values:
+    externalSecrets:
+      homelab-unifi-backup:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              HEALTHCHECKS_ID: "{{ .UNIFI_BACKUP_HEALTHCHECKS_ID }}"
+              UNIFI_API_KEY: "{{ .UNPOLLER_UNIFI_API_KEY }}"
+        dataFrom:
+          - extract:
+              key: unifi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+    controllers:
+      unifi-backup:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "@daily"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/auricom/toolbox
+              tag: rolling@sha256:bf1759627456ec1265191f7bfb811f0da9bf68f7fa156f040bb6f5bed74e7553
+            command:
+              - python
+              - /app/unifi_backup.py
+            env:
+              PYTHONDONTWRITEBYTECODE: "1"
+              UNIFI_DAYS: "0"
+              UNIFI_HOST: 192.168.30.1
+              UNIFI_KEEP: "90"
+              UNIFI_OUTDIR: /mnt/nfs
+              UNIFI_PORT: "443"
+              UNIFI_SITE: default
+              UNIFI_VERIFY_SSL: "false"
+            envFrom:
+              - externalSecretRef:
+                  identifier: homelab-unifi-backup
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+    service:
+      app:
+        controller: unifi-backup
+        enabled: false
+    persistence:
+      script:
+        type: configMap
+        name: homelab-unifi-backup-configmap
+        defaultMode: 0444 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /app/unifi_backup.py
+            subPath: unifi_backup.py
+            readOnly: true
+      nfs:
+        type: nfs
+        path: /mnt/vol1/apps/homelab_backups/unifi
+        server: 192.168.30.10
+        globalMounts:
+          - path: /mnt/nfs
