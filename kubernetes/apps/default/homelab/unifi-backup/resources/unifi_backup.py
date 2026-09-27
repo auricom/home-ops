@@ -100,7 +100,13 @@ class UniFiBackupClient:
             json={"cmd": "backup", "days": self.config.days},
             timeout=120,
         )
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as error:
+            details = response.text.strip()[:300] or "empty response"
+            raise RuntimeError(
+                f"UniFi backup request returned HTTP {response.status_code}: {details}"
+            ) from error
 
         try:
             payload = response.json()
