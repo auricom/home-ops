@@ -6,4 +6,5 @@
   roles:
     - { role: ntp_client, tags: [ntp_client] }
     - { role: unbound, tags: [unbound] }
+    - { role: adguard, tags: [adguard] }
     - { role: adguard_exporter, tags: [adguard_exporter] }

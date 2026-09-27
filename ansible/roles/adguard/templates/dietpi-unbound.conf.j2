@@ -1,0 +1,6 @@
+{% for u in adguard_domain_upstreams %}
+[/{{ u.domain }}/]{{ u.server }}
+{% endfor %}
+{% for u in adguard_default_upstreams %}
+{{ u }}
+{% endfor %}

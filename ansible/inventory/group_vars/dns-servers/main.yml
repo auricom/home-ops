@@ -1,3 +1,9 @@
 ---
 adguard_web_port: 8083
 keepalived_router_id: 53
+
+adguard_domain_upstreams:
+  - domain: "{{ internal_domain }}"
+    server: 192.168.16.1
+  - domain: xpander.ovh
+    server: 192.168.16.1

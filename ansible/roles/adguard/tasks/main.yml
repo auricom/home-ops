@@ -1,0 +1,15 @@
+---
+- name: main | template adguard upstreams file
+  ansible.builtin.template:
+    src: dietpi-unbound.conf.j2
+    dest: "{{ adguard_upstreams_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart adguardhome
+
+- name: main | ensure adguardhome is enabled and started
+  ansible.builtin.systemd:
+    name: "{{ adguard_service_name }}"
+    state: started
+    enabled: true

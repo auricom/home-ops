@@ -1,0 +1,10 @@
+---
+adguard_upstreams_path: /mnt/dietpi_userdata/adguardhome/dietpi-unbound.conf
+adguard_service_name: adguardhome
+
+# Per-domain upstreams rendered as [/domain/]server
+adguard_domain_upstreams: []
+
+# Default upstream (local unbound)
+adguard_default_upstreams:
+  - 127.0.0.1:5335
