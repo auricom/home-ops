@@ -24,7 +24,7 @@ spec:
             image:
               # https://hub.docker.com/r/caronc/apprise
               repository: docker.io/caronc/apprise
-              tag: v1.5.4@sha256:c5ea17408c10fd84c8fdb05a421114a1a677b16343c274bf9b1a55701b530829
+              tag: v2.0.0@sha256:cc5ef662ad2a4a25958f1eddbf87f2e95f9bf637ea481f1adcec18312ad262f5
             env:
               APPRISE_WORKER_COUNT: 1
             probes:
