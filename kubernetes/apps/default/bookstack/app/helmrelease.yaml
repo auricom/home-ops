@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: lscr.io/linuxserver/bookstack
-              tag: 26.09.20260924
+              tag: 26.09.20260929
             env:
               PUID: "1000"
               PGID: "1000"
