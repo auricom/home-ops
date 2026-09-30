@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: ghcr.io/unpoller/unpoller
-              tag: v5.2.11@sha256:b5a4316b0471cc30ba0f5af989c7e2487eb755000a5495aec2dfc3e1cdbd6b8f
+              tag: v5.4.0@sha256:12fe74186f98a9bd52d69272b899f7ff273dcddb8e754e8c50b40aaf851215a5
             env:
               UP_UNIFI_DEFAULT_URL: https://192.168.30.1
               UP_PROMETHEUS_HTTP_LISTEN: 0.0.0.0:80
