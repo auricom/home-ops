@@ -21,7 +21,7 @@ spec:
           app:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v3.2.4@sha256:d317916b28090c33eb36b308464ea391f8b7df1d850fcfea227a39ec879718c2
+              tag: v3.3.0@sha256:be56bc12c17a84617a979ad1eab1d9105bbec1955ffa7da09b3f9cf79d3bd09d
             env:
               IMMICH_WORKERS_INCLUDE: api
               IMMICH_METRICS_INCLUDE: all
