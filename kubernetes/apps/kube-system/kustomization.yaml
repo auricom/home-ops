@@ -11,6 +11,7 @@ resources:
   - ./cilium/ks.yaml
   - ./coredns/ks.yaml
   - ./descheduler/ks.yaml
+  - ./etcd/ks.yaml
   - ./generic-device-plugin/ks.yaml
   - ./k8tz/ks.yaml
   - ./metrics-server/ks.yaml
