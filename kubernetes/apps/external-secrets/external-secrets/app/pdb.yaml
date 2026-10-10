@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/policy/poddisruptionbudget_v1.json
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
