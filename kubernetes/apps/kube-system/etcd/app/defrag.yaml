@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: etcd-defrag
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: etcd
+  interval: 1h
+  values:
+    defaultPodOptions:
+      # etcd listens on the node loopback and its client certs are root-only on the host
+      hostNetwork: true
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    controllers:
+      etcd-defrag:
+        type: cronjob
+        cronjob:
+          schedule: "0 3 * * 0"
+          timeZone: Europe/Paris
+          concurrencyPolicy: Forbid
+          failedJobsHistory: 1
+          successfulJobsHistory: 1
+        containers:
+          app:
+            image:
+              repository: ghcr.io/ahrtr/etcd-defrag
+              tag: v0.45.0@sha256:84df8071f671917857996c4afdf494b55b26c0f7ae117c9f9720f9ff4b758b49
+            args:
+              - --endpoints=https://127.0.0.1:2379
+              - --cluster
+              - --cacert=/certs/ca.crt
+              - --cert=/certs/server.crt
+              - --key=/certs/server.key
+              - --defrag-rule=dbQuotaUsage > 0.5 || dbSizeFree > 100*1024*1024
+              - --move-leader
+              - --wait-between-defrags=30s
+              # Talos default quota-backend-bytes (2GiB)
+              - --etcd-storage-quota-bytes=2147483648
+              - --auto-disalarm
+              - --disalarm-threshold=0.8
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              privileged: true
+    persistence:
+      certs:
+        type: hostPath
+        hostPath: /system/secrets/etcd
+        globalMounts:
+          - path: /certs
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
