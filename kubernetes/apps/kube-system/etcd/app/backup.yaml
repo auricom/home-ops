@@ -10,6 +10,20 @@ spec:
     name: etcd
   interval: 1h
   values:
+    externalSecrets:
+      s3:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              AWS_ACCESS_KEY_ID: "{{ .ACCESS_KEY }}"
+              AWS_SECRET_ACCESS_KEY: "{{ .SECRET_KEY }}"
+              AGE_X25519_PUBLIC_KEY: "{{ .AGE_PUBLIC_KEY }}"
+        dataFrom:
+          - extract:
+              key: etcd-backup
     defaultPodOptions:
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""
