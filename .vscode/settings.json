@@ -1,5 +1,0 @@
-{
-    "yaml.schemas": {
-        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": "file:///var/home/claude/repositories/auricom/home-ops/ansible/roles/storage/tasks/quadlets/traefik.yml"
-    }
-}

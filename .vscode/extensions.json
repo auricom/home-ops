@@ -1,6 +1,0 @@
-{
-    "recommendations": [
-        "signageos.signageos-vscode-sops",
-        "redhat.vscode-yaml"
-    ]
-}
