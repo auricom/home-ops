@@ -2,13 +2,12 @@
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/auricom/home-ops/main/docs/src/assets/logo.png" align="center" width="144px" height="144px"/>
+<img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Kubernetes_logo_without_workmark.svg/3840px-Kubernetes_logo_without_workmark.svg.png" align="center" width="144px" height="144px"/>
 
 ## My home Kubernetes cluster :sailboat:
 
 ... managed with Flux and Renovate :robot:
 </div>
-
 
 <div align="center">
 
