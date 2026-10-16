@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/cleanuparr/cleanuparr
-              tag: 2.10.9@sha256:cfada3e5721451403a878ef67afb317692bb3afe277328b28ce4470bfba915d0
+              tag: 2.10.11@sha256:c51af6957780ad2719e97a2131fe668f61da28e43363719c7b557577fc39ebaf
             env:
               DOWNLOAD_CLIENT: disabled
               QUEUECLEANER__ENABLED: true
