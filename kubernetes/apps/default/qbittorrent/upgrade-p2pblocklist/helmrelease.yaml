@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/toolbox
-              tag: rolling@sha256:ca88e47c6cc8385fa4cbcbdd8b1cdecb4dc58b2a7ea9ef2da254d846928fe916
+              tag: rolling@sha256:4c324b0c7db4d55babea5e97d17a50f4ba4860ea6967178cf22f0d07c32ce811
             command:
               - /bin/bash
               - -c
