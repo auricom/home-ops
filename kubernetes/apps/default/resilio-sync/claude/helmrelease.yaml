@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/resilio-sync
-              tag: 3.1.2@sha256:f52fdaa1886728170da017e0ffa8d0f53ca497be5abb307a84cfda6e27ff52e5
+              tag: 3.1.2@sha256:7ba91e0dbcb37f0a51cf134908c889dd927cee071b6e4d0f5d5e865a2e27d902
             resources:
               requests:
                 cpu: 250m
