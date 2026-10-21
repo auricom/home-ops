@@ -509,10 +509,10 @@ checksum = "sha256:50efaf01a08c520b4bbe499c09a8c5a5c370002c419c0d9da2c6815d3066a
 url = "https://nodejs.org/dist/v26.12.0/node-v26.12.0-win-x64.zip"
 
 [[tools.oxfmt]]
-version = "0.73.0"
-aube = { path = "locks/oxfmt/0.73.0", digest = "sha256:e42eeebedd060ec6393c40caa35362b541991453b9aab2de3d33d41a0c245a62" }
+version = "0.74.0"
+aube = { path = "locks/oxfmt/0.74.0", digest = "sha256:b7977a181c0e11736ab44f83b24a4b862754204c253477e29d1758b0f898aad7" }
 backend = "npm:oxfmt"
-specifiers = ["0.73.0"]
+specifiers = ["0.74.0"]
 
 [[tools.pipx]]
 version = "1.18.4"
@@ -669,44 +669,44 @@ url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/639313211"
 provenance = "github-attestations"
 
 [[tools.vals]]
-version = "0.47.0"
+version = "0.50.0"
 backend = "aqua:helmfile/vals"
-specifiers = ["0.47.0"]
+specifiers = ["0.50.0"]
 
 [tools.vals."platforms.linux-arm64"]
-checksum = "sha256:835f3d5d438ab92ce7929498b6fe0543d1972efde39cfd956b1ecda3dc6adff7"
-url = "https://github.com/helmfile/vals/releases/download/v0.47.0/vals_0.47.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/578292727"
+checksum = "sha256:1e7c4d2b187391c7ef33be69c548cc6624152e75816c9d458e52a462e409542f"
+url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121358"
 
 [tools.vals."platforms.linux-arm64-musl"]
-checksum = "sha256:835f3d5d438ab92ce7929498b6fe0543d1972efde39cfd956b1ecda3dc6adff7"
-url = "https://github.com/helmfile/vals/releases/download/v0.47.0/vals_0.47.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/578292727"
+checksum = "sha256:1e7c4d2b187391c7ef33be69c548cc6624152e75816c9d458e52a462e409542f"
+url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121358"
 
 [tools.vals."platforms.linux-x64"]
-checksum = "sha256:b327e52811c0c84c5adad26bf2536491e07fc75018a84a66109e1e5325a3d833"
-url = "https://github.com/helmfile/vals/releases/download/v0.47.0/vals_0.47.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/578292795"
+checksum = "sha256:4cb1664b1e0aa49481cb05fabe2c52d4944dcaab31c4805924b668ae9f54c379"
+url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121543"
 
 [tools.vals."platforms.linux-x64-musl"]
-checksum = "sha256:b327e52811c0c84c5adad26bf2536491e07fc75018a84a66109e1e5325a3d833"
-url = "https://github.com/helmfile/vals/releases/download/v0.47.0/vals_0.47.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/578292795"
+checksum = "sha256:4cb1664b1e0aa49481cb05fabe2c52d4944dcaab31c4805924b668ae9f54c379"
+url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121543"
 
 [tools.vals."platforms.macos-arm64"]
-checksum = "sha256:a76255090319c61e701d32633d4d89ccc7891f1e4bd3c1c8fa6bc38184df3fd4"
-url = "https://github.com/helmfile/vals/releases/download/v0.47.0/vals_0.47.0_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/578292723"
+checksum = "sha256:8f960625cc7f96d7055d02882d5d3b22c5ba31b8e2b31dcd948eb79eb4e105c5"
+url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121360"
 
 [tools.vals."platforms.macos-x64"]
-checksum = "sha256:cd4bccad994fe37afed3ad2150378e713a10122421b95bcd709c2f6d3f9d0c3c"
-url = "https://github.com/helmfile/vals/releases/download/v0.47.0/vals_0.47.0_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/578292724"
+checksum = "sha256:3c465db2be2c3800d1c6656316b29a4ccbbbb440f340972761cafae4e1fb746d"
+url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121355"
 
 [tools.vals."platforms.windows-x64"]
-checksum = "sha256:bdb7e5e08d73637ccb57083f42961b4385e4a3270891f812dc53f8d1807847c8"
-url = "https://github.com/helmfile/vals/releases/download/v0.47.0/vals_0.47.0_windows_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/578292791"
+checksum = "sha256:61c406f205eb5ea2668de554a8be857d1178f2c4f34b6033b62e9d69070ead2a"
+url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_windows_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121526"
 
 [[tools.yq]]
 version = "4.54.1"
