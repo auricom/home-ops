@@ -13,7 +13,7 @@ postinstall = "lefthook install"
 actionlint = "1.7.12"
 flux2 = "2.9.6"
 "github:home-operations/flate" = "0.6.5"
-"github:mitsuhiko/minijinja" = "3.0.2"
+"github:mitsuhiko/minijinja" = "3.0.3"
 helm = "4.3.1"
 helmfile = { version = "1.8.2", workflow = "releaser.yaml" }
 jq = "1.8.2"
