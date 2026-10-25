@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/music-transcode
-              tag: rolling@sha256:ab7de57fa64107d2366c1f8cadcd330b11b21281404ffa752327ed9e91fd526b
+              tag: rolling@sha256:6006d5fc8e3804418e5fda83032073257cd7ca1babac544b7e732a72046e71ac
             command:
               - /bin/bash
               - -c
