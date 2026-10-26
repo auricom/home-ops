@@ -41,7 +41,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/toolbox
-              tag: rolling@sha256:fec7b4bf5c3a070591627b6e574beccac3b263bc7142ebb4e37236b42bda8c0d
+              tag: rolling@sha256:1dcb8e5203f06136ee969b7e5178782b14c2a1140a187e6540d6c605ecbd85e5
             command:
               - python
               - /app/unifi_backup.py
