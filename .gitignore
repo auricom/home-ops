@@ -1,3 +1,4 @@
 .envrc
 kubernetes/kubeconfig
 talos/talosconfig
+.ansible
