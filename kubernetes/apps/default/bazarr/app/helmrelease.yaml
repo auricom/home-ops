@@ -20,16 +20,16 @@ spec:
           template:
             engineVersion: v2
             data:
-              # App
               BAZARR__API_KEY: "{{ .BAZARR__API_KEY }}"
         dataFrom:
           - extract:
               key: bazarr
     defaultPodOptions:
       securityContext:
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
     controllers:
       bazarr:
@@ -40,6 +40,8 @@ spec:
             image:
               repository: ghcr.io/home-operations/bazarr
               tag: 1.6.2@sha256:b8434a7339ebd9c2bfe4464c28db79944e0f52f47da85345fc7e0563c19f83ac
+            env:
+              BAZARR__PORT: &port 8080
             envFrom:
               - externalSecretRef:
                   identifier: bazarr
@@ -53,29 +55,20 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /ping
-                    port: &port 6767
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                    path: /api/system/ping
+                    port: *port
+                  timeoutSeconds: 5
               readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
             resources:
               requests:
-                cpu: 23m
+                cpu: 50m
                 memory: 300Mi
               limits:
-                memory: 500Mi
-          subcleaner:
-            image:
-              repository: registry.k8s.io/git-sync/git-sync
-              tag: v4.8.0@sha256:a20644562fba94773e594885cb001aadb5a3172175f13ac1215e5b2033c9200e
-              pullPolicy: IfNotPresent
-            args:
-              - --repo=https://github.com/KBlixt/subcleaner
-              - --branch=master
-              - --wait=86400 # 1 day
-              - --root=/add-ons
+                memory: 4Gi
     service:
       app:
         controller: *app
@@ -99,11 +92,6 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config
-      add-ons:
-        enabled: true
-        type: emptyDir
-        globalMounts:
-          - path: /add-ons
       video:
         enabled: true
         type: nfs
@@ -111,10 +99,14 @@ spec:
         path: /mnt/vol1/video
         globalMounts:
           - path: /mnt/storage/video
-      scripts:
-        enabled: true
-        type: configMap
-        name: bazarr-scripts # overriden by kustomizeconfig
-        defaultMode: 0775 # trunk-ignore(yamllint/octal-values)
-        globalMounts:
-          - path: /scripts
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /config/cache
+                subPath: cache
+              - path: /config/log
+                subPath: log
+              - path: /tmp
+                subPath: tmp
