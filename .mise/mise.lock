@@ -509,10 +509,10 @@ checksum = "sha256:b3efd5c70cba3308ed46e7e699a9b8aac075bbc6b027fcb39c84c31acc25e
 url = "https://nodejs.org/dist/v26.12.1/node-v26.12.1-win-x64.zip"
 
 [[tools.oxfmt]]
-version = "0.74.0"
-aube = { path = "locks/oxfmt/0.74.0", digest = "sha256:b7977a181c0e11736ab44f83b24a4b862754204c253477e29d1758b0f898aad7" }
+version = "0.75.0"
+aube = { path = "locks/oxfmt/0.75.0", digest = "sha256:1d4f470a5dbba272218132db6ff9ba1911075d29dcd3253a0e02b4a5037a8a23" }
 backend = "npm:oxfmt"
-specifiers = ["0.74.0"]
+specifiers = ["0.75.0"]
 
 [[tools.pipx]]
 version = "1.18.4"
