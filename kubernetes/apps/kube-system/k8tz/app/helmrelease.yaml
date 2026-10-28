@@ -27,3 +27,15 @@ spec:
         memory: 32Mi
       limits:
         memory: 128Mi
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              version: v1
+              kind: Namespace
+            patch: |-
+              $patch: delete
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: not-used
