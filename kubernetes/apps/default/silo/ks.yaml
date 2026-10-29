@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app silo
+spec:
+  components:
+    - ../../../../components/kopiur/backup
+  interval: 1h
+  path: "./kubernetes/apps/default/silo/app"
+  postBuild:
+    substitute:
+      APP: *app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app silo-database
+spec:
+  components:
+    - ../../../../components/kopiur/backup
+  interval: 1h
+  path: ./kubernetes/apps/default/silo/database
+  postBuild:
+    substitute:
+      APP: *app
+      KOPIUR_PUID: "999"
+      KOPIUR_PGID: "999"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false

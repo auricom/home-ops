@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app silo-database
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: silo-database
+  values:
+    externalSecrets:
+      silo-database:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              POSTGRES_USER: silo
+              POSTGRES_PASSWORD: "{{ .SILO_POSTGRES_PASS }}"
+              POSTGRES_DB: silo
+        dataFrom:
+          - extract:
+              key: silo
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+    controllers:
+      primary:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          postgresql:
+            image:
+              repository: pgvector/pgvector
+              tag: pg18@sha256:2358fcba361ed2233a5ed81b5fe4ca779ccb304120ce531a3bf51c0ed7e2bc11
+            env:
+              PGDATA: /var/lib/postgresql/data/pgdata
+            envFrom:
+              - externalSecretRef:
+                  identifier: silo-database
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [pg_isready, -h, "127.0.0.1", -U, silo, -d, silo]
+                  timeoutSeconds: 5
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [pg_isready, -h, "127.0.0.1", -U, silo, -d, silo]
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 500m
+                memory: 512Mi
+              limits:
+                cpu: 750m
+                memory: 768Mi
+        initContainers:
+          init-postgres-permissions:
+            image:
+              repository: alpine
+              tag: 3.24@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
+            command:
+              - /bin/sh
+              - -ec
+              - |
+                chown -R 999:999 "$PGDATA"
+                chmod 700 "$PGDATA"
+            env:
+              PGDATA: /var/lib/postgresql/data
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+    service:
+      primary:
+        controller: primary
+        ports:
+          postgresql:
+            port: 5432
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /var/lib/postgresql/data

@@ -1,0 +1,160 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app silo
+spec:
+  interval: 1h
+  timeout: 30m
+  chartRef:
+    kind: OCIRepository
+    name: silo
+  dependsOn:
+    - name: silo-database
+  values:
+    externalSecrets:
+      silo:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              SECRET_KEY: "{{ .SILO_SECRET_KEY }}"
+              DATABASE_URL: 'postgres://silo:{{ .SILO_POSTGRES_PASS | urlquery | replace "+" "%20" }}@silo-database.default.svc.cluster.local.:5432/silo'
+        dataFrom:
+          - extract:
+              key: silo
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [44, 109]
+        seccompProfile: { type: RuntimeDefault }
+    controllers:
+      silo:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/silo-server/silo-server
+              tag: latest@sha256:617451cd29910b60df720e2e8d8be0edaba23ac6b2befbc6f54348653c540eb3
+            env:
+              MODE: integrated
+              PORT: &port 8080
+              JF_PORT: &jfPort 8096
+              HOME: /tmp
+              TZ: Europe/Paris
+              SILO_PLUGIN_CACHE_DIR: /tmp/silo-plugins
+              SILO_TRUSTED_PROXIES: 10.42.0.0/16
+            envFrom:
+              - externalSecretRef:
+                  identifier: silo
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/health
+                    port: *port
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/ready
+                    port: *port
+                  timeoutSeconds: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/health
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 150
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ALL] }
+            resources:
+              requests:
+                cpu: 100m
+                memory: 2Gi
+              limits:
+                amd.com/gpu: 1
+                memory: 6Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+          jellyfin:
+            port: *jfPort
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.xpander.ovh"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+            timeouts:
+              backendRequest: 3600s
+      jellyfin:
+        hostnames: ["{{ .Release.Name }}-jf.xpander.ovh"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: jellyfin
+            timeouts:
+              backendRequest: 3600s
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /var/lib/silo
+      video:
+        type: nfs
+        server: 192.168.30.10
+        path: /mnt/vol1/video
+        globalMounts:
+          - path: /mnt/storage/video
+            readOnly: true
+      music:
+        type: nfs
+        server: 192.168.30.10
+        path: /mnt/vol1/music
+        globalMounts:
+          - path: /mnt/storage/music
+            readOnly: true
+      photo:
+        type: nfs
+        server: 192.168.30.10
+        path: /mnt/vol1/photo
+        globalMounts:
+          - path: /mnt/storage/photo
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

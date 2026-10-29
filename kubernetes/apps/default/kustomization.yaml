@@ -50,6 +50,7 @@ resources:
   - ./sabnzbd/ks.yaml
   - ./seerr/ks.yaml
   - ./shelfmark/ks.yaml
+  - ./silo/ks.yaml
   - ./sonarr/ks.yaml
   - ./spoolman/ks.yaml
   - ./smtp-relay/ks.yaml
