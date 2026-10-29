@@ -107,7 +107,7 @@ spec:
       app:
         hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
-          - name: envoy-internal
+          - name: envoy-external
             namespace: network
             sectionName: https
         rules:
