@@ -11,25 +11,33 @@ spec:
     name: redlib
   values:
     defaultPodOptions:
-      enableServiceLinks: false
-      # securityContext:
-      #   runAsUser: 65534
-      #   runAsGroup: 65534
-      #   fsGroup: 65534
-      #   fsGroupChangePolicy: OnRootMismatch
-      #   runAsNonRoot: true
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
     controllers:
       redlib:
-        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/auricom/redlib
-              tag: rolling@sha256:160b72afc9f1b6abf884bbb0f822518dc9db61c888e99de711ddecbf6bd1abc8
-              # repository: git.ptr.moe/baalajimaestro/redlib
-              # tag: latest@sha256:43edfc71d7e3c91c7fad617881dc7c279c382981aefdf466906308a859651886
-            # env:
-            #   REDLIB_ARTI_PATH: /tmp/arti
+              repository: quay.io/redlib/redlib
+              tag: latest@sha256:37f624d87ce6cdd90d945af3688fdf0c195a0251d3b5ba62047792e8be2390df
+            env:
+              REDLIB_ARTI_PATH: /tmp/arti
+              REDLIB_ROBOTS_DISABLE_INDEXING: on
+              REDLIB_ENABLE_RSS: on
+              REDLIB_DEFAULT_THEME: "dracula"
+              REDLIB_DEFAULT_WIDE: on
+              REDLIB_DEFAULT_USE_HLS: on
+              REDLIB_DEFAULT_HIDE_HLS_NOTIFICATION: on
+            resources:
+              requests:
+                cpu: 5m
+                memory: 50Mi
+              limits:
+                memory: 250Mi
             probes:
               liveness: &probes
                 enabled: true
@@ -45,10 +53,12 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
-            resources:
-              requests:
-                cpu: 50m
-                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
     service:
       app:
         controller: *app
@@ -69,9 +79,8 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
-
-    # persistence:
-    #   tmpfs:
-    #     type: emptyDir
-    #     globalMounts:
-    #       - path: /tmp/arti
+    persistence:
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp/arti
