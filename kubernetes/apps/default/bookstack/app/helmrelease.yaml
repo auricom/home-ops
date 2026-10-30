@@ -41,7 +41,7 @@ spec:
             env:
               PUID: "1000"
               PGID: "1000"
-              APP_URL: "https://docs.xpander.ovh"
+              APP_URL: "https://bookstack.xpander.ovh"
               QUEUE_CONNECTION: database
             envFrom:
               - externalSecretRef:
