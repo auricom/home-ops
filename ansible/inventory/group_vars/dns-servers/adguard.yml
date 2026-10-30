@@ -1,0 +1,214 @@
+---
+# Authoritative shared AdGuard Home configuration (schema 34).
+# Password hashes are supplied by dns.sops.yml.
+adguard_config:
+  http:
+    pprof:
+      port: 6060
+      enabled: false
+    doh:
+      routes:
+        - GET /dns-query
+        - POST /dns-query
+        - GET /dns-query/{ClientID}
+        - POST /dns-query/{ClientID}
+      insecure_enabled: false
+    address: 0.0.0.0:8083
+    session_ttl: 30d
+  auth_attempts: 5
+  block_auth_min: 15
+  http_proxy: ""
+  language: ""
+  theme: auto
+  dns:
+    bind_hosts:
+      - 0.0.0.0
+    port: 53
+    anonymize_client_ip: false
+    ratelimit_subnet_len_ipv4: 24
+    ratelimit_subnet_len_ipv6: 56
+    ratelimit_whitelist: []
+    refuse_any: true
+    upstream_dns:
+      - https://dns10.quad9.net/dns-query
+    upstream_dns_file: "{{ adguard_upstreams_path }}"
+    bootstrap_dns:
+      - 127.0.0.1:53
+    fallback_dns: []
+    upstream_mode: parallel
+    fastest_timeout: 1s
+    allowed_clients:
+      - 192.168.16.0/21
+      - 192.168.30.0/23
+      - 10.10.0.1/24
+    disallowed_clients: []
+    blocked_hosts:
+      - version.bind
+      - id.server
+      - hostname.bind
+    trusted_proxies:
+      - 127.0.0.0/8
+      - ::1/128
+    cache_enabled: false
+    cache_size: 33554432
+    cache_ttl_min: 2400
+    cache_ttl_max: 86400
+    cache_optimistic: true
+    cache_optimistic_answer_ttl: 30s
+    cache_optimistic_max_age: 12h
+    bogus_nxdomain: []
+    aaaa_disabled: false
+    edns_client_subnet:
+      custom_ip: ""
+      enabled: false
+      use_custom: false
+    max_goroutines: 300
+    handle_ddr: true
+    ipset: []
+    ipset_file: ""
+    bootstrap_prefer_ipv6: false
+    upstream_timeout: 10s
+    private_networks: []
+    use_private_ptr_resolvers: true
+    local_ptr_upstreams: []
+    use_dns64: false
+    dns64_prefixes: []
+    serve_http3: false
+    use_http3_upstreams: false
+    serve_plain_dns: true
+    hostsfile_enabled: true
+    pending_requests:
+      enabled: true
+    ratelimit: 100
+    enable_dnssec: true
+  tls:
+    enabled: false
+    server_name: ""
+    force_https: false
+    port_https: 443
+    port_dns_over_tls: 853
+    port_dns_over_quic: 784
+    port_dnscrypt: 0
+    dnscrypt_config_file: ""
+    certificate_chain: ""
+    private_key: ""
+    certificate_path: ""
+    private_key_path: ""
+    strict_sni_check: false
+  querylog:
+    dir_path: ""
+    ignored: []
+    interval: 7d
+    size_memory: 1000
+    enabled: true
+    ignored_enabled: false
+    file_enabled: true
+  statistics:
+    dir_path: ""
+    ignored: []
+    interval: 1d
+    enabled: true
+    ignored_enabled: false
+  whitelist_filters: []
+  user_rules:
+    - "||xpander.ovh^$dnstype=HTTPS,dnsrewrite=NOERROR;;"
+    - "||xpander.ovh^$dnstype=AAAA,dnsrewrite=NOERROR;;"
+  dhcp:
+    enabled: false
+    interface_name: ""
+    local_domain_name: lan
+    dhcpv4:
+      gateway_ip: ""
+      subnet_mask: ""
+      range_start: ""
+      range_end: ""
+      lease_duration: 86400
+      icmp_timeout_msec: 1000
+      options: []
+    dhcpv6:
+      range_start: ""
+      lease_duration: 86400
+      ra_slaac_only: false
+      ra_allow_slaac: false
+  filtering:
+    blocking_ipv4: ""
+    blocking_ipv6: ""
+    blocked_services:
+      schedule:
+        time_zone: Local
+      ids: []
+    protection_disabled_until: null
+    safe_search:
+      enabled: false
+      bing: true
+      duckduckgo: true
+      ecosia: true
+      google: true
+      pixabay: true
+      yandex: true
+      youtube: true
+    blocking_mode: default
+    parental_block_host: family-block.dns.adguard.com
+    safebrowsing_block_host: standard-block.dns.adguard.com
+    safe_fs_patterns:
+      - /mnt/dietpi_userdata/adguardhome/data/userfilters/*
+    max_http_size: 256MB
+    safebrowsing_cache_size: 1048576
+    safesearch_cache_size: 1048576
+    parental_cache_size: 1048576
+    cache_time: 30
+    filters_update_interval: 24
+    blocked_response_ttl: 10
+    filtering_enabled: true
+    rewrites_enabled: true
+    parental_enabled: false
+    safebrowsing_enabled: false
+    protection_enabled: true
+    rewrites:
+      - domain: k8s.internal
+        answer: 192.168.69.120
+        enabled: true
+      - domain: k8s-0
+        answer: 192.168.30.20
+        enabled: true
+      - domain: k8s-1
+        answer: 192.168.30.21
+        enabled: true
+      - domain: k8s-2
+        answer: 192.168.30.22
+        enabled: true
+  clients:
+    runtime_sources:
+      whois: true
+      arp: true
+      rdns: true
+      dhcp: true
+      hosts: true
+    persistent: []
+  log:
+    enabled: true
+    file: ""
+    max_backups: 0
+    max_size: 100
+    max_age: 3
+    compress: false
+    local_time: false
+    verbose: false
+  os:
+    group: ""
+    user: ""
+    rlimit_nofile: 0
+  schema_version: 34
+  filters:
+    - enabled: false
+      url: https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
+      name: AdGuard DNS filter
+      id: 1
+    - enabled: true
+      url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_48.txt
+      name: HaGeZi's Pro Blocklist
+      id: 1790190796
+    - enabled: true
+      url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_44.txt
+      name: HaGeZi's Threat Intelligence Feeds
+      id: 1790190797
