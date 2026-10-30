@@ -1,12 +1,54 @@
 ---
-- name: main | template adguard upstreams file
-  ansible.builtin.template:
-    src: dietpi-unbound.conf.j2
-    dest: "{{ adguard_upstreams_path }}"
-    owner: root
-    group: root
-    mode: "0644"
-  notify: restart adguardhome
+- name: main | assemble authoritative configuration
+  ansible.builtin.set_fact:
+    adguard_desired_config: >-
+      {{ adguard_config | combine(adguard_host_config, recursive=true)
+         | combine({'users': adguard_users_by_host[inventory_hostname]}) }}
+    adguard_desired_upstreams: "{{ lookup('ansible.builtin.template', 'dietpi-unbound.conf.j2') }}"
+  no_log: true
+
+- name: main | require complete authenticated configuration
+  ansible.builtin.assert:
+    that:
+      - adguard_desired_config.users | length > 0
+      - adguard_desired_config.users | selectattr('password', 'equalto', '') | list | length == 0
+      - adguard_desired_config.dns.ratelimit is defined
+      - adguard_desired_config.dns.enable_dnssec is defined
+      - adguard_desired_config.filters is defined
+      - adguard_desired_config.filtering.rewrites is defined
+    quiet: true
+  no_log: true
+
+- name: main | read current configuration
+  ansible.builtin.slurp:
+    src: "{{ adguard_config_path }}"
+  register: adguard_current_file
+  no_log: true
+
+- name: main | read current upstreams
+  ansible.builtin.slurp:
+    src: "{{ adguard_upstreams_path }}"
+  register: adguard_current_upstreams
+  no_log: true
+
+- name: main | compare effective configuration
+  ansible.builtin.set_fact:
+    adguard_config_changed: >-
+      {{ (adguard_current_file.content | b64decode | from_yaml | adguard_normalize)
+         != (adguard_desired_config | adguard_normalize)
+         or (adguard_current_upstreams.content | b64decode | trim) != (adguard_desired_upstreams | trim) }}
+  no_log: true
+
+- name: main | report pending configuration change
+  ansible.builtin.debug:
+    msg: "AdGuard configuration {{ 'requires deployment' if adguard_config_changed else 'matches Git' }}."
+  changed_when: adguard_config_changed
+
+- name: main | deploy changed configuration
+  ansible.builtin.include_tasks: deploy.yml
+  when:
+    - adguard_config_changed
+    - not ansible_check_mode
 
 - name: main | ensure adguardhome is enabled and started
   ansible.builtin.systemd:

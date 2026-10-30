@@ -1,0 +1,120 @@
+---
+- name: deploy | create private staging directory
+  ansible.builtin.tempfile:
+    state: directory
+    prefix: adguard-ansible-
+  register: adguard_stage
+
+- name: deploy | validate and install configuration
+  block:
+    - name: deploy | stage and validate complete configuration
+      ansible.builtin.template:
+        src: AdGuardHome.yaml.j2
+        dest: "{{ adguard_stage.path }}/AdGuardHome.yaml"
+        mode: "0600"
+        validate: "{{ adguard_binary }} --check-config --config %s --work-dir {{ adguard_work_dir }}"
+      no_log: true
+      diff: false
+
+    - name: deploy | prepare backup paths
+      ansible.builtin.set_fact:
+        adguard_config_backup: "{{ adguard_config_path }}.{{ adguard_stage.path | basename }}.bak"
+        adguard_upstreams_backup: "{{ adguard_upstreams_path }}.{{ adguard_stage.path | basename }}.bak"
+
+    - name: deploy | replace configuration with rollback on failure
+      block:
+        # AdGuard writes its configuration at shutdown: stop before backing up or replacing it.
+        - name: deploy | stop adguardhome
+          ansible.builtin.systemd:
+            name: "{{ adguard_service_name }}"
+            state: stopped
+
+        - name: deploy | back up final configuration
+          ansible.builtin.copy:
+            src: "{{ adguard_config_path }}"
+            dest: "{{ adguard_config_backup }}"
+            remote_src: true
+            owner: "{{ adguard_config_owner }}"
+            group: "{{ adguard_config_group }}"
+            mode: "0600"
+          register: adguard_config_backup_result
+          diff: false
+          no_log: true
+
+        - name: deploy | back up upstreams
+          ansible.builtin.copy:
+            src: "{{ adguard_upstreams_path }}"
+            dest: "{{ adguard_upstreams_backup }}"
+            remote_src: true
+            owner: root
+            group: root
+            mode: "0600"
+          register: adguard_upstreams_backup_result
+          diff: false
+
+        - name: deploy | install validated configuration
+          ansible.builtin.copy:
+            src: "{{ adguard_stage.path }}/AdGuardHome.yaml"
+            dest: "{{ adguard_config_path }}"
+            remote_src: true
+            owner: "{{ adguard_config_owner }}"
+            group: "{{ adguard_config_group }}"
+            mode: "0600"
+          no_log: true
+          diff: false
+
+        - name: deploy | install upstreams
+          ansible.builtin.copy:
+            content: "{{ adguard_desired_upstreams }}\n"
+            dest: "{{ adguard_upstreams_path }}"
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: deploy | start adguardhome
+          ansible.builtin.systemd:
+            name: "{{ adguard_service_name }}"
+            state: started
+
+      rescue:
+        - name: deploy | stop adguardhome before restoring files
+          ansible.builtin.systemd:
+            name: "{{ adguard_service_name }}"
+            state: stopped
+
+        - name: deploy | restore previous configuration
+          ansible.builtin.copy:
+            src: "{{ adguard_config_backup }}"
+            dest: "{{ adguard_config_path }}"
+            remote_src: true
+            owner: "{{ adguard_config_owner }}"
+            group: "{{ adguard_config_group }}"
+            mode: "0600"
+          when: adguard_config_backup_result is defined and adguard_config_backup_result is succeeded
+          no_log: true
+          diff: false
+
+        - name: deploy | restore previous upstreams
+          ansible.builtin.copy:
+            src: "{{ adguard_upstreams_backup }}"
+            dest: "{{ adguard_upstreams_path }}"
+            remote_src: true
+            owner: root
+            group: root
+            mode: "0644"
+          when: adguard_upstreams_backup_result is defined and adguard_upstreams_backup_result is succeeded
+
+        - name: deploy | start previous configuration
+          ansible.builtin.systemd:
+            name: "{{ adguard_service_name }}"
+            state: started
+
+        - name: deploy | abort rollout after failure
+          ansible.builtin.fail:
+            msg: "AdGuard deployment failed. Previous files were restored where backed up; rollout stopped. Check service health before retrying."
+
+  always:
+    - name: deploy | remove staged configuration
+      ansible.builtin.file:
+        path: "{{ adguard_stage.path }}"
+        state: absent

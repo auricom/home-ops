@@ -1,6 +1,12 @@
 ---
 adguard_upstreams_path: /mnt/dietpi_userdata/adguardhome/dietpi-unbound.conf
 adguard_service_name: adguardhome
+adguard_config_path: /mnt/dietpi_userdata/adguardhome/AdGuardHome.yaml
+adguard_binary: /mnt/dietpi_userdata/adguardhome/AdGuardHome
+adguard_work_dir: /mnt/dietpi_userdata/adguardhome
+adguard_config_owner: adguardhome
+adguard_config_group: adguardhome
+adguard_host_config: {}
 
 # Per-domain upstreams rendered as [/domain/]server
 adguard_domain_upstreams: []
