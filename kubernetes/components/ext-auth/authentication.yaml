@@ -5,6 +5,10 @@ kind: SecurityPolicy
 metadata:
   name: ${APP}
 spec:
+  # A SecurityPolicy on a route replaces one on the Gateway for that route.
+  # CrowdSec is attached to envoy-external, so this component keeps Authelia
+  # as the only extAuth. Redlib is the public route that uses it; CrowdSec
+  # does not also check that traffic.
   extAuth:
     headersToExtAuth:
       - "X-Forwarded-For" # this is here so we can get the real IP
