@@ -61,6 +61,7 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
+            guarded: false
             conditions: ["[STATUS] == 200"]
         hostnames: ["{{ .Release.Name }}.xpander.ovh"]
         parentRefs:
