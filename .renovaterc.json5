@@ -6,6 +6,24 @@
     "github>home-operations/renovate-presets//apps/talosFactory.json5#10.0.1",
     ":timezone(Europe/Paris)",
   ],
+  hostRules: [
+    // Renovate lists every tag for each image, so a single run fires hundreds of
+    // requests at one registry. GitHub answers the resulting bursts with 429s
+    // ("Invalid registry response" / "Package lookup failures" on the dashboard),
+    // so pace GHCR and its LinuxServer front-end instead.
+    {
+      description: "Pace GHCR lookups to avoid secondary rate limits",
+      matchHost: "ghcr.io",
+      concurrentRequestLimit: 1,
+      maxRequestsPerSecond: 5,
+    },
+    {
+      description: "Pace LinuxServer registry lookups to avoid secondary rate limits",
+      matchHost: "lscr.io",
+      concurrentRequestLimit: 1,
+      maxRequestsPerSecond: 2,
+    },
+  ],
   lockFileMaintenance: {
     enabled: true,
     schedule: ["* * 1 * *"],
