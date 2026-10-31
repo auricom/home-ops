@@ -92,7 +92,7 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["docs.xpander.ovh"]
+        hostnames: ["bookstack.xpander.ovh"]
         parentRefs:
           - name: envoy-internal
             namespace: network

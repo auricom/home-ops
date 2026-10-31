@@ -1,4 +1,4 @@
-host: "https://docs.xpander.ovh"
+host: "https://bookstack.xpander.ovh"
 formats:
   - markdown
   - pdf
