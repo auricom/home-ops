@@ -170,51 +170,51 @@ url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0
 url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337344"
 
 [[tools."github:mitsuhiko/minijinja"]]
-version = "3.0.4"
+version = "3.0.5"
 backend = "github:mitsuhiko/minijinja"
-specifiers = ["3.0.4"]
+specifiers = ["3.0.5"]
 
 [tools."github:mitsuhiko/minijinja"."platforms.linux-arm64"]
-checksum = "sha256:3deb041ea4d304654da6097ba30ec096362ac568a36fea6a84d9d3c455eed04b"
+checksum = "sha256:b964a51b340675ab2748f6276119570effbc068c9a9bbbf15b134dd41513e24b"
 checksum_source = "mise-versions"
-url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.4/minijinja-cli-aarch64-unknown-linux-gnu.tar.xz"
-url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/679698134"
+url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.5/minijinja-cli-aarch64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/690302335"
 
 [tools."github:mitsuhiko/minijinja"."platforms.linux-arm64-musl"]
-checksum = "sha256:060a4a192e0dd2a15009eb13cf1128516cead753adc5a694d913c72ab8d54c6f"
+checksum = "sha256:2a0ff86cf7b4ced382353a6a7e95d392ca6509b3ef3ff8f76dc0abcafa9203da"
 checksum_source = "mise-versions"
-url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.4/minijinja-cli-aarch64-unknown-linux-musl.tar.xz"
-url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/679698136"
+url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.5/minijinja-cli-aarch64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/690302346"
 
 [tools."github:mitsuhiko/minijinja"."platforms.linux-x64"]
-checksum = "sha256:f103f5b53156bbcf94f82427979a476497d85de50158a3598996962722bab6d6"
+checksum = "sha256:d25b5e931f8f3f4df9d25db4c81e5bcb01a752aad9c05312234321d9bb869d14"
 checksum_source = "mise-versions"
-url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.4/minijinja-cli-x86_64-unknown-linux-gnu.tar.xz"
-url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/679698186"
+url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.5/minijinja-cli-x86_64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/690302426"
 
 [tools."github:mitsuhiko/minijinja"."platforms.linux-x64-musl"]
-checksum = "sha256:d39c681066da5175ec94fd245f2bb3ccca46ded18457e3bfe27d2daa59c6dfce"
+checksum = "sha256:631592637f23889ae67760fa5d812af8aec54f25e01e913efb06b9205ba073d1"
 checksum_source = "mise-versions"
-url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.4/minijinja-cli-x86_64-unknown-linux-musl.tar.xz"
-url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/679698216"
+url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.5/minijinja-cli-x86_64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/690302424"
 
 [tools."github:mitsuhiko/minijinja"."platforms.macos-arm64"]
-checksum = "sha256:0ae08cce1d8ecea4c1d059e7540609c6dfce1b7a76689ba2f2e5a5e0fbd9c9fb"
+checksum = "sha256:8aaea548d724f730a623d4d34bd1311ce9c51c9eaa9f4687b9beb74a073c94d9"
 checksum_source = "mise-versions"
-url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.4/minijinja-cli-aarch64-apple-darwin.tar.xz"
-url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/679698108"
+url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.5/minijinja-cli-aarch64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/690302314"
 
 [tools."github:mitsuhiko/minijinja"."platforms.macos-x64"]
-checksum = "sha256:3afc01480feae0f0592f6d91c2fe1bf2b71fb0f84dd9aa3aa41b77ed8fbd0cdb"
+checksum = "sha256:d81831fecaaad0939d1705ff14a4c3025ca77e1658a4d10257e82c424fb217c8"
 checksum_source = "mise-versions"
-url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.4/minijinja-cli-x86_64-apple-darwin.tar.xz"
-url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/679698171"
+url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.5/minijinja-cli-x86_64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/690302396"
 
 [tools."github:mitsuhiko/minijinja"."platforms.windows-x64"]
-checksum = "sha256:9171ae4dc6e8578fea8749df968cded903dfb7c5809b61da5693c11216fb8f22"
+checksum = "sha256:df61e0e2a33f92553be1ab79b53fb894b0a3fbae3e9f5f12a0e21ce17b46fdc8"
 checksum_source = "mise-versions"
-url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.4/minijinja-cli-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/679698183"
+url = "https://github.com/mitsuhiko/minijinja/releases/download/3.0.5/minijinja-cli-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/mitsuhiko/minijinja/releases/assets/690302404"
 
 [[tools.helm]]
 version = "4.3.1"
@@ -543,45 +543,45 @@ backend = "npm:oxfmt"
 specifiers = ["0.75.0"]
 
 [[tools.pipx]]
-version = "1.18.7"
+version = "1.18.11"
 backend = "aqua:pypa/pipx"
-specifiers = ["1.18.7"]
+specifiers = ["1.18.11"]
 
 [tools.pipx."platforms.linux-arm64"]
-checksum = "sha256:bc807df747117fa7f6a5e0c0dbbbd5c37146de92710dfc2dfa1105911621f46f"
+checksum = "sha256:37282fd4fad8700169a718f2ca8c469dbf4ffbf004972670cb468cf255106f07"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.7/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/684070612"
+url = "https://github.com/pypa/pipx/releases/download/1.18.11/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/693756457"
 
 [tools.pipx."platforms.linux-arm64-musl"]
-checksum = "sha256:bc807df747117fa7f6a5e0c0dbbbd5c37146de92710dfc2dfa1105911621f46f"
+checksum = "sha256:37282fd4fad8700169a718f2ca8c469dbf4ffbf004972670cb468cf255106f07"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.7/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/684070612"
+url = "https://github.com/pypa/pipx/releases/download/1.18.11/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/693756457"
 
 [tools.pipx."platforms.linux-x64"]
-checksum = "sha256:bc807df747117fa7f6a5e0c0dbbbd5c37146de92710dfc2dfa1105911621f46f"
+checksum = "sha256:37282fd4fad8700169a718f2ca8c469dbf4ffbf004972670cb468cf255106f07"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.7/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/684070612"
+url = "https://github.com/pypa/pipx/releases/download/1.18.11/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/693756457"
 
 [tools.pipx."platforms.linux-x64-musl"]
-checksum = "sha256:bc807df747117fa7f6a5e0c0dbbbd5c37146de92710dfc2dfa1105911621f46f"
+checksum = "sha256:37282fd4fad8700169a718f2ca8c469dbf4ffbf004972670cb468cf255106f07"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.7/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/684070612"
+url = "https://github.com/pypa/pipx/releases/download/1.18.11/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/693756457"
 
 [tools.pipx."platforms.macos-arm64"]
-checksum = "sha256:bc807df747117fa7f6a5e0c0dbbbd5c37146de92710dfc2dfa1105911621f46f"
+checksum = "sha256:37282fd4fad8700169a718f2ca8c469dbf4ffbf004972670cb468cf255106f07"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.7/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/684070612"
+url = "https://github.com/pypa/pipx/releases/download/1.18.11/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/693756457"
 
 [tools.pipx."platforms.macos-x64"]
-checksum = "sha256:bc807df747117fa7f6a5e0c0dbbbd5c37146de92710dfc2dfa1105911621f46f"
+checksum = "sha256:37282fd4fad8700169a718f2ca8c469dbf4ffbf004972670cb468cf255106f07"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.7/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/684070612"
+url = "https://github.com/pypa/pipx/releases/download/1.18.11/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/693756457"
 
 [[tools."pipx:ansible-core"]]
 version = "2.21.5"
