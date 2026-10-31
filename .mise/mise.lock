@@ -587,7 +587,6 @@ url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/693756457"
 version = "2.21.5"
 backend = "pipx:ansible-core"
 specifiers = ["2.21.5"]
-uv = { path = "locks/pipx-ansible-core/2.21.5", digest = "sha256:8d6fd76c42cd64db2e55cc64b8c20e067d5b9331490bf8cee3381281d46a8e88" }
 
 [[tools.shellcheck]]
 version = "0.11.0"
