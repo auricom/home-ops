@@ -12,12 +12,12 @@ spec:
   values:
     controllers:
       docs:
-        replicas: 2
+        replicas: 1
         containers:
           app:
             image:
               repository: ghcr.io/auricom/docs
-              tag: rolling@sha256:9e4d25f5effab6c6e8e1bfe544e3eaed3684b4a4fc057b67b35d428f72d7e5bb
+              tag: rolling@sha256:b1b95ac90725f6f01d33442af7408c661c4e6e3caacc499d00a10e60654e9f60
               pullPolicy: Always
             probes:
               liveness: &probes
