@@ -31,6 +31,15 @@
     additionalBranchPrefix: "{{manager}}-",
   },
   packageRules: [
+    // LinuxServer still publishes legacy date tags (26.09.20260929) alongside
+    // app versions (26.09.2). Docker versioning reads the date as a huge patch
+    // bump, so Renovate would keep proposing the stale date tag as an upgrade.
+    {
+      description: "Ignore LinuxServer legacy date tags",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/linuxserver\\/bookstack$/"],
+      allowedVersions: "/^\\d+\\.\\d+\\.\\d{1,3}$/",
+    },
     // Ignore dependencies without a Renovate-compatible version source
     {
       description: "Ignore 1Password CLI version lookup",
