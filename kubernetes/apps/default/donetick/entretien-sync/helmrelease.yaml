@@ -33,10 +33,9 @@ spec:
       donetick-entretien-sync:
         type: cronjob
         cronjob:
-          # Sunday 07:00 Europe/Paris. The checklist changes rarely; a missed
-          # run still starts within the next 6 hours (startingDeadlineSeconds).
+          # Daily correction of weekly chores whose next date falls outside season.
           concurrencyPolicy: Forbid
-          schedule: "0 7 * * 0"
+          schedule: "0 7 * * *"
           timeZone: Europe/Paris
           startingDeadlineSeconds: 21600
           backoffLimit: 2

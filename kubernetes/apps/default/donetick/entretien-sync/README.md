@@ -1,56 +1,91 @@
 # Donetick entretien sync
 
-Weekly CronJob that copies the house maintenance frequency checklist into Donetick chores.
+Daily CronJob that copies the house maintenance frequency checklist into Donetick chores with calendar-aware due dates.
 
 ## Schedule
 
-Sunday 07:00 Europe/Paris (`0 7 * * 0`). If the cluster misses that minute, Kubernetes still starts the job within the next 6 hours. A second run cannot overlap (`concurrencyPolicy: Forbid`).
+Daily at 07:00 Europe/Paris (`0 7 * * *`). Kubernetes can start a missed run within the next 6 hours. Runs cannot overlap (`concurrencyPolicy: Forbid`).
 
-New chores get a first due time of 09:00 Europe/Paris on the run day, or the next day when the job runs after that hour. Later due dates are left to Donetick.
+Calendar chores are due on the **15th at 09:00 Europe/Paris**, with daylight-saving changes handled at the target date. If the current month is scheduled but the 15th has passed, the initial date stays overdue in that month. Otherwise the next scheduled month is used.
+
+| Chore                                                     | Scheduled months                   |
+| --------------------------------------------------------- | ---------------------------------- |
+| Gutters                                                   | April, November                    |
+| Laurel hedge                                              | June, September                    |
+| Fruit-tree treatments                                     | February, November                 |
+| Radiator bleeding                                         | September                          |
+| Clear outdoor PAC unit                                    | September, November                |
+| Lifting station                                           | October                            |
+| Roof / attic inspection                                   | March / December (separate chores) |
+| Solar-panel cleaning                                      | April                              |
+| Pool opening / winterizing                                | April / October (separate chores)  |
+| Gate and garage door                                      | March                              |
+| Alarm / cameras                                           | December                           |
+| Tiled terrace / wooden terrace                            | April                              |
+| Outdoor taps frost protection                             | November                           |
+| Tree pruning (outside frost)                              | January                            |
+| Fruit-tree pruning / summer pruning                       | February / July                    |
+| Roses / summer-flowering shrubs / spring-flowering shrubs | March / March / May                |
+
+Roof moss treatment and pool filter-media replacement retain their multi-year interval, with an April anchor. Their first date is the first April 15 no earlier than one interval from creation or migration.
+
+Chores without calendar guidance start one documented interval after creation or migration, at 09:00 local time. Month-end dates are clamped to the last valid day. Later valid due dates and overdue work are preserved.
+
+### Seasonal recurring chores
+
+- Pool care: May–September.
+- Garden care: April–October.
+- PAC heating checks: October–April.
+
+Monthly seasonal checks use the 15th of each active month. Weekly seasonal chores retain a seven-day interval. The daily sync moves a weekly out-of-season date or winter backlog to the first day of the next active season at 09:00. Valid overdue work remains overdue while in season.
+
+Donetick has no native seasonal restriction for weekly chores. Completing one can briefly produce an out-of-season date until the next successful daily sync. The daily job must keep running for this correction to work.
 
 ## What is synced
 
-Source: `https://raw.githubusercontent.com/auricom/docs/main/content/docs/maison/entretien.md`, section **Récapitulatif par fréquence** only. "À chaque utilisation" is skipped. Checkboxes outside that section (the "à confirmer" list, the seasonal calendar) are ignored.
+Source: `https://raw.githubusercontent.com/auricom/docs/main/content/docs/maison/entretien.md`, section **Récapitulatif par fréquence**. “À chaque utilisation” is skipped; tasks appearing only in the detailed tables or seasonal calendar are not added.
 
-| Checklist section | Donetick |
-|---|---|
-| Chaque semaine | `weekly` / 1 |
-| Chaque mois | `monthly` / 1 |
-| Chaque trimestre | `monthly` / 3 |
-| Chaque semestre | `monthly` / 6 |
-| Chaque année | `yearly` / 1 |
-| Tous les 1 à 2 ans | `yearly` / 1, unless the line names a year count |
-| Tous les 2 à 5 ans | `yearly` / lower bound of the line (section default 2) |
-| Tous les 10 ans | `yearly` / lower bound of the line (section default 10) |
+The seasonal calendar is encoded explicitly in `CALENDAR_MONTHS`, `SEASON_MONTHS`, and `SPLITS` in `sync.py`. Update these rules when the document's seasonal guidance changes. Unknown frequency headings, duplicate planned names, and unrecognized “en saison” / “saison de chauffe” items fail instead of silently receiving a default season.
 
-A range such as "3–5 ans" or "10–15 ans" becomes the lower bound, and the original wording is stored in the description. Donetick has no variable interval. Year counts are read only under the three multi-year headings, so "3 à 6 mois" under Chaque semestre stays `monthly` / 6.
+| Checklist section  | Default Donetick schedule                       |
+| ------------------ | ----------------------------------------------- |
+| Chaque semaine     | `interval` / 1 / `weeks`                        |
+| Chaque mois        | `interval` / 1 / `months`                       |
+| Chaque trimestre   | `interval` / 3 / `months`                       |
+| Chaque semestre    | `interval` / 6 / `months`                       |
+| Chaque année       | `interval` / 1 / `years`                        |
+| Tous les 1 à 2 ans | `interval` / lower bound / `years` (default 1)  |
+| Tous les 2 à 5 ans | `interval` / lower bound / `years` (default 2)  |
+| Tous les 10 ans    | `interval` / lower bound / `years` (default 10) |
 
-An unknown `###` heading inside the récapitulatif fails the job, so a new cadence is not dropped silently.
+Calendar rules override these defaults with `day_of_the_month` / 15 and explicit months. The simple `monthly` and `yearly` types in Donetick v0.1.83 ignore the frequency multiplier, so interval metadata is required for quarterly, six-monthly, and multi-year work.
 
-## Idempotency
+Ranges such as “3–5 ans” use the lower bound and retain the original wording in the description. Year counts are read only under multi-year headings, so “3 à 6 mois” under Chaque semestre stays six months.
 
-Managed chores are named `[Entretien] ` plus the checkbox text. The job lists `GET /api/v1/chores/?includeArchived=true`, then:
+## Migration and idempotency
 
-- creates a missing active chore (`POST /api/v1/chores/`, header `secretkey`)
-- updates an active chore when `frequencyType`, `frequency`, or the generated description changed (`PUT /api/v1/chores/`)
-- skips a chore that already matches
-- leaves an inactive chore inactive (archive is not undone, and no duplicate is created)
-- does not delete anything, including `[Entretien]` chores that disappeared from the checklist (those are logged as `left`)
+The job lists `GET /api/v1/chores/?includeArchived=true`. Chores are identified by `[Entretien] ` plus their checklist text, or their replacement name for a split entry.
 
-Chores whose names do not start with `[Entretien] ` are never read for updates. Renaming a managed chore breaks the match and the next run creates a new one.
+Existing chores containing `Géré par donetick-entretien-sync.` receive a one-time schedule and date repair. The successful PUT saves the due date and `Planning entretien : v2.` together. Subsequent runs preserve completion progress and valid overdue dates. Changes to schedule type, interval, metadata, or rolling behavior repair the schedule again; description-only updates preserve dates.
 
-On update, assignment, notification, points, project, labels, subtasks, privacy, and the due date are copied back so the PUT does not wipe them. A description that no longer contains `Géré par donetick-entretien-sync.` is treated as edited by hand and is not replaced. A thing trigger linked to the chore is sent again with the update.
+For a combined entry, the first replacement reuses the original ID and its history. Other replacements inherit assignment, notification preferences, points, priority, project, privacy, approval, and completion-window settings. New siblings receive fresh descriptions and do not duplicate history, labels, subtasks, or thing triggers. Retries find the renamed first replacement and create only missing siblings.
 
-New chores are unassigned (`no_assignee`), active, and notify one day before the due time and when due. Assign them in the UI afterwards; the sync keeps that assignment.
+- Creates missing chores via `POST /api/v1/chores/` using the `secretkey` header.
+- Updates drifted managed chores via `PUT /api/v1/chores/`.
+- Leaves archived chores inactive; an archived combined entry also suppresses new replacements.
+- Leaves descriptions without the sync marker untouched.
+- Leaves unrelated chores untouched and logs removed checklist names as `left`; nothing is deleted.
 
-The API token's user must be able to edit the chores. Chores are created by that user, which is enough. A circle admin token also passes Donetick's edit check.
+Updates preserve the existing ID, history, assignment, notifications, points, priority, project, privacy, approval, completion window, and thing trigger. Labels and subtasks are omitted from PUT, which preserves them in Donetick. Removing the managed prefix breaks matching; removing the description marker opts an existing chore out of updates.
+
+New chores without an existing combined entry are unassigned, active, and notify one day before the due time and when due. The API token's user must be able to edit managed chores.
 
 ## 1Password
 
 Add a field to the existing item `donetick` (the same item as `DONETICK_JWT_SECRET`):
 
-| Item | Field | Value |
-|---|---|---|
+| Item       | Field                | Value                 |
+| ---------- | -------------------- | --------------------- |
 | `donetick` | `DONETICK_API_TOKEN` | Donetick access token |
 
 In Donetick: Settings → Access tokens → Generate new token. Copy the `dt_…` value once. The ExternalSecret reads only that field from the `onepassword-connect` ClusterSecretStore. The Donetick app secret is unchanged and does not need this field.
@@ -61,13 +96,13 @@ The job calls Donetick in-cluster at `http://donetick.default.svc.cluster.local:
 
 ## Dry-run and local parse
 
-Parser self-test, no network:
+Self-tests (no external network; includes a temporary localhost mock API server):
 
 ```bash
 python3 kubernetes/apps/default/donetick/entretien-sync/resources/sync.py --self-test
 ```
 
-Print the chores that would be synced, without calling Donetick:
+Print schedules, metadata, and initial due dates without calling Donetick:
 
 ```bash
 python3 kubernetes/apps/default/donetick/entretien-sync/resources/sync.py --print
@@ -75,7 +110,7 @@ python3 kubernetes/apps/default/donetick/entretien-sync/resources/sync.py --prin
 
 `ENTRETIEN_FILE` reads a local markdown file instead of GitHub.
 
-In the cluster, `DRY_RUN=true` lists chores and logs `dry-run create` / `dry-run update` without POST or PUT:
+In the cluster, `DRY_RUN=true` lists chores and logs `dry-run create` / `dry-run update` with old/new due dates and without POST or PUT. Review this output before the first applying run:
 
 ```bash
 kubectl -n default create job donetick-entretien-sync-dry-run \
