@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/salvoxia/immich-folder-album-creator
-              tag: 2.0.2@sha256:bc44bdfa55b305a405e93054c9cbe1c591ce6b11c09c5d6a08bef219727a9954
+              tag: 2.0.3@sha256:0bcb08e37a5de9bf2a2d7c1b1b6898351cd4a244306983e1d8126777dc34e789
             env:
               ALBUM_NAME_POST_REGEX1: "'(\\d+_)+'"
               ALBUM_NAME_POST_REGEX2: "'_' ' '"
