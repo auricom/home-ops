@@ -19,7 +19,7 @@ spec:
         target:
           template:
             data:
-              DONETICK_API_TOKEN: "{{ .DONETICK_API_TOKEN }}"
+              DONETICK_API_TOKEN: "{{ .DONETICK_DOCS_API_TOKEN }}"
         dataFrom:
           - extract:
               key: donetick
