@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app donetick-entretien-sync
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: donetick-entretien-sync
+  values:
+    externalSecrets:
+      donetick-entretien-sync:
+        refreshInterval: 5m
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              DONETICK_API_TOKEN: "{{ .DONETICK_DOCS_API_TOKEN }}"
+        dataFrom:
+          - extract:
+              key: donetick
+              property: DONETICK_API_TOKEN
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+    controllers:
+      donetick-entretien-sync:
+        type: cronjob
+        cronjob:
+          # Sunday 07:00 Europe/Paris. The checklist changes rarely; a missed
+          # run still starts within the next 6 hours (startingDeadlineSeconds).
+          concurrencyPolicy: Forbid
+          schedule: "0 7 * * 0"
+          timeZone: Europe/Paris
+          startingDeadlineSeconds: 21600
+          backoffLimit: 2
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+        containers:
+          app:
+            image:
+              repository: ghcr.io/auricom/toolbox
+              tag: rolling@sha256:f27562a51c56d85d4f51897e1d600e7fc0975e05c8aa719b264ddbfeaa571b59
+            command:
+              - python
+              - /app/sync.py
+            env:
+              PYTHONDONTWRITEBYTECODE: "1"
+              HOME: /tmp
+              DONETICK_BASE_URL: http://donetick.default.svc.cluster.local:2021
+              ENTRETIEN_URL: https://raw.githubusercontent.com/auricom/docs/main/content/docs/maison/entretien.md
+              NAME_PREFIX: "[Entretien] "
+              DUE_TIMEZONE: Europe/Paris
+              DUE_HOUR: "9"
+            envFrom:
+              - externalSecretRef:
+                  identifier: donetick-entretien-sync
+            probes:
+              liveness: &probes
+                enabled: false
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+    service:
+      app:
+        controller: *app
+        enabled: false
+    persistence:
+      script:
+        type: configMap
+        name: donetick-entretien-sync-configmap
+        defaultMode: 0444 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /app/sync.py
+            subPath: sync.py
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
