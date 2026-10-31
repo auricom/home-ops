@@ -32,7 +32,7 @@ spec:
           postgresql:
             image:
               repository: pgvector/pgvector
-              tag: pg18@sha256:2358fcba361ed2233a5ed81b5fe4ca779ccb304120ce531a3bf51c0ed7e2bc11
+              tag: pg18@sha256:c29f30688a9ad961691bdf0ec1650717cc132a5814619d80f80463d6e4c42e47
             env:
               PGDATA: /var/lib/postgresql/data/pgdata
             envFrom:
