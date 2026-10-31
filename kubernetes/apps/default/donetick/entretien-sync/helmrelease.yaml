@@ -16,14 +16,11 @@ spec:
         secretStoreRef:
           kind: ClusterSecretStore
           name: onepassword-connect
-        target:
-          template:
-            data:
-              DONETICK_API_TOKEN: "{{ .DONETICK_DOCS_API_TOKEN }}"
-        dataFrom:
-          - extract:
+        data:
+          - secretKey: DONETICK_DOCS_API_TOKEN
+            remoteRef:
               key: donetick
-              property: DONETICK_API_TOKEN
+              property: DONETICK_DOCS_API_TOKEN
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true

@@ -535,9 +535,9 @@ def run_sync() -> int:
             log("{0}/{1}\t{2}".format(spec.frequency_type, spec.frequency, spec.name))
         return 0
 
-    token = os.environ.get("DONETICK_API_TOKEN", "").strip()
+    token = os.environ.get("DONETICK_DOCS_API_TOKEN", "").strip()
     if not token:
-        raise SyncError("DONETICK_API_TOKEN is empty")
+        raise SyncError("DONETICK_DOCS_API_TOKEN is empty")
     base_url = os.environ.get("DONETICK_BASE_URL", DEFAULT_BASE_URL).strip()
     if not base_url:
         raise SyncError("DONETICK_BASE_URL is empty")
