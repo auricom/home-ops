@@ -43,9 +43,12 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           app:
+            # The image's /init is s6-overlay and needs root; run the binary
+            # directly so the container can stay non-root.
+            command: ["silo"]
             image:
               repository: ghcr.io/silo-server/silo-server
-              tag: latest@sha256:18b0b05cf5964d2e4e1e131f38df1ea1416a805f3152f80bef1a806b2d994b46
+              tag: latest@sha256:8b652b0be194081936889b8ce48d5fc25cd8f71269d376a51170aada75678d07
             env:
               MODE: integrated
               PORT: &port 8080
