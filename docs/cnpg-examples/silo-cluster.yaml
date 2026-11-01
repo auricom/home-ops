@@ -1,0 +1,46 @@
+---
+# DO NOT APPLY. Inert sketch for the first rehearsal app (silo).
+# Not referenced by any kustomization. See docs/cnpg-migration.md.
+#
+# Bookorbit uses the same shape. Its database name and role are not literals
+# in git (BOOKORBIT_POSTGRES_DB_NAME / BOOKORBIT_POSTGRES_USERNAME on the
+# 1Password item bookorbit). Copy this file only after those values are read
+# from the rendered secret bookorbit-database.
+#
+# imageName is the stock CloudNativePG PostgreSQL 18.6 image, digest resolved
+# 2026-11-01 from the GHCR manifest list for tag 18.6:
+#   sha256:899d3ed526b659d77935dde0e6bf2d69dbbf17d3d8c6486ca8cfd04bd3c18533
+# Replace the whole image before apply if `\dx` on the source shows vector
+# or any extension other than plpgsql. The stock image will not load pgvector.
+# Do not point silo or bookorbit at the Immich vectorchord image.
+#
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: silo-db
+  namespace: default
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6@sha256:899d3ed526b659d77935dde0e6bf2d69dbbf17d3d8c6486ca8cfd04bd3c18533
+  imagePullPolicy: IfNotPresent
+  enableSuperuserAccess: true
+  primaryUpdateStrategy: unsupervised
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
+  storage:
+    size: 5Gi
+    storageClass: ceph-block
+  bootstrap:
+    initdb:
+      database: silo
+      owner: silo
+      secret:
+        name: silo-db-app
+  monitoring:
+    enablePodMonitor: true

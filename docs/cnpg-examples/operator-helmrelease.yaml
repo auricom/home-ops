@@ -1,0 +1,52 @@
+---
+# DO NOT APPLY. Inert sketch for the operator PR.
+# Not referenced by any kustomization. See docs/cnpg-migration.md.
+#
+# Intended destination, matching cert-manager's OCI chart layout and the
+# existing database namespace (dragonfly, mosquitto):
+#   kubernetes/apps/database/cloudnative-pg/app/ocirepository.yaml
+#   kubernetes/apps/database/cloudnative-pg/app/helmrelease.yaml
+#   kubernetes/apps/database/cloudnative-pg/app/kustomization.yaml
+#   kubernetes/apps/database/cloudnative-pg/ks.yaml
+# Wire it by adding ./cloudnative-pg/ks.yaml to
+# kubernetes/apps/database/kustomization.yaml in that later PR.
+#
+# Chart tag 0.29.1 is the newest stable tag on
+# ghcr.io/cloudnative-pg/charts/cloudnative-pg as of 2026-11-01.
+# Re-check and digest-pin it in the operator PR. Leave config.clusterWide
+# at the chart default (true) so Clusters in namespace default are watched.
+#
+# No Barman plugin and no ObjectStore in this sketch.
+#
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: cloudnative-pg
+  namespace: database
+spec:
+  interval: 15m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.29.1
+  url: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg
+  namespace: database
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: cloudnative-pg
+  values:
+    replicaCount: 1
+    crds:
+      create: true
+    monitoring:
+      podMonitorEnabled: true
