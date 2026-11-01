@@ -45,7 +45,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/toolbox
-              tag: rolling@sha256:ff16abd93a057f9e6c73bb842900011770b0d7601a56824f4af813cae917f1a0
+              tag: rolling@sha256:304007d1d5bcbefb7fa9515a8c7312713560992e03c83b9fb23b86373cac1e81
             command:
               - python
               - /app/sync.py
