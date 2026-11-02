@@ -73,7 +73,6 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 2Gi
-        replicas: 0
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
