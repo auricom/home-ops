@@ -11,13 +11,13 @@ spec:
     endpointURL: http://192.168.30.10:30188
     s3Credentials:
       accessKeyId:
-        name: postgresql-s3
+        name: cnpg-s3
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: postgresql-s3
+        name: cnpg-s3
         key: ACCESS_SECRET_KEY
     region:
-      name: postgresql-s3
+      name: cnpg-s3
       key: AWS_REGION
     wal:
       compression: gzip
