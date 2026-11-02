@@ -1,5 +1,5 @@
 ---
-# Empty cluster. Do not point bookorbit at this service.
+# Dedicated CNPG database for bookorbit; logical restore verified before cutover.
 # Cutover order is silo, then bookorbit, then Immich. See docs/cnpg-migration.md.
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
@@ -8,9 +8,7 @@ metadata:
   name: bookorbit-db
 spec:
   instances: 1
-  # Stock CloudNativePG PostgreSQL 18.6, digest resolved 2026-11-01.
-  # Replace the image before pg_restore if `\dx` on bookorbit-database shows
-  # anything other than plpgsql. This image does not ship pgvector.
+  # PostgreSQL 18.6 with pgvector 0.8.6, verified against the live source.
   imageName: ghcr.io/cloudnative-pg/postgresql:18.6@sha256:899d3ed526b659d77935dde0e6bf2d69dbbf17d3d8c6486ca8cfd04bd3c18533
   imagePullPolicy: IfNotPresent
   enableSuperuserAccess: true

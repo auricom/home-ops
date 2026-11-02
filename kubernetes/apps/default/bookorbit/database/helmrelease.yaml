@@ -21,7 +21,7 @@ spec:
               POSTGRES_USER: "{{ .BOOKORBIT_POSTGRES_USERNAME }}"
               POSTGRES_PASSWORD: "{{ .BOOKORBIT_POSTGRES_PASSWORD }}"
               POSTGRES_DB: "{{ .BOOKORBIT_POSTGRES_DB_NAME }}"
-              DATABASE_URL: postgres://{{ .BOOKORBIT_POSTGRES_USERNAME}}:{{ .BOOKORBIT_POSTGRES_PASSWORD }}@bookorbit-database.default.svc.cluster.local.:5432/{{ .BOOKORBIT_POSTGRES_DB_NAME }}
+              DATABASE_URL: postgres://{{ .BOOKORBIT_POSTGRES_USERNAME}}:{{ .BOOKORBIT_POSTGRES_PASSWORD }}@bookorbit-db-rw.default.svc.cluster.local.:5432/{{ .BOOKORBIT_POSTGRES_DB_NAME }}
         dataFrom:
           - extract:
               key: bookorbit
