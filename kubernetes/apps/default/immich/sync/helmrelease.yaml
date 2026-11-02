@@ -28,7 +28,6 @@ spec:
         cronjob:
           concurrencyPolicy: Forbid
           schedule: "@daily"
-          suspend: true
         containers:
           app:
             image:
