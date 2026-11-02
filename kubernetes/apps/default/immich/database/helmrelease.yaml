@@ -21,7 +21,7 @@ spec:
               # App
               JWT_SECRET: "{{ .IMMICH__JWT_SECRET }}"
               # Database
-              DB_HOSTNAME: &dbhost "immich-database.default.svc.cluster.local."
+              DB_HOSTNAME: &dbhost "immich-db-rw.default.svc.cluster.local."
               DB_PORT: "5432"
               DB_USERNAME: &dbuser "{{ .IMMICH__POSTGRES_USER }}"
               DB_PASSWORD: &dbpass "{{ .IMMICH__POSTGRES_PASSWORD }}"
