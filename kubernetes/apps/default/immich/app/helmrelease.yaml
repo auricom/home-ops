@@ -64,6 +64,7 @@ spec:
                 memory: 150Mi
               limits:
                 memory: 2Gi
+        replicas: 0
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
