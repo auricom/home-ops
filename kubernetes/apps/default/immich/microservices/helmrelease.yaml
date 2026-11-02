@@ -41,7 +41,6 @@ spec:
                 memory: 512Mi
               limits:
                 memory: 8000Mi
-        replicas: 0
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
