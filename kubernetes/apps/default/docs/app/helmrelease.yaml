@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/auricom/docs
-              tag: rolling@sha256:676c28b3013f4152774fe9d4075120e66a27a21f4c3110dc0d9f609dda44acdb
+              tag: rolling@sha256:ccb4cbb6635434a0701b57caf61c37919deaa8b30d26ee9933bc5ec08983871d
               pullPolicy: Always
             probes:
               liveness: &probes
