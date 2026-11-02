@@ -17,6 +17,7 @@ resources:
   - ./bookorbit/ks.yaml
   - ./bookstack/ks.yaml
   - ./cleanuparr/ks.yaml
+  - ./cnpg-barman/ks.yaml
   - ./donetick/ks.yaml
   - ./docs/ks.yaml
   - ./elegoo-cc2-webui/ks.yaml

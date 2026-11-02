@@ -2,7 +2,7 @@
 
 Move each PostgreSQL database off its app-template StatefulSet and onto its own [CloudNativePG](https://cloudnative-pg.io/) `Cluster`, without deleting the data that is already on disk.
 
-This document is the procedure. It does not install the operator, and it does not point any app at a new database. The YAML under [docs/cnpg-examples/](cnpg-examples/README.md) is a sketch for later pull requests. Flux does not build `docs/`.
+This document is the cutover procedure. The operator, the Barman Cloud plugin, and the three empty clusters are Flux manifests under `kubernetes/`. Apps still use their StatefulSets. `docs/cnpg-examples/` only holds `logical-copy.sh`.
 
 ## Design
 
@@ -14,23 +14,28 @@ Logical copy (`pg_dump` / `pg_restore`, or CloudNativePG's `bootstrap.initdb.imp
 
 ### What this pull request ships
 
-- This runbook and the inventory below.
-- Inert examples in [docs/cnpg-examples/](cnpg-examples/README.md): operator HelmRelease, Barman Cloud plugin kustomization, silo `ObjectStore` / `ScheduledBackup` / `ExternalSecret`, Immich `Cluster`, Immich `Database`, silo `Cluster`, and `logical-copy.sh`.
-- No change under `kubernetes/`. No Flux `Kustomization` references `docs/`.
+Flux applies these. `cluster-apps` builds [kubernetes/apps/kustomization.yaml](../kubernetes/apps/kustomization.yaml), which lists `./database` and `./default`.
+
+- Operator: [kubernetes/apps/database/cloudnative-pg/](../kubernetes/apps/database/cloudnative-pg/ks.yaml), wired from [database/kustomization.yaml](../kubernetes/apps/database/kustomization.yaml).
+- Barman Cloud plugin: [kubernetes/apps/database/plugin-barman-cloud/](../kubernetes/apps/database/plugin-barman-cloud/ks.yaml).
+- Empty clusters `silo-db`, `bookorbit-db`, `immich-db`, each with an `ObjectStore` and `ScheduledBackup`, under `kubernetes/apps/default/{silo,bookorbit,immich}/cnpg/`. Their Flux `Kustomization`s are `silo-cnpg`, `bookorbit-cnpg`, and `immich-cnpg`.
+- S3 ExternalSecret `postgresql-s3` at [kubernetes/apps/default/cnpg-barman/](../kubernetes/apps/default/cnpg-barman/externalsecret.yaml). No key material in git.
+- This runbook and `docs/cnpg-examples/logical-copy.sh`.
+
+The existing database HelmReleases, DSNs, and PVCs are unchanged. Cutover is still one app at a time, silo then bookorbit then Immich, even though the three empty clusters are created together.
 
 ### Later pull requests
 
-1. **Operator only.** Copy [operator-helmrelease.yaml](cnpg-examples/operator-helmrelease.yaml) into `kubernetes/apps/database/cloudnative-pg/` and [plugin-barman-cloud.yaml](cnpg-examples/plugin-barman-cloud.yaml) into `kubernetes/apps/database/plugin-barman-cloud/`. Add both Flux `Kustomization`s to [kubernetes/apps/database/kustomization.yaml](../kubernetes/apps/database/kustomization.yaml) the same way `dragonfly` and `mosquitto` are added. No `Cluster`, no `ObjectStore`, no `ScheduledBackup`. Confirm `kubectl explain database.postgresql.cnpg.io` and `kubectl explain objectstore.barmancloud.cnpg.io` work afterwards.
-2. **One empty cluster at a time.** Order is silo, then bookorbit, then Immich. The happy path never creates `silo-db`, `bookorbit-db`, and `immich-db` in one pull request. Each PR adds that app's empty `Cluster`, its `ObjectStore`, and its `ScheduledBackup`, and leaves the HelmRelease and the app DSN alone. Migrate that app only after its empty cluster is Ready. Immich's `Database` CR arrives with the Immich cluster, not before.
-3. **Cutover, per app.** Follow the phases below for the one cluster that exists. The app's DSN changes only after the restore check passes. The StatefulSet stays. Do not start the next app's cluster until this one's cutover has soaked or you have explicitly parked it.
-4. **Remove the StatefulSet.** A separate PR deletes that app's database HelmRelease only. The Flux `Kustomization` stays, because its Kopiur component holds the PVC. Immich's database path also holds the shared `OCIRepository` named `immich`, `immich-configmap`, and `immich-dragonfly`; those stay too.
-5. **Delete the old PVC.** A further PR, after an explicit go-ahead and a verified backup of the new cluster. One app per PR. Immich's non-database objects are moved off that Flux `Kustomization` first.
+1. **Cut over silo** only after `silo-db` is Ready and the restore check passes. Leave bookorbit and Immich on their StatefulSets.
+2. **Cut over bookorbit**, then **Immich**, the same way.
+3. **Remove one database HelmRelease at a time.** Its Flux `Kustomization` stays while it still holds Kopiur or, for Immich, the shared chart, ConfigMap, and Dragonfly.
+4. **Delete the old PVC** only after an explicit go-ahead and a completed Barman backup of the new cluster. One app per PR. Immich's non-database objects are moved off that Flux `Kustomization` first.
 
 ## What is in this repo today
 
 Searched `kubernetes/` for `postgres`, `POSTGRES`, `DB_HOSTNAME`, `5432`, and `postgresql.cnpg.io`.
 
-There is no `postgresql.cnpg.io` object and no `cloudnative-pg` chart on the current tree. A shared CloudNativePG 16 cluster used to live here (commit `bc41f2d15`, archived in `0c9529c7a`). It was one database server for many apps, with Barman writing to a MinIO bucket `postgresql`. That layout is not the target. Do not revive it. The per-app StatefulSets below are the source of truth.
+The apps still read the per-app StatefulSets below. A shared CloudNativePG 16 cluster used to live here (commit `bc41f2d15`, archived in `0c9529c7a`). It was one database server for many apps, with Barman writing to a MinIO bucket `postgresql`. That shared server is not the target. Do not revive it. The empty per-app clusters added with the operator are not serving traffic yet.
 
 ### Postgres workloads
 
@@ -151,7 +156,7 @@ s3://postgresql/immich/immich-db/
 
 ### Credentials
 
-S3 keys for this bucket are a new 1Password item named `postgresql` in the same `onepassword-connect` `ClusterSecretStore` the rest of the cluster uses. Do not reuse the `kopiur` item. The ExternalSecret matches [components/kopiur/secret/externalsecret.yaml](../kubernetes/components/kopiur/secret/externalsecret.yaml): `dataFrom.extract.key`, template only, no literal keys in git. It renders `ACCESS_KEY_ID` and `ACCESS_SECRET_KEY` (the key names the `ObjectStore` secret refs use) plus region `garage`. One secret, `postgresql-s3`, in namespace `default`, created with the silo PR and referenced by the later ObjectStores. The sketch is [silo-barman.yaml](cnpg-examples/silo-barman.yaml).
+S3 keys for this bucket are a new 1Password item named `postgresql` in the same `onepassword-connect` `ClusterSecretStore` the rest of the cluster uses. Do not reuse the `kopiur` item. The ExternalSecret matches [components/kopiur/secret/externalsecret.yaml](../kubernetes/components/kopiur/secret/externalsecret.yaml): `dataFrom.extract.key`, template only, no literal keys in git. It renders `ACCESS_KEY_ID` and `ACCESS_SECRET_KEY` (the key names the `ObjectStore` secret refs use) plus region `garage`. One secret, `postgresql-s3`, in namespace `default`, created with the silo PR and referenced by the later ObjectStores. The manifest is [kubernetes/apps/default/cnpg-barman/externalsecret.yaml](../kubernetes/apps/default/cnpg-barman/externalsecret.yaml).
 
 ### Objects, per cluster
 
@@ -188,9 +193,9 @@ After a `Backup` for that cluster has completed and WAL archiving is healthy:
 
 The running server image is `ghcr.io/immich-app/immich-server:v3.3.5` with database image `ghcr.io/immich-app/postgres:18-vectorchord0.5.3`. That database image is the Docker Postgres image plus VectorChord. It has no CloudNativePG instance manager, so it cannot be `spec.imageName`.
 
-The CNPG image that matches the extension line is `ghcr.io/tensorchord/cloudnative-vectorchord:18.0-0.5.3` (digest in [immich-cluster.yaml](cnpg-examples/immich-cluster.yaml)). Checked against the GHCR tag list on 2026-11-01: there is a `18.0-0.5.3` tag and no `18-0.5.3` tag. Newer `18.x` tags on that repository are VectorChord 1.0 or 1.1. Deedee's pin `18.6-1.1.1` is a different extension version. Loading a 0.5.3 dump's indexes into 1.1.1 is a version upgrade, and it is out of scope here. Do that later, against a cluster that is already on CloudNativePG, with its own backup.
+The CNPG image that matches the extension line is `ghcr.io/tensorchord/cloudnative-vectorchord:18.0-0.5.3` (digest in [immich/cnpg/cluster.yaml](../kubernetes/apps/default/immich/cnpg/cluster.yaml)). Checked against the GHCR tag list on 2026-11-01: there is a `18.0-0.5.3` tag and no `18-0.5.3` tag. Newer `18.x` tags on that repository are VectorChord 1.0 or 1.1. Deedee's pin `18.6-1.1.1` is a different extension version. Loading a 0.5.3 dump's indexes into 1.1.1 is a version upgrade, and it is out of scope here. Do that later, against a cluster that is already on CloudNativePG, with its own backup.
 
-`postgresql.shared_preload_libraries` must include `vchord.so` before the postmaster starts. `CREATE EXTENSION vchord` fails with `vchord must be loaded via shared_preload_libraries` otherwise. The [Database CR](cnpg-examples/immich-database.yaml) then ensures `cube`, `earthdistance`, `pg_trgm`, `unaccent`, `uuid-ossp`, `vector`, and `vchord`, which is the set in deedee's Immich `Database`. `earthdistance` needs `cube`. `vchord` needs `vector`.
+`postgresql.shared_preload_libraries` must include `vchord.so` before the postmaster starts. `CREATE EXTENSION vchord` fails with `vchord must be loaded via shared_preload_libraries` otherwise. The [Database CR](../kubernetes/apps/default/immich/cnpg/database.yaml) then ensures `cube`, `earthdistance`, `pg_trgm`, `unaccent`, `uuid-ossp`, `vector`, and `vchord`, which is the set in deedee's Immich `Database`. `earthdistance` needs `cube`. `vchord` needs `vector`.
 
 Gate before any dump is restored: on a throwaway `Cluster` using that image, `\dx` can create every extension in the list, and `\dx` on the **live** Immich database lists the same names. If the live database has an extra extension, add it to the `Database` and confirm the image ships the matching `.so`. If it is missing one, drop it from the sketch.
 
@@ -234,7 +239,7 @@ kubectl -n default exec <app>-database-0 -c postgresql -- \
 
 Record the role, the database name, the extension list, the Postgres version (expect 18), and how full the 10Gi or 5Gi claim is. Size the new `Cluster` volume at least as large as the used space plus headroom. `ceph-block` allows expansion; do the expansion on the new claim before restore if the dump will not fit. Do not resize the old claim down.
 
-For Immich, compare `\dx` to [immich-database.yaml](cnpg-examples/immich-database.yaml). For silo and bookorbit, this output picks the image.
+For Immich, compare `\dx` to [immich/cnpg/database.yaml](../kubernetes/apps/default/immich/cnpg/database.yaml). For silo and bookorbit, this output picks the image.
 
 Save the rendered secret keys (`DB_USERNAME` / `DB_PASSWORD` or `DATABASE_URL`) somewhere you already keep secrets. The new `Cluster`'s `bootstrap.initdb.secret` must reuse the same role name and the same password. Do not rotate them in the cutover.
 
@@ -266,9 +271,9 @@ DUMP_DIR=/path/outside/the/pvc \
 
 ### Phase 2 — operator, then an empty cluster
 
-Operator PR first. It installs the operator and the Barman Cloud plugin under `kubernetes/apps/database/`, and nothing else. After it is Ready, `kubectl explain cluster.postgresql.cnpg.io`, `kubectl explain database.postgresql.cnpg.io`, and `kubectl explain objectstore.barmancloud.cnpg.io` all succeed. The bucket `postgresql` already exists on Garage, and the 1Password item `postgresql` exists, before the next PR.
+The operator, the plugin, and the three empty clusters are already in git. Confirm `cloudnative-pg` and `plugin-barman-cloud` are Ready, then `kubectl explain cluster.postgresql.cnpg.io`, `kubectl explain database.postgresql.cnpg.io`, and `kubectl explain objectstore.barmancloud.cnpg.io`. The bucket `postgresql` and the 1Password item `postgresql` have to exist or WAL archiving stays failed. That work is outside git.
 
-Then one empty cluster. Silo first. That PR adds `silo-db`, `silo-db-store`, the silo `ScheduledBackup`, and the shared ExternalSecret `postgresql-s3`. It does not add `bookorbit-db` or `immich-db`. It does not remove the HelmRelease, the PVC, or the Kopiur component, and it does not change the app DSN. `bootstrap` is `initdb` only. The initdb secret carries the existing role and password. Bookorbit waits until silo's empty cluster is Ready and you have either cut silo over or explicitly decided to leave silo empty and move on. Immich waits the same way. Immich's PR is the one that adds the `Database` CR.
+The clusters are empty (`bootstrap.initdb` only). Their services are `<app>-db-rw`. The apps still use `<app>-database`. Do not remove the HelmRelease, the PVC, or the Kopiur component in this step. Cut over one app at a time, silo first.
 
 Wait until the `Cluster` condition `Ready` is true. The primary is `<app>-db-rw.default.svc.cluster.local:5432`. The old service `<app>-database` still answers, and the app still uses it.
 

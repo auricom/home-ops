@@ -1,10 +1,5 @@
-# Inert CloudNativePG examples
+# Cutover helper
 
-These files are a sketch of the later migration PRs. They are not a live install.
+Live CloudNativePG manifests are under `kubernetes/apps/database/cloudnative-pg/`, `kubernetes/apps/database/plugin-barman-cloud/`, and `kubernetes/apps/default/{silo,bookorbit,immich}/cnpg/`. Flux builds them from [kubernetes/apps/kustomization.yaml](../../kubernetes/apps/kustomization.yaml).
 
-- Nothing under `docs/` is on the Flux path. `cluster-apps` builds `./kubernetes/apps` ([kubernetes/flux/cluster/ks.yaml](../../kubernetes/flux/cluster/ks.yaml)).
-- No `kustomization.yaml` in this directory, and no Flux `Kustomization` points here.
-- Do not copy them into `kubernetes/` until the matching phase in [the runbook](../cnpg-migration.md) says so.
-- Do not `kubectl apply` them against the cluster. Applying a Cluster example creates a new empty database beside the current StatefulSet. That is a later, deliberate step, one app at a time starting with silo, and it still must not adopt the existing PVC. The Barman `ObjectStore` writes only to the planned Garage bucket `postgresql`, which is not created here.
-
-`logical-copy.sh` only dumps and restores. It has no delete, scale, or PVC path.
+This directory only has `logical-copy.sh`, used by [the runbook](../cnpg-migration.md) when an app is actually migrated. It does not delete PVCs or change HelmReleases.
