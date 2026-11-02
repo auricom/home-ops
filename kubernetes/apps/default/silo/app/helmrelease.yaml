@@ -22,7 +22,7 @@ spec:
           template:
             data:
               SECRET_KEY: "{{ .SILO_SECRET_KEY }}"
-              DATABASE_URL: 'postgres://silo:{{ .SILO_POSTGRES_PASS | urlquery | replace "+" "%20" }}@silo-database.default.svc.cluster.local.:5432/silo'
+              DATABASE_URL: 'postgres://silo:{{ .SILO_POSTGRES_PASS | urlquery | replace "+" "%20" }}@silo-db-rw.default.svc.cluster.local.:5432/silo'
         dataFrom:
           - extract:
               key: silo
