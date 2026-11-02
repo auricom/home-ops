@@ -9,6 +9,10 @@ spec:
   owner: immich
   cluster:
     name: immich-db
+  template: template0
+  localeProvider: libc
+  localeCollate: en_US.utf8
+  localeCType: en_US.utf8
   extensions:
     - ensure: present
       name: cube

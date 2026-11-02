@@ -9,6 +9,10 @@ spec:
   owner: bookorbit
   cluster:
     name: bookorbit-db
+  template: template0
+  localeProvider: libc
+  localeCollate: en_US.utf8
+  localeCType: en_US.utf8
   extensions:
     - ensure: present
       name: pg_trgm

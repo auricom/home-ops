@@ -38,6 +38,8 @@ spec:
           serverName: silo-db
   bootstrap:
     initdb:
+      localeCollate: en_US.utf8
+      localeCType: en_US.utf8
       database: silo
       owner: silo
       secret:

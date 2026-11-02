@@ -40,6 +40,8 @@ spec:
           serverName: bookorbit-db
   bootstrap:
     initdb:
+      localeCollate: en_US.utf8
+      localeCType: en_US.utf8
       database: bookorbit
       owner: bookorbit
       secret:

@@ -46,6 +46,8 @@ spec:
           serverName: immich-db
   bootstrap:
     initdb:
+      localeCollate: en_US.utf8
+      localeCType: en_US.utf8
       database: immich
       owner: immich
       secret:
