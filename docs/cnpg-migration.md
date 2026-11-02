@@ -2,7 +2,21 @@
 
 Move each PostgreSQL database off its app-template StatefulSet and onto its own [CloudNativePG](https://cloudnative-pg.io/) `Cluster`, without deleting the data that is already on disk.
 
-This document is the cutover procedure. The operator, the Barman Cloud plugin, and the three empty clusters are Flux manifests under `kubernetes/`. Apps still use their StatefulSets. `docs/cnpg-examples/` only holds `logical-copy.sh`.
+This document is the cutover procedure and pre-cutover inventory. The operator, the Barman Cloud plugin, and the three per-app clusters are Flux manifests under `kubernetes/`. `docs/cnpg-examples/` holds `logical-copy.sh`.
+
+## Cutover status — 2026-11-03 (Europe/Paris)
+
+Silo, bookorbit, and Immich now use their respective `<app>-db-rw` services. Each cutover verified exact table row counts, extension versions and schemas, database locale, application health, and a completed post-restore Barman backup. Immich sync has resumed. Silo's four stored generated columns were also compared per row using hashes.
+
+| App       | Tables verified | Completed post-cutover Backup           |
+| --------- | --------------: | --------------------------------------- |
+| silo      |             304 | `silo-post-cutover-20261102225847`      |
+| bookorbit |             176 | `bookorbit-post-cutover-20261102230236` |
+| immich    |              72 | `immich-post-cutover-20261102230813`    |
+
+All three old StatefulSets remain at one replica, with no application clients. The old PVCs and their Kopiur backup policies remain in place; the old and new claims were verified distinct and `Bound`. Continuous WAL archiving is healthy on all three new clusters. The next stage is phase 6: real application use and soak, followed by separately approved cleanup. Reverting a hostname after cutover discards subsequent writes on the new cluster unless those writes are separately preserved.
+
+The inventories and old-service settings below describe the pre-cutover baseline; the three application cutovers listed under later pull requests are complete.
 
 ## Design
 
@@ -39,37 +53,37 @@ The apps still read the per-app StatefulSets below. A shared CloudNativePG 16 cl
 
 ### Postgres workloads
 
-| | Immich | silo | bookorbit |
-| --- | --- | --- | --- |
-| HelmRelease | [`immich-database`](../kubernetes/apps/default/immich/database/helmrelease.yaml) | [`silo-database`](../kubernetes/apps/default/silo/database/helmrelease.yaml) | [`bookorbit-database`](../kubernetes/apps/default/bookorbit/database/helmrelease.yaml) |
-| Namespace | `default` | `default` | `default` |
-| Chart | app-template, OCIRepository tag `5.3.0` | same | same |
-| Controller | StatefulSet, single controller `primary` | same | same |
-| Image | `ghcr.io/immich-app/postgres:18-vectorchord0.5.3` `sha256:828081a755d3911a2d94f0a2be9f98570c07d52cf080fd310a9d6e4b83b73aa5` | `pgvector/pgvector:pg18` `sha256:c29f30688a9ad961691bdf0ec1650717cc132a5814619d80f80463d6e4c42e47` | same image and digest as silo |
-| Data directory | `PGDATA=/var/lib/postgresql/data`, volume mounted with **subPath `data`** | `PGDATA=/var/lib/postgresql/data/pgdata`, volume mounted at `/var/lib/postgresql/data` with no subPath | same as silo |
-| UID on the files | `runAsUser` / `fsGroup` 999, init container `chown 999:999` | same | init container `chown 999:999`; pod securityContext is unset and the image default is 999 |
-| PVC | `immich-database` | `silo-database` (the HelmRelease name) | `bookorbit-database` |
-| PVC request | 10Gi (`KOPIUR_CAPACITY` on the Flux Kustomization) | 5Gi (Kopiur component default) | 5Gi (Kopiur component default) |
-| StorageClass | `ceph-block` (Kopiur default) | same | same |
-| Service | `immich-database.default.svc.cluster.local:5432` | `silo-database.default.svc.cluster.local:5432` | `bookorbit-database.default.svc.cluster.local:5432` |
-| 1Password item | `immich` via ClusterSecretStore `onepassword-connect` | `silo` | `bookorbit` |
-| Rendered secret | `immich-database` | `silo-database` | `bookorbit-database` |
-| Role / database | database name literal `immich`. Role is `IMMICH__POSTGRES_USER` (the commented pgautoupgrade block in the HelmRelease says `immich`; read the live secret before relying on that) | literals `silo` / `silo`. Password key `SILO_POSTGRES_PASS` | `BOOKORBIT_POSTGRES_USERNAME`, `BOOKORBIT_POSTGRES_PASSWORD`, `BOOKORBIT_POSTGRES_DB_NAME` |
-| Pod resources | request 500m / 512Mi, limit 750m / 768Mi | same | same |
-| Kopiur | component on the `immich-database` Flux Kustomization, `KOPIUR_PUID/PGID=999` | component on `silo-database`, same uid | component on `bookorbit-database`, same uid |
+|                  | Immich                                                                                                                                                                            | silo                                                                                                   | bookorbit                                                                                  |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| HelmRelease      | [`immich-database`](../kubernetes/apps/default/immich/database/helmrelease.yaml)                                                                                                  | [`silo-database`](../kubernetes/apps/default/silo/database/helmrelease.yaml)                           | [`bookorbit-database`](../kubernetes/apps/default/bookorbit/database/helmrelease.yaml)     |
+| Namespace        | `default`                                                                                                                                                                         | `default`                                                                                              | `default`                                                                                  |
+| Chart            | app-template, OCIRepository tag `5.3.0`                                                                                                                                           | same                                                                                                   | same                                                                                       |
+| Controller       | StatefulSet, single controller `primary`                                                                                                                                          | same                                                                                                   | same                                                                                       |
+| Image            | `ghcr.io/immich-app/postgres:18-vectorchord0.5.3` `sha256:828081a755d3911a2d94f0a2be9f98570c07d52cf080fd310a9d6e4b83b73aa5`                                                       | `pgvector/pgvector:pg18` `sha256:c29f30688a9ad961691bdf0ec1650717cc132a5814619d80f80463d6e4c42e47`     | same image and digest as silo                                                              |
+| Data directory   | `PGDATA=/var/lib/postgresql/data`, volume mounted with **subPath `data`**                                                                                                         | `PGDATA=/var/lib/postgresql/data/pgdata`, volume mounted at `/var/lib/postgresql/data` with no subPath | same as silo                                                                               |
+| UID on the files | `runAsUser` / `fsGroup` 999, init container `chown 999:999`                                                                                                                       | same                                                                                                   | init container `chown 999:999`; pod securityContext is unset and the image default is 999  |
+| PVC              | `immich-database`                                                                                                                                                                 | `silo-database` (the HelmRelease name)                                                                 | `bookorbit-database`                                                                       |
+| PVC request      | 10Gi (`KOPIUR_CAPACITY` on the Flux Kustomization)                                                                                                                                | 5Gi (Kopiur component default)                                                                         | 5Gi (Kopiur component default)                                                             |
+| StorageClass     | `ceph-block` (Kopiur default)                                                                                                                                                     | same                                                                                                   | same                                                                                       |
+| Service          | `immich-database.default.svc.cluster.local:5432`                                                                                                                                  | `silo-database.default.svc.cluster.local:5432`                                                         | `bookorbit-database.default.svc.cluster.local:5432`                                        |
+| 1Password item   | `immich` via ClusterSecretStore `onepassword-connect`                                                                                                                             | `silo`                                                                                                 | `bookorbit`                                                                                |
+| Rendered secret  | `immich-database`                                                                                                                                                                 | `silo-database`                                                                                        | `bookorbit-database`                                                                       |
+| Role / database  | database name literal `immich`. Role is `IMMICH__POSTGRES_USER` (the commented pgautoupgrade block in the HelmRelease says `immich`; read the live secret before relying on that) | literals `silo` / `silo`. Password key `SILO_POSTGRES_PASS`                                            | `BOOKORBIT_POSTGRES_USERNAME`, `BOOKORBIT_POSTGRES_PASSWORD`, `BOOKORBIT_POSTGRES_DB_NAME` |
+| Pod resources    | request 500m / 512Mi, limit 750m / 768Mi                                                                                                                                          | same                                                                                                   | same                                                                                       |
+| Kopiur           | component on the `immich-database` Flux Kustomization, `KOPIUR_PUID/PGID=999`                                                                                                     | component on `silo-database`, same uid                                                                 | component on `bookorbit-database`, same uid                                                |
 
 The PVC, `SnapshotPolicy`, `SnapshotSchedule`, and `Restore` come from [kubernetes/components/kopiur/backup](../kubernetes/components/kopiur/backup/kustomization.yaml), substituted with `APP` equal to the Flux Kustomization name. Snapshots go to `ClusterRepository/storage` ([kubernetes/apps/kopiur-system/kopiur/repository/clusterrepository.yaml](../kubernetes/apps/kopiur-system/kopiur/repository/clusterrepository.yaml)): Garage S3 bucket `kopiur-k8s` at `192.168.30.10:30188`. The VolumeSnapshotClass default is `csi-ceph-blockpool`.
 
 ### Who connects
 
-| App | How it reaches Postgres | HelmRelease dependency |
-| --- | --- | --- |
-| Immich server | `secretRef` `immich-database` (`DB_HOSTNAME`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE_NAME`, and `JWT_SECRET`) | `dependsOn: immich-database` in [immich/app/helmrelease.yaml](../kubernetes/apps/default/immich/app/helmrelease.yaml) |
-| Immich microservices | same secret | `dependsOn: immich` |
-| Immich machine-learning | same secret (reloader watches it) | `dependsOn: immich` |
-| Immich sync | does not use the database secret | none on the database |
-| silo | `DATABASE_URL` is rendered on the **app** ExternalSecret in [silo/app/helmrelease.yaml](../kubernetes/apps/default/silo/app/helmrelease.yaml), host `silo-database.default.svc.cluster.local.` | `dependsOn: silo-database` |
-| bookorbit | `secretRef` `bookorbit-database`, which is created by the **database** HelmRelease and contains `DATABASE_URL` | no `dependsOn`; the secret name is the coupling |
+| App                     | How it reaches Postgres                                                                                                                                                                        | HelmRelease dependency                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Immich server           | `secretRef` `immich-database` (`DB_HOSTNAME`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE_NAME`, and `JWT_SECRET`)                                                                   | `dependsOn: immich-database` in [immich/app/helmrelease.yaml](../kubernetes/apps/default/immich/app/helmrelease.yaml) |
+| Immich microservices    | same secret                                                                                                                                                                                    | `dependsOn: immich`                                                                                                   |
+| Immich machine-learning | same secret (reloader watches it)                                                                                                                                                              | `dependsOn: immich`                                                                                                   |
+| Immich sync             | does not use the database secret                                                                                                                                                               | none on the database                                                                                                  |
+| silo                    | `DATABASE_URL` is rendered on the **app** ExternalSecret in [silo/app/helmrelease.yaml](../kubernetes/apps/default/silo/app/helmrelease.yaml), host `silo-database.default.svc.cluster.local.` | `dependsOn: silo-database`                                                                                            |
+| bookorbit               | `secretRef` `bookorbit-database`, which is created by the **database** HelmRelease and contains `DATABASE_URL`                                                                                 | no `dependsOn`; the secret name is the coupling                                                                       |
 
 Immich also runs Dragonfly (`immich-dragonfly`). That is a cache. It stays as it is.
 
@@ -77,13 +91,13 @@ Hostnames in the templates use a trailing dot (`svc.cluster.local.`). Keep that 
 
 ### Apps that looked like Postgres and are not
 
-| App | What it actually uses |
-| --- | --- |
-| Authelia | sqlite file `/data/db.sqlite3` in [configuration.yaml](../kubernetes/apps/default/authelia/app/config/configuration.yaml). Session store is Dragonfly. Two `AUTHELIA_STORAGE_POSTGRES_*` lines in the HelmRelease are comments. |
-| Tandoor | `DB_ENGINE=django.db.backends.sqlite3`. `POSTGRES_DB` is the sqlite path `/opt/recipes/data/tandoor.sqlite`. |
-| Paperless | `PAPERLESS_DBNAME=paperless` and no `PAPERLESS_DBHOST`. Paperless uses sqlite unless `PAPERLESS_DBHOST` is set. Its `database/` directory is Dragonfly only. |
-| Bookstack | MariaDB sidecar (`lscr.io/linuxserver/mariadb`), not Postgres. |
-| atuin, donetick, joplin, vikunja, gatus, komf | sqlite (or an sqlite-specific image), from their HelmRelease env. |
+| App                                           | What it actually uses                                                                                                                                                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Authelia                                      | sqlite file `/data/db.sqlite3` in [configuration.yaml](../kubernetes/apps/default/authelia/app/config/configuration.yaml). Session store is Dragonfly. Two `AUTHELIA_STORAGE_POSTGRES_*` lines in the HelmRelease are comments. |
+| Tandoor                                       | `DB_ENGINE=django.db.backends.sqlite3`. `POSTGRES_DB` is the sqlite path `/opt/recipes/data/tandoor.sqlite`.                                                                                                                    |
+| Paperless                                     | `PAPERLESS_DBNAME=paperless` and no `PAPERLESS_DBHOST`. Paperless uses sqlite unless `PAPERLESS_DBHOST` is set. Its `database/` directory is Dragonfly only.                                                                    |
+| Bookstack                                     | MariaDB sidecar (`lscr.io/linuxserver/mariadb`), not Postgres.                                                                                                                                                                  |
+| atuin, donetick, joplin, vikunja, gatus, komf | sqlite (or an sqlite-specific image), from their HelmRelease env.                                                                                                                                                               |
 
 No other `DB_HOSTNAME`, `POSTGRES_*` consumer, or `postgres://` URL showed up under `kubernetes/apps`.
 
@@ -241,6 +255,15 @@ Record the role, the database name, the extension list, the Postgres version (ex
 
 For Immich, compare `\dx` to [immich/cnpg/database.yaml](../kubernetes/apps/default/immich/cnpg/database.yaml). For silo and bookorbit, this output picks the image.
 
+Read the source locale as well:
+
+```bash
+kubectl -n default exec <app>-database-0 -c postgresql -- \
+  psql -U <role> -d <database> -c 'SELECT datcollate, datctype, datlocprovider, datlocale FROM pg_database WHERE datname = current_database();'
+```
+
+All three sources use libc locale `en_US.utf8`. Match `bootstrap.initdb.localeCollate` / `localeCType` and the `Database` CR's locale fields before restoring. The Database CR uses `template: template0` when creating the database with that locale. Updating bootstrap fields does not change an already-created database's locale: correct an empty target before restoring into it. Silo's stored generated title-normalization columns are recomputed during restore; locale `C` strips non-Latin characters and can make its unique-index creation fail. Preserve the source locale and compare generated values as well as row counts.
+
 Save the rendered secret keys (`DB_USERNAME` / `DB_PASSWORD` or `DATABASE_URL`) somewhere you already keep secrets. The new `Cluster`'s `bootstrap.initdb.secret` must reuse the same role name and the same password. Do not rotate them in the cutover.
 
 ### Phase 1 — backup gate
@@ -343,13 +366,13 @@ Read the diff. It will not be empty: the `host=` line and `version()` differ by 
 
 Do this only after phase 4's diff is clean. Edit the DSN host and nothing else (same user, same password, same database name, port 5432).
 
-| App | Change | Secret that must keep working |
-| --- | --- | --- |
-| silo | In [silo/app/helmrelease.yaml](../kubernetes/apps/default/silo/app/helmrelease.yaml), set the host inside `DATABASE_URL` to `silo-db-rw.default.svc.cluster.local.` | The app ExternalSecret already owns `DATABASE_URL`. The database HelmRelease secret is only the server's `POSTGRES_*` env. |
-| bookorbit | In the database HelmRelease template, set the host inside `DATABASE_URL` to `bookorbit-db-rw.default.svc.cluster.local.` | The app `secretRef`s `bookorbit-database`, which this HelmRelease creates. See the warning under phase 7 before you delete that HelmRelease. |
-| Immich | In the database HelmRelease template, set `DB_HOSTNAME` to `immich-db-rw.default.svc.cluster.local.` | The same secret carries `JWT_SECRET` and is mounted by the server, microservices, and machine-learning. Those three set a reloader annotation, so they restart onto the new host. The database StatefulSet does not, and its PVC mount is unchanged. `DB_HOSTNAME` is the app connection variable; it is also injected into the database container via `envFrom`. |
+| App       | Change                                                                                                                                                              | Secret that must keep working                                                                                                                                                                                                                                                                                                                                     |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| silo      | In [silo/app/helmrelease.yaml](../kubernetes/apps/default/silo/app/helmrelease.yaml), set the host inside `DATABASE_URL` to `silo-db-rw.default.svc.cluster.local.` | The app ExternalSecret already owns `DATABASE_URL`. The database HelmRelease secret is only the server's `POSTGRES_*` env.                                                                                                                                                                                                                                        |
+| bookorbit | In the database HelmRelease template, set the host inside `DATABASE_URL` to `bookorbit-db-rw.default.svc.cluster.local.`                                            | The app `secretRef`s `bookorbit-database`, which this HelmRelease creates. See the warning under phase 7 before you delete that HelmRelease.                                                                                                                                                                                                                      |
+| Immich    | In the database HelmRelease template, set `DB_HOSTNAME` to `immich-db-rw.default.svc.cluster.local.`                                                                | The same secret carries `JWT_SECRET` and is mounted by the server, microservices, and machine-learning. Those three set a reloader annotation, so they restart onto the new host. The database StatefulSet does not, and its PVC mount is unchanged. `DB_HOSTNAME` is the app connection variable; it is also injected into the database container via `envFrom`. |
 
-Scale the writers back up. For Immich, resume `immich-sync` only after the server is Ready. Hit the existing health endpoints (silo `/api/v1/ready`, bookorbit `/api/v1/health`, Immich `/server-info/ping`) and use the app.
+Scale the writers back up. For Immich, resume `immich-sync` only after the server is Ready. Hit the existing health endpoints (silo `/api/v1/ready`, bookorbit `/api/v1/health`, Immich `/api/server/ping` (JSON `{"res":"pong"}`; `/server-info/ping` serves frontend HTML)) and use the app.
 
 The old StatefulSet is still Running and still has its PVC. Rollback is reverting the host string so the app uses `<app>-database` again. Rollback drops writes that landed on the new cluster after this phase. Before reverting, dump the new cluster with `logical-copy.sh dump` if those writes matter. Do not roll back by deleting the new `Cluster` first; you would throw away the only copy of the post-cutover writes.
 
