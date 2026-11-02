@@ -98,7 +98,6 @@ spec:
               limits:
                 amd.com/gpu: 1
                 memory: 6Gi
-        replicas: 0
     service:
       app:
         controller: *app
