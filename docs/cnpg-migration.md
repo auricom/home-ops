@@ -19,7 +19,7 @@ Flux applies these. `cluster-apps` builds [kubernetes/apps/kustomization.yaml](.
 - Operator: [kubernetes/apps/database/cloudnative-pg/](../kubernetes/apps/database/cloudnative-pg/ks.yaml), wired from [database/kustomization.yaml](../kubernetes/apps/database/kustomization.yaml).
 - Barman Cloud plugin: [kubernetes/apps/database/plugin-barman-cloud/](../kubernetes/apps/database/plugin-barman-cloud/ks.yaml).
 - Empty clusters `silo-db`, `bookorbit-db`, `immich-db`, each with an `ObjectStore` and `ScheduledBackup`, under `kubernetes/apps/default/{silo,bookorbit,immich}/cnpg/`. Their Flux `Kustomization`s are `silo-cnpg`, `bookorbit-cnpg`, and `immich-cnpg`.
-- S3 ExternalSecret `cnpg-s3` at [kubernetes/apps/default/cnpg-barman/](../kubernetes/apps/default/cnpg-barman/externalsecret.yaml). No key material in git.
+- S3 ExternalSecret `cloudnative-pg` at [kubernetes/apps/default/cnpg-barman/](../kubernetes/apps/default/cnpg-barman/externalsecret.yaml). No key material in git.
 - This runbook and `docs/cnpg-examples/logical-copy.sh`.
 
 The existing database HelmReleases, DSNs, and PVCs are unchanged. Cutover is still one app at a time, silo then bookorbit then Immich, even though the three empty clusters are created together.
@@ -120,7 +120,7 @@ kubernetes/apps/default/immich/database/cnpg-database.yaml
 kubernetes/apps/default/immich/database/cnpg-barman.yaml
 ```
 
-The operator directory is wired in the operator PR. Each app's files are listed from that app's existing `database/kustomization.yaml` only in that app's later PR. ExternalSecret `cnpg-s3` is created once by `cnpg-barman` and referenced by every ObjectStore. Cluster names are `immich-db`, `silo-db`, and `bookorbit-db`, so the primary service is `<name>-rw` and does not collide with the StatefulSet service `<name>-database`.
+The operator directory is wired in the operator PR. Each app's files are listed from that app's existing `database/kustomization.yaml` only in that app's later PR. ExternalSecret `cloudnative-pg` is created once by `cnpg-barman` and referenced by every ObjectStore. Cluster names are `immich-db`, `silo-db`, and `bookorbit-db`, so the primary service is `<name>-rw` and does not collide with the StatefulSet service `<name>-database`.
 
 Reference shapes, adapted rather than copied:
 
@@ -156,7 +156,7 @@ s3://postgresql/immich/immich-db/
 
 ### Credentials
 
-S3 keys for this bucket are a new 1Password item named `cnpg-s3` in the same `onepassword-connect` `ClusterSecretStore` the rest of the cluster uses. Items in this repo are named for the consumer (`kopiur`, `rook-ceph`), so this one is named for CloudNativePG rather than the Garage bucket. Do not reuse the `kopiur` item. The ExternalSecret matches [components/kopiur/secret/externalsecret.yaml](../kubernetes/components/kopiur/secret/externalsecret.yaml): `dataFrom.extract.key`, template only, no literal keys in git. It renders `ACCESS_KEY_ID` and `ACCESS_SECRET_KEY` (the key names the `ObjectStore` secret refs use) plus region `garage`. One secret, `cnpg-s3`, in namespace `default`, created by `cnpg-barman` and referenced by every ObjectStore. The manifest is [kubernetes/apps/default/cnpg-barman/externalsecret.yaml](../kubernetes/apps/default/cnpg-barman/externalsecret.yaml).
+S3 keys for this bucket are a new 1Password item named `cloudnative-pg` in the same `onepassword-connect` `ClusterSecretStore` the rest of the cluster uses. Items in this repo are named for the consumer (`kopiur`, `rook-ceph`), so this one is named for CloudNativePG rather than the Garage bucket. Do not reuse the `kopiur` item. The ExternalSecret matches [components/kopiur/secret/externalsecret.yaml](../kubernetes/components/kopiur/secret/externalsecret.yaml): `dataFrom.extract.key`, template only, no literal keys in git. It renders `ACCESS_KEY_ID` and `ACCESS_SECRET_KEY` (the key names the `ObjectStore` secret refs use) plus region `garage`. One secret, `cloudnative-pg`, in namespace `default`, created by `cnpg-barman` and referenced by every ObjectStore. The manifest is [kubernetes/apps/default/cnpg-barman/externalsecret.yaml](../kubernetes/apps/default/cnpg-barman/externalsecret.yaml).
 
 ### Objects, per cluster
 
@@ -271,7 +271,7 @@ DUMP_DIR=/path/outside/the/pvc \
 
 ### Phase 2 — operator, then an empty cluster
 
-The operator, the plugin, and the three empty clusters are already in git. Confirm `cloudnative-pg` and `plugin-barman-cloud` are Ready, then `kubectl explain cluster.postgresql.cnpg.io`, `kubectl explain database.postgresql.cnpg.io`, and `kubectl explain objectstore.barmancloud.cnpg.io`. The bucket `postgresql` and the 1Password item `cnpg-s3` have to exist or WAL archiving stays failed. That work is outside git.
+The operator, the plugin, and the three empty clusters are already in git. Confirm `cloudnative-pg` and `plugin-barman-cloud` are Ready, then `kubectl explain cluster.postgresql.cnpg.io`, `kubectl explain database.postgresql.cnpg.io`, and `kubectl explain objectstore.barmancloud.cnpg.io`. The bucket `postgresql` and the 1Password item `cloudnative-pg` have to exist or WAL archiving stays failed. That work is outside git.
 
 The clusters are empty (`bootstrap.initdb` only). Their services are `<app>-db-rw`. The apps still use `<app>-database`. Do not remove the HelmRelease, the PVC, or the Kopiur component in this step. Cut over one app at a time, silo first.
 

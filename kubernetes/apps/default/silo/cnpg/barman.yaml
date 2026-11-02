@@ -11,13 +11,13 @@ spec:
     endpointURL: http://192.168.30.10:30188
     s3Credentials:
       accessKeyId:
-        name: cnpg-s3
+        name: cloudnative-pg
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: cnpg-s3
+        name: cloudnative-pg
         key: ACCESS_SECRET_KEY
     region:
-      name: cnpg-s3
+      name: cloudnative-pg
       key: AWS_REGION
     wal:
       compression: gzip
