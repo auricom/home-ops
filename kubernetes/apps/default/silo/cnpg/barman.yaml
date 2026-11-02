@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: silo-db-store
+spec:
+  retentionPolicy: 7d
+  configuration:
+    destinationPath: s3://postgresql/silo
+    endpointURL: http://192.168.30.10:30188
+    s3Credentials:
+      accessKeyId:
+        name: postgresql-s3
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: postgresql-s3
+        key: ACCESS_SECRET_KEY
+    region:
+      name: postgresql-s3
+      key: AWS_REGION
+    wal:
+      compression: gzip
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/scheduledbackup_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: silo-db
+spec:
+  schedule: "0 0 * * * *"
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+  cluster:
+    name: silo-db
