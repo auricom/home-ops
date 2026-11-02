@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./cluster.yaml
+  - ./database.yaml
   - ./barman.yaml

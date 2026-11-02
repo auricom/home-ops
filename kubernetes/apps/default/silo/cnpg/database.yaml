@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: silo
+spec:
+  name: silo
+  owner: silo
+  cluster:
+    name: silo-db
+  extensions:
+    - ensure: present
+      name: citext
+      version: "1.8"
+    - ensure: present
+      name: pg_trgm
+      version: "1.6"
+    - ensure: present
+      name: vector
+      version: "0.8.7"
