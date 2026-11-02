@@ -14,6 +14,17 @@
 # or any extension other than plpgsql. The stock image will not load pgvector.
 # Do not point silo or bookorbit at the Immich vectorchord image.
 #
+# This is the first cluster to create. Do not apply bookorbit-db or immich-db
+# in the same pull request. The app DSN stays on silo-database.
+#
+# WAL archiving uses the barman-cloud plugin (installed in the operator PR)
+# and the ObjectStore in silo-barman.yaml. bootstrap stays initdb for the
+# migration. Disaster recovery replaces initdb with:
+#   bootstrap:
+#     recovery:
+#       source: silo-db-restore
+# Do not set that until a completed Barman backup exists.
+#
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -36,6 +47,19 @@ spec:
   storage:
     size: 5Gi
     storageClass: ceph-block
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: silo-db-store
+        serverName: silo-db
+  externalClusters:
+    - name: silo-db-restore
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: silo-db-store
+          serverName: silo-db
   bootstrap:
     initdb:
       database: silo

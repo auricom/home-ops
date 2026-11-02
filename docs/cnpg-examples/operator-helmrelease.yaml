@@ -16,7 +16,9 @@
 # Re-check and digest-pin it in the operator PR. Leave config.clusterWide
 # at the chart default (true) so Clusters in namespace default are watched.
 #
-# No Barman plugin and no ObjectStore in this sketch.
+# The operator PR also installs the Barman Cloud plugin. See
+# plugin-barman-cloud.yaml. It does not create a Cluster, ObjectStore,
+# or ScheduledBackup. Those arrive one app at a time, silo first.
 #
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1

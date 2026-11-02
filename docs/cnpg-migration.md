@@ -8,21 +8,21 @@ This document is the procedure. It does not install the operator, and it does no
 
 One CloudNativePG `Cluster` and, where the app needs extensions, one `Database` per application that uses PostgreSQL. The operator is cluster-wide. The data stays in the application namespace (`default`), next to the app, the same way Dragonfly custom resources already sit next to Immich, Authelia, and LiteLLM while the Dragonfly operator lives under `kubernetes/apps/database/`.
 
-Logical copy (`pg_dump` / `pg_restore`, or CloudNativePG's `bootstrap.initdb.import` of type `microservice`) is the migration. Reusing the current PersistentVolumeClaim is not safe for these images; the reasons are in [Why the current PVC stays where it is](#why-the-current-pvc-stays-where-it-is).
+Logical copy (`pg_dump` / `pg_restore`, or CloudNativePG's `bootstrap.initdb.import` of type `microservice`) is the migration. Once a cluster is up, its backup is Barman Cloud to Garage bucket `postgresql` (continuous WAL and a daily `ScheduledBackup`). Reusing the current PersistentVolumeClaim is not safe for these images; the reasons are in [Why the current PVC stays where it is](#why-the-current-pvc-stays-where-it-is).
 
 **Keep PVC `immich-database`, `silo-database`, and `bookorbit-database` until a later pull request whose only job is deleting them, and only after the go-ahead in [phase 8](#phase-8-delete-the-old-pvc).** Do not delete them in the operator PR, the per-app cutover PR, or the HelmRelease removal PR. Do not point a `Cluster` at them with `bootstrap.recovery`, `existingClaim`, or a volume `dataSource`.
 
 ### What this pull request ships
 
 - This runbook and the inventory below.
-- Inert examples in [docs/cnpg-examples/](cnpg-examples/README.md): operator HelmRelease, Immich `Cluster`, Immich `Database`, silo `Cluster`, and `logical-copy.sh`.
+- Inert examples in [docs/cnpg-examples/](cnpg-examples/README.md): operator HelmRelease, Barman Cloud plugin kustomization, silo `ObjectStore` / `ScheduledBackup` / `ExternalSecret`, Immich `Cluster`, Immich `Database`, silo `Cluster`, and `logical-copy.sh`.
 - No change under `kubernetes/`. No Flux `Kustomization` references `docs/`.
 
 ### Later pull requests
 
-1. **Operator only.** Copy [operator-helmrelease.yaml](cnpg-examples/operator-helmrelease.yaml) into `kubernetes/apps/database/cloudnative-pg/` and add it to [kubernetes/apps/database/kustomization.yaml](../kubernetes/apps/database/kustomization.yaml) the same way `dragonfly` and `mosquitto` are added. No `Cluster` yet. Confirm `kubectl explain database.postgresql.cnpg.io` works afterwards.
-2. **One app at a time.** Recommended order is silo, then bookorbit, then Immich. Silo's role, database name, and DSN are all visible in git, so it is the rehearsal. Each app PR adds an empty `Cluster` (and Immich's `Database`) beside the existing HelmRelease and leaves the HelmRelease in place.
-3. **Cutover, per app.** Follow the phases below. The app's DSN changes only after the restore check passes. The StatefulSet stays.
+1. **Operator only.** Copy [operator-helmrelease.yaml](cnpg-examples/operator-helmrelease.yaml) into `kubernetes/apps/database/cloudnative-pg/` and [plugin-barman-cloud.yaml](cnpg-examples/plugin-barman-cloud.yaml) into `kubernetes/apps/database/plugin-barman-cloud/`. Add both Flux `Kustomization`s to [kubernetes/apps/database/kustomization.yaml](../kubernetes/apps/database/kustomization.yaml) the same way `dragonfly` and `mosquitto` are added. No `Cluster`, no `ObjectStore`, no `ScheduledBackup`. Confirm `kubectl explain database.postgresql.cnpg.io` and `kubectl explain objectstore.barmancloud.cnpg.io` work afterwards.
+2. **One empty cluster at a time.** Order is silo, then bookorbit, then Immich. The happy path never creates `silo-db`, `bookorbit-db`, and `immich-db` in one pull request. Each PR adds that app's empty `Cluster`, its `ObjectStore`, and its `ScheduledBackup`, and leaves the HelmRelease and the app DSN alone. Migrate that app only after its empty cluster is Ready. Immich's `Database` CR arrives with the Immich cluster, not before.
+3. **Cutover, per app.** Follow the phases below for the one cluster that exists. The app's DSN changes only after the restore check passes. The StatefulSet stays. Do not start the next app's cluster until this one's cutover has soaked or you have explicitly parked it.
 4. **Remove the StatefulSet.** A separate PR deletes that app's database HelmRelease only. The Flux `Kustomization` stays, because its Kopiur component holds the PVC. Immich's database path also holds the shared `OCIRepository` named `immich`, `immich-configmap`, and `immich-dragonfly`; those stay too.
 5. **Delete the old PVC.** A further PR, after an explicit go-ahead and a verified backup of the new cluster. One app per PR. Immich's non-database objects are moved off that Flux `Kustomization` first.
 
@@ -104,35 +104,83 @@ Before that PR, confirm `cluster-apps` is actually building `kubernetes/apps`. [
 Per-app objects, added in the app's own later PR, stay beside the current database HelmRelease so both exist during the dual-run window:
 
 ```text
+kubernetes/apps/database/cloudnative-pg/          # operator PR, no Cluster
+kubernetes/apps/database/plugin-barman-cloud/     # operator PR, no Cluster
+kubernetes/apps/default/silo/database/cnpg-cluster.yaml
+kubernetes/apps/default/silo/database/cnpg-barman.yaml
+kubernetes/apps/default/bookorbit/database/cnpg-cluster.yaml
+kubernetes/apps/default/bookorbit/database/cnpg-barman.yaml
 kubernetes/apps/default/immich/database/cnpg-cluster.yaml
 kubernetes/apps/default/immich/database/cnpg-database.yaml
-kubernetes/apps/default/silo/database/cnpg-cluster.yaml
-kubernetes/apps/default/bookorbit/database/cnpg-cluster.yaml
+kubernetes/apps/default/immich/database/cnpg-barman.yaml
 ```
 
-Those files are listed from the app's existing `database/kustomization.yaml` only in that later PR. Cluster names are `immich-db`, `silo-db`, and `bookorbit-db`, so the primary service is `<name>-rw` and does not collide with the StatefulSet service `<name>-database`.
+The operator directory is wired in the operator PR. Each app's files are listed from that app's existing `database/kustomization.yaml` only in that app's later PR. Silo's PR is the first of those, and it is the only one that also creates ExternalSecret `postgresql-s3`. Cluster names are `immich-db`, `silo-db`, and `bookorbit-db`, so the primary service is `<name>-rw` and does not collide with the StatefulSet service `<name>-database`.
 
 Reference shapes, adapted rather than copied:
 
 - Database CR: [deedee immich/database.yaml](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/apps/immich-system/immich/database.yaml), compared with the live [immich-database HelmRelease](../kubernetes/apps/default/immich/database/helmrelease.yaml).
-- Cluster fields worth keeping: one instance for the migration (the StatefulSets are a single replica), `storageClass: ceph-block`, resources equal to the current requests and limits, `shared_preload_libraries: [vchord.so]` on Immich only.
-- Fields to leave out: deedee's Cilium egress labels, `priorityClassName: cnpg-instance`, three instances, a separate WAL volume, and the Barman plugin block in [deedee cluster.yaml](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/components/postgresql/cluster.yaml). A plugin entry without the plugin installed leaves the `Cluster` unable to reconcile. The per-namespace wiring in [deedee `_postgresql.yaml`](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/clusters/deedee/apps/immich-system/_postgresql.yaml) does not match this repo; apps here are not split into `immich-system`.
+- Cluster fields worth keeping: one instance for the migration (the StatefulSets are a single replica), `storageClass: ceph-block`, resources equal to the current requests and limits, `shared_preload_libraries: [vchord.so]` on Immich only, and the `barman-cloud.cloudnative-pg.io` plugin block from [deedee cluster.yaml](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/components/postgresql/cluster.yaml). A plugin entry without the plugin installed leaves the `Cluster` unable to reconcile, which is why the plugin lands in the operator PR.
+- Fields to leave out: deedee's Cilium egress labels, `priorityClassName: cnpg-instance`, three instances, a separate WAL volume, and the in-tree `spec.backup.barmanObjectStore` block this repo used on the archived Postgres 16 cluster. That field is the old API. Backups go through the plugin and an `ObjectStore`. The per-namespace wiring in [deedee `_postgresql.yaml`](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/clusters/deedee/apps/immich-system/_postgresql.yaml) does not match this repo; apps here are not split into `immich-system`.
 
 `enableSuperuserAccess: true` for the migration window so a human can inspect the new server. A follow-up can turn it off once the app role is enough, which is what deedee runs day to day.
 
-## Backups during the move
+## Backups
 
-Kopiur is the backup system this cluster actually runs. Each database PVC already has a `SnapshotPolicy` and an hourly `SnapshotSchedule`. That stays pointed at the **old** PVC name for the whole migration. It is the rollback copy of the bytes you already have.
+The ongoing backup for each CloudNativePG cluster is Barman Cloud: continuous WAL archiving plus a daily `ScheduledBackup`, both through the `barman-cloud.cloudnative-pg.io` plugin. Retention is 7 days, the same `retentionPolicy` as [deedee's ObjectStore](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/components/postgresql/objectstore.yaml). Kopiur snapshots of the current PVC stay in place as a second copy of the **old** bytes until phase 8. They are not the Postgres backup once a cluster is taking WAL.
 
-Do not retarget that policy at the CloudNativePG volume, and do not add [components/kopiur/backup](../kubernetes/components/kopiur/backup/kustomization.yaml) to the new cluster's kustomization. The component creates the PVC itself (`pvc.yaml` has a `dataSourceRef` to a Kopiur `Restore`). CloudNativePG creates its own PVCs (`<cluster>-1`). Those two claims would fight.
+### Bucket
 
-Barman and a `ScheduledBackup` / `ObjectStore` are a later decision, not part of the first operator or cutover PRs:
+Create a dedicated Garage bucket named `postgresql` before the first cluster PR. That name is the one this repo already used for Postgres backups on the archived cluster, and it is not the Kopiur repository.
 
-- Rook's `cephObjectStores` list is empty, so there is no Ceph RGW bucket to point at.
-- The Garage bucket `kopiur-k8s` is a Kopia repository. Putting Barman objects in it mixes two backup formats in one bucket.
-- The old MinIO bucket `postgresql` from the archived cluster is not declared anywhere in the current tree.
+- Endpoint and region are the Garage already declared on [ClusterRepository/storage](../kubernetes/apps/kopiur-system/kopiur/repository/clusterrepository.yaml): `http://192.168.30.10:30188`, region `garage`, TLS off.
+- Do not put Barman objects in bucket `kopiur-k8s`. That bucket is a Kopia repository.
+- Do not point the endpoint at the archived MinIO URL `https://s3.${SECRET_INTERNAL_DOMAIN}`. That host is not in the current tree.
+- Rook `cephObjectStores` is empty. This bucket is Garage, not Ceph RGW.
+- Creating the bucket and its access key happens outside this pull request. This repository does not gain a bucket manifest.
 
-The safe default until a dedicated bucket exists: Kopiur keeps snapshotting the old PVC, and the logical dump from [logical-copy.sh](cnpg-examples/logical-copy.sh) is copied off the source PVC (workstation, or the NAS at `192.168.30.10` that already serves Immich and Paperless over NFS). A dump that exists only inside the database pod's data volume is not a backup. After cutover, add a Kopiur `SnapshotPolicy` whose source PVC is the CloudNativePG volume name, without the component's `pvc.yaml`, or stand up Barman against a new bucket. Either of those is its own PR.
+Layout, one prefix per application (not per Kopiur `${APP}`, which is the Flux name `immich-database`):
+
+```text
+s3://postgresql/silo/silo-db/
+s3://postgresql/bookorbit/bookorbit-db/
+s3://postgresql/immich/immich-db/
+```
+
+`destinationPath` is `s3://postgresql/<app>`. `serverName` is the cluster name (`silo-db`, `bookorbit-db`, `immich-db`), which is the next path segment Barman adds.
+
+### Credentials
+
+S3 keys for this bucket are a new 1Password item named `postgresql` in the same `onepassword-connect` `ClusterSecretStore` the rest of the cluster uses. Do not reuse the `kopiur` item. The ExternalSecret matches [components/kopiur/secret/externalsecret.yaml](../kubernetes/components/kopiur/secret/externalsecret.yaml): `dataFrom.extract.key`, template only, no literal keys in git. It renders `ACCESS_KEY_ID` and `ACCESS_SECRET_KEY` (the key names the `ObjectStore` secret refs use) plus region `garage`. One secret, `postgresql-s3`, in namespace `default`, created with the silo PR and referenced by the later ObjectStores. The sketch is [silo-barman.yaml](cnpg-examples/silo-barman.yaml).
+
+### Objects, per cluster
+
+With that app's empty cluster, not in the operator PR:
+
+- `ObjectStore` `barmancloud.cnpg.io/v1`, name `<cluster>-store`, `retentionPolicy: 7d`, WAL compression `gzip`. Same shape as deedee, without the endpoint CA (this Garage endpoint is plain HTTP).
+- `ScheduledBackup` with `method: plugin` and `pluginConfiguration.name: barman-cloud.cloudnative-pg.io`. Daily, `0 0 * * * *`. Not `spec.backup.barmanObjectStore` on the Cluster.
+- The Cluster `spec.plugins` entry sets `isWALArchiver: true`, `barmanObjectName`, and `serverName`. `externalClusters` named `<cluster>-restore` points at the same store so a later rebuild can bootstrap from it.
+
+The plugin Deployment comes from `plugin-barman-cloud` v0.15.1 (the release deedee's tree references). The upstream manifest hardcodes namespace `cnpg-system`. The Flux `Kustomization` sets `targetNamespace: database` and the kustomization sets `namespace: database`, so it lands next to the operator instead of in a new namespace. No Cilium egress labels.
+
+### Kopiur
+
+Each database PVC already has a Kopiur `SnapshotPolicy` and an hourly `SnapshotSchedule` via [components/kopiur/backup](../kubernetes/components/kopiur/backup/kustomization.yaml). Leave that pointed at the old PVC name for the whole migration. It is a crash copy of the StatefulSet disk, which Barman cannot see, because the StatefulSet is not a CloudNativePG instance.
+
+Do not retarget that policy at the CloudNativePG volume, and do not add the Kopiur component to the new cluster's kustomization. The component creates the PVC itself (`pvc.yaml` has a `dataSourceRef` to a Kopiur `Restore`). CloudNativePG creates `<cluster>-1`. Those two claims would fight.
+
+### Recover a cluster from Barman
+
+This is how a **CloudNativePG** cluster is rebuilt after cutover. It is not how the StatefulSet is migrated. The StatefulSet has no WAL archive. Migration remains the logical dump in phases 3 and 4.
+
+After a `Backup` for that cluster has completed and WAL archiving is healthy:
+
+1. Leave PVC `<app>-database` alone if it still exists.
+2. Scale the app's writers to 0 if they point at this cluster.
+3. Delete the failed `Cluster` by its CNPG name (`silo-db`, `bookorbit-db`, or `immich-db`). That removes only the PVCs that cluster created.
+4. Recreate it with `bootstrap.recovery.source: <cluster>-restore` and delete the `bootstrap.initdb` block. The `externalClusters` entry from the sketch is the source. `serverName` and `barmanObjectName` stay the same, or Barman will look in an empty prefix.
+5. Wait until the new `Cluster` is Ready, then run the inventory diff against the last known-good counts (or against the app's own health checks if this is a point-in-time restore and the counts are supposed to have moved).
+6. Point the app back at `<cluster>-rw` only after that check. Do not bootstrap with `recovery` during the original migration; that flag consumes the archive and must not be combined with `pg_restore` into the same data directory.
 
 ## Images and extensions
 
@@ -192,7 +240,7 @@ Save the rendered secret keys (`DB_USERNAME` / `DB_PASSWORD` or `DATABASE_URL`) 
 
 ### Phase 1 — backup gate
 
-Do not take a dump you intend to restore until this passes.
+Do not take a dump you intend to restore until this passes. Barman is not available on the StatefulSet. The gate for the old bytes is the Kopiur snapshot plus the logical dump. Barman takes over once the new cluster has the restored data (phase 6).
 
 Confirm the Kopiur `SnapshotSchedule` named `<app>-database` in namespace `default` has a successful snapshot, and that the `SnapshotPolicy` source PVC is still `<app>-database`. Then trigger a fresh snapshot and wait until it succeeds. A failed or missing snapshot stops the procedure.
 
@@ -218,9 +266,9 @@ DUMP_DIR=/path/outside/the/pvc \
 
 ### Phase 2 — operator, then an empty cluster
 
-Operator PR first, with zero `Cluster` objects. After it is Ready, `kubectl explain cluster.postgresql.cnpg.io` and `kubectl explain database.postgresql.cnpg.io` both succeed.
+Operator PR first. It installs the operator and the Barman Cloud plugin under `kubernetes/apps/database/`, and nothing else. After it is Ready, `kubectl explain cluster.postgresql.cnpg.io`, `kubectl explain database.postgresql.cnpg.io`, and `kubectl explain objectstore.barmancloud.cnpg.io` all succeed. The bucket `postgresql` already exists on Garage, and the 1Password item `postgresql` exists, before the next PR.
 
-App PR next. It adds the empty `Cluster` (Immich: the `Database` too) and does **not** remove the HelmRelease, the PVC, or the Kopiur component. `bootstrap` is `initdb` only. The initdb secret carries the existing role and password.
+Then one empty cluster. Silo first. That PR adds `silo-db`, `silo-db-store`, the silo `ScheduledBackup`, and the shared ExternalSecret `postgresql-s3`. It does not add `bookorbit-db` or `immich-db`. It does not remove the HelmRelease, the PVC, or the Kopiur component, and it does not change the app DSN. `bootstrap` is `initdb` only. The initdb secret carries the existing role and password. Bookorbit waits until silo's empty cluster is Ready and you have either cut silo over or explicitly decided to leave silo empty and move on. Immich waits the same way. Immich's PR is the one that adds the `Database` CR.
 
 Wait until the `Cluster` condition `Ready` is true. The primary is `<app>-db-rw.default.svc.cluster.local:5432`. The old service `<app>-database` still answers, and the app still uses it.
 
@@ -229,7 +277,7 @@ On the new primary, as the superuser CloudNativePG created:
 - Immich: the `Database` reports the extensions present, and `SHOW shared_preload_libraries` includes `vchord.so`.
 - silo / bookorbit: `\dx` matches phase 0. If `vector` is missing here, the image is wrong. Delete this new `Cluster` and fix the image. The old PVC is untouched because the new `Cluster` created a different claim.
 
-Optional rehearsal: restore the phase 1 dump into a second `Cluster` named `<app>-db-rehearsal`, run the phase 4 checks, then delete `<app>-db-rehearsal`. Deleting that object deletes only the PVCs it created.
+Optional rehearsal: restore the phase 1 dump into a second `Cluster` named `<app>-db-rehearsal`, run the phase 4 checks, then delete `<app>-db-rehearsal` before starting the next app. Deleting that object deletes only the PVCs it created. It does not justify creating the other two application clusters early.
 
 ### Phase 3 — stop writers, final dump
 
@@ -307,7 +355,7 @@ Both servers stay installed. The app uses the `-rw` service. The StatefulSet sta
 Soak ends when you say it ends, after all of these are true:
 
 - The app has been used for real and its health checks are green.
-- A new backup of the **new** data exists and has been checked (a Kopiur snapshot of the CloudNativePG PVC, or a logical dump of `<app>-db-rw` that `pg_restore -l` can read, stored off the PVC).
+- A Barman `Backup` for this cluster, taken **after** the phase 4 restore, is `completed`, and WAL archiving to `s3://postgresql/<app>/<cluster>/` is current. A backup of the empty database from before the restore does not count. Trigger one with a `Backup` object (`method: plugin`, `pluginConfiguration.name: barman-cloud.cloudnative-pg.io`) rather than waiting for the next midnight if the soak needs it sooner.
 - You have written down that rollback discards post-cutover writes, or you have rehearsed the DSN revert on a scratch cluster.
 
 There is no timer in this runbook that makes the old PVC disposable.
@@ -347,7 +395,7 @@ The PVC is `Bound`. The HelmRelease is gone. The `Cluster` is Ready. For Immich,
 
 1. Phase 7 has reconciled and the app is still healthy on `<app>-db-rw`.
 2. You have an explicit go-ahead to destroy the old copy.
-3. A backup of the new cluster (phase 6) has been verified again after phase 7, so the HelmRelease removal did not take the only good copy with it.
+3. A completed Barman backup of the new cluster (phase 6) still lists as `completed` after phase 7, so the HelmRelease removal did not take the only good copy with it. Recovery is the [Barman bootstrap](#recover-a-cluster-from-barman), not a Kopiur restore of the old PVC.
 4. `kubectl -n default get pvc` shows the CloudNativePG claim (`<app>-db-1`, or the name the `Cluster` status reports) `Bound`, and it is a different claim from `<app>-database`.
 
 The deletion is its own PR, one app at a time. For silo and bookorbit the database Flux `Kustomization` now exists only to hold the Kopiur component, so removing that `Kustomization` from `ks.yaml` prunes the policy and the PVC together. For Immich, that same Flux `Kustomization` still owns the `OCIRepository`, the ConfigMap, and Dragonfly. Move those three to another path (the app kustomization is the natural one) and confirm they are still listed from a `Kustomization` you are not deleting **before** you remove `immich-database` from [immich/ks.yaml](../kubernetes/apps/default/immich/ks.yaml). Removing it while they are only listed there prunes the chart source and the cache along with the PVC.

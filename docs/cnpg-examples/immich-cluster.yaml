@@ -19,6 +19,15 @@
 # The initdb secret must contain the same username and password as that secret.
 # Create it from the existing 1Password item. Do not rotate the password here.
 #
+# WAL archiving uses the barman-cloud plugin (installed in the operator PR)
+# and the ObjectStore in immich-barman.yaml. bootstrap stays initdb for the
+# migration. Disaster recovery replaces initdb with:
+#   bootstrap:
+#     recovery:
+#       source: immich-db-restore
+# Do not set that until a completed Barman backup exists. Do not combine it
+# with pg_restore into the same data directory.
+#
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -47,6 +56,19 @@ spec:
   storage:
     size: 10Gi
     storageClass: ceph-block
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: immich-db-store
+        serverName: immich-db
+  externalClusters:
+    - name: immich-db-restore
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: immich-db-store
+          serverName: immich-db
   bootstrap:
     initdb:
       database: immich
