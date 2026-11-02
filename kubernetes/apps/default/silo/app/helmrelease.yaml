@@ -48,7 +48,7 @@ spec:
             command: ["silo"]
             image:
               repository: ghcr.io/silo-server/silo-server
-              tag: latest@sha256:18b0b05cf5964d2e4e1e131f38df1ea1416a805f3152f80bef1a806b2d994b46
+              tag: latest@sha256:572322b071782208c7f9fe51c9f3c1f9e6f2003b65a4b266c303cfcf5cade760
             env:
               MODE: integrated
               PORT: &port 8080
