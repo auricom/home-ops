@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: immich
+spec:
+  name: immich
+  owner: immich
+  cluster:
+    name: immich-db
+  extensions:
+    - ensure: present
+      name: cube
+    - ensure: present
+      name: earthdistance
+    - ensure: present
+      name: pg_trgm
+    - ensure: present
+      name: unaccent
+    - ensure: present
+      name: uuid-ossp
+    - ensure: present
+      name: vector
+    - ensure: present
+      name: vchord

@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.config.k8s.io/kustomization_v1beta1.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # cluster-apps builds this directory. Without this file, kustomize-controller
+  # generates the same list by walking these child kustomizations. Keep the
+  # list explicit so a new namespace root is a reviewed change.
+  - ./ai
+  - ./cert-manager
+  - ./database
+  - ./default
+  - ./external-secrets
+  - ./flux-system
+  - ./kguardian
+  - ./kopiur-system
+  - ./kube-system
+  - ./network
+  - ./observability
+  - ./openebs-system
+  - ./rook-ceph
+  - ./system-upgrade

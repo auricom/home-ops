@@ -1,0 +1,54 @@
+---
+# Empty cluster. Do not point Immich at this service.
+# Cutover order is silo, then bookorbit, then Immich. See docs/cnpg-migration.md.
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich-db
+spec:
+  instances: 1
+  # VectorChord 0.5.3 on PostgreSQL 18.0, same extension line as
+  # ghcr.io/immich-app/postgres:18-vectorchord0.5.3. Digest resolved 2026-11-01.
+  # Not deedee's 18.6-1.1.1 pin.
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18.0-0.5.3@sha256:267f6cbb32af6e109e138a143c7e9dd5d44d68433ec2303f0c30e745c788d1a9
+  imagePullPolicy: IfNotPresent
+  enableSuperuserAccess: true
+  primaryUpdateStrategy: unsupervised
+  postgresql:
+    shared_preload_libraries:
+      - vchord.so
+    parameters:
+      max_connections: "300"
+      shared_buffers: 512MB
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
+  storage:
+    size: 10Gi
+    storageClass: ceph-block
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: immich-db-store
+        serverName: immich-db
+  externalClusters:
+    - name: immich-db-restore
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: immich-db-store
+          serverName: immich-db
+  bootstrap:
+    initdb:
+      database: immich
+      owner: immich
+      secret:
+        name: immich-db-app
+  monitoring:
+    enablePodMonitor: true
