@@ -9,8 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: immich
-  dependsOn:
-    - name: immich-database
   values:
     controllers:
       immich:

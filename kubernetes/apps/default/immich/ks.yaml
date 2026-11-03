@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: &app immich
 spec:
+  dependsOn:
+    - name: immich-cnpg
   components:
     - ../../../../components/zeroscaler
   interval: 1h
@@ -24,32 +26,10 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app immich-database
-spec:
-  components:
-    - ../../../../components/kopiur/backup
-  interval: 1h
-  path: ./kubernetes/apps/default/immich/database
-  postBuild:
-    substitute:
-      APP: *app
-      KOPIUR_CAPACITY: 10Gi
-      KOPIUR_PUID: "999"
-      KOPIUR_PGID: "999"
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: default
-  wait: false
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: &app immich-machine-learning
 spec:
+  dependsOn:
+    - name: immich-cnpg
   components:
     - ../../../../components/zeroscaler
   interval: 1h
@@ -71,6 +51,8 @@ kind: Kustomization
 metadata:
   name: &app immich-microservices
 spec:
+  dependsOn:
+    - name: immich-cnpg
   components:
     - ../../../../components/zeroscaler
   interval: 1h
