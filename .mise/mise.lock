@@ -250,49 +250,49 @@ checksum = "sha256:5735a2bd59071b814546c6d0a76f29a8fd3ebe06e3a4791dd2784804ae895
 url = "https://get.helm.sh/helm-v4.3.1-windows-amd64.tar.gz"
 
 [[tools.helmfile]]
-version = "1.8.2"
+version = "1.8.3"
 backend = "packslip:github.com/helmfile/helmfile"
-specifiers = ["1.8.2"]
+specifiers = ["1.8.3"]
 
 [tools.helmfile."platforms.linux-arm64"]
-checksum = "sha256:9163f0d7ad088d243d7305ba09c3465aac02dfebd658d46c62dbdaa11c224b16"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.2/helmfile_1.8.2_linux_arm64.tar.gz"
+checksum = "sha256:e035c0338e31e0a8054ae798280532d32edcfbb7d6c4993e3b2efa2dc40647ce"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.3/helmfile_1.8.3_linux_arm64.tar.gz"
 signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/releaser.yaml"
 repository_ids = { repository = "474521466" }
 
 [tools.helmfile."platforms.linux-arm64-musl"]
-checksum = "sha256:9163f0d7ad088d243d7305ba09c3465aac02dfebd658d46c62dbdaa11c224b16"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.2/helmfile_1.8.2_linux_arm64.tar.gz"
+checksum = "sha256:e035c0338e31e0a8054ae798280532d32edcfbb7d6c4993e3b2efa2dc40647ce"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.3/helmfile_1.8.3_linux_arm64.tar.gz"
 signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/releaser.yaml"
 repository_ids = { repository = "474521466" }
 
 [tools.helmfile."platforms.linux-x64"]
-checksum = "sha256:f179485c5bb9f8e20fbd8ea16d8807915988aba4d60131ee864fb3232452716e"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.2/helmfile_1.8.2_linux_amd64.tar.gz"
+checksum = "sha256:7d79c6d2099a4819213873164eda23bdbd32f1404fec7a7104d934e5d102596f"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.3/helmfile_1.8.3_linux_amd64.tar.gz"
 signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/releaser.yaml"
 repository_ids = { repository = "474521466" }
 
 [tools.helmfile."platforms.linux-x64-musl"]
-checksum = "sha256:f179485c5bb9f8e20fbd8ea16d8807915988aba4d60131ee864fb3232452716e"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.2/helmfile_1.8.2_linux_amd64.tar.gz"
+checksum = "sha256:7d79c6d2099a4819213873164eda23bdbd32f1404fec7a7104d934e5d102596f"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.3/helmfile_1.8.3_linux_amd64.tar.gz"
 signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/releaser.yaml"
 repository_ids = { repository = "474521466" }
 
 [tools.helmfile."platforms.macos-arm64"]
-checksum = "sha256:0e788f4aa7b4eea1ec0d1e278e0e66e845d5733be5f4e6cb7f832c779e656c72"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.2/helmfile_1.8.2_darwin_arm64.tar.gz"
+checksum = "sha256:a80eda044f1b73adc9ca051d34c787444203f31c3b9d5328a6b27c3ff02520ff"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.3/helmfile_1.8.3_darwin_arm64.tar.gz"
 signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/releaser.yaml"
 repository_ids = { repository = "474521466" }
 
 [tools.helmfile."platforms.macos-x64"]
-checksum = "sha256:e99b669bb02729d5c4b0f5de9d830298d336d5968dcac76c7c01635f67095574"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.2/helmfile_1.8.2_darwin_amd64.tar.gz"
+checksum = "sha256:043c4139987ad0009416575a0d52480af45b651f4dc85a90133199e8f9d6a71c"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.3/helmfile_1.8.3_darwin_amd64.tar.gz"
 signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/releaser.yaml"
 repository_ids = { repository = "474521466" }
 
 [tools.helmfile."platforms.windows-x64"]
-checksum = "sha256:c13185673f1ee1547419a9312be6f3e18f0a715c1fdbd214df535c6358298e95"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.2/helmfile_1.8.2_windows_amd64.tar.gz"
+checksum = "sha256:1f4209a22437596fafade7809b4d223e6f1aca41437f4511e45b7c2d3c97b5d3"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.3/helmfile_1.8.3_windows_amd64.tar.gz"
 signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/releaser.yaml"
 repository_ids = { repository = "474521466" }
 
@@ -543,45 +543,45 @@ backend = "npm:oxfmt"
 specifiers = ["0.75.0"]
 
 [[tools.pipx]]
-version = "1.18.14"
+version = "1.18.15"
 backend = "aqua:pypa/pipx"
-specifiers = ["1.18.14"]
+specifiers = ["1.18.15"]
 
 [tools.pipx."platforms.linux-arm64"]
-checksum = "sha256:2f3cd4d7637c3c9d271939cea8b6ab3d6e2a69ef98381ca400d85f72ef591e12"
+checksum = "sha256:420604146e875bdd558166e8b06107f09c16936434f3b300e370074c47b5ea53"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.14/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/714409907"
+url = "https://github.com/pypa/pipx/releases/download/1.18.15/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/717609535"
 
 [tools.pipx."platforms.linux-arm64-musl"]
-checksum = "sha256:2f3cd4d7637c3c9d271939cea8b6ab3d6e2a69ef98381ca400d85f72ef591e12"
+checksum = "sha256:420604146e875bdd558166e8b06107f09c16936434f3b300e370074c47b5ea53"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.14/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/714409907"
+url = "https://github.com/pypa/pipx/releases/download/1.18.15/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/717609535"
 
 [tools.pipx."platforms.linux-x64"]
-checksum = "sha256:2f3cd4d7637c3c9d271939cea8b6ab3d6e2a69ef98381ca400d85f72ef591e12"
+checksum = "sha256:420604146e875bdd558166e8b06107f09c16936434f3b300e370074c47b5ea53"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.14/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/714409907"
+url = "https://github.com/pypa/pipx/releases/download/1.18.15/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/717609535"
 
 [tools.pipx."platforms.linux-x64-musl"]
-checksum = "sha256:2f3cd4d7637c3c9d271939cea8b6ab3d6e2a69ef98381ca400d85f72ef591e12"
+checksum = "sha256:420604146e875bdd558166e8b06107f09c16936434f3b300e370074c47b5ea53"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.14/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/714409907"
+url = "https://github.com/pypa/pipx/releases/download/1.18.15/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/717609535"
 
 [tools.pipx."platforms.macos-arm64"]
-checksum = "sha256:2f3cd4d7637c3c9d271939cea8b6ab3d6e2a69ef98381ca400d85f72ef591e12"
+checksum = "sha256:420604146e875bdd558166e8b06107f09c16936434f3b300e370074c47b5ea53"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.14/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/714409907"
+url = "https://github.com/pypa/pipx/releases/download/1.18.15/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/717609535"
 
 [tools.pipx."platforms.macos-x64"]
-checksum = "sha256:2f3cd4d7637c3c9d271939cea8b6ab3d6e2a69ef98381ca400d85f72ef591e12"
+checksum = "sha256:420604146e875bdd558166e8b06107f09c16936434f3b300e370074c47b5ea53"
 checksum_source = "mise-versions"
-url = "https://github.com/pypa/pipx/releases/download/1.18.14/pipx.pyz"
-url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/714409907"
+url = "https://github.com/pypa/pipx/releases/download/1.18.15/pipx.pyz"
+url_api = "https://api.github.com/repos/pypa/pipx/releases/assets/717609535"
 
 [[tools."pipx:ansible-core"]]
 version = "2.22.0"
