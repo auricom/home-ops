@@ -19,7 +19,7 @@ spec:
       memory: 512Mi
     limits:
       cpu: 750m
-      memory: 768Mi
+      memory: 2Gi
   storage:
     size: 5Gi
     storageClass: ceph-block
