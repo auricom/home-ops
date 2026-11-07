@@ -1,6 +1,6 @@
 ---
 # renovate: datasource=github-tags depName=henrywhitaker3/adguard-exporter
-adguard_exporter_version: "v1.2.1"
+adguard_exporter_version: "v1.2.3"
 
 adguard_exporter_user: adguard-exporter
 adguard_exporter_bin: /usr/local/bin/adguard-exporter
