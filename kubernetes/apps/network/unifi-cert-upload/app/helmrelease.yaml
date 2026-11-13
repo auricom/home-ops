@@ -1,0 +1,80 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: unifi-cert-upload
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: unifi-cert-upload
+  values:
+    externalSecrets:
+      unifi-cert-upload:
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: onepassword-connect
+        target:
+          template:
+            data:
+              UNIFI_USERNAME: "{{ .CERT_UPLOAD_USERNAME }}"
+              UNIFI_PASSWORD: "{{ .CERT_UPLOAD_PASSWORD }}"
+        dataFrom:
+          - extract:
+              key: unifi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      unifi-cert-upload:
+        type: cronjob
+        annotations:
+          reloader.stakater.com/auto: "true"
+        cronjob:
+          concurrencyPolicy: Forbid
+          schedule: "0 */4 * * *"
+          failedJobsHistory: 3
+          successfulJobsHistory: 1
+        containers:
+          app:
+            image:
+              repository: mirror.gcr.io/rockylinux/rockylinux
+              tag: 10@sha256:827d37bc128288ccf160ee318bb3cb92d591164cb217e92f8bc61e3982ae1834
+            command:
+              - /bin/bash
+              - /scripts/upload.sh
+            env:
+              TZ: Europe/Paris
+              UNIFI_HOST: unifi.feisar.ovh
+            envFrom:
+              - externalSecretRef:
+                  identifier: unifi-cert-upload
+            securityContext:
+              readOnlyRootFilesystem: false
+            resources:
+              requests:
+                cpu: 10m
+    service:
+      app:
+        controller: unifi-cert-upload
+        enabled: false
+    persistence:
+      certs:
+        type: secret
+        name: unifi-feisar-ovh-tls
+        defaultMode: 0600 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /certs
+            readOnly: true
+      scripts:
+        type: configMap
+        name: unifi-cert-upload-configmap
+        defaultMode: 0444 # trunk-ignore(yamllint/octal-values)
+        globalMounts:
+          - path: /scripts
+            readOnly: true
