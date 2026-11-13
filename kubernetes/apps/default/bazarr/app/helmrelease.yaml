@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/bazarr-plus
-              tag: 2.7.2@sha256:6f394d65a6f6b9d51b502005e7d03549ac1f51a17d65ce7c10a1f2c750f972e2
+              tag: 2.7.2@sha256:9f0c232e24041f08c97406dd23fa48691dc2ae510b75233867f28ea61fc5f835
             env:
               BAZARR__PORT: &port 8080
             envFrom:
