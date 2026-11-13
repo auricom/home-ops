@@ -1,11 +1,9 @@
 ---
-- name: main | set system timezone
-  community.general.timezone:
-    name: "{{ ntp_client_timezone }}"
-
-- name: main | install chrony (Debian)
+- name: main | install chrony and timezone dependencies (Debian)
   ansible.builtin.apt:
-    name: chrony
+    name:
+      - chrony
+      - util-linux-extra
     state: present
     update_cache: true
     cache_valid_time: 3600
@@ -17,6 +15,10 @@
     state: present
     update_cache: true
   when: ansible_facts.os_family == 'Archlinux'
+
+- name: main | set system timezone
+  community.general.timezone:
+    name: "{{ ntp_client_timezone }}"
 
 - name: main | stop, disable, and mask systemd-timesyncd
   ansible.builtin.systemd:
@@ -76,12 +78,10 @@
   changed_when: false
 
 - name: main | verify configured timezone
-  ansible.builtin.command: timedatectl show --property=Timezone --value
+  # Compare zone data directly; minimal hosts may have no system D-Bus.
+  ansible.builtin.command:
+    argv:
+      - cmp
+      - /etc/localtime
+      - "/usr/share/zoneinfo/{{ ntp_client_timezone }}"
   changed_when: false
-  register: _ntp_client_timezone_check
-
-- name: main | assert timezone matches expectation
-  ansible.builtin.assert:
-    that:
-      - _ntp_client_timezone_check.stdout == ntp_client_timezone
-    fail_msg: "System timezone is {{ _ntp_client_timezone_check.stdout }}, expected {{ ntp_client_timezone }}."

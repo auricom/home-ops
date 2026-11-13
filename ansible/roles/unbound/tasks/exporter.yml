@@ -20,8 +20,19 @@
 
 - name: exporter | build unbound_exporter on controller
   ansible.builtin.command:
-    cmd: go build -trimpath -ldflags "-s -w" -o {{ unbound_exporter_artifact }} .
-    chdir: "{{ unbound_exporter_src_dir }}"
+    argv:
+      - go
+      - -C
+      - "{{ unbound_exporter_src_dir }}"
+      - build
+      - -trimpath
+      - -ldflags
+      - -s -w
+      - -o
+      - "{{ unbound_exporter_artifact }}"
+      - .
+    # Resolve the controller's toolchain before entering third-party source.
+    chdir: "{{ playbook_dir }}"
     creates: "{{ unbound_exporter_artifact }}"
   environment: >-
     {{

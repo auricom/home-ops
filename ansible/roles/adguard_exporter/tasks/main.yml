@@ -1,4 +1,16 @@
 ---
+- name: main | require exporter credentials
+  ansible.builtin.assert:
+    that:
+      - adguard_exporter_username is defined and adguard_exporter_username | length > 0
+      - adguard_exporter_password is defined and adguard_exporter_password | length > 0
+    quiet: true
+    fail_msg: >-
+      Set adguard_exporter_username and adguard_exporter_password for this host.
+      The username defaults to its first adguard_users_by_host account.
+      Store the original password in dns.sops.yml as adguard_exporter_password;
+      AdGuard's password hash cannot authenticate the exporter.
+
 - name: main | validate architecture is supported
   ansible.builtin.assert:
     that:
@@ -20,8 +32,19 @@
 
 - name: main | build adguard-exporter on controller
   ansible.builtin.command:
-    cmd: go build -trimpath -ldflags "-s -w" -o {{ adguard_exporter_artifact }} .
-    chdir: "{{ adguard_exporter_src_dir }}"
+    argv:
+      - go
+      - -C
+      - "{{ adguard_exporter_src_dir }}"
+      - build
+      - -trimpath
+      - -ldflags
+      - -s -w
+      - -o
+      - "{{ adguard_exporter_artifact }}"
+      - .
+    # Resolve the controller's toolchain before entering third-party source.
+    chdir: "{{ playbook_dir }}"
     creates: "{{ adguard_exporter_artifact }}"
   environment: >-
     {{

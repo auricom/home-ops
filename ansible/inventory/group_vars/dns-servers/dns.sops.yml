@@ -5,6 +5,7 @@ adguard_users_by_host:
   dns-2:
     - name: ENC[AES256_GCM,data:kSWP9eI=,iv:eFS+0MLsYwqPmHQmfeoKE65oEn48A9KtbcSNSGS0CQo=,tag:xSmpwe7ADThEqSaT42l3EQ==,type:str]
       password: ENC[AES256_GCM,data:dJyF2AW68pxSp0mOoIyWiOq7eX/xqpktAgjt64YWEHGKhL1O3JQBHU5PYJwEYGKkn9uM48w64wdxJsH4,iv:rmoPxeiqYGmNdAxVa7c+JtUmgxlCm++lZfv4rxDU2iA=,tag:/QS3iurD9GZ/6xOHt7gxqA==,type:str]
+adguard_exporter_password: ENC[AES256_GCM,data:XQqlCZA21LJr7Q==,iv:NKa9k63yVWVRdq2F4lEJBpFfjsHQX5ajkwobi9BK4Ro=,tag:2F5vXfO15TrBGvF9/FJf4w==,type:str]
 sops:
   age:
     - enc: |
@@ -16,7 +17,7 @@ sops:
         ylZwGH98Uk19+Pw6bWeJu+NKRiBrSHyKe1DBGIUPqyRnWAfej0IEqg==
         -----END AGE ENCRYPTED FILE-----
       recipient: age1hhurqwmfvl9m3vh3hk8urulfzcdsrep2ax2neazqt435yhpamu3qj20asg
-  lastmodified: "2026-10-29T23:43:26Z"
-  mac: ENC[AES256_GCM,data:PM8r4/K8doCqmVdPBDxWGoz+wbATD3YkPcf0DD6bp6jEefEAcYAPddaGnBwCj+TSdYO3/BvWepQKlQBxIKavW5QDfAIE9oDe124oC+kfbV/jvNqbyaVWs2g974PuQbbunMHPBrvWPZc96/VPhzGqDxpH/ciXO05bIS3ZdjaYYQM=,iv:wF/5xyCtleKdf2mdy0HYTnGavGBPzT8qJVns8NTNY6w=,tag:1xeMQ3XU7RfTjCP/IcMw9Q==,type:str]
+  lastmodified: "2026-11-13T12:42:01Z"
+  mac: ENC[AES256_GCM,data:HmbXbfBO97veKodyF7WeTq/cUm73fJxqpWdbgiS9Au2+4vPqcMm+vkOgioex35h6deujemnqaKwToredHK5jTVeHbatixml5cb3Hjn9TljcswdBKSp8EFQCdmRNAWdftI72sYpbC7NrAD0kt90rzmDhOM6+TPAJoEtg/ygfHKCE=,iv:TPAJosi0F+0FqEpyvOM50jXEzDWzDcyNQQZ2rVVYNAQ=,tag:2vxOh/t6pNCu/lJfztIH0w==,type:str]
   unencrypted_suffix: _unencrypted
   version: 3.13.3

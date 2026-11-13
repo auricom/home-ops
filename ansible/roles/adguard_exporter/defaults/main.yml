@@ -8,10 +8,11 @@ adguard_exporter_env_file: /etc/default/adguard-exporter
 adguard_exporter_bind_addr: ":9618"
 adguard_exporter_interval: "30s"
 
-# The local AdGuard Home instance; credentials come from SOPS group vars.
+# The local AdGuard Home instance; use its first configured account by default.
 adguard_exporter_server: "http://127.0.0.1:{{ adguard_web_port }}"
-adguard_exporter_username: "{{ adguard_username }}"
-adguard_exporter_password: "{{ adguard_password }}"
+adguard_exporter_username: "{{ adguard_users_by_host[inventory_hostname][0].name }}"
+# Set adguard_exporter_password in SOPS group vars to the original password,
+# not the password hash stored in adguard_users_by_host.
 
 # Built on the ansible controller, then copied to the hosts.
 adguard_exporter_build_dir: "{{ lookup('ansible.builtin.env', 'HOME') }}/.cache/ansible/adguard-exporter"
