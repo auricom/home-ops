@@ -109,7 +109,11 @@ adguard_config:
     interval: 1d
     enabled: true
     ignored_enabled: false
-  whitelist_filters: []
+  whitelist_filters:
+    - enabled: true
+      url: https://raw.githubusercontent.com/auricom/home-ops/main/filters/adguard-allowlist.txt
+      name: Home Ops Allowlist
+      id: 1790190798
   user_rules:
     - "||xpander.ovh^$dnstype=HTTPS,dnsrewrite=NOERROR;;"
     - "||xpander.ovh^$dnstype=AAAA,dnsrewrite=NOERROR;;"
