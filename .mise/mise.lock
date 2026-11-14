@@ -130,44 +130,51 @@ url = "https://github.com/fluxcd/flux2/releases/download/v2.10.0/flux_2.10.0_win
 url_api = "https://api.github.com/repos/fluxcd/flux2/releases/assets/678609573"
 
 [[tools."github:home-operations/flate"]]
-version = "0.6.5"
+version = "0.7.3"
 backend = "github:home-operations/flate"
-specifiers = ["0.6.5"]
+specifiers = ["v0.7.3"]
 
 [tools."github:home-operations/flate"."platforms.linux-arm64"]
-checksum = "sha256:7f514814890df4a095887943ae606be1a8af878606b7bd0575efe75402cd38dc"
-url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0.6.5_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337295"
+checksum = "sha256:345b8b679de439343003097b79aabec7d070c05e70eeca5c413193ba97aa368f"
+checksum_source = "mise-versions"
+url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305352"
 
 [tools."github:home-operations/flate"."platforms.linux-arm64-musl"]
-checksum = "sha256:7f514814890df4a095887943ae606be1a8af878606b7bd0575efe75402cd38dc"
-url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0.6.5_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337295"
+checksum = "sha256:345b8b679de439343003097b79aabec7d070c05e70eeca5c413193ba97aa368f"
+checksum_source = "mise-versions"
+url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305352"
 
 [tools."github:home-operations/flate"."platforms.linux-x64"]
-checksum = "sha256:37eb0cd91a6752340754375743aa616c263cd8367ce594abd42ee955e1ec0099"
-url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0.6.5_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337294"
+checksum = "sha256:05d3c79447647e95329aa45c7035e7ebac3a120942972e78819deadc3bf0afeb"
+checksum_source = "mise-versions"
+url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305354"
 
 [tools."github:home-operations/flate"."platforms.linux-x64-musl"]
-checksum = "sha256:37eb0cd91a6752340754375743aa616c263cd8367ce594abd42ee955e1ec0099"
-url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0.6.5_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337294"
+checksum = "sha256:05d3c79447647e95329aa45c7035e7ebac3a120942972e78819deadc3bf0afeb"
+checksum_source = "mise-versions"
+url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305354"
 
 [tools."github:home-operations/flate"."platforms.macos-arm64"]
-checksum = "sha256:76274be5ef8b016e80ea0abf7b6f612adc76a89f7613d2e7f7e3550af5b9e186"
-url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0.6.5_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337298"
+checksum = "sha256:fb4aca650b55fb020dac039775975ef3ab753a4582bdd034dc8ad5c73ad47755"
+checksum_source = "mise-versions"
+url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305351"
 
 [tools."github:home-operations/flate"."platforms.macos-x64"]
-checksum = "sha256:4b1dcefb4613b4c02f3374c8fc8d4082d42d893f4303daa16e24e37d58bccb78"
-url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0.6.5_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337300"
+checksum = "sha256:fc63ba93d4943f5828e724119613d1ce37b52897387aa958f5d263f291bb5db9"
+checksum_source = "mise-versions"
+url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305361"
 
 [tools."github:home-operations/flate"."platforms.windows-x64"]
-checksum = "sha256:3fd13fa65907312ee77ebf96bb76554558cd8f63ab65c3026b643be2e7003118"
-url = "https://github.com/home-operations/flate/releases/download/v0.6.5/flate_0.6.5_windows_amd64.zip"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/541337344"
+checksum = "sha256:c0a65c663fb8634837c31f38d871dfd7a525a8645c1791937fb3c0d189ffca1d"
+checksum_source = "mise-versions"
+url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_windows_amd64.zip"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305461"
 
 [[tools."github:mitsuhiko/minijinja"]]
 version = "3.0.5"
@@ -756,44 +763,51 @@ url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/704009796"
 provenance = "github-attestations"
 
 [[tools.vals]]
-version = "0.50.0"
+version = "0.51.1"
 backend = "aqua:helmfile/vals"
-specifiers = ["0.50.0"]
+specifiers = ["0.51.1"]
 
 [tools.vals."platforms.linux-arm64"]
-checksum = "sha256:1e7c4d2b187391c7ef33be69c548cc6624152e75816c9d458e52a462e409542f"
-url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121358"
+checksum = "sha256:a61ca3407ec60dde9ea61442addb5c99a46f1925f0b35e295da05da94ce191b6"
+checksum_source = "mise-versions"
+url = "https://github.com/helmfile/vals/releases/download/v0.51.1/vals_0.51.1_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/745927724"
 
 [tools.vals."platforms.linux-arm64-musl"]
-checksum = "sha256:1e7c4d2b187391c7ef33be69c548cc6624152e75816c9d458e52a462e409542f"
-url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121358"
+checksum = "sha256:a61ca3407ec60dde9ea61442addb5c99a46f1925f0b35e295da05da94ce191b6"
+checksum_source = "mise-versions"
+url = "https://github.com/helmfile/vals/releases/download/v0.51.1/vals_0.51.1_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/745927724"
 
 [tools.vals."platforms.linux-x64"]
-checksum = "sha256:4cb1664b1e0aa49481cb05fabe2c52d4944dcaab31c4805924b668ae9f54c379"
-url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121543"
+checksum = "sha256:2f6ca3eb403ce35647c0ca9bca9b2b3535197b28f82d3a1919b2ccc4218a9c03"
+checksum_source = "mise-versions"
+url = "https://github.com/helmfile/vals/releases/download/v0.51.1/vals_0.51.1_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/745927725"
 
 [tools.vals."platforms.linux-x64-musl"]
-checksum = "sha256:4cb1664b1e0aa49481cb05fabe2c52d4944dcaab31c4805924b668ae9f54c379"
-url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121543"
+checksum = "sha256:2f6ca3eb403ce35647c0ca9bca9b2b3535197b28f82d3a1919b2ccc4218a9c03"
+checksum_source = "mise-versions"
+url = "https://github.com/helmfile/vals/releases/download/v0.51.1/vals_0.51.1_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/745927725"
 
 [tools.vals."platforms.macos-arm64"]
-checksum = "sha256:8f960625cc7f96d7055d02882d5d3b22c5ba31b8e2b31dcd948eb79eb4e105c5"
-url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121360"
+checksum = "sha256:38a4af1d38057cce8f98d137fed67bd17afc95461ed0f3dc18dc5f60bd50cea8"
+checksum_source = "mise-versions"
+url = "https://github.com/helmfile/vals/releases/download/v0.51.1/vals_0.51.1_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/745927723"
 
 [tools.vals."platforms.macos-x64"]
-checksum = "sha256:3c465db2be2c3800d1c6656316b29a4ccbbbb440f340972761cafae4e1fb746d"
-url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121355"
+checksum = "sha256:a72b90b0faa3598096c7b0d78aefbd7a3ab763b1033dd92494f09d40757e8614"
+checksum_source = "mise-versions"
+url = "https://github.com/helmfile/vals/releases/download/v0.51.1/vals_0.51.1_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/745927722"
 
 [tools.vals."platforms.windows-x64"]
-checksum = "sha256:61c406f205eb5ea2668de554a8be857d1178f2c4f34b6033b62e9d69070ead2a"
-url = "https://github.com/helmfile/vals/releases/download/v0.50.0/vals_0.50.0_windows_amd64.tar.gz"
-url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/662121526"
+checksum = "sha256:bdac87c62c0397f77d67a54bd41160296a074dc153708ab3b3b8d4675dc6758c"
+checksum_source = "mise-versions"
+url = "https://github.com/helmfile/vals/releases/download/v0.51.1/vals_0.51.1_windows_amd64.tar.gz"
+url_api = "https://api.github.com/repos/helmfile/vals/releases/assets/745927950"
 
 [[tools.yq]]
 version = "4.54.2"
