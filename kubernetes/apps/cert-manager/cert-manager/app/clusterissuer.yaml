@@ -49,10 +49,20 @@ spec:
       name: letsencrypt-feisar-production
     solvers:
       - dns01:
-          cnameStrategy: Follow
-          cloudflare:
-            apiTokenSecretRef:
-              name: cloudflare-issuer-secret
-              key: CLOUDFLARE_TOKEN
+          webhook:
+            groupName: acme.xpander.ovh
+            solverName: ovh
+            config:
+              endpoint: ovh-eu
+              authenticationMethod: application
+              applicationKeyRef:
+                name: ovh-credentials
+                key: applicationKey
+              applicationSecretRef:
+                name: ovh-credentials
+                key: applicationSecret
+              applicationConsumerKeyRef:
+                name: ovh-credentials
+                key: applicationConsumerKey
         selector:
           dnsZones: ["feisar.ovh"]
