@@ -13,5 +13,6 @@ resources:
   - ./cloudflare-tunnel/ks.yaml
   - ./cloudflare-dns/ks.yaml
   - ./envoy-gateway/ks.yaml
+  - ./unifi-cert-upload/ks.yaml
   - ./unifi-dns/ks.yaml
   - ./crowdsec/ks.yaml
