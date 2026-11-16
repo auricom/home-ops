@@ -23,6 +23,10 @@ spec:
               EMAIL_ENCRYPTION_KEY: "{{ .BOOKORBIT_EMAIL_ENCRYPTION_KEY }}"
               MIGRATION_ENCRYPTION_KEY: "{{ .BOOKORBIT_MIGRATION_ENCRYPTION_KEY }}"
               BOOK_REQUEST_ENCRYPTION_KEY: "{{ .BOOKORBIT_BOOK_REQUEST_ENCRYPTION_KEY }}"
+              POSTGRES_USER: "{{ .BOOKORBIT_POSTGRES_USERNAME }}"
+              POSTGRES_PASSWORD: "{{ .BOOKORBIT_POSTGRES_PASSWORD }}"
+              POSTGRES_DB: "{{ .BOOKORBIT_POSTGRES_DB_NAME }}"
+              DATABASE_URL: postgres://{{ .BOOKORBIT_POSTGRES_USERNAME }}:{{ .BOOKORBIT_POSTGRES_PASSWORD }}@bookorbit-db-rw.default.svc.cluster.local.:5432/{{ .BOOKORBIT_POSTGRES_DB_NAME }}
         dataFrom:
           - extract:
               key: bookorbit
@@ -48,8 +52,6 @@ spec:
             envFrom:
               - externalSecretRef:
                   identifier: bookorbit
-              - secretRef:
-                  name: bookorbit-database
             probes:
               liveness: &probes
                 enabled: true
