@@ -142,7 +142,7 @@ Reference shapes, adapted rather than copied:
 - Cluster fields worth keeping: one instance for the migration (the StatefulSets are a single replica), `storageClass: ceph-block`, resources equal to the current requests and limits, `shared_preload_libraries: [vchord.so]` on Immich only, and the `barman-cloud.cloudnative-pg.io` plugin block from [deedee cluster.yaml](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/components/postgresql/cluster.yaml). A plugin entry without the plugin installed leaves the `Cluster` unable to reconcile, which is why the plugin lands in the operator PR.
 - Fields to leave out: deedee's Cilium egress labels, `priorityClassName: cnpg-instance`, three instances, a separate WAL volume, and the in-tree `spec.backup.barmanObjectStore` block this repo used on the archived Postgres 16 cluster. That field is the old API. Backups go through the plugin and an `ObjectStore`. The per-namespace wiring in [deedee `_postgresql.yaml`](https://github.com/deedee-ops/home-ops/blob/master/kubernetes/clusters/deedee/apps/immich-system/_postgresql.yaml) does not match this repo; apps here are not split into `immich-system`.
 
-`enableSuperuserAccess: true` for the migration window so a human can inspect the new server. A follow-up can turn it off once the app role is enough, which is what deedee runs day to day.
+`enableSuperuserAccess` was `true` for the migration window so a human can inspect the new server. The follow-up is done: it is now `false` on all three clusters, which is what deedee runs day to day. Admins still get in with `kubectl cnpg psql <cluster>`, which uses local peer auth.
 
 ## Backups
 
