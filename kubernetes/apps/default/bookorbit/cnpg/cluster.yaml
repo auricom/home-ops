@@ -11,7 +11,7 @@ spec:
   # PostgreSQL 18.6 with pgvector 0.8.6, verified against the live source.
   imageName: ghcr.io/cloudnative-pg/postgresql:18.6@sha256:899d3ed526b659d77935dde0e6bf2d69dbbf17d3d8c6486ca8cfd04bd3c18533
   imagePullPolicy: IfNotPresent
-  enableSuperuserAccess: true
+  enableSuperuserAccess: false
   primaryUpdateStrategy: unsupervised
   resources:
     requests:
