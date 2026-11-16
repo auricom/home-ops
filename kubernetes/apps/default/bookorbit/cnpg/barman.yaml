@@ -28,7 +28,7 @@ kind: ScheduledBackup
 metadata:
   name: bookorbit-db
 spec:
-  schedule: "0 0 * * * *"
+  schedule: "0 0 0 * * *"
   backupOwnerReference: self
   method: plugin
   pluginConfiguration:
