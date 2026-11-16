@@ -10,26 +10,6 @@ spec:
     name: bookorbit
   interval: 30m
   values:
-    externalSecrets:
-      bookorbit:
-        secretStoreRef:
-          kind: ClusterSecretStore
-          name: onepassword-connect
-        target:
-          template:
-            data:
-              JWT_SECRET: "{{ .BOOKORBIT_JWT_SECRET }}"
-              SETUP_BOOTSTRAP_TOKEN: "{{ .BOOKORBIT_SETUP_BOOTSTRAP_TOKEN }}"
-              EMAIL_ENCRYPTION_KEY: "{{ .BOOKORBIT_EMAIL_ENCRYPTION_KEY }}"
-              MIGRATION_ENCRYPTION_KEY: "{{ .BOOKORBIT_MIGRATION_ENCRYPTION_KEY }}"
-              BOOK_REQUEST_ENCRYPTION_KEY: "{{ .BOOKORBIT_BOOK_REQUEST_ENCRYPTION_KEY }}"
-              POSTGRES_USER: "{{ .BOOKORBIT_POSTGRES_USERNAME }}"
-              POSTGRES_PASSWORD: "{{ .BOOKORBIT_POSTGRES_PASSWORD }}"
-              POSTGRES_DB: "{{ .BOOKORBIT_POSTGRES_DB_NAME }}"
-              DATABASE_URL: postgres://{{ .BOOKORBIT_POSTGRES_USERNAME }}:{{ .BOOKORBIT_POSTGRES_PASSWORD }}@bookorbit-db-rw.default.svc.cluster.local.:5432/{{ .BOOKORBIT_POSTGRES_DB_NAME }}
-        dataFrom:
-          - extract:
-              key: bookorbit
     controllers:
       bookorbit:
         annotations:
@@ -50,8 +30,8 @@ spec:
               PUID: "1000"
               PGID: "1000"
             envFrom:
-              - externalSecretRef:
-                  identifier: bookorbit
+              - secretRef:
+                  name: bookorbit-database
             probes:
               liveness: &probes
                 enabled: true
