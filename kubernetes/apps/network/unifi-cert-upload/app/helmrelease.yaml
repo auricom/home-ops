@@ -18,8 +18,8 @@ spec:
         target:
           template:
             data:
-              UNIFI_USERNAME: "{{ .CERT_UPLOAD_USERNAME }}"
-              UNIFI_PASSWORD: "{{ .CERT_UPLOAD_PASSWORD }}"
+              UNIFI_USERNAME: "{{ .username }}"
+              UNIFI_PASSWORD: "{{ .password }}"
         dataFrom:
           - extract:
               key: unifi
