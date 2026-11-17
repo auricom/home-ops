@@ -6,7 +6,7 @@ metadata:
   name: cloudnative-pg.rules
 spec:
   groups:
-    - name: cloudnative-pg
+    - name: cloudnative-pg.rules
       rules:
         - alert: CNPGInstanceDown
           expr: |
