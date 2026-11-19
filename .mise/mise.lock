@@ -130,51 +130,51 @@ url = "https://github.com/fluxcd/flux2/releases/download/v2.10.0/flux_2.10.0_win
 url_api = "https://api.github.com/repos/fluxcd/flux2/releases/assets/678609573"
 
 [[tools."github:home-operations/flate"]]
-version = "0.7.3"
+version = "0.8.0"
 backend = "github:home-operations/flate"
-specifiers = ["v0.7.3"]
+specifiers = ["v0.8.0"]
 
 [tools."github:home-operations/flate"."platforms.linux-arm64"]
-checksum = "sha256:345b8b679de439343003097b79aabec7d070c05e70eeca5c413193ba97aa368f"
+checksum = "sha256:4ae502e56054ee9c5019995554856c1f6f8f44b3f6fef087704b2d31c27ab9c6"
 checksum_source = "mise-versions"
-url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305352"
+url = "https://github.com/home-operations/flate/releases/download/v0.8.0/flate_0.8.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/768879872"
 
 [tools."github:home-operations/flate"."platforms.linux-arm64-musl"]
-checksum = "sha256:345b8b679de439343003097b79aabec7d070c05e70eeca5c413193ba97aa368f"
+checksum = "sha256:4ae502e56054ee9c5019995554856c1f6f8f44b3f6fef087704b2d31c27ab9c6"
 checksum_source = "mise-versions"
-url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305352"
+url = "https://github.com/home-operations/flate/releases/download/v0.8.0/flate_0.8.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/768879872"
 
 [tools."github:home-operations/flate"."platforms.linux-x64"]
-checksum = "sha256:05d3c79447647e95329aa45c7035e7ebac3a120942972e78819deadc3bf0afeb"
+checksum = "sha256:76940fb6ff060e09a40e1a835fc9c5cd24e18fdd29e4e79382852821e0ac01c2"
 checksum_source = "mise-versions"
-url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305354"
+url = "https://github.com/home-operations/flate/releases/download/v0.8.0/flate_0.8.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/768879874"
 
 [tools."github:home-operations/flate"."platforms.linux-x64-musl"]
-checksum = "sha256:05d3c79447647e95329aa45c7035e7ebac3a120942972e78819deadc3bf0afeb"
+checksum = "sha256:76940fb6ff060e09a40e1a835fc9c5cd24e18fdd29e4e79382852821e0ac01c2"
 checksum_source = "mise-versions"
-url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305354"
+url = "https://github.com/home-operations/flate/releases/download/v0.8.0/flate_0.8.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/768879874"
 
 [tools."github:home-operations/flate"."platforms.macos-arm64"]
-checksum = "sha256:fb4aca650b55fb020dac039775975ef3ab753a4582bdd034dc8ad5c73ad47755"
+checksum = "sha256:b881cfbef651084d0c9b97c6c2d60103022b43a2caeddc1d06febf93c065dd7d"
 checksum_source = "mise-versions"
-url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305351"
+url = "https://github.com/home-operations/flate/releases/download/v0.8.0/flate_0.8.0_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/768879873"
 
 [tools."github:home-operations/flate"."platforms.macos-x64"]
-checksum = "sha256:fc63ba93d4943f5828e724119613d1ce37b52897387aa958f5d263f291bb5db9"
+checksum = "sha256:cf78f16c81df6d399558a4e9db8cfc30d16bdf8f18647abd6e04e0e329982cc1"
 checksum_source = "mise-versions"
-url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305361"
+url = "https://github.com/home-operations/flate/releases/download/v0.8.0/flate_0.8.0_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/768879875"
 
 [tools."github:home-operations/flate"."platforms.windows-x64"]
-checksum = "sha256:c0a65c663fb8634837c31f38d871dfd7a525a8645c1791937fb3c0d189ffca1d"
+checksum = "sha256:521ce2cd7f550cdb60acd6113305f85eba7c5f39261c0ba749af9a99ddf9e8d9"
 checksum_source = "mise-versions"
-url = "https://github.com/home-operations/flate/releases/download/v0.7.3/flate_0.7.3_windows_amd64.zip"
-url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/727305461"
+url = "https://github.com/home-operations/flate/releases/download/v0.8.0/flate_0.8.0_windows_amd64.zip"
+url_api = "https://api.github.com/repos/home-operations/flate/releases/assets/768880022"
 
 [[tools."github:mitsuhiko/minijinja"]]
 version = "3.1.0"
