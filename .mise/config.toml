@@ -11,7 +11,7 @@ postinstall = "lefthook install"
 [tools]
 "1password-cli" = "2.35.0"
 actionlint = "1.7.12"
-flux2 = "2.10.0"
+flux2 = "2.10.1"
 go = "1.27.4"
 "github:home-operations/flate" = "v0.7.3"
 "github:mitsuhiko/minijinja" = "3.1.0"
