@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: codeberg.org/readeck/readeck
-              tag: 0.23.5@sha256:17dea468f4f713930338062f58a3a5e0d04e37d2961ddb827792e223f3db91b4
+              tag: 0.23.6@sha256:1bc8b0ad2c43fff8bababce4b586e5eaa1a0ad835abdbfadeeaef3330956d90d
             env:
               READECK_LOG_LEVEL: info
               READECK_DEV_MODE: "false"
