@@ -12,6 +12,7 @@ resources:
   - ./descheduler/ks.yaml
   - ./etcd/ks.yaml
   - ./generic-device-plugin/ks.yaml
+  - ./k8s-gpu-dra-driver/ks.yaml
   - ./k8tz/ks.yaml
   - ./metrics-server/ks.yaml
   - ./multus/ks.yaml
