@@ -6,3 +6,4 @@ namespace: default
 resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./resourceclaimtemplate.yaml
