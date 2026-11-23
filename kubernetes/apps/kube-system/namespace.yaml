@@ -6,3 +6,5 @@ metadata:
   name: _
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    resource.kubernetes.io/admin-access: "true"

@@ -13,6 +13,9 @@ spec:
   values:
     defaultPodOptions:
       enableServiceLinks: false
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: jellyfin
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -52,8 +55,9 @@ spec:
               requests:
                 cpu: 100m
                 memory: 512Mi
+              claims:
+                - name: gpu
               limits:
-                amd.com/gpu: 1
                 memory: 4Gi
     service:
       app:

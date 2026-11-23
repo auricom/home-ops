@@ -7,12 +7,13 @@ components:
   - ../../components/alerts
 resources:
   - ./namespace.yaml
-  - ./amd-device-plugin/ks.yaml
   - ./cilium/ks.yaml
   - ./coredns/ks.yaml
   - ./descheduler/ks.yaml
+  - ./drm-exporter/ks.yaml
   - ./etcd/ks.yaml
   - ./generic-device-plugin/ks.yaml
+  - ./k8s-gpu-dra-driver/ks.yaml
   - ./k8tz/ks.yaml
   - ./metrics-server/ks.yaml
   - ./multus/ks.yaml
