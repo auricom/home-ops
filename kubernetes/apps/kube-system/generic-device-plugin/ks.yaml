@@ -9,8 +9,8 @@ spec:
   path: ./kubernetes/apps/kube-system/generic-device-plugin/app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: generic-device-plugin
     namespace: flux-system
   targetNamespace: kube-system
   wait: true

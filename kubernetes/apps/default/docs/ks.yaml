@@ -12,8 +12,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: docs
     namespace: flux-system
   targetNamespace: default
   wait: false

@@ -16,8 +16,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: immich
     namespace: flux-system
   targetNamespace: default
   wait: false
@@ -39,8 +39,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: immich
     namespace: flux-system
   targetNamespace: default
   wait: false
@@ -62,8 +62,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: immich
     namespace: flux-system
   targetNamespace: default
   wait: false
@@ -83,8 +83,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: immich
     namespace: flux-system
   targetNamespace: default
   wait: false
@@ -104,8 +104,8 @@ spec:
   path: ./kubernetes/apps/default/immich/cnpg
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: immich
     namespace: flux-system
   targetNamespace: default
   wait: false

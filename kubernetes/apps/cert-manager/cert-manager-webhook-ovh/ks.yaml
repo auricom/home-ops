@@ -11,8 +11,8 @@ spec:
   path: ./kubernetes/apps/cert-manager/cert-manager-webhook-ovh/app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: cert-manager-webhook-ovh
     namespace: flux-system
   targetNamespace: cert-manager
   wait: true

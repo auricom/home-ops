@@ -16,8 +16,8 @@ spec:
       KOPIUR_PGID: "1000"
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: tandoor
     namespace: flux-system
   targetNamespace: default
   wait: false
