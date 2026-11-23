@@ -9,8 +9,8 @@ spec:
   path: ./kubernetes/apps/network/unifi-cert-upload/app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: unifi-cert-upload
     namespace: flux-system
   targetNamespace: network
   wait: false

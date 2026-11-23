@@ -19,8 +19,8 @@ spec:
   path: ./kubernetes/apps/database/plugin-barman-cloud/app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: plugin-barman-cloud
     namespace: flux-system
   targetNamespace: database
   wait: true

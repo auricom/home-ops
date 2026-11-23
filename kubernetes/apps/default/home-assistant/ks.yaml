@@ -18,8 +18,8 @@ spec:
       KOPIUR_CAPACITY: 10Gi
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: home-assistant
     namespace: flux-system
   targetNamespace: default
   wait: false
@@ -39,8 +39,8 @@ spec:
       APP: home-assistant-mcp
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: home-assistant
     namespace: flux-system
   targetNamespace: default
   wait: false
@@ -60,8 +60,8 @@ spec:
       APP: sensy-one-zone-editor
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: home-assistant
     namespace: flux-system
   targetNamespace: default
   wait: false

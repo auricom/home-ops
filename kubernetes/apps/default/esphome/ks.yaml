@@ -17,8 +17,8 @@ spec:
       KOPIUR_PGID: "2000"
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: esphome
     namespace: flux-system
   targetNamespace: default
   wait: false

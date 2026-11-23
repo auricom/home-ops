@@ -14,8 +14,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: authelia
     namespace: flux-system
   targetNamespace: default
   wait: false
@@ -30,8 +30,8 @@ spec:
   path: ./kubernetes/apps/default/authelia/database
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: authelia
     namespace: flux-system
   targetNamespace: default
   wait: false
