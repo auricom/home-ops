@@ -1,0 +1,54 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - .github/flate/**
+      - .github/workflows/ci.yaml
+      - kubernetes/**
+  push:
+    branches:
+      - main
+    paths:
+      - .github/flate/**
+      - .github/workflows/ci.yaml
+      - kubernetes/**
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  FLATE_PATH: ./kubernetes/flux/cluster
+  FLATE_SUPPLY: ./.github/flate/supply.yaml
+  # renovate: datasource=github-releases depName=home-operations/flate
+  FLATE_VERSION: v0.8.0
+
+jobs:
+  flate:
+    name: Flate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@90f833d396d0cc3674b631d2d225e306476c303a # v5.2.10
+        with:
+          cache: false
+          install: false
+
+      - name: Run Flate
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: mise exec "github:home-operations/flate@${FLATE_VERSION}" -- flate test --no-progress
