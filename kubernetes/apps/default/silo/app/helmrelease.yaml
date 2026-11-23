@@ -34,6 +34,9 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [44, 109]
         seccompProfile: { type: RuntimeDefault }
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: silo
     controllers:
       silo:
         strategy: Recreate
@@ -94,8 +97,9 @@ spec:
                 cpu: 100m
                 memory: 2Gi
               limits:
-                amd.com/gpu: 1
                 memory: 6Gi
+              claims:
+                - name: gpu
     service:
       app:
         controller: *app
