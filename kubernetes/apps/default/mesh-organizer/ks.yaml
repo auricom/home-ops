@@ -15,8 +15,8 @@ spec:
       KOPIUR_CAPACITY: 5Gi
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: mesh-organizer
     namespace: flux-system
   targetNamespace: default
   wait: false

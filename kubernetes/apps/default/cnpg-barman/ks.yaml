@@ -9,8 +9,8 @@ spec:
   path: ./kubernetes/apps/default/cnpg-barman
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: cnpg-barman
     namespace: flux-system
   targetNamespace: default
   wait: false

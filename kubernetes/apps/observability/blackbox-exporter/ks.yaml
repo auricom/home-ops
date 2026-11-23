@@ -9,8 +9,8 @@ spec:
   path: ./kubernetes/apps/observability/blackbox-exporter/app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: blackbox-exporter
     namespace: flux-system
   targetNamespace: observability
   wait: false

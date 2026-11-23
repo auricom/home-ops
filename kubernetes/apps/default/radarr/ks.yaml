@@ -16,8 +16,8 @@ spec:
       KOPIUR_CAPACITY: 20Gi
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: radarr
     namespace: flux-system
   targetNamespace: default
   wait: false

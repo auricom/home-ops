@@ -17,8 +17,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: bookorbit
     namespace: flux-system
   targetNamespace: default
 ---
@@ -37,8 +37,8 @@ spec:
   path: ./kubernetes/apps/default/bookorbit/cnpg
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: bookorbit
     namespace: flux-system
   targetNamespace: default
   wait: false

@@ -15,8 +15,8 @@ spec:
       KOPIUR_PGID: "0"
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: vikunja
     namespace: flux-system
   targetNamespace: default
   wait: false
