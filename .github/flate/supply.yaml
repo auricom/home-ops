@@ -1,0 +1,10 @@
+---
+# Reference-only objects for `flate test` in CI. Never applied to the cluster.
+# Real value comes from bootstrap/kustomize/personal/network/secret.yaml (1Password).
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-tunnel-id-secret
+  namespace: network
+stringData:
+  CLOUDFLARE_TUNNEL_ID: 00000000-0000-0000-0000-000000000000
