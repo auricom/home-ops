@@ -12,8 +12,8 @@ spec:
   path: ./kubernetes/apps/kguardian/kguardian/app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: kguardian
     namespace: flux-system
   targetNamespace: kguardian
   wait: true

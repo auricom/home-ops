@@ -15,8 +15,8 @@ spec:
       APP: *app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: zigbee2mqtt
     namespace: flux-system
   targetNamespace: default
   wait: false

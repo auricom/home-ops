@@ -17,8 +17,8 @@ spec:
   path: ./kubernetes/apps/ai/litellm/database
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: litellm
     namespace: flux-system
   targetNamespace: ai
   wait: true
@@ -36,8 +36,8 @@ spec:
   path: ./kubernetes/apps/ai/litellm/app
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: litellm
     namespace: flux-system
   targetNamespace: ai
   wait: true
