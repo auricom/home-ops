@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: freshrss/freshrss
-              tag: 1.30.4@sha256:af44385229541bee24aa9148d0ff8f3b40e095373c63a2c0f74e09a27d3c59df
+              tag: 1.31.0@sha256:31b0acfcb8e11600aa6ce697ff8d9d7ea620c85d766e5e764f487b433d20d066
             env:
               PUID: 1000
               PGID: 1000
