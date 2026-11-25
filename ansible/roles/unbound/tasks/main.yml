@@ -1,4 +1,14 @@
 ---
+- name: main | template upstream forwarding
+  ansible.builtin.template:
+    src: forward.conf.j2
+    dest: "{{ unbound_forward_conf_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    validate: unbound-checkconf %s
+  notify: restart unbound
+
 - name: main | template root hints update script
   ansible.builtin.template:
     src: update-root-hints.sh.j2
@@ -31,3 +41,47 @@
 
 - name: main | install unbound exporter
   ansible.builtin.import_tasks: exporter.yml
+
+- name: main | apply pending restarts before probing
+  ansible.builtin.meta: flush_handlers
+
+- name: main | probe resolution through the configured upstream
+  ansible.builtin.command:
+    argv:
+      - dig
+      - +time=5
+      - +tries=1
+      - +noall
+      - +comments
+      - +answer
+      - "{{ unbound_probe_name }}"
+      - A
+      - "@127.0.0.1"
+      - "-p"
+      - "{{ unbound_listen_port }}"
+  register: _unbound_probe
+  changed_when: false
+  failed_when: false
+  retries: 3
+  delay: 2
+  # Plain comparisons only: ansible-core 2.22 rejects Jinja test calls such as
+  # `is regex(...)` inside conditions.
+  until: >-
+    _unbound_probe.rc == 0
+    and 'status: NOERROR' in _unbound_probe.stdout
+    and 'ANSWER: 0' not in _unbound_probe.stdout
+  when: not ansible_check_mode
+
+# Without this the resolver silently degrades to cache-only and only shows up
+# as "the internet is slow", which is exactly how this was found.
+- name: main | fail when the resolver cannot reach its upstream
+  ansible.builtin.assert:
+    that:
+      - _unbound_probe.rc == 0
+      - "'status: NOERROR' in _unbound_probe.stdout"
+      - "'ANSWER: 0' not in _unbound_probe.stdout"
+    fail_msg: >-
+      Unbound is not resolving {{ unbound_probe_name }} on port
+      {{ unbound_listen_port }} (rc={{ _unbound_probe.rc }}):
+      {{ _unbound_probe.stdout_lines | default([]) | join(' | ') }}
+  when: not ansible_check_mode
