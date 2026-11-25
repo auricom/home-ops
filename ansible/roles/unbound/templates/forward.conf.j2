@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+{% if unbound_tls_cert_bundle %}
+server:
+    tls-cert-bundle: "{{ unbound_tls_cert_bundle }}"
+{% endif %}
+
+forward-zone:
+    name: "."
+{% if unbound_forward_tls_upstream %}
+    forward-tls-upstream: yes
+{% endif %}
+{% for addr in unbound_forward_addrs %}
+    forward-addr: {{ addr }}
+{% endfor %}

@@ -9,6 +9,24 @@ unbound_root_hints_cron_month: "*/6"
 
 unbound_identity: "Server"
 
+# Public upstreams. Cloudflare over DoT (853) survives networks that filter
+# plain :53 to the internet, which is why recursion from root hints cannot be
+# relied on here.
+unbound_forward_conf_path: /etc/unbound/unbound.conf.d/forward.conf
+unbound_forward_tls_upstream: true
+unbound_forward_addrs:
+  - 1.1.1.1@853#cloudflare-dns.com
+  - 1.0.0.1@853#cloudflare-dns.com
+# Unbound's implicit trust store is not reliable on minimal images: without
+# this, Cloudflare's chain is reported as "self-signed certificate in
+# certificate chain" and every query returns SERVFAIL. Must be readable inside
+# any configured chroot.
+unbound_tls_cert_bundle: /etc/ssl/certs/ca-certificates.crt
+
+# DietPi sets the listening port in unbound.conf.d/dietpi-port.conf.
+unbound_listen_port: 5335
+unbound_probe_name: example.net
+
 # renovate: datasource=github-tags depName=letsencrypt/unbound_exporter
 unbound_exporter_version: "v0.6.0"
 
