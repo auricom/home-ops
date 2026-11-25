@@ -29,11 +29,15 @@ adguard_config:
     ratelimit_subnet_len_ipv6: 56
     ratelimit_whitelist: []
     refuse_any: true
-    upstream_dns:
-      - https://dns10.quad9.net/dns-query
+    # Public resolution is delegated to Unbound (127.0.0.1:5335), rendered into
+    # upstream_dns_file. That file wins over this list, so keep it empty rather
+    # than leaving upstreams here that never take effect.
+    upstream_dns: []
     upstream_dns_file: "{{ adguard_upstreams_path }}"
+    # Never 127.0.0.1:53: that is AdGuard itself.
     bootstrap_dns:
-      - 127.0.0.1:53
+      - 1.1.1.1
+      - 1.0.0.1
     fallback_dns: []
     upstream_mode: parallel
     fastest_timeout: 1s
@@ -49,7 +53,7 @@ adguard_config:
     trusted_proxies:
       - 127.0.0.0/8
       - ::1/128
-    cache_enabled: false
+    cache_enabled: true
     cache_size: 33554432
     cache_ttl_min: 2400
     cache_ttl_max: 86400
